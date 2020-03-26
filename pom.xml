@@ -1,0 +1,20 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>skija</groupId>
+    <artifactId>skija</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+    <build>
+        <resources>
+            <resource>
+                <directory>target/native</directory>
+                <includes>
+                    <include>libskija.dylib</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+</project>
