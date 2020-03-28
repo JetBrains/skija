@@ -87,8 +87,8 @@ target_compile_definitions(skia INTERFACE
   SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1
   SK_SUPPORT_OPENCL=0
   SK_FORCE_DISTANCE_FIELD_TEXT=0
-  GR_GL_FUNCTION_TYPE=__stdcall
-  SK_SUPPORT_GPU=0) # TODO change this to 1
+  # GR_GL_FUNCTION_TYPE=__stdcall # enable for Win?
+  SK_SUPPORT_GPU=1) # TODO change this to 1
 
 if(WIN32)
   target_compile_definitions(skia INTERFACE
