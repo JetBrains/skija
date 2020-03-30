@@ -3,6 +3,7 @@
 #include "SkPaint.h"
 
 static void deletePaint(SkPaint* paint) {
+    // std::cout << "Deleting [SkPaint " << paint << "]" << std::endl;
     delete paint;
 }
 

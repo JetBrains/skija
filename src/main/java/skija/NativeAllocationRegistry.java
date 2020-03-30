@@ -3,10 +3,6 @@ package skija;
 import java.lang.ref.Cleaner;
 
 public class NativeAllocationRegistry {
-    static {
-        JNI.loadLibrary("/", "skija");
-    }
-
     private long freeFunction;
     private Cleaner cleaner = Cleaner.create();
     

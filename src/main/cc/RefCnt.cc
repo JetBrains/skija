@@ -3,7 +3,10 @@
 #include "SkRefCnt.h"
 
 static void unrefSkRefCnt(SkRefCnt* p) {
-    std::cout << "unrefSkRefCnt p:" << p << ", unique:" << p->unique() << std::endl;
+    if (p->unique())
+        std::cout << "Deleting [" << p << "]" << std::endl;
+    else
+        std::cout << "Unref [" << p << "]" << std::endl;
     p->unref();
 }
 

@@ -5,20 +5,25 @@ import java.lang.ref.Cleaner;
 public class Paint {
     public Paint() {
         mNativeInstance = nInit();
-        mAllocations.registerNativeAllocation(this, mNativeInstance);
+        mFinalizer = mAllocations.registerNativeAllocation(this, mNativeInstance);
     }
     
-    private long mNativeInstance;
+    long mNativeInstance;
     private Cleaner.Cleanable mFinalizer;
     private static NativeAllocationRegistry mAllocations = new NativeAllocationRegistry(nGetNativeFinalizer());
 
     public long getNativeInstance() {
         return mNativeInstance;
     }
+
+    public String toString() {
+        return "[SkPaint 0x" + Long.toString(mNativeInstance, 16) + "]";
+    }
     
-    public void release() {
+    public Paint release() {
         mFinalizer.clean();
         mNativeInstance = 0;
+        return null;
     }
 
     public long getColor() { return nGetColor(mNativeInstance); }
