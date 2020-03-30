@@ -10,8 +10,16 @@ public class Canvas {
         mSurface = surface;
     }
     
+    public void drawLine(float x0, float y0, float x1, float y1, Paint paint) {
+        nDrawLine(mNativeInstance, x0, y0, x1, y1, paint.getNativeInstance());
+    }
+
     public void drawRect(float left, float top, float right, float bottom, Paint paint) {
         nDrawRect(mNativeInstance, left, top, right, bottom, paint.getNativeInstance());
+    }
+
+    public void drawOval(float left, float top, float right, float bottom, Paint paint) {
+        nDrawOval(mNativeInstance, left, top, right, bottom, paint.getNativeInstance());
     }
 
     public void translate(float dx, float dy) { nConcat(mNativeInstance, 1, 0, dx, 0, 1, dy, 0, 0, 1); }
@@ -55,7 +63,9 @@ public class Canvas {
     // }
 
     // private static native long nGetNativeFinalizer();
+    private static native void nDrawLine(long nativeCanvas, float x0, float y0, float x1, float y1, long nativePaint);
     private static native void nDrawRect(long nativeCanvas, float left, float top, float right, float bottom, long nativePaint);
+    private static native void nDrawOval(long nativeCanvas, float left, float top, float right, float bottom, long nativePaint);
     private static native void nClear(long nativeCanvas, long color);
     private static native void nConcat(long nativeCanvas,
         float scaleX, float skewX,  float transX,

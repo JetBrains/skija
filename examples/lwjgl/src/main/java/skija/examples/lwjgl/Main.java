@@ -131,13 +131,48 @@ class Window {
         canvas.scale(dpi, dpi);
     }
 
+    private void draw() {
+        var borderStroke = new Paint().setColor(0xFFCC3333).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+        var watchStroke = new Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f).setAntiAlias(false);
+        var watchStrokeAA = new Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+
+        canvas.clear(0xFFFFFFFF);
+ 
+        canvas.drawRect(10, 10, width - 10, height - 10, borderStroke);
+
+        for (var x = 10f; x < width - 60; x += 50) {
+            for (var y = 10f; y < height - 60; y += 50) {
+                var stroke = x > width / 2 ? watchStrokeAA : watchStroke;
+                canvas.drawOval(x + 5, y + 5, x + 45, y + 45, stroke);
+
+                for (var angle = 0f; angle < 2f * Math.PI; angle += 2f * Math.PI / 12f) {
+                    canvas.drawLine(
+                      (float) (x + 25 - 17 * Math.sin(angle)),
+                      (float) (y + 25 + 17 * Math.cos(angle)),
+                      (float) (x + 25 - 20 * Math.sin(angle)),
+                      (float) (y + 25 + 20 * Math.cos(angle)),
+                      stroke);
+                }
+
+                var time = System.currentTimeMillis() % 60000 + x / width * 5000 + y / width * 5000;
+
+                var angle1 = time / 5000 * 2f * Math.PI;
+                canvas.drawLine(x + 25, y + 25, (float) (x + 25 - 15 * Math.sin(angle1)), (float) (y + 25 + 15 * Math.cos(angle1)), stroke);
+
+                var angle2 = time / 60000 * 2f * Math.PI;
+                canvas.drawLine(x + 25, y + 25, (float) (x + 25 - 10 * Math.sin(angle2)), (float) (y + 25 + 10 * Math.cos(angle2)), stroke);                
+            }
+        }
+
+        context.flush();
+        glfwSwapBuffers(window);
+    }
+
     private void loop() {
         GL.createCapabilities();
         JNI.loadLibrary("/", "skija");
         context = Context.makeGL();
         System.out.println("Allocated " + context);
-
-        var resize = new java.util.concurrent.atomic.AtomicBoolean(true);
 
         GLFW.glfwSetWindowSizeCallback(window, (window, width, height) -> {
             this.width = width;
@@ -146,21 +181,14 @@ class Window {
             int[] fbSize = getFramebufferSize(window);
             dpi = fbSize[0] / width;
             assert fbSize[1] / height == dpi : "Horizontal dpi=" + dpi + ", vertical dpi=" + fbSize[1] / height;
-            resize.set(true);
+
+            initSkia();
+            draw();
         });
-        
+
+        initSkia();
         while (!glfwWindowShouldClose(window)) {
-            if (resize.compareAndSet​(true, false))
-                initSkia();
-
-            canvas.clear(0xFFFFFFFF);
-
-            var p = new Paint();
-            p.setColor(0xFF123456);
-            canvas.drawRect(10, 10, width - 10, height - 10, p);
-            context.flush();
-
-            glfwSwapBuffers(window);
+            draw();
             glfwPollEvents();
         }
     }
