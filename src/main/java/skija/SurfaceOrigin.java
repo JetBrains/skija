@@ -1,6 +1,6 @@
 package skija;
 
 public enum SurfaceOrigin {
-    TopLeft,
-    BottomLeft
+    TOP_LEFT,
+    BOTTOM_LEFT
 }
