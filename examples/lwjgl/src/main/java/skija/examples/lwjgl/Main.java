@@ -29,6 +29,8 @@ class Window {
     public float dpi = 1f;
     public int left;
     public int top;
+    public double xpos = 0;
+    public double ypos = 0;
 
     public Window(int width, int height) {
         this.width = width;
@@ -133,8 +135,13 @@ class Window {
 
     private void draw() {
         var borderStroke = new Paint().setColor(0xFFCC3333).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+
+        var watchFill = new Paint().setColor(0xFFFFFFFF);
         var watchStroke = new Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f).setAntiAlias(false);
         var watchStrokeAA = new Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+
+        var watchFillHover = new Paint().setColor(0xFF000000);
+        var watchStrokeHover = new Paint().setColor(0xFFFFFFFF).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
 
         canvas.clear(0xFFFFFFFF);
  
@@ -142,8 +149,14 @@ class Window {
 
         for (var x = 10f; x < width - 60; x += 50) {
             for (var y = 10f; y < height - 60; y += 50) {
-                var stroke = x > width / 2 ? watchStrokeAA : watchStroke;
-                canvas.drawOval(x + 5, y + 5, x + 45, y + 45, stroke);
+                var hover = xpos > x + 0 && xpos < x + 50 && ypos > y + 0 && ypos < y + 50;
+                var fill = hover ? watchFillHover : watchFill;
+                var stroke = hover ? watchStrokeHover : x > width / 2 ? watchStrokeAA : watchStroke;
+
+                if (hover)
+                    canvas.drawOval(x + 5, y + 5, x + 45, y + 45, fill);
+                else
+                    canvas.drawOval(x + 5, y + 5, x + 45, y + 45, stroke);
 
                 for (var angle = 0f; angle < 2f * Math.PI; angle += 2f * Math.PI / 12f) {
                     canvas.drawLine(
@@ -185,6 +198,17 @@ class Window {
             initSkia();
             draw();
         });
+
+        glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
+            this.xpos = xpos;
+            this.ypos = ypos;
+        });
+
+        glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
+            System.out.println("Button " + button + " " + (action == 0 ? "released" : "pressed"));
+        });
+
+        glfwSetScrollCallback(window, (window, xoffset, yoffset) -> { System.out.println("Scroll by " + xoffset + "x" + yoffset); });
 
         initSkia();
         while (!glfwWindowShouldClose(window)) {
