@@ -145,7 +145,9 @@ class Window {
 
         canvas.clear(0xFFFFFFFF);
  
-        canvas.drawRect(10, 10, width - 10, height - 10, borderStroke);
+        canvas.drawRectInscribed(RectInscribed.roundedRect(10, 10, width - 10, height - 10, 4, 8, 12, 16), borderStroke);
+
+        canvas.drawPoints(Canvas.PointMode.POINTS, new float[] { 5f, 5f, 50f, 5f, 5f, 25f }, new Paint().setColor(0xFFCC3333).setStrokeWidth(5f).setStrokeCap(Paint.Cap.ROUND));
 
         for (var x = 10f; x < width - 60; x += 50) {
             for (var y = 10f; y < height - 60; y += 50) {
@@ -154,9 +156,9 @@ class Window {
                 var stroke = hover ? watchStrokeHover : x > width / 2 ? watchStrokeAA : watchStroke;
 
                 if (hover)
-                    canvas.drawOval(x + 5, y + 5, x + 45, y + 45, fill);
+                    canvas.drawRectInscribed(RectInscribed.oval(x + 5, y + 5, x + 45, y + 45), fill);
                 else
-                    canvas.drawOval(x + 5, y + 5, x + 45, y + 45, stroke);
+                    canvas.drawRectInscribed(RectInscribed.oval(x + 5, y + 5, x + 45, y + 45), stroke);
 
                 for (var angle = 0f; angle < 2f * Math.PI; angle += 2f * Math.PI / 12f) {
                     canvas.drawLine(
