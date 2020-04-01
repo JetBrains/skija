@@ -26,6 +26,10 @@ public class Canvas {
         nDrawLine(mNativeInstance, x0, y0, x1, y1, paint.mNativeInstance);
     }
 
+    public void drawArc(float left, float top, float width, float height, float startAngle, float sweepAngle, boolean includeCenter, Paint paint) {
+        nDrawArc(mNativeInstance, left, top, width, height, startAngle, sweepAngle, includeCenter, paint.mNativeInstance);
+    }
+
     public void drawRectInscribed(RectInscribed r, Paint paint) {
         nDrawRectInscribed(mNativeInstance, r.left, r.top, r.width, r.height, r.radii, paint.mNativeInstance);
     }
@@ -74,6 +78,7 @@ public class Canvas {
     private static native void nDrawPoint(long nativeCanvas, float x, float y, long nativePaint);
     private static native void nDrawPoints(long nativeCanvas, int mode, float[] coords, long nativePaint);
     private static native void nDrawLine(long nativeCanvas, float x0, float y0, float x1, float y1, long nativePaint);
+    private static native void nDrawArc(long nativeCanvas, float left, float top, float width, float height, float startAngle, float sweepAngle, boolean includeCenter, long nativePaint);
     private static native void nDrawRectInscribed(long nativeCanvas, float left, float top, float width, float height, float radii[], long nativePaint);
     private static native void nClear(long nativeCanvas, long color);
     private static native void nDrawPaint(long nativeCanvas, long nativePaint);

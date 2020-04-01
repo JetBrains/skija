@@ -9,22 +9,12 @@ public class PrimitivesScene implements Scene {
         canvas.translate(30, 30);
         
         drawPoints(canvas);
-        canvas.translate(0, 50);
-
         drawLines(canvas);
-        canvas.translate(0, 50);
-
+        drawArcs(canvas);
         drawRotate(canvas);
-        canvas.translate(0, 50);
-
         drawRectInscribed(canvas, new Paint().setColor(0xFF1D7AA2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f));
-        canvas.translate(0, 50);
-
         drawRectInscribed(canvas, new Paint().setColor(0xFF6DC1B3).setStyle(Paint.Style.STROKE).setStrokeWidth(5f));
-        canvas.translate(0, 50);
-
         drawRectInscribed(canvas, new Paint().setColor(0xFFB1DCBE));
-        canvas.translate(0, 50);
     }
 
     public void drawPoints(Canvas canvas) {
@@ -79,6 +69,7 @@ public class PrimitivesScene implements Scene {
         canvas.translate(40, 0);
 
         canvas.restore();
+        canvas.translate(0, 50);
     }
 
     public void drawLines(Canvas canvas) {
@@ -110,6 +101,7 @@ public class PrimitivesScene implements Scene {
         canvas.drawLine(220, 0, 250, 30, stroke5pxSquare.setAntiAlias(false));
 
         canvas.restore();
+        canvas.translate(0, 50);
     }
 
     public void drawRotate(Canvas canvas) {
@@ -123,6 +115,38 @@ public class PrimitivesScene implements Scene {
             canvas.restore();    
         }
         canvas.restore();
+        canvas.translate(0, 50);
+    }
+
+    public void drawArcs(Canvas canvas) {
+        var stroke1px = new Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+        var fill = new Paint().setColor(0xFFFC7901);
+
+        canvas.save();
+        for (var angle = 60f; angle <= 360f; angle += 60) {
+            canvas.drawArc(0, 0, 40, 40, 0, angle, false, stroke1px);
+            canvas.translate(50, 0);
+        }
+
+        for (var angle = 60f; angle <= 360f; angle += 60) {
+            canvas.drawArc(0, 0, 40, 40, 0, -angle, true, stroke1px);
+            canvas.translate(50, 0);
+        }
+        canvas.restore();
+        canvas.translate(0, 50);
+
+        canvas.save();
+        for (var angle = 30f; angle <= 180f; angle += 30) {
+            canvas.drawArc(0, 0, 40, 40, angle, -angle * 2, false, fill);
+            canvas.translate(50, 0);
+        }
+
+        for (var angle = 30f; angle <= 180f; angle += 30) {
+            canvas.drawArc(0, 0, 40, 40, -angle, angle * 2, true, fill);
+            canvas.translate(50, 0);
+        }
+        canvas.restore();
+        canvas.translate(0, 50);
     }
 
     public void drawRectInscribed(Canvas canvas, Paint paint) {
@@ -147,5 +171,6 @@ public class PrimitivesScene implements Scene {
         canvas.translate(75, 0);        
 
         canvas.restore();
+        canvas.translate(0, 50);
     }
 }

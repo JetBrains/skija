@@ -40,6 +40,13 @@ extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nDrawLine
     canvas->drawLine(x0, y0, x1, y1, *paint);
 }
 
+extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nDrawArc
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloat left, jfloat top, jfloat width, jfloat height, jfloat startAngle, jfloat sweepAngle, jboolean includeCenter, jlong paintPtr) {
+    SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
+    SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
+    canvas->drawArc({left, top, left+width, top+height}, startAngle, sweepAngle, includeCenter, *paint);
+}
+
 extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nDrawRectInscribed
   (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloat left, jfloat top, jfloat width, jfloat height, jfloatArray jradii, jlong paintPtr) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
