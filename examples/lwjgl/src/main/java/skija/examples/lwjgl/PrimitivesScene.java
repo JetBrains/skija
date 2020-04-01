@@ -3,9 +3,11 @@ package skija.examples.lwjgl;
 import skija.*;
 
 public class PrimitivesScene implements Scene {
+
+    @Override
     public void draw(Canvas canvas, int width, int height, int xpos, int ypos) {
         var borderStroke = new Paint().setColor(0xFFFF0751).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
-        canvas.drawRectInscribed(RectInscribed.rect(10, 10, width - 20, height - 20), borderStroke);
+        canvas.drawRectInscribed(RectInscribed.rectLTRB(10, 10, width - 10, height - 10), borderStroke);
         canvas.translate(30, 30);
         
         drawPoints(canvas);
@@ -14,7 +16,7 @@ public class PrimitivesScene implements Scene {
         drawRotate(canvas);
         drawRectInscribed(canvas, new Paint().setColor(0xFF1D7AA2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f));
         drawRectInscribed(canvas, new Paint().setColor(0xFF6DC1B3).setStyle(Paint.Style.STROKE).setStrokeWidth(5f));
-        drawRectInscribed(canvas, new Paint().setColor(0xFFB1DCBE));
+        drawRectInscribed(canvas, new Paint().setColor(0xFF9BC730));
         drawPaths(canvas, new Paint().setColor(0xFFF6BC01));
         drawPaths(canvas, new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1f));
     }
@@ -154,22 +156,22 @@ public class PrimitivesScene implements Scene {
     public void drawRectInscribed(Canvas canvas, Paint paint) {
         canvas.save();
 
-        canvas.drawRectInscribed(RectInscribed.rect(0, 0, 65, 40), paint);
+        canvas.drawRectInscribed(RectInscribed.rectXYWH(0, 0, 65, 40), paint);
         canvas.translate(75, 0);
 
-        canvas.drawRectInscribed(RectInscribed.oval(0, 0, 65, 40), paint);
+        canvas.drawRectInscribed(RectInscribed.ovalXYWH(0, 0, 65, 40), paint);
         canvas.translate(75, 0);
 
-        canvas.drawRectInscribed(RectInscribed.roundedRect(0, 0, 65, 40, 10), paint);
+        canvas.drawRectInscribed(RectInscribed.roundedRectXYWH(0, 0, 65, 40, 10), paint);
         canvas.translate(75, 0);
 
-        canvas.drawRectInscribed(RectInscribed.roundedRect(0, 0, 65, 40, 4, 8, 12, 16), paint);
+        canvas.drawRectInscribed(RectInscribed.roundedRectXYWH(0, 0, 65, 40, 4, 8, 12, 16), paint);
         canvas.translate(75, 0);
 
-        canvas.drawRectInscribed(RectInscribed.ninePatch(0, 0, 65, 40, 4, 8, 12, 16), paint);
+        canvas.drawRectInscribed(RectInscribed.ninePatchXYWH(0, 0, 65, 40, 4, 8, 12, 16), paint);
         canvas.translate(75, 0);
 
-        canvas.drawRectInscribed(RectInscribed.complex(0, 0, 65, 40, new float[] {2, 4, 6, 8, 10, 12, 14, 16}), paint);
+        canvas.drawRectInscribed(RectInscribed.complexXYWH(0, 0, 65, 40, new float[] {2, 4, 6, 8, 10, 12, 14, 16}), paint);
         canvas.translate(75, 0);        
 
         canvas.restore();
@@ -229,6 +231,15 @@ public class PrimitivesScene implements Scene {
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
+        // cubic apple rounding
+        path.reset().lineTo(0, 20).arcTo(0, 0, 40, 40, 180, -90, false).lineTo(40, 40).lineTo(40, 0).close();
+        canvas.drawPath(path, paint);
+        canvas.translate(50, 0);
+
+        path.reset().lineTo(0, 10).cubicTo(0, 30, 10, 40, 30, 40).lineTo(40, 40).lineTo(40, 0).close();
+        canvas.drawPath(path, paint);
+        canvas.translate(50, 0);
+
         // Infinity
         canvas.translate(25, 20);
         path.reset().moveTo(0, 0); // Center 
@@ -247,13 +258,13 @@ public class PrimitivesScene implements Scene {
         // arcTo
         canvas.drawLine(20, 20, 20, 0, tangentStroke);
         canvas.drawLine(20, 20, 40, 20, tangentStroke);
-        canvas.drawRectInscribed(RectInscribed.rect(0, 0, 40, 40), tangentStroke);
+        canvas.drawRectInscribed(RectInscribed.rectXYWH(0, 0, 40, 40), tangentStroke);
         path.reset().moveTo(0, 0).arcTo(0, 0, 40, 40, -90, 90, false);
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
         // arcTo
-        canvas.drawRectInscribed(RectInscribed.rect(0, 0, 40, 40), tangentStroke);
+        canvas.drawRectInscribed(RectInscribed.rectXYWH(0, 0, 40, 40), tangentStroke);
         canvas.drawLine(20, 20, 20, 0, tangentStroke);
         canvas.drawLine(20, 20, 40, 20, tangentStroke);
         path.reset().moveTo(0, 0).arcTo(0, 0, 40, 40, -90, 90, true);
@@ -263,7 +274,7 @@ public class PrimitivesScene implements Scene {
         // tangentArcTo
         canvas.drawLine(0, 20, 20, 0, tangentStroke);
         canvas.drawLine(20, 0, 40, 20, tangentStroke);
-        canvas.drawRectInscribed(RectInscribed.oval(10, 4, 20, 20), tangentStroke);
+        canvas.drawRectInscribed(RectInscribed.ovalXYWH(10, 4, 20, 20), tangentStroke);
         path.reset().moveTo(0, 20).tangentArcTo(20, 0, 40, 20, 10);
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
@@ -271,28 +282,28 @@ public class PrimitivesScene implements Scene {
         // ellipticalArcTo, getBounds
         path.reset().moveTo(0, 30).ellipticalArcTo(30, 15, 30, Path.ArcSize.SMALL, Path.Direction.CLOCKWISE, 40, 30);
         float[] bounds = path.getBounds();
-        canvas.drawRectInscribed(RectInscribed.rect(bounds[0], bounds[1], bounds[2] - bounds[0], bounds[3] - bounds[1]), tangentStroke);
+        canvas.drawRectInscribed(RectInscribed.rectLTRB(bounds[0], bounds[1], bounds[2], bounds[3]), tangentStroke);
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
         // ellipticalArcTo, getBounds
         path.reset().moveTo(0, 30).ellipticalArcTo(30, 15, 30, Path.ArcSize.LARGE, Path.Direction.CLOCKWISE, 40, 30);
         bounds = path.getBounds();
-        canvas.drawRectInscribed(RectInscribed.rect(bounds[0], bounds[1], bounds[2] - bounds[0], bounds[3] - bounds[1]), tangentStroke);
+        canvas.drawRectInscribed(RectInscribed.rectLTRB(bounds[0], bounds[1], bounds[2], bounds[3]), tangentStroke);
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
         // rEllipticalArcTo, getTightBounds
         path.reset().moveTo(0, 10).rEllipticalArcTo(30, 15, 30, Path.ArcSize.SMALL, Path.Direction.COUNTER_CLOCKWISE, 40, 0);
         bounds = path.computeTightBounds();
-        canvas.drawRectInscribed(RectInscribed.rect(bounds[0], bounds[1], bounds[2] - bounds[0], bounds[3] - bounds[1]), tangentStroke);
+        canvas.drawRectInscribed(RectInscribed.rectLTRB(bounds[0], bounds[1], bounds[2], bounds[3]), tangentStroke);
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
         // rEllipticalArcTo, getTightBounds
         path.reset().moveTo(0, 10).rEllipticalArcTo(30, 15, 30, Path.ArcSize.LARGE, Path.Direction.COUNTER_CLOCKWISE, 40, 0);
         bounds = path.computeTightBounds();
-        canvas.drawRectInscribed(RectInscribed.rect(bounds[0], bounds[1], bounds[2] - bounds[0], bounds[3] - bounds[1]), tangentStroke);
+        canvas.drawRectInscribed(RectInscribed.rectLTRB(bounds[0], bounds[1], bounds[2], bounds[3]), tangentStroke);
         canvas.drawPath(path, paint);
         canvas.translate(70, 0);
 

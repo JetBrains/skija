@@ -3,6 +3,8 @@ package skija.examples.lwjgl;
 import skija.*;
 
 public class WatchesScene implements Scene {
+
+    @Override
     public void draw(Canvas canvas, int width, int height, int xpos, int ypos) {
         var watchFill = new Paint().setColor(0xFFFFFFFF);
         var watchStroke = new Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f).setAntiAlias(false);
@@ -15,8 +17,8 @@ public class WatchesScene implements Scene {
                 var fill = hover ? watchFillHover : watchFill;
                 var stroke = x > width / 2 ? watchStrokeAA : watchStroke;
 
-                canvas.drawRectInscribed(RectInscribed.oval(x + 5, y + 5, 40, 40), fill);
-                canvas.drawRectInscribed(RectInscribed.oval(x + 5, y + 5, 40, 40), stroke);
+                canvas.drawRectInscribed(RectInscribed.ovalXYWH(x + 5, y + 5, 40, 40), fill);
+                canvas.drawRectInscribed(RectInscribed.ovalXYWH(x + 5, y + 5, 40, 40), stroke);
 
                 for (var angle = 0f; angle < 2f * Math.PI; angle += 2f * Math.PI / 12f) {
                     canvas.drawLine(
