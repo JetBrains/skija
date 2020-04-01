@@ -41,40 +41,52 @@ extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nDrawLine
 }
 
 extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nDrawRectInscribed
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloat left, jfloat top, jfloat right, jfloat bottom, jfloatArray jradii, jlong paintPtr) {
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloat left, jfloat top, jfloat width, jfloat height, jfloatArray jradii, jlong paintPtr) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
 
-    jfloat* radii = env->GetFloatArrayElements(jradii, 0); 
+    float right = left + width;
+    float bottom = top + height;
     
     switch (env->GetArrayLength(jradii)) {
         case 0:
             canvas->drawRect({left, top, right, bottom}, *paint);
             break;
         case 1:
-            canvas->drawRRect(SkRRect::MakeRectXY({left, top, right, bottom}, radii[0], radii[0]), *paint);
+            {
+                jfloat* radii = env->GetFloatArrayElements(jradii, 0);
+                canvas->drawRRect(SkRRect::MakeRectXY({left, top, right, bottom}, radii[0], radii[0]), *paint);
+                env->ReleaseFloatArrayElements(jradii, radii, 0);
+            }
             break;
         case 2:
-            canvas->drawOval({left, top, right, bottom}, *paint);
+            {
+                jfloat* radii = env->GetFloatArrayElements(jradii, 0);
+                canvas->drawOval({left, top, right, bottom}, *paint);
+                env->ReleaseFloatArrayElements(jradii, radii, 0);
+            }
             break;
         case 4:
             {
+                jfloat* radii = env->GetFloatArrayElements(jradii, 0);
                 SkVector vradii[4] = {{radii[0], radii[0]}, {radii[1], radii[1]}, {radii[2], radii[2]}, {radii[3], radii[3]}};
                 SkRRect rrect = SkRRect::MakeEmpty();
                 rrect.setRectRadii({left, top, right, bottom}, vradii);
                 canvas->drawRRect(rrect, *paint);
+                env->ReleaseFloatArrayElements(jradii, radii, 0);
             }
             break;
         case 8:
             {
+                jfloat* radii = env->GetFloatArrayElements(jradii, 0);
                 SkVector vradii[4] = {{radii[0], radii[1]}, {radii[2], radii[3]}, {radii[4], radii[5]}, {radii[6], radii[7]}};
                 SkRRect rrect = SkRRect::MakeEmpty();
                 rrect.setRectRadii({left, top, right, bottom}, vradii);
                 canvas->drawRRect(rrect, *paint);
+                env->ReleaseFloatArrayElements(jradii, radii, 0);
             }
             break;
     }
-    env->ReleaseFloatArrayElements(jradii, radii, 0);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nClear(JNIEnv* env, jclass jclass, jlong ptr, jlong color) {

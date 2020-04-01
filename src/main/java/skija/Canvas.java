@@ -74,7 +74,7 @@ public class Canvas {
     private static native void nDrawPoint(long nativeCanvas, float x, float y, long nativePaint);
     private static native void nDrawPoints(long nativeCanvas, int mode, float[] coords, long nativePaint);
     private static native void nDrawLine(long nativeCanvas, float x0, float y0, float x1, float y1, long nativePaint);
-    private static native void nDrawRectInscribed(long nativeCanvas, float left, float top, float right, float bottom, float radii[], long nativePaint);
+    private static native void nDrawRectInscribed(long nativeCanvas, float left, float top, float width, float height, float radii[], long nativePaint);
     private static native void nClear(long nativeCanvas, long color);
     private static native void nDrawPaint(long nativeCanvas, long nativePaint);
     private static native void nConcat(long nativeCanvas,

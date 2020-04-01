@@ -1,6 +1,9 @@
 package skija.examples.lwjgl;
 
 import java.nio.IntBuffer;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
@@ -29,8 +32,8 @@ class Window {
     public float dpi = 1f;
     public int left;
     public int top;
-    public double xpos = 0;
-    public double ypos = 0;
+    public int xpos = 0;
+    public int ypos = 0;
 
     public Window(int width, int height) {
         this.width = width;
@@ -126,59 +129,25 @@ class Window {
         renderTarget = BackendRenderTarget.newGL((int) (width * dpi), (int) (height * dpi), /*samples*/0, /*stencil*/0, fbId, BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8);
         System.out.println("Allocated " + renderTarget);
 
-        surface = Surface.makeFromBackendRenderTarget(context, renderTarget, SurfaceOrigin.BOTTOM_LEFT, ColorType.RGBA_8888);
+        surface = Surface.makeFromBackendRenderTarget(context, renderTarget, Surface.Origin.BOTTOM_LEFT, Surface.ColorType.RGBA_8888);
         System.out.println("Allocated " + surface);
 
         canvas = surface.getCanvas();
         canvas.scale(dpi, dpi);
+        // canvas.translate(0.5f, 0.5f);
     }
 
+    private NavigableMap<String, Scene> scenes = new TreeMap(Map.of(
+        "Watches", new WatchesScene(),
+        "Primitives", new PrimitivesScene()
+    ));
+    private String currentScene = scenes.firstKey();
+
     private void draw() {
-        var borderStroke = new Paint().setColor(0xFFCC3333).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
-
-        var watchFill = new Paint().setColor(0xFFFFFFFF);
-        var watchStroke = new Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f).setAntiAlias(false);
-        var watchStrokeAA = new Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
-
-        var watchFillHover = new Paint().setColor(0xFF000000);
-        var watchStrokeHover = new Paint().setColor(0xFFFFFFFF).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
-
         canvas.clear(0xFFFFFFFF);
- 
-        canvas.drawRectInscribed(RectInscribed.roundedRect(10, 10, width - 10, height - 10, 4, 8, 12, 16), borderStroke);
-
-        canvas.drawPoints(Canvas.PointMode.POINTS, new float[] { 5f, 5f, 50f, 5f, 5f, 25f }, new Paint().setColor(0xFFCC3333).setStrokeWidth(5f).setStrokeCap(Paint.Cap.ROUND));
-
-        for (var x = 10f; x < width - 60; x += 50) {
-            for (var y = 10f; y < height - 60; y += 50) {
-                var hover = xpos > x + 0 && xpos < x + 50 && ypos > y + 0 && ypos < y + 50;
-                var fill = hover ? watchFillHover : watchFill;
-                var stroke = hover ? watchStrokeHover : x > width / 2 ? watchStrokeAA : watchStroke;
-
-                if (hover)
-                    canvas.drawRectInscribed(RectInscribed.oval(x + 5, y + 5, x + 45, y + 45), fill);
-                else
-                    canvas.drawRectInscribed(RectInscribed.oval(x + 5, y + 5, x + 45, y + 45), stroke);
-
-                for (var angle = 0f; angle < 2f * Math.PI; angle += 2f * Math.PI / 12f) {
-                    canvas.drawLine(
-                      (float) (x + 25 - 17 * Math.sin(angle)),
-                      (float) (y + 25 + 17 * Math.cos(angle)),
-                      (float) (x + 25 - 20 * Math.sin(angle)),
-                      (float) (y + 25 + 20 * Math.cos(angle)),
-                      stroke);
-                }
-
-                var time = System.currentTimeMillis() % 60000 + x / width * 5000 + y / width * 5000;
-
-                var angle1 = time / 5000 * 2f * Math.PI;
-                canvas.drawLine(x + 25, y + 25, (float) (x + 25 - 15 * Math.sin(angle1)), (float) (y + 25 + 15 * Math.cos(angle1)), stroke);
-
-                var angle2 = time / 60000 * 2f * Math.PI;
-                canvas.drawLine(x + 25, y + 25, (float) (x + 25 - 10 * Math.sin(angle2)), (float) (y + 25 + 10 * Math.cos(angle2)), stroke);                
-            }
-        }
-
+        canvas.save();
+        scenes.get(currentScene).draw(canvas, width, height, xpos, ypos);
+        canvas.restore();
         context.flush();
         glfwSwapBuffers(window);
     }
@@ -202,8 +171,8 @@ class Window {
         });
 
         glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
-            this.xpos = xpos;
-            this.ypos = ypos;
+            this.xpos = (int) xpos;
+            this.ypos = (int) ypos;
         });
 
         glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
@@ -211,6 +180,13 @@ class Window {
         });
 
         glfwSetScrollCallback(window, (window, xoffset, yoffset) -> { System.out.println("Scroll by " + xoffset + "x" + yoffset); });
+
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (key == GLFW_KEY_S && action == GLFW_PRESS) {
+                currentScene = scenes.higherKey(currentScene) != null ? scenes.higherKey(currentScene) : scenes.firstKey();
+            }
+        });
+
 
         initSkia();
         while (!glfwWindowShouldClose(window)) {
