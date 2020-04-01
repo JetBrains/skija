@@ -33,6 +33,10 @@ public class Canvas {
     public void drawRectInscribed(RectInscribed r, Paint paint) {
         nDrawRectInscribed(mNativeInstance, r.left, r.top, r.width, r.height, r.radii, paint.mNativeInstance);
     }
+
+    public void drawPath(Path path, Paint paint) {
+        nDrawPath(mNativeInstance, path.mNativeInstance, paint.mNativeInstance);
+    }
     
     public void clear(long color) { nClear(mNativeInstance, color); }
     public void drawPaint(Paint paint) { nDrawPaint(mNativeInstance, paint.mNativeInstance); }
@@ -82,11 +86,12 @@ public class Canvas {
     private static native void nDrawRectInscribed(long nativeCanvas, float left, float top, float width, float height, float radii[], long nativePaint);
     private static native void nClear(long nativeCanvas, long color);
     private static native void nDrawPaint(long nativeCanvas, long nativePaint);
+    private static native void nDrawPath(long nativeCanvas, long nativePath, long nativePaint);
+
     private static native void nConcat(long nativeCanvas,
         float scaleX, float skewX,  float transX,
         float skewY,  float scaleY, float transY,
         float persp0, float persp1, float persp2);
-
     private static native int nSave(long nativeCanvas);
     private static native int nGetSaveCount(long nativeCanvas);
     private static native void nRestore(long nativeCanvas);

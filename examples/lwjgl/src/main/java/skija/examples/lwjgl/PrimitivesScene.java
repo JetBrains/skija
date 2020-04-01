@@ -15,6 +15,8 @@ public class PrimitivesScene implements Scene {
         drawRectInscribed(canvas, new Paint().setColor(0xFF1D7AA2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f));
         drawRectInscribed(canvas, new Paint().setColor(0xFF6DC1B3).setStyle(Paint.Style.STROKE).setStrokeWidth(5f));
         drawRectInscribed(canvas, new Paint().setColor(0xFFB1DCBE));
+        drawPaths(canvas, new Paint().setColor(0xFFF6BC01));
+        drawPaths(canvas, new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1f));
     }
 
     public void drawPoints(Canvas canvas) {
@@ -142,7 +144,7 @@ public class PrimitivesScene implements Scene {
         }
 
         for (var angle = 30f; angle <= 180f; angle += 30) {
-            canvas.drawArc(0, 0, 40, 40, -angle, angle * 2, true, fill);
+            canvas.drawArc(0, 0, 40, 40, 180 - angle, angle * 2, true, fill);
             canvas.translate(50, 0);
         }
         canvas.restore();
@@ -169,6 +171,147 @@ public class PrimitivesScene implements Scene {
 
         canvas.drawRectInscribed(RectInscribed.complex(0, 0, 65, 40, new float[] {2, 4, 6, 8, 10, 12, 14, 16}), paint);
         canvas.translate(75, 0);        
+
+        canvas.restore();
+        canvas.translate(0, 50);
+    }
+
+    public void drawPaths(Canvas canvas, Paint paint) {
+        var tangentStroke = new Paint().setColor(0xFFFAA6B2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+
+        canvas.save();
+
+        // moveTo, lineTo, close
+        Path path = new Path();
+        path.setFillType(Path.FillType.WINDING);
+        path.moveTo(20, 1.6f);
+        path.lineTo(31.7f, 37.8f);
+        path.lineTo(0.9f, 15.4f);
+        path.lineTo(39f, 15.4f);
+        path.lineTo(8.2f, 37.8f);
+        path.close();
+        canvas.drawPath(path, paint);
+        canvas.translate(50, 0);
+
+        // rMoveTo, rLineTo
+        path.reset().setFillType(Path.FillType.EVEN_ODD);
+        path.rMoveTo(20, 1.6f).rLineTo(11.7f, 36.2f).rLineTo(-30.8f, -22.4f).rLineTo(38.1f, 0f).rLineTo(-30.8f, 22.4f);
+        canvas.drawPath(path, paint);
+        canvas.translate(50, 0);
+
+        // quadTo, rQuadTo
+        canvas.drawLine(0, 20, 20, 0, tangentStroke);
+        canvas.drawLine(20, 0, 40, 20, tangentStroke);
+        canvas.drawLine(0, 20, 20, 40, tangentStroke);
+        canvas.drawLine(20, 40, 40, 20, tangentStroke);
+
+        path.reset().rMoveTo(0, 20).quadTo(20, 0, 40, 20).rQuadTo(-20, 20, -40, 0);
+        canvas.drawPath(path, paint);
+        canvas.translate(50, 0);
+
+        // conicTo, rConicTo
+        canvas.drawLine(0, 20, 20, 0, tangentStroke);
+        canvas.drawLine(20, 0, 40, 20, tangentStroke);
+        canvas.drawLine(0, 20, 20, 40, tangentStroke);
+        canvas.drawLine(20, 40, 40, 20, tangentStroke);
+
+        path.reset().rMoveTo(0, 20).conicTo(20, 0, 40, 20, 0.5f).rConicTo(-20, 20, -40, 0, 2);
+        canvas.drawPath(path, paint);
+        canvas.translate(50, 0);
+
+        // cubicTo, rCubicTo
+        canvas.drawLine(0, 20, 0, 0, tangentStroke);
+        canvas.drawLine(40, 0, 40, 20, tangentStroke);
+        canvas.drawLine(0, 20, 10, 30, tangentStroke);
+        canvas.drawLine(40, 20, 30, 30, tangentStroke);
+
+        path.reset().rMoveTo(0, 20).cubicTo(0, 0, 40, 0, 40, 20).rCubicTo(-10, 10, -30, 10, -40, 0);
+        canvas.drawPath(path, paint);
+        canvas.translate(50, 0);
+
+        // Infinity
+        canvas.translate(25, 20);
+        path.reset().moveTo(0, 0); // Center 
+        path.cubicTo(  5,     -5,      9.5f, -10,     15, -10); // To top of right loop
+        path.cubicTo( 20.5f, -10,     25,     -5.5f,  25,   0); // To far right of right loop
+        path.cubicTo( 25,      5.5f,  20.5f,  10,     15,  10); // To bottom of right loop
+        path.cubicTo(  9.5f,  10,      5,      5,      0,   0); // Back to center
+        path.cubicTo( -5,     -5,     -9.5f, -10,    -15, -10); // To top of left loop
+        path.cubicTo(-20.5f, -10,    -25,     -5.5f, -25,   0); // To far left of left loop
+        path.cubicTo(-25,      5.5f, -20.5f,  10,    -15,  10); // To bottom of left loop
+        path.cubicTo( -9.5f,  10,     -5,      5,      0,   0); // Back to center
+        path.close();
+        canvas.drawPath(path, paint);
+        canvas.translate(35, -20);
+
+        // arcTo
+        canvas.drawLine(20, 20, 20, 0, tangentStroke);
+        canvas.drawLine(20, 20, 40, 20, tangentStroke);
+        canvas.drawRectInscribed(RectInscribed.rect(0, 0, 40, 40), tangentStroke);
+        path.reset().moveTo(0, 0).arcTo(0, 0, 40, 40, -90, 90, false);
+        canvas.drawPath(path, paint);
+        canvas.translate(50, 0);
+
+        // arcTo
+        canvas.drawRectInscribed(RectInscribed.rect(0, 0, 40, 40), tangentStroke);
+        canvas.drawLine(20, 20, 20, 0, tangentStroke);
+        canvas.drawLine(20, 20, 40, 20, tangentStroke);
+        path.reset().moveTo(0, 0).arcTo(0, 0, 40, 40, -90, 90, true);
+        canvas.drawPath(path, paint);
+        canvas.translate(50, 0);
+
+        // tangentArcTo
+        canvas.drawLine(0, 20, 20, 0, tangentStroke);
+        canvas.drawLine(20, 0, 40, 20, tangentStroke);
+        canvas.drawRectInscribed(RectInscribed.oval(10, 4, 20, 20), tangentStroke);
+        path.reset().moveTo(0, 20).tangentArcTo(20, 0, 40, 20, 10);
+        canvas.drawPath(path, paint);
+        canvas.translate(50, 0);
+
+        // ellipticalArcTo, getBounds
+        path.reset().moveTo(0, 30).ellipticalArcTo(30, 15, 30, Path.ArcSize.SMALL, Path.Direction.CLOCKWISE, 40, 30);
+        float[] bounds = path.getBounds();
+        canvas.drawRectInscribed(RectInscribed.rect(bounds[0], bounds[1], bounds[2] - bounds[0], bounds[3] - bounds[1]), tangentStroke);
+        canvas.drawPath(path, paint);
+        canvas.translate(50, 0);
+
+        // ellipticalArcTo, getBounds
+        path.reset().moveTo(0, 30).ellipticalArcTo(30, 15, 30, Path.ArcSize.LARGE, Path.Direction.CLOCKWISE, 40, 30);
+        bounds = path.getBounds();
+        canvas.drawRectInscribed(RectInscribed.rect(bounds[0], bounds[1], bounds[2] - bounds[0], bounds[3] - bounds[1]), tangentStroke);
+        canvas.drawPath(path, paint);
+        canvas.translate(50, 0);
+
+        // rEllipticalArcTo, getTightBounds
+        path.reset().moveTo(0, 10).rEllipticalArcTo(30, 15, 30, Path.ArcSize.SMALL, Path.Direction.COUNTER_CLOCKWISE, 40, 0);
+        bounds = path.computeTightBounds();
+        canvas.drawRectInscribed(RectInscribed.rect(bounds[0], bounds[1], bounds[2] - bounds[0], bounds[3] - bounds[1]), tangentStroke);
+        canvas.drawPath(path, paint);
+        canvas.translate(50, 0);
+
+        // rEllipticalArcTo, getTightBounds
+        path.reset().moveTo(0, 10).rEllipticalArcTo(30, 15, 30, Path.ArcSize.LARGE, Path.Direction.COUNTER_CLOCKWISE, 40, 0);
+        bounds = path.computeTightBounds();
+        canvas.drawRectInscribed(RectInscribed.rect(bounds[0], bounds[1], bounds[2] - bounds[0], bounds[3] - bounds[1]), tangentStroke);
+        canvas.drawPath(path, paint);
+        canvas.translate(70, 0);
+
+        // addPoly
+        path.reset().addPoly(new float[] { 40, 0, 40, 40, 30, 40, 10, 20, 10, 40, 0, 40, 0, 0, 10, 0, 30, 20, 30, 0 }, false);
+        canvas.drawPath(path, paint);
+        canvas.translate(50, 0);
+
+        // multi shapes
+        path.reset().setFillType(Path.FillType.EVEN_ODD);
+        path.arcTo(0, 5, 35, 40, 0, 359, true);
+        path.close();
+        path.addPoly(new float[] { 5, 0, 35, 0, 35, 30, 5, 30 }, true);
+        path.moveTo(5, 35);
+        path.lineTo(20, 5);
+        path.lineTo(35, 35);
+        path.close();
+        canvas.drawPath(path, paint);
+        canvas.translate(50, 0);
 
         canvas.restore();
         canvas.translate(0, 50);

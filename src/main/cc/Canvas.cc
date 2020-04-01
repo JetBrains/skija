@@ -108,6 +108,14 @@ extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nDrawPaint
     canvas->drawPaint(*paint);
 }
 
+extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nDrawPath
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong pathPtr, jlong paintPtr) {
+    SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
+    SkPath* path = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(pathPtr));
+    SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
+    canvas->drawPath(*path, *paint);
+}
+
 extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nConcat(JNIEnv* env, jclass jclass, jlong ptr,
         jfloat scaleX, jfloat skewX,  jfloat transX,
         jfloat skewY,  jfloat scaleY, jfloat transY,
