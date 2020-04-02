@@ -17,8 +17,8 @@ public class WatchesScene implements Scene {
                 var fill = hover ? watchFillHover : watchFill;
                 var stroke = x > width / 2 ? watchStrokeAA : watchStroke;
 
-                canvas.drawRectInscribed(RectInscribed.ovalXYWH(x + 5, y + 5, 40, 40), fill);
-                canvas.drawRectInscribed(RectInscribed.ovalXYWH(x + 5, y + 5, 40, 40), stroke);
+                canvas.drawOval(Rect.makeXYWH(x + 5, y + 5, 40, 40), fill);
+                canvas.drawOval(Rect.makeXYWH(x + 5, y + 5, 40, 40), stroke);
 
                 for (var angle = 0f; angle < 2f * Math.PI; angle += 2f * Math.PI / 12f) {
                     canvas.drawLine(

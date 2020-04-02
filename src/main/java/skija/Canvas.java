@@ -28,8 +28,24 @@ public class Canvas extends Native {
         nDrawArc(mNativeInstance, left, top, width, height, startAngle, sweepAngle, includeCenter, paint.mNativeInstance);
     }
 
-    public void drawRectInscribed(RectInscribed r, Paint paint) {
-        nDrawRectInscribed(mNativeInstance, r.left, r.top, r.right, r.bottom, r.radii, paint.mNativeInstance);
+    public void drawRect(Rect r, Paint paint) {
+        nDrawRect(mNativeInstance, r.left, r.top, r.right, r.bottom, paint.mNativeInstance);
+    }
+
+    public void drawOval(Rect r, Paint paint) {
+        nDrawOval(mNativeInstance, r.left, r.top, r.right, r.bottom, paint.mNativeInstance);
+    }
+
+    public void drawCircle(float x, float y, float radius, Paint paint) {
+        nDrawOval(mNativeInstance, x - radius, y - radius, x + radius, y + radius, paint.mNativeInstance);
+    }
+
+    public void drawRoundedRect(RoundedRect r, Paint paint) {
+        nDrawRoundedRect(mNativeInstance, r.left, r.top, r.right, r.bottom, r.radii, paint.mNativeInstance);
+    }
+
+    public void drawDoubleRoundedRect(RoundedRect outer, RoundedRect inner, Paint paint) {
+        nDrawDoubleRoundedRect(mNativeInstance, outer.left, outer.top, outer.right, outer.bottom, outer.radii, inner.left, inner.top, inner.right, inner.bottom, inner.radii, paint.mNativeInstance);
     }
 
     public void drawPath(Path path, Paint paint) {
@@ -60,7 +76,10 @@ public class Canvas extends Native {
     private static native void nDrawPoints(long nativeCanvas, int mode, float[] coords, long nativePaint);
     private static native void nDrawLine(long nativeCanvas, float x0, float y0, float x1, float y1, long nativePaint);
     private static native void nDrawArc(long nativeCanvas, float left, float top, float width, float height, float startAngle, float sweepAngle, boolean includeCenter, long nativePaint);
-    private static native void nDrawRectInscribed(long nativeCanvas, float left, float top, float right, float bottom, float radii[], long nativePaint);
+    private static native void nDrawRect(long nativeCanvas, float left, float top, float right, float bottom, long nativePaint);
+    private static native void nDrawOval(long nativeCanvas, float left, float top, float right, float bottom, long nativePaint);
+    private static native void nDrawRoundedRect(long nativeCanvas, float left, float top, float right, float bottom, float radii[], long nativePaint);
+    private static native void nDrawDoubleRoundedRect(long nativeCanvas, float ol, float ot, float or, float ob, float oradii[], float il, float it, float ir, float ib, float iradii[], long nativePaint);
     private static native void nClear(long nativeCanvas, long color);
     private static native void nDrawPaint(long nativeCanvas, long nativePaint);
     private static native void nDrawPath(long nativeCanvas, long nativePath, long nativePaint);

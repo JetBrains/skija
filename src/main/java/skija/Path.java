@@ -9,8 +9,8 @@ public class Path extends Managed {
 
     public FillType getFillType() { return FillType.values()[nGetFillType(mNativeInstance)]; }
     public Path setFillType(FillType fillType) { nSetFillType(mNativeInstance, fillType.ordinal()); return this; }
-    public float[] getBounds() { return nGetBounds(mNativeInstance); }
-    public float[] computeTightBounds() { return nComputeTightBounds(mNativeInstance); }
+    public Rect getBounds() { float[] b = nGetBounds(mNativeInstance); return Rect.makeLTRB(b[0], b[1], b[2], b[3]); }
+    public Rect computeTightBounds() { float[] b = nComputeTightBounds(mNativeInstance); return Rect.makeLTRB(b[0], b[1], b[2], b[3]); }
     public Path reset() { nReset(mNativeInstance); return this; }
     public Path moveTo(float x, float y) { nMoveTo(mNativeInstance, x, y); return this; }
     public Path rMoveTo(float dx, float dy) { nRMoveTo(mNativeInstance, dx, dy); return this; }
