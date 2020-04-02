@@ -71,7 +71,6 @@ public class RectInscribed {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        if (!super.equals(object)) return false;
         RectInscribed that = (RectInscribed) object;
         return java.lang.Float.compare(that.left, left) == 0 &&
                 java.lang.Float.compare(that.top, top) == 0 &&
@@ -82,7 +81,7 @@ public class RectInscribed {
 
     @Override
     public int hashCode() {
-        int result = java.util.Objects.hash(super.hashCode(), left, top, right, bottom);
+        int result = java.util.Objects.hash(left, top, right, bottom);
         result = 31 * result + java.util.Arrays.hashCode(radii);
         return result;
     }

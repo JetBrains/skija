@@ -10,6 +10,6 @@ static void unrefSkRefCnt(SkRefCnt* p) {
     p->unref();
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_skija_RefCnt_nGetNativeFinalizer(JNIEnv* env, jclass jclass) {
+extern "C" JNIEXPORT jlong JNICALL Java_skija_RefCounted_nGetNativeFinalizer(JNIEnv* env, jclass jclass) {
     return static_cast<jlong>(reinterpret_cast<uintptr_t>(&unrefSkRefCnt));
 }

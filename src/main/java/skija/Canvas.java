@@ -1,8 +1,6 @@
 package skija;
 
-import java.lang.ref.Cleaner;
-
-public class Canvas {
+public class Canvas extends Native {
     public static enum PointMode {
         POINTS, LINES, POLYGON
     }
@@ -10,7 +8,7 @@ public class Canvas {
     Surface mSurface;
 
     Canvas(long nativeInstance, Surface surface) {
-        mNativeInstance = nativeInstance;
+        super(nativeInstance);
         mSurface = surface;
     }
     
@@ -58,27 +56,6 @@ public class Canvas {
     public void restore() { nRestore(mNativeInstance); }
     public void restoreToCount(int saveCount) { nRestoreToCount(mNativeInstance, saveCount); }
 
-    
-    long mNativeInstance;
-    // private Cleaner.Cleanable mFinalizer;
-    // private static NativeAllocationRegistry mAllocations = new NativeAllocationRegistry(nGetNativeFinalizer());
-    
-    public long getNativeInstance() {
-        return mNativeInstance;
-    }
-
-    public String toString() {
-        return "[SkCanvas 0x" + Long.toString(mNativeInstance, 16) + "]";
-    }
-
-    
-    // public Canvas release() {
-    //     mFinalizer.clean();
-    //     mNativeInstance = 0;
-    //     return null;
-    // }
-
-    // private static native long nGetNativeFinalizer();
     private static native void nDrawPoint(long nativeCanvas, float x, float y, long nativePaint);
     private static native void nDrawPoints(long nativeCanvas, int mode, float[] coords, long nativePaint);
     private static native void nDrawLine(long nativeCanvas, float x0, float y0, float x1, float y1, long nativePaint);

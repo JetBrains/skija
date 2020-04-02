@@ -1,22 +1,11 @@
 package skija;
 
-import java.lang.ref.Cleaner;
-
-public class Path {
-    public static enum FillType {
-        WINDING,
-        EVEN_ODD,
-        INVERSE_WINDING,
-        INVERSE_EVEN_ODD
-    }
-
+public class Path extends Managed {
+    public static enum FillType { WINDING, EVEN_ODD, INVERSE_WINDING, INVERSE_EVEN_ODD}
     public static enum Direction { CLOCKWISE, COUNTER_CLOCKWISE }
     public static enum ArcSize { SMALL, LARGE }
 
-    public Path() {
-        mNativeInstance = nInit();
-        mFinalizer = mAllocations.registerNativeAllocation(this, mNativeInstance);
-    }
+    public Path() { super(nInit(), kNativeFinalizer); }
 
     public FillType getFillType() { return FillType.values()[nGetFillType(mNativeInstance)]; }
     public Path setFillType(FillType fillType) { nSetFillType(mNativeInstance, fillType.ordinal()); return this; }
@@ -51,24 +40,7 @@ public class Path {
 
     public Path addPoly(float[] coords, boolean close) { nAddPoly(mNativeInstance, coords, close); return this; }
 
-    long mNativeInstance;
-    private Cleaner.Cleanable mFinalizer;
-    private static NativeAllocationRegistry mAllocations = new NativeAllocationRegistry(nGetNativeFinalizer());
-
-    public long getNativeInstance() {
-        return mNativeInstance;
-    }
-
-    public String toString() {
-        return "[SkPath 0x" + Long.toString(mNativeInstance, 16) + "]";
-    }
-    
-    public Path release() {
-        mFinalizer.clean();
-        mNativeInstance = 0;
-        return null;
-    }
-
+    private static long kNativeFinalizer = nGetNativeFinalizer();
     private static native long nInit();
     private static native long nGetNativeFinalizer();
     private static native int nGetFillType(long nativeInstance);

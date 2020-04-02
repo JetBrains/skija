@@ -1,8 +1,6 @@
 package skija;
 
-import java.lang.ref.Cleaner;
-
-public class Paint {
+public class Paint extends Managed {
     public static enum Style {
         FILL,
         STROKE,
@@ -23,10 +21,7 @@ public class Paint {
         BEVEL
     }
 
-    public Paint() {
-        mNativeInstance = nInit();
-        mFinalizer = mAllocations.registerNativeAllocation(this, mNativeInstance);
-    }
+    public Paint() { super(nInit(), kNativeFinalizer); }
 
     public boolean isAntiAlias() { return nIsAntiAlias(mNativeInstance); }
     public Paint setAntiAlias(boolean value) { nSetAntiAlias(mNativeInstance, value); return this; }
@@ -49,24 +44,7 @@ public class Paint {
     public Join getStrokeJoin() { return Join.values()[nGetStrokeJoin(mNativeInstance)]; }
     public Paint setStrokeJoin(Join join) { nSetStrokeJoin(mNativeInstance, join.ordinal()); return this; }
     
-    long mNativeInstance;
-    private Cleaner.Cleanable mFinalizer;
-    private static NativeAllocationRegistry mAllocations = new NativeAllocationRegistry(nGetNativeFinalizer());
-
-    public long getNativeInstance() {
-        return mNativeInstance;
-    }
-
-    public String toString() {
-        return "[SkPaint 0x" + Long.toString(mNativeInstance, 16) + "]";
-    }
-    
-    public Paint release() {
-        mFinalizer.clean();
-        mNativeInstance = 0;
-        return null;
-    }
-    
+    private static long kNativeFinalizer = nGetNativeFinalizer();
     private static native long nInit();
     private static native long nGetNativeFinalizer();
     private static native boolean nIsAntiAlias(long nativeInstance);

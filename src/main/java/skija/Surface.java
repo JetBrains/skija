@@ -1,12 +1,7 @@
 package skija;
 
-import java.lang.ref.Cleaner;
-
-public class Surface {
-    public static enum Origin {
-        TOP_LEFT,
-        BOTTOM_LEFT
-    }
+public class Surface extends RefCounted {
+    public static enum Origin { TOP_LEFT, BOTTOM_LEFT }
 
     public static enum ColorType {
         UNKNOWN,      //!< uninitialized
@@ -47,29 +42,9 @@ public class Surface {
     }
 
     Surface(long nativeInstance, Context context, BackendRenderTarget rt) {
-        mNativeInstance = nativeInstance;
-        mFinalizer = RefCnt.mAllocations.registerNativeAllocation(this, mNativeInstance);
+        super(nativeInstance);
         mContext = context;
         mRenderTarget = rt;
-    }
-
-    private long mNativeInstance;
-    private Cleaner.Cleanable mFinalizer;
-    
-    public long getNativeInstance() {
-        return mNativeInstance;
-    }
-
-    public String toString() {
-        return "[GrSurface 0x" + Long.toString(mNativeInstance, 16) + "]";
-    }
-    
-    public Surface release() {
-        mFinalizer.clean();
-        mNativeInstance = 0;
-        mContext = null;
-        mRenderTarget = null;
-        return null;
     }
 
     private static native long nMakeFromBackendRenderTarget(long pContext, long pBackendRenderTarget, int surfaceOrigin, int colorType);
