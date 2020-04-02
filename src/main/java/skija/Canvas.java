@@ -1,9 +1,8 @@
 package skija;
 
 public class Canvas extends Native {
-    public static enum PointMode {
-        POINTS, LINES, POLYGON
-    }
+    public static enum PointMode { POINTS, LINES, POLYGON }
+    public static enum ClipOp { DIFFERENCE, INTERSECT }
 
     Surface mSurface;
 
@@ -55,6 +54,21 @@ public class Canvas extends Native {
     public void clear(long color) { nClear(mNativeInstance, color); }
     public void drawPaint(Paint paint) { nDrawPaint(mNativeInstance, paint.mNativeInstance); }
 
+    public void clipRect(Rect r, ClipOp op, boolean antiAlias) { nClipRect(mNativeInstance, r.left, r.top, r.right, r.bottom, op.ordinal(), antiAlias); }
+    public void clipRect(Rect r, ClipOp op) { clipRect(r, op, false); }
+    public void clipRect(Rect r, boolean antiAlias) { clipRect(r, ClipOp.INTERSECT, antiAlias); }
+    public void clipRect(Rect r) { clipRect(r, ClipOp.INTERSECT, false); }
+
+    public void clipRoundedRect(RoundedRect r, ClipOp op, boolean antiAlias) { nClipRoundedRect(mNativeInstance, r.left, r.top, r.right, r.bottom, r.radii, op.ordinal(), antiAlias); }
+    public void clipRoundedRect(RoundedRect r, ClipOp op) { clipRoundedRect(r, op, false); }
+    public void clipRoundedRect(RoundedRect r, boolean antiAlias) { clipRoundedRect(r, ClipOp.INTERSECT, antiAlias); }
+    public void clipRoundedRect(RoundedRect r) { clipRoundedRect(r, ClipOp.INTERSECT, false); }
+
+    public void clipPath(Path p, ClipOp op, boolean antiAlias) { nClipPath(mNativeInstance, p.mNativeInstance, op.ordinal(), antiAlias); }
+    public void clipPath(Path p, ClipOp op) { clipPath(p, op, false); }
+    public void clipPath(Path p, boolean antiAlias) { clipPath(p, ClipOp.INTERSECT, antiAlias); }
+    public void clipPath(Path p) { clipPath(p, ClipOp.INTERSECT, false); }
+
     public void translate(float dx, float dy) { nConcat(mNativeInstance, 1, 0, dx, 0, 1, dy, 0, 0, 1); }
     public void scale(float sx, float sy) { nConcat(mNativeInstance, sx, 0, 0, 0, sy, 0, 0, 0, 1); }
     public void rotate(float deg) {
@@ -80,9 +94,12 @@ public class Canvas extends Native {
     private static native void nDrawOval(long nativeCanvas, float left, float top, float right, float bottom, long nativePaint);
     private static native void nDrawRoundedRect(long nativeCanvas, float left, float top, float right, float bottom, float radii[], long nativePaint);
     private static native void nDrawDoubleRoundedRect(long nativeCanvas, float ol, float ot, float or, float ob, float oradii[], float il, float it, float ir, float ib, float iradii[], long nativePaint);
+    private static native void nDrawPath(long nativeCanvas, long nativePath, long nativePaint);
     private static native void nClear(long nativeCanvas, long color);
     private static native void nDrawPaint(long nativeCanvas, long nativePaint);
-    private static native void nDrawPath(long nativeCanvas, long nativePath, long nativePaint);
+    private static native void nClipRect(long nativeCanvas, float left, float top, float right, float bottom, int op, boolean antiAlias);
+    private static native void nClipRoundedRect(long nativeCanvas, float left, float top, float right, float bottom, float[] radii, int op, boolean antiAlias);
+    private static native void nClipPath(long nativeCanvas, long nativePath, int op, boolean antiAlias);
 
     private static native void nConcat(long nativeCanvas,
         float scaleX, float skewX,  float transX,

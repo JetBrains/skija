@@ -126,7 +126,7 @@ class Window {
         if (renderTarget != null) { renderTarget.release(); renderTarget = null; } 
 
         int fbId = GL11.glGetInteger(0x8CA6); // GL_FRAMEBUFFER_BINDING
-        renderTarget = BackendRenderTarget.newGL((int) (width * dpi), (int) (height * dpi), /*samples*/0, /*stencil*/0, fbId, BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8);
+        renderTarget = BackendRenderTarget.newGL((int) (width * dpi), (int) (height * dpi), /*samples*/0, /*stencil*/8, fbId, BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8);
         System.out.println("Allocated " + renderTarget);
 
         surface = Surface.makeFromBackendRenderTarget(context, renderTarget, Surface.Origin.BOTTOM_LEFT, Surface.ColorType.RGBA_8888);

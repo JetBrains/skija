@@ -32,6 +32,10 @@ public class RoundedRect extends Rect {
         return new RoundedRect(l, t, r, b, new float[] { Math.abs(r - l) / 2f, Math.abs(b - t) / 2f } );
     }
 
+    public static RoundedRect makePillLTRB(float l, float t, float r, float b) {
+        return new RoundedRect(l, t, r, b, new float[] { Math.min(Math.abs(r - l), Math.abs(t - b)) / 2f } );
+    }
+
     public static RoundedRect makeXYWH(float l, float t, float w, float h, float radius) {
         return new RoundedRect(l, t, l + w, t + h, new float[] { radius } );
     }
@@ -55,6 +59,10 @@ public class RoundedRect extends Rect {
     public static RoundedRect makeOvalXYWH(float l, float t, float w, float h) {
         return new RoundedRect(l, t, l + w, t + h, new float[] { w / 2f, h / 2f } );
     }
+
+    public static RoundedRect makePillXYWH(float l, float t, float w, float h) {
+        return new RoundedRect(l, t, l + w, t + h, new float[] { Math.min(w, h) / 2f } );
+    }    
 
     @Override
     public boolean equals(Object object) {

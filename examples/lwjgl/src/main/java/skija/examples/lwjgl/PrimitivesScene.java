@@ -19,6 +19,8 @@ public class PrimitivesScene implements Scene {
         drawRectInscribed(canvas, new Paint().setColor(0xFF9BC730));
         drawPaths(canvas, new Paint().setColor(0xFFF6BC01));
         drawPaths(canvas, new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1f));
+
+        drawClips(canvas);
     }
 
     public void drawPoints(Canvas canvas) {
@@ -338,6 +340,70 @@ public class PrimitivesScene implements Scene {
         path.close();
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
+
+        canvas.restore();
+        canvas.translate(0, 50);
+    }
+
+    private void drawClips(Canvas canvas) {
+        canvas.save();
+
+        canvas.save();
+        canvas.clipRect(Rect.makeXYWH(0, 0, 40, 40));
+        canvas.drawPaint(new Paint().setColor(0xFF50514F));
+        canvas.restore();
+        canvas.translate(50, 0);
+
+        canvas.save();
+        canvas.clipRect(Rect.makeXYWH(0, 0, 30, 30));
+        canvas.clipRect(Rect.makeXYWH(10, 10, 30, 30), Canvas.ClipOp.INTERSECT);
+        canvas.drawPaint(new Paint().setColor(0xFFF55E58));
+        canvas.restore();
+        canvas.translate(50, 0);
+
+        canvas.save();
+        canvas.clipRect(Rect.makeXYWH(0, 0, 30, 30));
+        canvas.clipRect(Rect.makeXYWH(10, 10, 30, 30), Canvas.ClipOp.DIFFERENCE);
+        canvas.drawPaint(new Paint().setColor(0xFFFFE15C));
+        canvas.restore();
+        canvas.translate(50, 0);
+
+        canvas.save();
+        canvas.clipRect(Rect.makeXYWH(0, 0, 40, 40));
+        canvas.translate(20, 20);
+        canvas.rotate(15);
+        canvas.clipRect(Rect.makeXYWH(-15, -15, 30, 30), Canvas.ClipOp.DIFFERENCE, false);
+        canvas.drawPaint(new Paint().setColor(0xFF1D7AA2));
+        canvas.restore();
+        canvas.translate(50, 0);
+
+        canvas.save();
+        canvas.clipRect(Rect.makeXYWH(0, 0, 40, 40));
+        canvas.translate(20, 20);
+        canvas.rotate(15);
+        canvas.clipRect(Rect.makeXYWH(-15, -15, 30, 30), Canvas.ClipOp.DIFFERENCE, true);
+        canvas.drawPaint(new Paint().setColor(0xFF6DC1B3));
+        canvas.restore();
+        canvas.translate(50, 0);
+
+        canvas.save();
+        canvas.clipRoundedRect(RoundedRect.makeXYWH(0, 0, 40, 40, 10), false);
+        canvas.clipRoundedRect(RoundedRect.makePillXYWH(10, 10, 30, 20), Canvas.ClipOp.DIFFERENCE, true);
+        canvas.drawPaint(new Paint().setColor(0xFFFF928A));
+        canvas.restore();
+        canvas.translate(50, 0);
+
+        canvas.save();
+        Path path = new Path()
+            .moveTo(0, 12.5f).rCubicTo(0, -5f, 0, -7.5f, 2.5f, -10f).rCubicTo(2.5f, -2.5f, 5f, -2.5f, 10f, -2.5f)
+            .rLineTo(15f, 0).rCubicTo(5, 0, 7.5f, 0, 10, 2.5f).rCubicTo(2.5f, 2.5f, 2.5f, 5f, 2.5f, 10f)
+            .lineTo(40, 22f).arcTo(22f, 22f, 40, 40, 0, 90, false)
+            .lineTo(18f, 40).arcTo(0, 22f, 18f, 40, 90, 90, false)
+            .close();
+        canvas.clipPath(path, true);
+        canvas.drawPaint(new Paint().setColor(0xFF3F80A7));
+        canvas.restore();
+        canvas.translate(50, 0);        
 
         canvas.restore();
         canvas.translate(0, 50);
