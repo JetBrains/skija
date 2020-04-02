@@ -5,7 +5,7 @@ import skija.*;
 public class WatchesScene implements Scene {
 
     @Override
-    public void draw(Canvas canvas, int width, int height, int xpos, int ypos) {
+    public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         var watchFill = new Paint().setColor(0xFFFFFFFF);
         var watchStroke = new Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f).setAntiAlias(false);
         var watchStrokeAA = new Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);

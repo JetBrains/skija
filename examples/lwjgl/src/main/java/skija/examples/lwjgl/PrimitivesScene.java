@@ -5,7 +5,7 @@ import skija.*;
 public class PrimitivesScene implements Scene {
 
     @Override
-    public void draw(Canvas canvas, int width, int height, int xpos, int ypos) {
+    public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         var borderStroke = new Paint().setColor(0xFFFF0751).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
         canvas.drawRect(Rect.makeLTRB(10, 10, width - 10, height - 10), borderStroke);
         canvas.translate(30, 30);
@@ -19,8 +19,8 @@ public class PrimitivesScene implements Scene {
         drawRectInscribed(canvas, new Paint().setColor(0xFF9BC730));
         drawPaths(canvas, new Paint().setColor(0xFFF6BC01));
         drawPaths(canvas, new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1f));
-
         drawClips(canvas);
+        drawRegions(canvas, dpi);
     }
 
     public void drawPoints(Canvas canvas) {
@@ -407,5 +407,121 @@ public class PrimitivesScene implements Scene {
 
         canvas.restore();
         canvas.translate(0, 50);
+    }
+
+    private void drawRegions(Canvas canvas, float dpi) {
+        Paint bgPaint = new Paint().setColor(0xFFEBD3AA);
+        Paint stroke1 = new Paint().setColor(0xFF3F80A7).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+        Paint stroke2 = new Paint().setColor(0xFFF55E58).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+        int xOffset = 30;
+        int yOffset = 580;
+
+        canvas.save();
+
+        // setRect
+        Region r = new Region();
+        r.setRect((int) (xOffset * dpi), (int) (yOffset * dpi), (int) ((xOffset + 40) * dpi), (int) ((yOffset + 40) * dpi));
+        canvas.save();
+        canvas.clipRegion(r);
+        canvas.drawPaint(bgPaint);
+        canvas.restore();
+        canvas.translate(50, 0);
+        xOffset += 50;
+
+        // setRects
+        r.setRects(new int[] { (int) ((xOffset + 0) * dpi), (int) ((yOffset + 0) * dpi), (int) ((xOffset + 10) * dpi), (int) ((yOffset + 40) * dpi),
+                               (int) ((xOffset + 30) * dpi), (int) ((yOffset + 0) * dpi), (int) ((xOffset + 40) * dpi), (int) ((yOffset + 40) * dpi),
+                               (int) ((xOffset + 5) * dpi), (int) ((yOffset + 15) * dpi), (int) ((xOffset + 35) * dpi), (int) ((yOffset + 25) * dpi) });
+        canvas.save();
+        canvas.clipRegion(r);
+        canvas.drawPaint(bgPaint);
+        canvas.restore();
+        canvas.translate(50, 0);
+        xOffset += 50;
+
+        // setPath
+        Path path = new Path().setFillType(Path.FillType.EVEN_ODD).moveTo(xOffset * dpi, yOffset * dpi)
+            .rMoveTo(20 * dpi, 1.6f * dpi).rLineTo(11.7f * dpi, 36.2f * dpi).rLineTo(-30.8f * dpi, -22.4f * dpi).rLineTo(38.1f * dpi, 0f * dpi).rLineTo(-30.8f * dpi, 22.4f * dpi).close();
+        Region r2 = new Region();
+        r2.setRect((int) ((xOffset + 7) * dpi), (int) ((yOffset + 7) * dpi), (int) ((xOffset + 33) * dpi), (int) ((yOffset + 33) * dpi));
+        r.setEmpty();
+        r.setPath(path, r2);
+        canvas.save();
+        canvas.clipRegion(r);
+        canvas.drawPaint(bgPaint);
+        canvas.restore();
+        canvas.translate(50, 0);
+        xOffset += 50;        
+
+        // op(IRect), getBounds, getBoundaryPath
+        for (var op : Region.Op.values()) {
+            r.setRect((int) (xOffset * dpi), (int) (yOffset * dpi), (int) ((xOffset + 30) * dpi), (int) ((yOffset + 40) * dpi));
+            r.op((int) ((xOffset + 10) * dpi), (int) ((yOffset + 10) * dpi), (int) ((xOffset + 40) * dpi), (int) ((yOffset + 30) * dpi), op);
+            
+            canvas.save();
+            canvas.clipRegion(r);
+            canvas.drawPaint(bgPaint);
+            canvas.restore();
+
+            int[] bounds = r.getBounds();
+            Path boundaryPath = new Path();
+            r.getBoundaryPath(boundaryPath);
+            canvas.save();
+            canvas.translate(-xOffset, -yOffset);
+            canvas.scale(1f/dpi, 1f/dpi);
+            canvas.drawRect(Rect.makeLTRB(bounds[0], bounds[1], bounds[2], bounds[3]), stroke1);
+            canvas.drawPath(boundaryPath, stroke2);
+            canvas.restore();
+
+            for (int x = 5; x < 40; x += 10) {
+                for (int y = 5; y < 40; y += 10) {
+                    var absX = (xOffset + x) * dpi;
+                    var absY = (yOffset + y) * dpi;
+                    if (r.contains((int) absX, (int) absY))
+                        canvas.drawPoint(x, y, stroke1);
+                }
+            }
+
+            canvas.translate(50, 0);
+            xOffset += 50;        
+        }
+
+        // op(Region, Region), getBounds, getBoundaryPath
+        for (var op : Region.Op.values()) {
+            Region rA = new Region();
+            rA.setRect((int) (xOffset * dpi), (int) (yOffset * dpi), (int) ((xOffset + 30) * dpi), (int) ((yOffset + 40) * dpi));
+            Region rB = new Region();
+            rB.setRect((int) ((xOffset + 10) * dpi), (int) ((yOffset + 10) * dpi), (int) ((xOffset + 40) * dpi), (int) ((yOffset + 30) * dpi));
+            r.op(rA, rB, op);
+            
+            canvas.save();
+            canvas.clipRegion(r);
+            canvas.drawPaint(bgPaint);
+            canvas.restore();
+
+            int[] bounds = r.getBounds();
+            Path boundaryPath = new Path();
+            r.getBoundaryPath(boundaryPath);
+            canvas.save();
+            canvas.translate(-xOffset, -yOffset);
+            canvas.scale(1f/dpi, 1f/dpi);
+            canvas.drawRect(Rect.makeLTRB(bounds[0], bounds[1], bounds[2], bounds[3]), stroke1);
+            canvas.drawPath(boundaryPath, stroke2);
+            canvas.restore();
+
+            for (int x = 5; x < 40; x += 10) {
+                for (int y = 5; y < 40; y += 10) {
+                    var absX = (xOffset + x) * dpi;
+                    var absY = (yOffset + y) * dpi;
+                    if (r.contains((int) absX, (int) absY))
+                        canvas.drawPoint(x, y, stroke1);
+                }
+            }
+
+            canvas.translate(50, 0);
+            xOffset += 50;        
+        }
+
+        canvas.restore();
     }
 }

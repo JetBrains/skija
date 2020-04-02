@@ -112,6 +112,14 @@ extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nDrawPath
     canvas->drawPath(*path, *paint);
 }
 
+extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nDrawRegion
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong regionPtr, jlong paintPtr) {
+    SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
+    SkRegion* region = reinterpret_cast<SkRegion*>(static_cast<uintptr_t>(regionPtr));
+    SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
+    canvas->drawRegion(*region, *paint);
+}
+
 extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nClear(JNIEnv* env, jclass jclass, jlong ptr, jlong color) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(ptr));
     canvas->clear(color);
@@ -141,6 +149,13 @@ extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nClipPath
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
     SkPath* path = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(pathPtr));
     canvas->clipPath(*path, static_cast<SkClipOp>(op), antiAlias);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nClipRegion
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong regionPtr, jint op) {
+    SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
+    SkRegion* region = reinterpret_cast<SkRegion*>(static_cast<uintptr_t>(regionPtr));
+    canvas->clipRegion(*region, static_cast<SkClipOp>(op));
 }
 
 extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nConcat(JNIEnv* env, jclass jclass, jlong ptr,

@@ -146,7 +146,7 @@ class Window {
     private void draw() {
         canvas.clear(0xFFFFFFFF);
         canvas.save();
-        scenes.get(currentScene).draw(canvas, width, height, xpos, ypos);
+        scenes.get(currentScene).draw(canvas, width, height, dpi, xpos, ypos);
         canvas.restore();
         context.flush();
         glfwSwapBuffers(window);

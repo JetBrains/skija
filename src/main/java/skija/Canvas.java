@@ -50,6 +50,8 @@ public class Canvas extends Native {
     public void drawPath(Path path, Paint paint) {
         nDrawPath(mNativeInstance, path.mNativeInstance, paint.mNativeInstance);
     }
+
+    public void drawRegion(Region r, Paint paint) { nDrawRegion(mNativeInstance, r.mNativeInstance, paint.mNativeInstance); }
     
     public void clear(long color) { nClear(mNativeInstance, color); }
     public void drawPaint(Paint paint) { nDrawPaint(mNativeInstance, paint.mNativeInstance); }
@@ -68,6 +70,9 @@ public class Canvas extends Native {
     public void clipPath(Path p, ClipOp op) { clipPath(p, op, false); }
     public void clipPath(Path p, boolean antiAlias) { clipPath(p, ClipOp.INTERSECT, antiAlias); }
     public void clipPath(Path p) { clipPath(p, ClipOp.INTERSECT, false); }
+
+    public void clipRegion(Region r, ClipOp op) { nClipRegion(mNativeInstance, r.mNativeInstance, op.ordinal()); }
+    public void clipRegion(Region r) { clipRegion(r, ClipOp.INTERSECT); }
 
     public void translate(float dx, float dy) { nConcat(mNativeInstance, 1, 0, dx, 0, 1, dy, 0, 0, 1); }
     public void scale(float sx, float sy) { nConcat(mNativeInstance, sx, 0, 0, 0, sy, 0, 0, 0, 1); }
@@ -95,11 +100,13 @@ public class Canvas extends Native {
     private static native void nDrawRoundedRect(long nativeCanvas, float left, float top, float right, float bottom, float radii[], long nativePaint);
     private static native void nDrawDoubleRoundedRect(long nativeCanvas, float ol, float ot, float or, float ob, float oradii[], float il, float it, float ir, float ib, float iradii[], long nativePaint);
     private static native void nDrawPath(long nativeCanvas, long nativePath, long nativePaint);
+    private static native void nDrawRegion(long nativeCanvas, long nativeRegion, long nativePaint);
     private static native void nClear(long nativeCanvas, long color);
     private static native void nDrawPaint(long nativeCanvas, long nativePaint);
     private static native void nClipRect(long nativeCanvas, float left, float top, float right, float bottom, int op, boolean antiAlias);
     private static native void nClipRoundedRect(long nativeCanvas, float left, float top, float right, float bottom, float[] radii, int op, boolean antiAlias);
     private static native void nClipPath(long nativeCanvas, long nativePath, int op, boolean antiAlias);
+    private static native void nClipRegion(long nativeCanvas, long nativeRegion, int op);
 
     private static native void nConcat(long nativeCanvas,
         float scaleX, float skewX,  float transX,
