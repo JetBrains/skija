@@ -2,6 +2,9 @@
 #include <jni.h>
 #include "SkCanvas.h"
 #include "SkRRect.h"
+#include "SkTextBlob.h"
+#include "hb.h"
+#include "hb_util.hh"
 
 // static void deleteCanvas(SkCanvas* canvas) {
 //     delete canvas;
@@ -118,6 +121,34 @@ extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nDrawRegion
     SkRegion* region = reinterpret_cast<SkRegion*>(static_cast<uintptr_t>(regionPtr));
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
     canvas->drawRegion(*region, *paint);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nDrawHBBuffer
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong bufferPtr, jfloat x, jfloat y, jlong fontPtr, jlong paintPtr) {
+    SkCanvas* canvas    = reinterpret_cast<SkCanvas*>   (static_cast<uintptr_t>(canvasPtr));
+    hb_buffer_t* buffer = reinterpret_cast<hb_buffer_t*>(static_cast<uintptr_t>(bufferPtr));
+    SkFont* font        = reinterpret_cast<SkFont*>     (static_cast<uintptr_t>(fontPtr));
+    SkPaint* paint      = reinterpret_cast<SkPaint*>    (static_cast<uintptr_t>(paintPtr));
+
+    SkTextBlobBuilder builder;
+    unsigned len = hb_buffer_get_length(buffer);
+    if (len == 0) { return; }
+    hb_glyph_info_t *info = hb_buffer_get_glyph_infos(buffer, NULL);
+    hb_glyph_position_t *pos = hb_buffer_get_glyph_positions(buffer, NULL);
+    auto runBuffer = builder.allocRunPos(*font, len);
+
+    float offsetX = 0;
+    float offsetY = 0;
+    for (unsigned int i = 0; i < len; i++) {
+      runBuffer.glyphs[i] = info[i].codepoint;
+      reinterpret_cast<SkPoint*>(runBuffer.pos)[i] = SkPoint::Make(
+        offsetX + HBFixedToFloat(pos[i].x_offset),
+        offsetY - HBFixedToFloat(pos[i].y_offset));
+      offsetX += HBFixedToFloat(pos[i].x_advance);
+      offsetY += HBFixedToFloat(pos[i].y_advance);
+    }
+
+    canvas->drawTextBlob(builder.make(), x, y, *paint);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nClear(JNIEnv* env, jclass jclass, jlong ptr, jlong color) {

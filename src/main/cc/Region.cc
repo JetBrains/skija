@@ -1,6 +1,7 @@
 #include <iostream>
 #include <jni.h>
 #include "SkRegion.h"
+#include "interop.hh"
 
 static void deleteRegion(SkRegion* region) {
     // std::cout << "Deleting [SkRegion " << Region << "]" << std::endl;
@@ -40,14 +41,7 @@ extern "C" JNIEXPORT jboolean JNICALL Java_skija_Region_nIsComplex(JNIEnv* env, 
 extern "C" JNIEXPORT jintArray JNICALL Java_skija_Region_nGetBounds(JNIEnv* env, jclass jclass, jlong ptr) {
     SkRegion* instance = reinterpret_cast<SkRegion*>(static_cast<uintptr_t>(ptr));
     SkIRect bounds = instance->getBounds();
-    jintArray res = env->NewIntArray(4);
-    jint* arr = env->GetIntArrayElements(res, 0);
-    arr[0] = bounds.left();
-    arr[1] = bounds.top();
-    arr[2] = bounds.right();
-    arr[3] = bounds.bottom();
-    env->ReleaseIntArrayElements(res, arr, 0);
-    return res;
+    return javaIntArray(env, {bounds.left(), bounds.top(), bounds.right(), bounds.bottom()});
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_skija_Region_nComputeRegionComplexity(JNIEnv* env, jclass jclass, jlong ptr) {

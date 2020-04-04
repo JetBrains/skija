@@ -4,6 +4,8 @@ public abstract class Native {
     protected long mNativeInstance;
 
     protected Native(long nativeInstance) {
+        if (nativeInstance == 0)
+            throw new RuntimeException("Native returned nullptr");
         mNativeInstance = nativeInstance;
     }
 

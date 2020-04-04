@@ -41,7 +41,7 @@ public class Surface extends RefCounted {
         return new Canvas(nGetCanvas(mNativeInstance), this);
     }
 
-    Surface(long nativeInstance, Context context, BackendRenderTarget rt) {
+    protected Surface(long nativeInstance, Context context, BackendRenderTarget rt) {
         super(nativeInstance);
         mContext = context;
         mRenderTarget = rt;

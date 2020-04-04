@@ -1,7 +1,6 @@
 #include <iostream>
 #include <jni.h>
 #include "SkSurface.h"
-#include "RefCnt.hh"
 
 extern "C" JNIEXPORT jlong JNICALL Java_skija_Surface_nMakeFromBackendRenderTarget
   (JNIEnv* env, jclass jclass, jlong pContext, jlong pBackendRenderTarget, jint surfaceOrigin, jint colorType) {
@@ -20,7 +19,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_skija_Surface_nMakeFromBackendRenderTarg
         /* RenderTargetReleaseProc */ nullptr,
         /* ReleaseContext */ nullptr
     );
-    return sk_sp_ref(surface);
+    return reinterpret_cast<jlong>(surface.release());
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_skija_Surface_nGetCanvas

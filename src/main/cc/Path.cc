@@ -1,6 +1,7 @@
 #include <iostream>
 #include <jni.h>
 #include "SkPath.h"
+#include "interop.hh"
 
 static void deletePath(SkPath* path) {
     // std::cout << "Deleting [SkPath " << path << "]" << std::endl;
@@ -29,27 +30,13 @@ extern "C" JNIEXPORT void JNICALL Java_skija_Path_nSetFillType(JNIEnv* env, jcla
 extern "C" JNIEXPORT jfloatArray JNICALL Java_skija_Path_nGetBounds(JNIEnv* env, jclass jclass, jlong ptr) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
     SkRect bounds = instance->getBounds();
-    jfloatArray res = env->NewFloatArray(4);
-    jfloat* arr = env->GetFloatArrayElements(res, 0);
-    arr[0] = bounds.left();
-    arr[1] = bounds.top();
-    arr[2] = bounds.right();
-    arr[3] = bounds.bottom();
-    env->ReleaseFloatArrayElements(res, arr, 0);
-    return res;
+    return javaFloatArray(env, {bounds.left(), bounds.top(), bounds.right(), bounds.bottom()});
 }
 
 extern "C" JNIEXPORT jfloatArray JNICALL Java_skija_Path_nComputeTightBounds(JNIEnv* env, jclass jclass, jlong ptr) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
     SkRect bounds = instance->computeTightBounds();
-    jfloatArray res = env->NewFloatArray(4);
-    jfloat* arr = env->GetFloatArrayElements(res, 0);
-    arr[0] = bounds.left();
-    arr[1] = bounds.top();
-    arr[2] = bounds.right();
-    arr[3] = bounds.bottom();
-    env->ReleaseFloatArrayElements(res, arr, 0);
-    return res;
+    return javaFloatArray(env, {bounds.left(), bounds.top(), bounds.right(), bounds.bottom()});
 }
 
 extern "C" JNIEXPORT void JNICALL Java_skija_Path_nReset(JNIEnv* env, jclass jclass, jlong ptr) {

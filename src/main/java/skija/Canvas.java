@@ -52,6 +52,10 @@ public class Canvas extends Native {
     }
 
     public void drawRegion(Region r, Paint paint) { nDrawRegion(mNativeInstance, r.mNativeInstance, paint.mNativeInstance); }
+
+    public void drawHBBuffer(HBBuffer buffer, float x, float y, Font font, Paint paint) {
+        nDrawHBBuffer(mNativeInstance, buffer.mNativeInstance, x, y, font.mNativeInstance, paint.mNativeInstance);
+    }
     
     public void clear(long color) { nClear(mNativeInstance, color); }
     public void drawPaint(Paint paint) { nDrawPaint(mNativeInstance, paint.mNativeInstance); }
@@ -101,6 +105,7 @@ public class Canvas extends Native {
     private static native void nDrawDoubleRoundedRect(long nativeCanvas, float ol, float ot, float or, float ob, float oradii[], float il, float it, float ir, float ib, float iradii[], long nativePaint);
     private static native void nDrawPath(long nativeCanvas, long nativePath, long nativePaint);
     private static native void nDrawRegion(long nativeCanvas, long nativeRegion, long nativePaint);
+    private static native void nDrawHBBuffer(long nativeCanvas, long buffer, float x, float y, long font, long paint);
     private static native void nClear(long nativeCanvas, long color);
     private static native void nDrawPaint(long nativeCanvas, long nativePaint);
     private static native void nClipRect(long nativeCanvas, float left, float top, float right, float bottom, int op, boolean antiAlias);

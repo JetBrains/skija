@@ -137,11 +137,8 @@ class Window {
         // canvas.translate(0.5f, 0.5f);
     }
 
-    private NavigableMap<String, Scene> scenes = new TreeMap(Map.of(
-        "Watches", new WatchesScene(),
-        "Primitives", new PrimitivesScene()
-    ));
-    private String currentScene = scenes.firstKey();
+    private NavigableMap<String, Scene> scenes;
+    private String currentScene;
 
     private void draw() {
         canvas.clear(0xFFFFFFFF);
@@ -187,8 +184,14 @@ class Window {
             }
         });
 
-
         initSkia();
+
+        scenes = new TreeMap(Map.of(
+            "Watches", new WatchesScene(),
+            "Primitives", new PrimitivesScene()
+        ));
+        currentScene = "Primitives";
+
         while (!glfwWindowShouldClose(window)) {
             draw();
             glfwPollEvents();
