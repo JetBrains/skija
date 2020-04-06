@@ -10,13 +10,7 @@ public class HBFace extends Managed {
         return new HBFace(ptr);
     }
 
-    public HBBuffer shape(String text, float size, String options) {
-        return new HBBuffer(nShape(mNativeInstance, text, size, options));
-    }
-
     private static long kNativeFinalizer = nGetNativeFinalizer();
     private static native long nMakeFromFile(String path, int index);
     private static native long nGetNativeFinalizer();
-
-    private static native long nShape(long nativeInstance, String text, float size, String options);
 }

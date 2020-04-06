@@ -188,9 +188,10 @@ class Window {
 
         scenes = new TreeMap(Map.of(
             "Watches", new WatchesScene(),
-            "Primitives", new PrimitivesScene()
+            "Primitives", new PrimitivesScene(),
+            "Text", new TextScene()
         ));
-        currentScene = "Primitives";
+        currentScene = "Text";
 
         while (!glfwWindowShouldClose(window)) {
             draw();

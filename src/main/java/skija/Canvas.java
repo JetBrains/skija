@@ -53,7 +53,7 @@ public class Canvas extends Native {
 
     public void drawRegion(Region r, Paint paint) { nDrawRegion(mNativeInstance, r.mNativeInstance, paint.mNativeInstance); }
 
-    public void drawHBBuffer(HBBuffer buffer, float x, float y, Font font, Paint paint) {
+    public void drawHBBuffer(HBBuffer buffer, float x, float y, SkFont font, Paint paint) {
         nDrawHBBuffer(mNativeInstance, buffer.mNativeInstance, x, y, font.mNativeInstance, paint.mNativeInstance);
     }
     

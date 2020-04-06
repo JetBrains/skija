@@ -1,8 +1,8 @@
 package skija;
 
-public class Font extends Managed {
-    private Typeface typeface;
-    public Font(Typeface typeface, float size) {
+public class SkFont extends Managed {
+    private SkTypeface typeface;
+    public SkFont(SkTypeface typeface, float size) {
         super(nInit(typeface.mNativeInstance, size), kNativeFinalizer);
         this.typeface = typeface;
     }

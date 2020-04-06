@@ -3,14 +3,6 @@ package skija.examples.lwjgl;
 import skija.*;
 
 public class PrimitivesScene implements Scene {
-    private HBFace hbFiraCodeRegular;
-    private Typeface firaCodeRegular;
-
-    public PrimitivesScene() {
-        hbFiraCodeRegular = HBFace.makeFromFile("fonts/FiraCode-Regular.otf", 0);
-        firaCodeRegular = Typeface.makeFromFile("fonts/FiraCode-Regular.otf", 0);
-    }
-
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         var borderStroke = new Paint().setColor(0xFFFF0751).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
@@ -28,7 +20,6 @@ public class PrimitivesScene implements Scene {
         drawPaths(canvas, new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1f));
         drawClips(canvas);
         drawRegions(canvas, dpi);
-        drawText(canvas);
     }
 
     public void drawPoints(Canvas canvas) {
@@ -534,13 +525,4 @@ public class PrimitivesScene implements Scene {
         canvas.translate(0, 50);
     }
 
-    private void drawText(Canvas canvas) {
-        HBBuffer buffer = hbFiraCodeRegular.shape("0xFF Skija <=>", 13f, null);
-        Font font = new Font(firaCodeRegular, 13);
-        Paint paint = new Paint().setColor(0xFF000000);
-        canvas.drawHBBuffer(buffer, 0, 20, font, paint);
-        buffer.release();
-        font.release();
-        paint.release();
-    }
 }

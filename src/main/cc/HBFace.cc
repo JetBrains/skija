@@ -25,21 +25,3 @@ extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFace_nMakeFromFile(JNIEnv* env, 
 extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFace_nGetNativeFinalizer(JNIEnv* env, jclass jclass) {
     return static_cast<jlong>(reinterpret_cast<uintptr_t>(&hb_face_destroy));
 }
-
-extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFace_nShape(JNIEnv* env, jclass jclass, jlong ptr, jstring text, jfloat size, jstring opts) {
-    hb_face_t* face = reinterpret_cast<hb_face_t*>(static_cast<uintptr_t>(ptr));
-    hb_font_t* font = hb_font_create(face);
-
-    hb_font_set_ppem(font, size, size);
-    hb_font_set_scale(font, HBFloatToFixed(size), HBFloatToFixed(size));
-    // hb_ot_font_set_funcs(font);
-
-    hb_buffer_t *buffer = hb_buffer_create();
-    const char* chars = env->GetStringUTFChars(text, nullptr);
-    hb_buffer_add_utf8(buffer, chars, -1, 0, -1);
-    env->ReleaseStringUTFChars(text, chars);
-    hb_buffer_guess_segment_properties(buffer);
-
-    hb_shape(font, buffer, NULL, 0);
-    return reinterpret_cast<jlong>(buffer);
-}
