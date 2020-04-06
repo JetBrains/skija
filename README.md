@@ -1,3 +1,5 @@
+# Skija: Skia bindings for Java
+
 ## Checkout
 
 ```sh
@@ -31,7 +33,7 @@ ninja -C out/Release-x64 skia modules
 
 ## Using prebuilt Skia
 
-Download & unpack from [github.com/aseprite/skia/releases](https://github.com/aseprite/skia/releases).
+Download & unpack from e.g. [github.com/aseprite/skia/releases](https://github.com/aseprite/skia/releases).
 
 ```sh
 export SKIA_DIR=~/Downloads/Skia-macOS-Release-x64
@@ -44,7 +46,14 @@ Prerequisites:
 - cmake
 - ninja
 - JDK 11+ and JAVA_HOME
+- maven
 
 ```sh
 ./script/build.sh
+```
+
+## Running examples
+
+```sh
+./script/run.sh
 ```
