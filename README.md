@@ -1,4 +1,4 @@
-# Skija: Java bindings for Skia
+# Skija: Skia bindings for Java
 
 ![](extras/logo.png)
 
@@ -45,6 +45,7 @@ export SKIA_DIR=~/Downloads/Skia-macOS-Release-x64
 
 Prerequisites:
 
+- macOS (Windows and Linux planned)
 - cmake
 - ninja
 - JDK 11+ and JAVA_HOME
@@ -53,6 +54,8 @@ Prerequisites:
 ```sh
 ./script/build.sh
 ```
+
+That will install `skija:skija:0.1.0-SNAPSHOT` to your local Maven repository.
 
 ## Running examples
 
