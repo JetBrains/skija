@@ -1,5 +1,7 @@
 # Skija: Java bindings for Skia
 
+![](extras/logo.png)
+
 ## Checkout
 
 ```sh
