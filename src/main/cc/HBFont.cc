@@ -4,7 +4,7 @@
 #include "hb_util.hh"
 #include "interop.hh"
 
-extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFont_nInit(JNIEnv* env, jclass jclass, jlong facePtr, jfloat size, jstring options) {
+extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFont_nInit(JNIEnv* env, jclass jclass, jlong facePtr, jfloat size) {
     hb_face_t* face = reinterpret_cast<hb_face_t*>(static_cast<uintptr_t>(facePtr));
     hb_font_t* font = hb_font_create(face);
 
@@ -33,7 +33,7 @@ extern "C" JNIEXPORT jfloatArray JNICALL Java_skija_HBFont_nGetVerticalExtents(J
     return javaFloatArray(env, {HBFixedToFloat(extents.ascender), HBFixedToFloat(extents.descender), HBFixedToFloat(extents.line_gap)});
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFont_nShape(JNIEnv* env, jclass jclass, jlong ptr, jstring text) {
+extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFont_nShape(JNIEnv* env, jclass jclass, jlong ptr, jstring text, jintArray featuresArray) {
     hb_font_t* font = reinterpret_cast<hb_font_t*>(static_cast<uintptr_t>(ptr));
 
     hb_buffer_t *buffer = hb_buffer_create();
@@ -42,6 +42,9 @@ extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFont_nShape(JNIEnv* env, jclass 
     env->ReleaseStringUTFChars(text, chars);
     hb_buffer_guess_segment_properties(buffer);
 
-    hb_shape(font, buffer, NULL, 0);
+    jsize featuresLen = env->GetArrayLength(featuresArray);
+    jint* features = env->GetIntArrayElements(featuresArray, 0);
+    hb_shape(font, buffer, reinterpret_cast<hb_feature_t*>(features), featuresLen / 4);
+    env->ReleaseIntArrayElements(featuresArray, features, 0);
     return reinterpret_cast<jlong>(buffer);
 }
