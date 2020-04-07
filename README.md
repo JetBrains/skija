@@ -1,4 +1,4 @@
-# Skija: Skia bindings for Java
+# Skija: Java bindings for Skia
 
 ## Checkout
 
