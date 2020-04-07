@@ -6,14 +6,12 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.MemoryStack;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import skija.*;
@@ -36,8 +34,8 @@ class Window {
     public int xpos = 0;
     public int ypos = 0;
     public boolean vsync = true;
-    private HBFace hbInterRegular;
-    private SkTypeface skInterRegular;
+    private Typeface interRegular;
+    private Font interRegular13tnum;
     private int[] refreshRates;
 
     public Window(int width, int height) {
@@ -135,6 +133,8 @@ class Window {
 
     private void initSkia() {
         System.out.println("Buffer " + width + "x" + height + "@" + dpi);
+        
+        Managed.allocationStats = true;
 
         canvas = null;
         if (surface != null) { surface.release(); surface = null; }
@@ -175,56 +175,83 @@ class Window {
     }
 
     public void drawStats() {
+        int allocated = Managed.allocated.values().stream().reduce(0, Integer::sum);
+
         Paint bg = new Paint().setColor(0x90000000);
         Paint fg = new Paint().setColor(0xFFFFFFFF);
         Paint graph = new Paint().setColor(0xFF00FF00).setStrokeWidth(1);
         Paint graphPast = new Paint().setColor(0x9000FF00).setStrokeWidth(1);
         Paint graphLimit = new Paint().setColor(0xFFcc3333).setStrokeWidth(1);
-        HBFont hbFont = new HBFont(hbInterRegular, 13, new FontFeature[] { new FontFeature("tnum") });
-        HBExtents extents = hbFont.getHorizontalExtents();
+        Font font = interRegular13tnum;
+        FontExtents extents = font.getHorizontalExtents();
         float baseline = (20 - extents.descender + extents.ascender) / 2 - extents.ascender;
-        SkFont skFont = new SkFont(skInterRegular, 13);
 
-        canvas.translate(width - 205, height - 110);
-        canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 200, 105, 7), bg);
+        // Background
+        canvas.translate(width - 205, height - 135);
+        canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 200, 130, 7), bg);
         canvas.translate(5, 5);
         
+        // Scene
         canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 2), bg);
-        HBBuffer buffer = hbFont.shape("S");
-        canvas.drawHBBuffer(buffer, (20 - buffer.getAdvances()[0]) / 2, baseline, skFont, fg);
+        TextBuffer buffer = font.shape("S");
+        canvas.drawTextBuffer(buffer, (20 - buffer.getAdvances()[0]) / 2, baseline, font.mSkFont, fg);
         int sceneIdx = 1;
         for (String scene : scenes.keySet()) {
-            if (scene == currentScene) break;
+            if (scene.equals(currentScene)) break;
             sceneIdx++;
         }
-        buffer = hbFont.shape("Scene " + sceneIdx + "/" + scenes.size());
-        canvas.drawHBBuffer(buffer, 25, baseline, skFont, fg);
+        buffer.release();
+        buffer = font.shape("Scene: " + currentScene + " " + sceneIdx + "/" + scenes.size());
+        canvas.drawTextBuffer(buffer, 25, baseline, font.mSkFont, fg);
+        buffer.release();
         canvas.translate(0, 25);
 
+        // VSync
         canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 2), bg);
-        buffer = hbFont.shape("V");
-        canvas.drawHBBuffer(buffer, (20 - buffer.getAdvances()[0]) / 2, baseline, skFont, fg);
-        buffer = hbFont.shape("VSync " + (vsync ? "on" : "off"));
-        canvas.drawHBBuffer(buffer, 25, baseline, skFont, fg);
+        buffer = font.shape("V");
+        canvas.drawTextBuffer(buffer, (20 - buffer.getAdvances()[0]) / 2, baseline, font.mSkFont, fg);
+        buffer.release();
+        buffer = font.shape("VSync: " + (vsync ? "ON" : "OFF"));
+        canvas.drawTextBuffer(buffer, 25, baseline, font.mSkFont, fg);
+        buffer.release();
         canvas.translate(0, 25);
 
+        // GC
+        canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 2), bg);
+        buffer = font.shape("G");
+        canvas.drawTextBuffer(buffer, (20 - buffer.getAdvances()[0]) / 2, baseline, font.mSkFont, fg);
+        buffer.release();
+        
+        buffer = font.shape("GC objects: " + allocated);
+        canvas.drawTextBuffer(buffer, 25, baseline, font.mSkFont, fg);
+        buffer.release();
+        canvas.translate(0, 25);
+
+        // fps
         canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, times.length, 45, 2), bg);
         for (int i = 0; i < times.length; ++i) {
             canvas.drawLine(i, 45, i, 45 - (float) times[i], i > timesIdx ? graphPast : graph);
         }
 
-        for (int i=0; i < refreshRates.length; ++i) {
-            float frameTime = 1000f / refreshRates[i];
-            canvas.drawLine(0, 45-frameTime, times.length, 45-frameTime, graphLimit);
+        for (int refreshRate : refreshRates) {
+            float frameTime = 1000f / refreshRate;
+            canvas.drawLine(0, 45 - frameTime, times.length, 45 - frameTime, graphLimit);
         }
 
-        buffer = hbFont.shape(String.format("%.1fms", Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble()));
-        canvas.drawHBBuffer(buffer, times.length + 5, baseline, skFont, fg);
+        buffer = font.shape(String.format("%.1fms", Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble()));
+        canvas.drawTextBuffer(buffer, times.length + 5, baseline, font.mSkFont, fg);
+        buffer.release();
 
-        buffer = hbFont.shape(String.format("%.0f fps", 1000.0 / Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble()));
-        canvas.drawHBBuffer(buffer, times.length + 5, baseline + 25, skFont, fg);
-
+        buffer = font.shape(String.format("%.0f fps", 1000.0 / Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble()));
+        canvas.drawTextBuffer(buffer, times.length + 5, baseline + 25, font.mSkFont, fg);
+        buffer.release();
         canvas.translate(0, 25);
+
+        bg.release();
+        fg.release();
+        graph.release();
+        graphPast.release();
+        graphLimit.release();
     }
 
     private void loop() {
@@ -266,6 +293,10 @@ class Window {
                         vsync = !vsync;
                         glfwSwapInterval(vsync ? 1 : 0);
                         break;
+                    case GLFW_KEY_G:
+                        System.out.println("Before GC " + Managed.allocated);
+                        System.gc();
+                        break;
                 }
             }
         });
@@ -275,12 +306,12 @@ class Window {
         scenes = new TreeMap(Map.of(
             "Watches", new WatchesScene(),
             "Primitives", new PrimitivesScene(),
-            "Text", new TextScene()
+            "Text", new TextScene(),
+            "Empty", new EmptyScene()
         ));
         currentScene = "Text";
-
-        hbInterRegular = HBFace.makeFromFile("fonts/Inter-Regular.ttf", 0);
-        skInterRegular = SkTypeface.makeFromFile("fonts/Inter-Regular.ttf", 0);
+        interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
+        interRegular13tnum = new Font(interRegular, 13, new FontFeature[] { new FontFeature("tnum") });
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {

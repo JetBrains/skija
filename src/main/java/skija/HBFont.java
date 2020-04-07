@@ -26,21 +26,21 @@ public class HBFont extends Managed {
         }
     }
 
-    public HBExtents getHorizontalExtents() {
+    public FontExtents getHorizontalExtents() {
         float[] res = nGetHorizontalExtents(mNativeInstance);
-        return new HBExtents(res[0], res[1], res[2]);
+        return new FontExtents(res[0], res[1], res[2]);
     }
 
-    public HBExtents getVerticalExtents() {
+    public FontExtents getVerticalExtents() {
         float[] res = nGetVerticalExtents(mNativeInstance);
-        return new HBExtents(res[0], res[1], res[2]);
+        return new FontExtents(res[0], res[1], res[2]);
     }
 
-    public HBBuffer shape(String text) {
-        return new HBBuffer(nShape(mNativeInstance, text, mFeaturesData));
+    public TextBuffer shape(String text) {
+        return new TextBuffer(nShape(mNativeInstance, text, mFeaturesData));
     }
 
-    public HBBuffer shape(String text, FontFeature[] features) {
+    public TextBuffer shape(String text, FontFeature[] features) {
         int[] data = mFeaturesData;
         if (features.length > 0) {
             data = Arrays.copyOf(mFeaturesData, mFeaturesData.length + features.length * 4);
@@ -52,7 +52,7 @@ public class HBFont extends Managed {
                 data[baseIdx + i * 4 + 3] = features[i].end;
             }
         }
-        return new HBBuffer(nShape(mNativeInstance, text, data));
+        return new TextBuffer(nShape(mNativeInstance, text, data));
     }
 
     private static long kNativeFinalizer = nGetNativeFinalizer();

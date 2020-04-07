@@ -1,7 +1,7 @@
 package skija;
 
-public class HBBuffer extends Managed {
-    protected HBBuffer(long nativeInstance) { super(nativeInstance, kNativeFinalizer); }
+public class TextBuffer extends Managed {
+    protected TextBuffer(long nativeInstance) { super(nativeInstance, kNativeFinalizer); }
 
     // xAdvance, yAdvance
     public float[] getAdvances() { return nGetAdvances(mNativeInstance); }

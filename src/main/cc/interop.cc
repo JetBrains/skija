@@ -8,6 +8,12 @@ jintArray javaIntArray(JNIEnv* env, IntArray ints) {
     return res;
 }
 
+jlongArray javaLongArray(JNIEnv* env, LongArray longs) {
+    jlongArray res = env->NewLongArray(longs.size());
+    env->SetLongArrayRegion(res, 0, longs.size(), longs.data());
+    return res;
+}
+
 jfloatArray javaFloatArray(JNIEnv* env, FloatArray floats) {
     jfloatArray res = env->NewFloatArray(floats.size());
     env->SetFloatArrayRegion(res, 0, floats.size(), floats.data());

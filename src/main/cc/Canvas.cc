@@ -123,11 +123,11 @@ extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nDrawRegion
     canvas->drawRegion(*region, *paint);
 }
 
-extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nDrawHBBuffer
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong bufferPtr, jfloat x, jfloat y, jlong fontPtr, jlong paintPtr) {
+extern "C" JNIEXPORT void JNICALL Java_skija_Canvas_nDrawTextBuffer
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong bufferPtr, jfloat x, jfloat y, jlong skFontPtr, jlong paintPtr) {
     SkCanvas* canvas    = reinterpret_cast<SkCanvas*>   (static_cast<uintptr_t>(canvasPtr));
     hb_buffer_t* buffer = reinterpret_cast<hb_buffer_t*>(static_cast<uintptr_t>(bufferPtr));
-    SkFont* font        = reinterpret_cast<SkFont*>     (static_cast<uintptr_t>(fontPtr));
+    SkFont* font        = reinterpret_cast<SkFont*>     (static_cast<uintptr_t>(skFontPtr));
     SkPaint* paint      = reinterpret_cast<SkPaint*>    (static_cast<uintptr_t>(paintPtr));
 
     SkTextBlobBuilder builder;

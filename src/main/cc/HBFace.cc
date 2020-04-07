@@ -16,7 +16,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFace_nMakeFromFile(JNIEnv* env, 
 
     assert(face);
     if (!face) return 0;
-    hb_face_set_index(face, (unsigned)index);
+    // hb_face_set_index(face, (unsigned)index);
     // hb_face_set_upem(face, fSkiaTypeface->getUnitsPerEm());
     
     return reinterpret_cast<jlong>(face);

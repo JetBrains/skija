@@ -3,7 +3,7 @@
 SKIA_DIR=${SKIA_DIR:-`dirname $0`/../third_party/skia}
 SKIA_DIR_ABS=$(cd $SKIA_DIR; pwd)
 
-cd `dirname $0`/..
+cd "`dirname $0`/.."
 
 mkdir -p target/native
 pushd target/native
