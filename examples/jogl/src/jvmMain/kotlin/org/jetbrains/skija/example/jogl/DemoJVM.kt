@@ -1,22 +1,24 @@
 package org.jetbrains.skija.example.jogl
 
+import com.jogamp.opengl.*
 import com.jogamp.opengl.GL.GL_DRAW_FRAMEBUFFER_BINDING
-import com.jogamp.opengl.GLAutoDrawable
-import com.jogamp.opengl.GLCapabilities
-import com.jogamp.opengl.GLEventListener
-import com.jogamp.opengl.GLProfile
 import com.jogamp.opengl.awt.GLCanvas
 import com.jogamp.opengl.util.FPSAnimator
 import skija.*
+import java.awt.event.MouseEvent
+import java.awt.event.MouseMotionListener
+import java.nio.FloatBuffer
 import java.nio.IntBuffer
 import javax.swing.JFrame
 import javax.swing.WindowConstants
-import kotlin.math.sin
 import kotlin.math.cos
+import kotlin.math.sin
+
 
 private val skijaLibrary = System.loadLibrary("skija")
 
 actual class Demo actual constructor() {
+
     class SkijaState {
         var context: Context? = null
         var renderTarget: BackendRenderTarget? = null
@@ -33,11 +35,25 @@ actual class Demo actual constructor() {
         }
     }
 
+    var mouseX = 0
+    var mouseY = 0
+
     private fun makeWindow(width: Int, height: Int): JFrame {
         val profile = GLProfile.get(GLProfile.GL3)
         val capabilities = GLCapabilities(profile)
         val glCanvas = GLCanvas(capabilities)
         val skijaState = SkijaState()
+        glCanvas.autoSwapBufferMode = true
+
+        glCanvas.addMouseMotionListener(object : MouseMotionListener {
+            override fun mouseDragged(event: MouseEvent) {
+            }
+            override fun mouseMoved(event: MouseEvent) {
+                mouseX = event.x
+                mouseY = event.y
+            }
+        })
+
         glCanvas.addGLEventListener(object : GLEventListener {
             override fun reshape(drawable: GLAutoDrawable?, x: Int, y: Int, width: Int, height: Int) {
                 println("GL: reshape")
@@ -59,19 +75,16 @@ actual class Demo actual constructor() {
                 if (tick++ % 60 == 0) {
                     println("GL: display, divided by 60")
                 }
+
                 skijaState.apply {
                     canvas!!.clear(0xFFFFFFFF)
-                    canvas!!.save()
+                    //canvas!!.save()
                     displayScene(
-                        canvas!!,
-                        glCanvas.width, glCanvas.height, glCanvas.width.toFloat() / width,
-                        0, 0
+                        canvas!!, glCanvas.width, glCanvas.height, mouseX, mouseY
                     )
-                    canvas!!.restore()
+                    //canvas!!.restore()
                     context!!.flush()
-                    //glCanvas.swapBuffers()
                 }
-
             }
         })
         glCanvas.setSize(width, height)
@@ -96,7 +109,6 @@ actual class Demo actual constructor() {
             val intBuf1 = IntBuffer.allocate(1)
             glCanvas.gl.glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, intBuf1)
             val fbId = intBuf1[0]
-            println("FB id is $fbId")
             renderTarget = BackendRenderTarget.newGL(
                 (width * dpi).toInt(),
                 (height * dpi).toInt(),
@@ -105,7 +117,6 @@ actual class Demo actual constructor() {
                 fbId.toLong(),
                 BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8.toLong()
             )
-            println("Allocated $renderTarget")
             context = Context.makeGL()
             surface = Surface.makeFromBackendRenderTarget(
                 context,
@@ -113,13 +124,12 @@ actual class Demo actual constructor() {
                 Surface.Origin.BOTTOM_LEFT,
                 Surface.ColorType.RGBA_8888
             )
-            println("Allocated $surface")
             canvas = surface!!.canvas
             canvas!!.scale(dpi, dpi)
         }
     }
 
-    fun displayScene(canvas: Canvas, width: Int, height: Int, dpi: Float, xpos: Int, ypos: Int) {
+    fun displayScene(canvas: Canvas, width: Int, height: Int, xpos: Int, ypos: Int) {
         val watchFill = Paint().setColor(0xFFFFFFFF)
         val watchStroke = Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f).setAntiAlias(false)
         val watchStrokeAA = Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f)
@@ -144,9 +154,9 @@ actual class Demo actual constructor() {
                 }
                 val time = System.currentTimeMillis() % 60000 +
                         (x.toFloat() / width * 5000).toLong() +
-                        (y.toFloat() / width * 5000).toLong();
+                        (y.toFloat() / width * 5000).toLong()
 
-                val angle1 = (time / 5000 * 2f * Math.PI).toFloat()
+                val angle1 = (time.toFloat() / 5000 * 2f * Math.PI).toFloat()
                 canvas.drawLine(x + 25f, y + 25f,
                     x + 25f - 15f * sin(angle1),
                     y + 25f + 15 * cos(angle1),

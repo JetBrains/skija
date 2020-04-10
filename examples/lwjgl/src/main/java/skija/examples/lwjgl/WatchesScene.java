@@ -35,7 +35,7 @@ public class WatchesScene implements Scene {
                 canvas.drawLine(x + 25, y + 25, (float) (x + 25 - 15 * Math.sin(angle1)), (float) (y + 25 + 15 * Math.cos(angle1)), stroke);
 
                 var angle2 = time / 60000 * 2f * Math.PI;
-                canvas.drawLine(x + 25, y + 25, (float) (x + 25 - 10 * Math.sin(angle2)), (float) (y + 25 + 10 * Math.cos(angle2)), stroke);                
+                canvas.drawLine(x + 25, y + 25, (float) (x + 25 - 10 * Math.sin(angle2)), (float) (y + 25 + 10 * Math.cos(angle2)), stroke);
             }
         }
     }
