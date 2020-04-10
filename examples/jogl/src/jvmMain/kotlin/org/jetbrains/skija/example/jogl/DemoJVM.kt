@@ -75,4 +75,22 @@ actual class Demo actual constructor() {
 
         return 0
     }
+
+    fun run2(): Int {
+        var radius = 50f
+        val frame = SkiaWindow(width = 1024, height = 768, fps = 120) { canvas, w, h ->
+            val fill = Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(4f)
+            canvas.drawOval(Rect.makeXYWH( w / 2f - radius, h / 2f - radius, radius, radius), fill)
+        }
+        frame.glCanvas.addMouseMotionListener(object: MouseMotionAdapter() {
+            var lastX = 0
+            override fun mouseDragged(e: MouseEvent) {
+                radius += if (e.x > lastX) -2f else 2f
+                lastX = e.x
+            }
+        })
+        frame.setLocation(400, 400)
+        frame.setVisible(true)
+        return 0
+    }
 }

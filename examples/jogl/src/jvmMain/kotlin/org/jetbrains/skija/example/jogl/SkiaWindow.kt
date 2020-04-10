@@ -57,11 +57,9 @@ class SkiaWindow(width: Int, height: Int, fps: Int, renderer: (Canvas, Int, Int)
             override fun display(drawable: GLAutoDrawable?) {
                 skijaState.apply {
                     canvas!!.clear(0xFFFFFFFF)
-                    //canvas!!.save()
                     renderer(
                         canvas!!, glCanvas.width, glCanvas.height
                     )
-                    //canvas!!.restore()
                     context!!.flush()
                 }
             }
@@ -89,7 +87,7 @@ class SkiaWindow(width: Int, height: Int, fps: Int, renderer: (Canvas, Int, Int)
             renderTarget = BackendRenderTarget.newGL(
                 (width * dpi).toInt(),
                 (height * dpi).toInt(),
-                0,  /*stencil*/
+                0,
                 8,
                 fbId.toLong(),
                 BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8.toLong()
