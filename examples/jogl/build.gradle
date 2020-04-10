@@ -1,0 +1,66 @@
+plugins {
+    id 'org.jetbrains.kotlin.multiplatform' version '1.3.71'
+}
+repositories {
+    mavenCentral()
+}
+group 'com.example'
+version '0.0.1'
+
+apply plugin: 'maven-publish'
+
+def skijaDir = "${project.rootDir}/../../target"
+def joglDir = "${project.rootDir}/libs"
+def joglVersion = "2.4.0-rc-20200307" // "2.3.1" has an error with running UI code off the main thread.
+
+kotlin {
+    jvm()
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation kotlin('stdlib-common')
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation kotlin('test-common')
+                implementation kotlin('test-annotations-common')
+            }
+        }
+        jvmMain {
+            dependencies {
+                implementation kotlin('stdlib-jdk8')
+                api files("$joglDir/gluegen-rt.jar")
+                api files("$joglDir/jogl-all.jar")
+                api files("${skijaDir}/skija-0.1.0-SNAPSHOT.jar")
+
+                implementation files("$joglDir/gluegen-rt-natives-macosx-universal.jar")
+                implementation files("$joglDir/jogl-all-natives-macosx-universal.jar")
+
+                // We need version 2.4.0 which is not yet published to the Maven Central, use code below
+                // when ready.
+                /*
+                api "org.jogamp.gluegen:gluegen-rt:${joglVersion}"
+                api "org.jogamp.jogl:jogl-all:${joglVersion}"
+                implementation "org.jogamp.gluegen:gluegen-rt:${joglVersion}:natives-linux-amd64"
+                implementation "org.jogamp.gluegen:gluegen-rt:${joglVersion}:natives-macosx-universal"
+                implementation "org.jogamp.jogl:jogl-all:${joglVersion}:natives-linux-amd64"
+                implementation "org.jogamp.jogl:jogl-all:${joglVersion}:natives-macosx-universal"
+                 */
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation kotlin('test')
+                implementation kotlin('test-junit')
+            }
+        }
+    }
+}
+
+task run(type: JavaExec) {
+    main = 'org.jetbrains.skija.example.jogl.DemoKt'
+    def compilation = kotlin.jvm().compilations["main"]
+    classpath = compilation.output.allOutputs + compilation.runtimeDependencyFiles
+    jvmArgs "-Djava.library.path=${skijaDir}/native"
+}
