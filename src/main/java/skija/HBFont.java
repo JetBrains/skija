@@ -3,18 +3,28 @@ package skija;
 import java.util.Arrays;
 
 public class HBFont extends Managed {
-    protected final HBFace mFace;
-    protected final FontFeature[] mFeatures;
+    public final HBFace mFace;
+    public final FontFeature[] mFeatures;
     protected final int[] mFeaturesData;
+    public final FontVariation[] mVariations;
 
     public static final FontFeature[] NO_FEATURES = new FontFeature[0];
+    public static final FontVariation[] NO_VARIATIONS = new FontVariation[0];
 
     public HBFont(HBFace face, float size) {
-        this(face, size, NO_FEATURES);
+        this(face, size, NO_FEATURES, NO_VARIATIONS);
     }
 
     public HBFont(HBFace face, float size, FontFeature[] features) {
-        super(nInit(face.mNativeInstance, size), kNativeFinalizer);
+        this(face, size, features, NO_VARIATIONS);
+    }
+
+    public HBFont(HBFace face, float size, FontVariation[] variations) {
+        this(face, size, NO_FEATURES, variations);
+    }
+
+    public HBFont(HBFace face, float size, FontFeature[] features, FontVariation[] variations) {
+        super(nInit(face.mNativeInstance, size, variations), kNativeFinalizer);
         mFace = face;
         mFeatures = features;
         mFeaturesData = new int[mFeatures.length * 4];
@@ -24,6 +34,7 @@ public class HBFont extends Managed {
             mFeaturesData[i * 4 + 2] = mFeatures[i].start;
             mFeaturesData[i * 4 + 3] = mFeatures[i].end;
         }
+        mVariations = variations;
     }
 
     public FontExtents getHorizontalExtents() {
@@ -56,7 +67,7 @@ public class HBFont extends Managed {
     }
 
     private static long kNativeFinalizer = nGetNativeFinalizer();
-    private static native long nInit(long facePtr, float size);
+    private static native long nInit(long facePtr, float size, FontVariation[] variations);
     private static native long nGetNativeFinalizer();
 
     private static native float[] nGetHorizontalExtents(long nativeInstance);

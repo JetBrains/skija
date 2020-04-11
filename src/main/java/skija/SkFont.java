@@ -1,7 +1,7 @@
 package skija;
 
 public class SkFont extends Managed {
-    private SkTypeface typeface;
+    public final SkTypeface typeface;
     public SkFont(SkTypeface typeface, float size) {
         super(nInit(typeface.mNativeInstance, size), kNativeFinalizer);
         this.typeface = typeface;

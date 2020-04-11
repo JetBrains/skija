@@ -1,5 +1,7 @@
 package skija;
 
+import java.util.Objects;
+
 public class FontFeature {
     public final int tag;
     public final int value;
@@ -9,12 +11,12 @@ public class FontFeature {
     public static final int GLOBAL_START = 0;
     public static final int GLOBAL_END = Integer.MAX_VALUE;
 
-    public static int tag(String feature) {
-        assert feature.length() == 4 : "Feature must be exactly 4 symbols, got: '" + feature + "'";
-        return (feature.charAt(0) & 0xFF) << 24
-             | (feature.charAt(1) & 0xFF) << 16
-             | (feature.charAt(2) & 0xFF) << 8
-             | (feature.charAt(3) & 0xFF);
+    public static int tag(String name) {
+        assert name.length() == 4 : "Name must be exactly 4 symbols, got: '" + name + "'";
+        return (name.charAt(0) & 0xFF) << 24
+             | (name.charAt(1) & 0xFF) << 16
+             | (name.charAt(2) & 0xFF) << 8
+             | (name.charAt(3) & 0xFF);
     }
 
     public static String untag(int tag) {
@@ -47,5 +49,38 @@ public class FontFeature {
         this(tag(feature), 1, GLOBAL_START, GLOBAL_END);
     }
 
-    public String getFeature() { return untag(tag); }
+    public String getTagName() { return untag(tag); }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FontFeature that = (FontFeature) o;
+        return tag == that.tag &&
+                value == that.value &&
+                start == that.start &&
+                end == that.end;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tag, value, start, end);
+    }
+
+    @Override
+    public String toString() {
+        String range = "";
+        if (start > 0 || end < Integer.MAX_VALUE) {
+            range = "[" + (start > 0 ? start : "") + ":" + (end < Integer.MAX_VALUE ? end : "") + "]";
+        }
+        String valuePrefix = "";
+        String valueSuffix = "";
+        if (value == 0)
+            valuePrefix = "-";
+        else if (value == 1)
+            valuePrefix = "+";
+        else
+            valueSuffix = "=" + value;
+        return valuePrefix + getTagName() + range + valueSuffix;
+    }
 }

@@ -19,3 +19,23 @@ public:
 };
 
 int32_t getRefCnt(SkRefCnt* ref);
+
+typedef struct {
+    jclass cls;
+    jfieldID tagID;
+    jfieldID valueID;
+} FontVariationClass;
+
+extern FontVariationClass* fontVariationClass;
+
+void maybeInitFontVariationClass(JNIEnv* env);
+
+
+typedef struct {
+    jclass cls;
+    jmethodID ctorID;
+} FontAxisInfoClass;
+
+extern FontAxisInfoClass* fontAxisInfoClass;
+
+void maybeInitFontAxisInfoClass(JNIEnv* env);

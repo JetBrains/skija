@@ -23,3 +23,24 @@ jfloatArray javaFloatArray(JNIEnv* env, FloatArray floats) {
 int32_t getRefCnt(SkRefCnt* ref) {
     return reinterpret_cast<SkRefCntHack*>(ref)->fRefCnt.load(std::memory_order_relaxed);
 }
+
+FontVariationClass* fontVariationClass = nullptr;
+
+void maybeInitFontVariationClass(JNIEnv* env) {
+    if (fontVariationClass == nullptr) {
+        fontVariationClass = new FontVariationClass;
+        fontVariationClass->cls = env->FindClass("skija/FontVariation");
+        fontVariationClass->tagID = env->GetFieldID(fontVariationClass->cls, "tag", "I");
+        fontVariationClass->valueID = env->GetFieldID(fontVariationClass->cls, "value", "F");
+    }
+}
+
+FontAxisInfoClass* fontAxisInfoClass = nullptr;
+
+void maybeInitFontAxisInfoClass(JNIEnv* env) {
+    if (fontAxisInfoClass == nullptr) {
+        fontAxisInfoClass = new FontAxisInfoClass;
+        fontAxisInfoClass->cls = env->FindClass("skija/FontAxisInfo");
+        fontAxisInfoClass->ctorID = env->GetMethodID(fontAxisInfoClass->cls, "<init>", "(II[BIFFF)V");
+    }
+}

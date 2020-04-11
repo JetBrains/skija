@@ -25,6 +25,9 @@
                         <argument>-XstartOnFirstThread</argument>
                         <argument>-Djava.awt.headless=true</argument>
                         <argument>-ea</argument>
+                        <!-- <argument>-XX:+UnlockExperimentalVMOptions</argument> -->
+                        <!-- <argument>-XX:+UseShenandoahGC</argument> -->
+                        <!-- <argument>-XX:+UseZGC</argument> -->
                         <argument>${exec.mainClass}</argument>
                     </arguments>
                 </configuration>

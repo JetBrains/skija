@@ -8,6 +8,13 @@ public class SkTypeface extends RefCounted {
         return new SkTypeface(ptr);
     }
 
+    public SkTypeface makeClone(FontVariation[] variations) {
+        if (variations.length == 0)
+            return this;
+        return new SkTypeface(nMakeClone(mNativeInstance, variations));
+    }
+
     protected SkTypeface(long nativeInstance) { super(nativeInstance); }
     private static native long nMakeFromFile(String path, int index);
+    private static native long nMakeClone(long ptr, FontVariation[] variations);
 }

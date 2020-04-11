@@ -10,7 +10,10 @@ public class HBFace extends Managed {
         return new HBFace(ptr);
     }
 
+    public FontAxisInfo[] getAxes() { return nGetAxes(mNativeInstance); }
+
     private static long kNativeFinalizer = nGetNativeFinalizer();
     private static native long nMakeFromFile(String path, int index);
     private static native long nGetNativeFinalizer();
+    private static native FontAxisInfo[] nGetAxes(long ptr); 
 }

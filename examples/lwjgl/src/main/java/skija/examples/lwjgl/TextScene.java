@@ -6,10 +6,15 @@ import skija.*;
 public class TextScene implements Scene {
     private Typeface jbMonoRegular;
     private Typeface interRegular;
+    private Typeface interVariable;
+    private FontAxisInfo[] axes;
 
     public TextScene() {
         jbMonoRegular = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf");
-        interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
+        interRegular  = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
+        interVariable = Typeface.makeFromFile("fonts/Inter-V.otf");
+        axes = interVariable.mHBFace.getAxes();
+        System.out.println(Arrays.toString(axes));
     }
 
     @Override
@@ -27,20 +32,35 @@ public class TextScene implements Scene {
             new FontFeature[] { new FontFeature("calt", false) });
         drawText(canvas, 0xff006690, interRegular,  18, "Inter Regular 18px: [m] [M] 7*4 7×4 War, Tea, LAY (-kern)",
             new FontFeature[] { new FontFeature("kern", false) });
+
+        float pos = Math.max(0f, Math.min(1f, Math.abs((System.currentTimeMillis() % 3000) / 1000f - 1.5f) - 0.25f));
+        for (int i = 0; i < axes.length; ++i) {
+            float value = Math.round(axes[i].minValue + pos * (axes[i].maxValue - axes[i].minValue));
+            drawText(canvas, 0xff000000, interVariable,  18, "Inter Variable 18px " + axes[i].name + "=" + value,
+                new FontVariation[] { new FontVariation(axes[i].tag, value) });
+        }
     }
 
     public void drawText(Canvas canvas, int color, Typeface typeface, float size, String text) {
-        drawText(canvas, color, typeface, size, text, HBFont.NO_FEATURES);
+        drawText(canvas, color, typeface, size, text, HBFont.NO_FEATURES, HBFont.NO_VARIATIONS);
     }
 
     public void drawText(Canvas canvas, int color, Typeface typeface, float size, String text, FontFeature[] features) {
+        drawText(canvas, color, typeface, size, text, features, HBFont.NO_VARIATIONS);
+    }
+
+    public void drawText(Canvas canvas, int color, Typeface typeface, float size, String text, FontVariation[] variations) {
+        drawText(canvas, color, typeface, size, text, HBFont.NO_FEATURES, variations);
+    }
+
+    public void drawText(Canvas canvas, int color, Typeface typeface, float size, String text, FontFeature[] features, FontVariation[] variations) {
         FontFeature[] fontFeatures = Arrays.copyOf(features, features.length / 2);
         FontFeature[] shapeFeatures = Arrays.copyOfRange(features, features.length / 2, features.length);
 
-        Font font = new Font(typeface, size, fontFeatures);
-        FontExtents extents = font.getHorizontalExtents();
+        Font font = new Font(typeface, size, fontFeatures, variations);
+        FontExtents extents = font.mHBFont.getHorizontalExtents();
 
-        TextBuffer buffer = font.shape(text, shapeFeatures);
+        TextBuffer buffer = font.mHBFont.shape(text, shapeFeatures);
         float[] advances = buffer.getAdvances();
 
         canvas.save();

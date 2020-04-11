@@ -183,7 +183,7 @@ class Window {
         Paint graphPast = new Paint().setColor(0x9000FF00).setStrokeWidth(1);
         Paint graphLimit = new Paint().setColor(0xFFcc3333).setStrokeWidth(1);
         Font font = interRegular13tnum;
-        FontExtents extents = font.getHorizontalExtents();
+        FontExtents extents = font.mHBFont.getHorizontalExtents();
         float baseline = (20 - extents.descender + extents.ascender) / 2 - extents.ascender;
 
         // Background
@@ -193,7 +193,7 @@ class Window {
         
         // Scene
         canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 2), bg);
-        TextBuffer buffer = font.shape("S");
+        TextBuffer buffer = font.mHBFont.shape("S");
         canvas.drawTextBuffer(buffer, (20 - buffer.getAdvances()[0]) / 2, baseline, font.mSkFont, fg);
         int sceneIdx = 1;
         for (String scene : scenes.keySet()) {
@@ -201,28 +201,28 @@ class Window {
             sceneIdx++;
         }
         buffer.release();
-        buffer = font.shape("Scene: " + currentScene + " " + sceneIdx + "/" + scenes.size());
+        buffer = font.mHBFont.shape("Scene: " + currentScene + " " + sceneIdx + "/" + scenes.size());
         canvas.drawTextBuffer(buffer, 25, baseline, font.mSkFont, fg);
         buffer.release();
         canvas.translate(0, 25);
 
         // VSync
         canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 2), bg);
-        buffer = font.shape("V");
+        buffer = font.mHBFont.shape("V");
         canvas.drawTextBuffer(buffer, (20 - buffer.getAdvances()[0]) / 2, baseline, font.mSkFont, fg);
         buffer.release();
-        buffer = font.shape("VSync: " + (vsync ? "ON" : "OFF"));
+        buffer = font.mHBFont.shape("VSync: " + (vsync ? "ON" : "OFF"));
         canvas.drawTextBuffer(buffer, 25, baseline, font.mSkFont, fg);
         buffer.release();
         canvas.translate(0, 25);
 
         // GC
         canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 2), bg);
-        buffer = font.shape("G");
+        buffer = font.mHBFont.shape("G");
         canvas.drawTextBuffer(buffer, (20 - buffer.getAdvances()[0]) / 2, baseline, font.mSkFont, fg);
         buffer.release();
         
-        buffer = font.shape("GC objects: " + allocated);
+        buffer = font.mHBFont.shape("GC objects: " + allocated);
         canvas.drawTextBuffer(buffer, 25, baseline, font.mSkFont, fg);
         buffer.release();
         canvas.translate(0, 25);
@@ -238,11 +238,11 @@ class Window {
             canvas.drawLine(0, 45 - frameTime, times.length, 45 - frameTime, graphLimit);
         }
 
-        buffer = font.shape(String.format("%.1fms", Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble()));
+        buffer = font.mHBFont.shape(String.format("%.1fms", Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble()));
         canvas.drawTextBuffer(buffer, times.length + 5, baseline, font.mSkFont, fg);
         buffer.release();
 
-        buffer = font.shape(String.format("%.0f fps", 1000.0 / Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble()));
+        buffer = font.mHBFont.shape(String.format("%.0f fps", 1000.0 / Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble()));
         canvas.drawTextBuffer(buffer, times.length + 5, baseline + 25, font.mSkFont, fg);
         buffer.release();
         canvas.translate(0, 25);
