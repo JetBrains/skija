@@ -55,7 +55,7 @@ Prerequisites:
 ./script/build.sh
 ```
 
-That will install `skija:skija:0.1.0-SNAPSHOT` to your local Maven repository.
+That will install `skija:skija:0.1.0` to your local Maven repository.
 
 ## Running examples
 

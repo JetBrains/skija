@@ -3,9 +3,13 @@ plugins {
 }
 repositories {
     mavenCentral()
+    // Use local Maven when developing.
     mavenLocal()
+    maven {
+        url "https://dl.bintray.com/olonho/skija"
+    }
 }
-group 'com.example'
+group 'org.jetbrains.skija.example.jogl'
 version '0.0.1'
 
 apply plugin: 'maven-publish'
@@ -32,7 +36,7 @@ kotlin {
                 implementation kotlin('stdlib-jdk8')
                 api files("$joglDir/gluegen-rt.jar")
                 api files("$joglDir/jogl-all.jar")
-                api "skija:skija:0.1.0-SNAPSHOT"
+                api "skija:skija:0.1.0"
 
                 implementation files("$joglDir/gluegen-rt-natives-macosx-universal.jar")
                 implementation files("$joglDir/jogl-all-natives-macosx-universal.jar")
