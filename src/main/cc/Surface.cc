@@ -2,7 +2,7 @@
 #include <jni.h>
 #include "SkSurface.h"
 
-extern "C" JNIEXPORT jlong JNICALL Java_skija_Surface_nMakeFromBackendRenderTarget
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface_nMakeFromBackendRenderTarget
   (JNIEnv* env, jclass jclass, jlong pContext, jlong pBackendRenderTarget, jint surfaceOrigin, jint colorType) {
     GrContext* context = reinterpret_cast<GrContext*>(static_cast<uintptr_t>(pContext));
     GrBackendRenderTarget* backendRenderTarget = reinterpret_cast<GrBackendRenderTarget*>(static_cast<uintptr_t>(pBackendRenderTarget));
@@ -22,7 +22,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_skija_Surface_nMakeFromBackendRenderTarg
     return reinterpret_cast<jlong>(surface.release());
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_skija_Surface_nGetCanvas
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface_nGetCanvas
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkSurface* surface = reinterpret_cast<SkSurface*>(static_cast<uintptr_t>(ptr));
     return reinterpret_cast<jlong>(surface->getCanvas());

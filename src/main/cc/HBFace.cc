@@ -4,7 +4,7 @@
 #include "hb_util.hh"
 #include "interop.hh"
 
-extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFace_nMakeFromFile(JNIEnv* env, jclass jclass, jstring path, jint index) {
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_HBFace_nMakeFromFile(JNIEnv* env, jclass jclass, jstring path, jint index) {
     const char* chars = env->GetStringUTFChars(path, nullptr);
     hb_blob_t* blob = hb_blob_create_from_file(chars);
     env->ReleaseStringUTFChars(path, chars);
@@ -19,15 +19,15 @@ extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFace_nMakeFromFile(JNIEnv* env, 
     if (!face) return 0;
     // hb_face_set_index(face, (unsigned)index);
     // hb_face_set_upem(face, fSkiaTypeface->getUnitsPerEm());
-    
+
     return reinterpret_cast<jlong>(face);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFace_nGetNativeFinalizer(JNIEnv* env, jclass jclass) {
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_HBFace_nGetNativeFinalizer(JNIEnv* env, jclass jclass) {
     return static_cast<jlong>(reinterpret_cast<uintptr_t>(&hb_face_destroy));
 }
 
-extern "C" JNIEXPORT jobjectArray JNICALL Java_skija_HBFace_nGetAxes(JNIEnv* env, jclass jclass, jlong ptr) {
+extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_HBFace_nGetAxes(JNIEnv* env, jclass jclass, jlong ptr) {
     hb_face_t* face = reinterpret_cast<hb_face_t*>(static_cast<uintptr_t>(ptr));
     unsigned int axis_count = hb_ot_var_get_axis_count(face);
     hb_ot_var_axis_info_t axes_array[axis_count];

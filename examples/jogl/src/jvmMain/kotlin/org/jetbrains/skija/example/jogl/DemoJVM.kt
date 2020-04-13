@@ -1,8 +1,8 @@
 package org.jetbrains.skija.example.jogl
 
-import skija.Canvas
-import skija.Paint
-import skija.Rect
+import org.jetbrains.skija.Canvas
+import org.jetbrains.skija.Paint
+import org.jetbrains.skija.Rect
 import java.awt.event.MouseEvent
 import java.awt.event.MouseMotionAdapter
 import javax.swing.WindowConstants

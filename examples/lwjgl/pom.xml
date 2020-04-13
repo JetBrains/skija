@@ -1,12 +1,12 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>skija.examples</groupId>
+    <groupId>org.jetbrains.skija.examples</groupId>
     <artifactId>lwjgl</artifactId>
     <version>0.1.0</version>
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <exec.mainClass>skija.examples.lwjgl.Main</exec.mainClass>
+        <exec.mainClass>org.jetbrains.skija.examples.lwjgl.Main</exec.mainClass>
         <lwjgl.version>3.2.3</lwjgl.version>
         <lwjgl.natives>natives-macos</lwjgl.natives>
     </properties>
@@ -49,7 +49,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>skija</groupId>
+            <groupId>org.jetbrains.skija</groupId>
             <artifactId>skija</artifactId>
             <version>0.1.0</version>
         </dependency>

@@ -6,7 +6,7 @@
 #include "hb_util.hh"
 #include "interop.hh"
 
-extern "C" JNIEXPORT jlongArray JNICALL Java_skija_Typeface_nMakeFromFile(JNIEnv* env, jclass jclass, jstring path, jint index) {
+extern "C" JNIEXPORT jlongArray JNICALL Java_org_jetbrains_skija_Typeface_nMakeFromFile(JNIEnv* env, jclass jclass, jstring path, jint index) {
     // data
     const char* chars = env->GetStringUTFChars(path, nullptr);
     auto data = SkData::MakeFromFileName(chars);

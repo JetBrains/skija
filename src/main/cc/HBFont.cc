@@ -4,7 +4,7 @@
 #include "hb_util.hh"
 #include "interop.hh"
 
-extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFont_nInit(JNIEnv* env, jclass jclass, jlong facePtr, jfloat size, jobjectArray variations) {
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_HBFont_nInit(JNIEnv* env, jclass jclass, jlong facePtr, jfloat size, jobjectArray variations) {
     hb_face_t* face = reinterpret_cast<hb_face_t*>(static_cast<uintptr_t>(facePtr));
     hb_font_t* font = hb_font_create(face);
 
@@ -27,25 +27,25 @@ extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFont_nInit(JNIEnv* env, jclass j
     return reinterpret_cast<jlong>(font);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFont_nGetNativeFinalizer(JNIEnv* env, jclass jclass) {
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_HBFont_nGetNativeFinalizer(JNIEnv* env, jclass jclass) {
     return static_cast<jlong>(reinterpret_cast<uintptr_t>(&hb_font_destroy));
 }
 
-extern "C" JNIEXPORT jfloatArray JNICALL Java_skija_HBFont_nGetHorizontalExtents(JNIEnv* env, jclass jclass, jlong ptr) {
+extern "C" JNIEXPORT jfloatArray JNICALL Java_org_jetbrains_skija_HBFont_nGetHorizontalExtents(JNIEnv* env, jclass jclass, jlong ptr) {
     hb_font_t* font = reinterpret_cast<hb_font_t*>(static_cast<uintptr_t>(ptr));
-    hb_font_extents_t extents; 
+    hb_font_extents_t extents;
     hb_font_get_h_extents(font, &extents);
     return javaFloatArray(env, {-HBFixedToFloat(extents.ascender), -HBFixedToFloat(extents.descender), HBFixedToFloat(extents.line_gap)}); // TODO invert lineGap?
 }
 
-extern "C" JNIEXPORT jfloatArray JNICALL Java_skija_HBFont_nGetVerticalExtents(JNIEnv* env, jclass jclass, jlong ptr) {
+extern "C" JNIEXPORT jfloatArray JNICALL Java_org_jetbrains_skija_HBFont_nGetVerticalExtents(JNIEnv* env, jclass jclass, jlong ptr) {
     hb_font_t* font = reinterpret_cast<hb_font_t*>(static_cast<uintptr_t>(ptr));
-    hb_font_extents_t extents; 
+    hb_font_extents_t extents;
     hb_font_get_v_extents(font, &extents);
     return javaFloatArray(env, {HBFixedToFloat(extents.ascender), HBFixedToFloat(extents.descender), HBFixedToFloat(extents.line_gap)});
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_skija_HBFont_nShape(JNIEnv* env, jclass jclass, jlong ptr, jstring text, jintArray featuresArray) {
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_HBFont_nShape(JNIEnv* env, jclass jclass, jlong ptr, jstring text, jintArray featuresArray) {
     hb_font_t* font = reinterpret_cast<hb_font_t*>(static_cast<uintptr_t>(ptr));
 
     hb_buffer_t *buffer = hb_buffer_create();

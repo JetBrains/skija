@@ -3,11 +3,11 @@ package org.jetbrains.skija.example.jogl
 import com.jogamp.opengl.*
 import com.jogamp.opengl.awt.GLCanvas
 import com.jogamp.opengl.util.FPSAnimator
-import skija.BackendRenderTarget
-import skija.Canvas
-import skija.Context
-import skija.JNI
-import skija.Surface
+import org.jetbrains.skija.BackendRenderTarget
+import org.jetbrains.skija.Canvas
+import org.jetbrains.skija.Context
+import org.jetbrains.skija.JNI
+import org.jetbrains.skija.Surface
 import java.nio.IntBuffer
 import javax.swing.JFrame
 

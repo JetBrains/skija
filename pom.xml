@@ -1,6 +1,6 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>skija</groupId>
+    <groupId>org.jetbrains.skija</groupId>
     <artifactId>skija</artifactId>
     <version>0.1.0</version>
     <properties>
