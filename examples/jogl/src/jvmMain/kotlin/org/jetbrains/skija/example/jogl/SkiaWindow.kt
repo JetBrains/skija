@@ -6,6 +6,7 @@ import com.jogamp.opengl.util.FPSAnimator
 import skija.BackendRenderTarget
 import skija.Canvas
 import skija.Context
+import skija.JNI
 import skija.Surface
 import java.nio.IntBuffer
 import javax.swing.JFrame
@@ -29,7 +30,7 @@ private class SkijaState {
 class SkiaWindow(width: Int, height: Int, fps: Int, renderer: (Canvas, Int, Int) -> Unit): JFrame() {
     companion object {
         init {
-            System.loadLibrary("skija")
+            JNI.loadLibrary("/", "skija")
         }
     }
 

@@ -19,7 +19,12 @@ public class JNI {
             temp.deleteOnExit();
 
             try (InputStream is = JNI.class.getResourceAsStream(resourcePath + fileName)) {
-                Files.copy(is, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                if (is != null)
+                    Files.copy(is, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                else
+                    throw new IllegalArgumentException(
+                        "Library " + fileName + " is not found in " + resourcePath
+                    );
             }
 
             System.load(temp.getAbsolutePath());
