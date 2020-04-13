@@ -6,7 +6,7 @@ repositories {
     // Use local Maven when developing.
     mavenLocal()
     maven {
-        url "https://dl.bintray.com/olonho/skija"
+        url "https://jetbrains.bintray.com/skija"
     }
 }
 group 'org.jetbrains.skija.example.jogl'

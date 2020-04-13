@@ -16,12 +16,34 @@
                 </includes>
             </resource>
         </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>
+                      <exclude>*.dylib</exclude>
+                      <exclude>*.so</exclude>
+                      <exclude>*.dll</exclude>
+                    </excludes>
+                  </configuration>
+           </plugin>
+        </plugins>
     </build>
     <distributionManagement>
         <repository>
             <id>bintray-repo-skija</id>
             <name>bintray-skija</name>
-            <url>https://api.bintray.com/maven/olonho/skija/skija/;publish=1;override=1</url>
+            <url>https://api.bintray.com/maven/jetbrains/skija/skija/;publish=1;override=1</url>
         </repository>
     </distributionManagement>
 </project>
