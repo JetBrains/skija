@@ -182,7 +182,7 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nClipPath
     canvas->clipPath(*path, static_cast<SkClipOp>(op), antiAlias);
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_org_jetbrains_skija_Canvas_nClipRegion
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nClipRegion
   (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong regionPtr, jint op) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
     SkRegion* region = reinterpret_cast<SkRegion*>(static_cast<uintptr_t>(regionPtr));
