@@ -8,19 +8,16 @@ public class HBFont extends Managed {
     protected final int[] mFeaturesData;
     public final FontVariation[] mVariations;
 
-    public static final FontFeature[] NO_FEATURES = new FontFeature[0];
-    public static final FontVariation[] NO_VARIATIONS = new FontVariation[0];
-
     public HBFont(HBFace face, float size) {
-        this(face, size, NO_FEATURES, NO_VARIATIONS);
+        this(face, size, FontFeature.EMPTY, FontVariation.EMPTY);
     }
 
     public HBFont(HBFace face, float size, FontFeature[] features) {
-        this(face, size, features, NO_VARIATIONS);
+        this(face, size, features, FontVariation.EMPTY);
     }
 
     public HBFont(HBFace face, float size, FontVariation[] variations) {
-        this(face, size, NO_FEATURES, variations);
+        this(face, size, FontFeature.EMPTY, variations);
     }
 
     public HBFont(HBFace face, float size, FontFeature[] features, FontVariation[] variations) {

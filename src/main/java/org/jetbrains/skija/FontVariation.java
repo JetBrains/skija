@@ -3,6 +3,8 @@ package org.jetbrains.skija;
 import java.util.Objects;
 
 public class FontVariation {
+    public static final FontVariation[] EMPTY = new FontVariation[0];
+
     public final int tag;
     public final float value;
 

@@ -10,6 +10,7 @@ public class FontFeature {
 
     public static final int GLOBAL_START = 0;
     public static final int GLOBAL_END = Integer.MAX_VALUE;
+    public static final FontFeature[] EMPTY = new FontFeature[0];
 
     public static int tag(String name) {
         assert name.length() == 4 : "Name must be exactly 4 symbols, got: '" + name + "'";
