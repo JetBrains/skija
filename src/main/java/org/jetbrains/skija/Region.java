@@ -3,37 +3,38 @@ package org.jetbrains.skija;
 public class Region extends Managed {
     public enum Op { DIFFERENCE, INTERSECT, UNION, XOR, REVERSE_DIFFERENCE, REPLACE }
 
-    public Region() { super(nInit(), nativeFinalizer); }
+    public Region() { super(nInit(), nativeFinalizer); Native.onNativeCall(); }
 
-    public boolean set(Region r) { return nSet(nativeInstance, r.nativeInstance); }
-    public boolean isEmpty() { return nIsEmpty(nativeInstance); }
-    public boolean isRect() { return nIsRect(nativeInstance); }
-    public boolean isComplex() { return nIsComplex(nativeInstance); }
-    public int[]   getBounds() { return nGetBounds(nativeInstance); }
-    public int     computeRegionComplexity() { return nComputeRegionComplexity(nativeInstance); }
-    public boolean getBoundaryPath(Path p) { return nGetBoundaryPath(nativeInstance, p.nativeInstance); }
-    public boolean setEmpty() { return nSetEmpty(nativeInstance); }
-    public boolean setRect(int left, int top, int right, int bottom) { return nSetRect(nativeInstance, left, top, right, bottom); }
+    public boolean set(Region r) { Native.onNativeCall(); return nSet(nativeInstance, r.nativeInstance); }
+    public boolean isEmpty() { Native.onNativeCall(); return nIsEmpty(nativeInstance); }
+    public boolean isRect() { Native.onNativeCall(); return nIsRect(nativeInstance); }
+    public boolean isComplex() { Native.onNativeCall(); return nIsComplex(nativeInstance); }
+    public int[]   getBounds() { Native.onNativeCall(); return nGetBounds(nativeInstance); }
+    public int     computeRegionComplexity() { Native.onNativeCall(); return nComputeRegionComplexity(nativeInstance); }
+    public boolean getBoundaryPath(Path p) { Native.onNativeCall(); return nGetBoundaryPath(nativeInstance, p.nativeInstance); }
+    public boolean setEmpty() { Native.onNativeCall(); return nSetEmpty(nativeInstance); }
+    public boolean setRect(int left, int top, int right, int bottom) { Native.onNativeCall(); return nSetRect(nativeInstance, left, top, right, bottom); }
     public boolean setRects(int[] rects) {
         assert rects.length > 0 && rects.length % 4 == 0 : "Expected array length divisible by 4, got " + rects.length;
+        Native.onNativeCall(); 
         return nSetRects(nativeInstance, rects);
     }
-    public boolean setRegion(Region r) { return nSetRegion(nativeInstance, r.nativeInstance); }
-    public boolean setPath(Path path, Region clip) { return nSetPath(nativeInstance, path.nativeInstance, clip.nativeInstance); }
-    public boolean intersects(int left, int top, int right, int bottom) { return nIntersectsIRect(nativeInstance, left, top, right, bottom); }
-    public boolean intersects(Region r) { return nIntersectsRegion(nativeInstance, r.nativeInstance); }
-    public boolean contains(int x, int y) { return nContainsIPoint(nativeInstance, x, y); }
-    public boolean contains(int left, int top, int right, int bottom) { return nContainsIRect(nativeInstance, left, top, right, bottom); }
-    public boolean contains(Region r) { return nContainsRegion(nativeInstance, r.nativeInstance); }
-    public boolean quickContains(int left, int top, int right, int bottom) { return nQuickContains(nativeInstance, left, top, right, bottom); }
-    public boolean quickReject(int left, int top, int right, int bottom) { return nQuickRejectIRect(nativeInstance, left, top, right, bottom); }
-    public boolean quickReject(Region r) { return nQuickRejectRegion(nativeInstance, r.nativeInstance); }
-    public void    translate(int dx, int dy) { nTranslate(nativeInstance, dx, dy); }
-    public boolean op(int left, int top, int right, int bottom, Op op) { return nOpIRect(nativeInstance, left, top, right, bottom, op.ordinal()); }
-    public boolean op(Region r, Op op) { return nOpRegion(nativeInstance, r.nativeInstance, op.ordinal()); }
-    public boolean op(int left, int top, int right, int bottom, Region r, Op op) { return nOpIRectRegion(nativeInstance, left, top, right, bottom, r.nativeInstance, op.ordinal()); }
-    public boolean op(Region r, int left, int top, int right, int bottom, Op op) { return nOpRegionIRect(nativeInstance, r.nativeInstance, left, top, right, bottom, op.ordinal()); }
-    public boolean op(Region a, Region b, Op op) { return nOpRegionRegion(nativeInstance, a.nativeInstance, b.nativeInstance, op.ordinal()); }
+    public boolean setRegion(Region r) { Native.onNativeCall(); return nSetRegion(nativeInstance, r.nativeInstance); }
+    public boolean setPath(Path path, Region clip) { Native.onNativeCall(); return nSetPath(nativeInstance, path.nativeInstance, clip.nativeInstance); }
+    public boolean intersects(int left, int top, int right, int bottom) { Native.onNativeCall(); return nIntersectsIRect(nativeInstance, left, top, right, bottom); }
+    public boolean intersects(Region r) { Native.onNativeCall(); return nIntersectsRegion(nativeInstance, r.nativeInstance); }
+    public boolean contains(int x, int y) { Native.onNativeCall(); return nContainsIPoint(nativeInstance, x, y); }
+    public boolean contains(int left, int top, int right, int bottom) { Native.onNativeCall(); return nContainsIRect(nativeInstance, left, top, right, bottom); }
+    public boolean contains(Region r) { Native.onNativeCall(); return nContainsRegion(nativeInstance, r.nativeInstance); }
+    public boolean quickContains(int left, int top, int right, int bottom) { Native.onNativeCall(); return nQuickContains(nativeInstance, left, top, right, bottom); }
+    public boolean quickReject(int left, int top, int right, int bottom) { Native.onNativeCall(); return nQuickRejectIRect(nativeInstance, left, top, right, bottom); }
+    public boolean quickReject(Region r) { Native.onNativeCall(); return nQuickRejectRegion(nativeInstance, r.nativeInstance); }
+    public void    translate(int dx, int dy) { Native.onNativeCall(); nTranslate(nativeInstance, dx, dy); }
+    public boolean op(int left, int top, int right, int bottom, Op op) { Native.onNativeCall(); return nOpIRect(nativeInstance, left, top, right, bottom, op.ordinal()); }
+    public boolean op(Region r, Op op) { Native.onNativeCall(); return nOpRegion(nativeInstance, r.nativeInstance, op.ordinal()); }
+    public boolean op(int left, int top, int right, int bottom, Region r, Op op) { Native.onNativeCall(); return nOpIRectRegion(nativeInstance, left, top, right, bottom, r.nativeInstance, op.ordinal()); }
+    public boolean op(Region r, int left, int top, int right, int bottom, Op op) { Native.onNativeCall(); return nOpRegionIRect(nativeInstance, r.nativeInstance, left, top, right, bottom, op.ordinal()); }
+    public boolean op(Region a, Region b, Op op) { Native.onNativeCall(); return nOpRegionRegion(nativeInstance, a.nativeInstance, b.nativeInstance, op.ordinal()); }
 
     private static final long nativeFinalizer = nGetNativeFinalizer();
     private static native long nInit();

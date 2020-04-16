@@ -2,6 +2,9 @@ package org.jetbrains.skija;
 
 public abstract class Native {
     protected long nativeInstance;
+    public static long nativeCalls = 0;
+
+    public static void onNativeCall() { nativeCalls++; }
 
     protected Native(long nativeInstance) {
         if (nativeInstance == 0)

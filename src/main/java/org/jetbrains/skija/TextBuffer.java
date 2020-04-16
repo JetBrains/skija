@@ -6,8 +6,10 @@ public class TextBuffer extends Managed {
 
     // xAdvance, yAdvance
     public float[] getAdvances() {
-        if (advances == null)
+        if (advances == null) {
+            Native.onNativeCall(); 
             advances = nGetAdvances(nativeInstance);
+        }
         return advances;
     }
 

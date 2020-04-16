@@ -33,11 +33,13 @@ public class Surface extends RefCounted {
     public BackendRenderTarget renderTarget;
 
     public static Surface makeFromBackendRenderTarget(Context context, BackendRenderTarget rt, Origin origin, ColorType colorType) {
+        Native.onNativeCall(); 
         long nativeInstance = nMakeFromBackendRenderTarget(context.nativeInstance, rt.nativeInstance, origin.ordinal(), colorType.ordinal());
         return new Surface(nativeInstance, context, rt);
     }
 
     public Canvas getCanvas() {
+        Native.onNativeCall(); 
         return new Canvas(nGetCanvas(nativeInstance), this);
     }
 

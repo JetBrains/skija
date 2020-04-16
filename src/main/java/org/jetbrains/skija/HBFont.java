@@ -22,6 +22,7 @@ public class HBFont extends Managed {
 
     public HBFont(HBFace face, float size, FontFeature[] features, FontVariation[] variations) {
         super(nInit(face.nativeInstance, size, variations), nativeFinalizer);
+        Native.onNativeCall(); 
         this.face = face;
         this.features = features;
         featuresData = new int[this.features.length * 4];
@@ -35,20 +36,24 @@ public class HBFont extends Managed {
     }
 
     public FontExtents getHorizontalExtents() {
+        Native.onNativeCall(); 
         float[] res = nGetHorizontalExtents(nativeInstance);
         return new FontExtents(res[0], res[1], res[2]);
     }
 
     public FontExtents getVerticalExtents() {
+        Native.onNativeCall(); 
         float[] res = nGetVerticalExtents(nativeInstance);
         return new FontExtents(res[0], res[1], res[2]);
     }
 
     public TextBuffer shape(String text) {
+        Native.onNativeCall(); 
         return new TextBuffer(nShape(nativeInstance, text, featuresData));
     }
 
     public TextBuffer shape(String text, FontFeature[] features) {
+        Native.onNativeCall(); 
         int[] data = featuresData;
         if (features.length > 0) {
             data = Arrays.copyOf(featuresData, featuresData.length + features.length * 4);

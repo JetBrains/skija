@@ -40,6 +40,7 @@ public abstract class Managed extends Native implements AutoCloseable {
         public void run() {
             if (stats)
                 allocated.merge(name, -1, Integer::sum);
+            Native.onNativeCall(); 
             applyNativeFinalizer(nativePtr, nativeFinalizer);
         }
     }

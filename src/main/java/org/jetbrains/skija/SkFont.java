@@ -4,6 +4,7 @@ public class SkFont extends Managed {
     public final SkTypeface typeface;
     public SkFont(SkTypeface typeface, float size) {
         super(nInit(typeface.nativeInstance, size), nativeFinalizer);
+        Native.onNativeCall(); 
         this.typeface = typeface;
     }
 

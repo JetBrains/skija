@@ -152,7 +152,7 @@ class Window {
     private NavigableMap<String, Scene> scenes;
     private String currentScene;
     private long t0;
-    private double[] times = new double[130];
+    private double[] times = new double[155];
     private int timesIdx = 0;
 
     private void draw() {
@@ -172,6 +172,8 @@ class Window {
     }
 
     public void drawStats() {
+        long nativeCalls = Native.nativeCalls;
+        Native.nativeCalls = 0;
         int allocated = Managed.allocated.values().stream().reduce(0, Integer::sum);
 
         Paint bg = new Paint().setColor(0x90000000);
@@ -184,8 +186,8 @@ class Window {
         float baseline = (20 - (extents.descender + extents.getAscenderAbs())) / 2 + extents.getAscenderAbs();
 
         // Background
-        canvas.translate(width - 205, height - 135);
-        canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 200, 130, 7), bg);
+        canvas.translate(width - 230, height - 160);
+        canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 225, 155, 7), bg);
         canvas.translate(5, 5);
 
         // Scene
@@ -204,25 +206,31 @@ class Window {
         canvas.translate(0, 25);
 
         // VSync
-        canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 2), bg);
+        canvas.drawRoundedRect(RoundedRect.makeXYWH(5, 0, 20, 20, 2), bg);
         buffer = font.hbFont.shape("V");
-        canvas.drawTextBuffer(buffer, (20 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
+        canvas.drawTextBuffer(buffer, 5 + (20 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
         buffer.close();
         buffer = font.hbFont.shape("VSync: " + (vsync ? "ON" : "OFF"));
-        canvas.drawTextBuffer(buffer, 25, baseline, font.skFont, fg);
+        canvas.drawTextBuffer(buffer, 35, baseline, font.skFont, fg);
         buffer.close();
         canvas.translate(0, 25);
 
         // GC
-        canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 2), bg);
+        canvas.drawRoundedRect(RoundedRect.makeXYWH(5, 0, 20, 20, 2), bg);
         buffer = font.hbFont.shape("G");
-        canvas.drawTextBuffer(buffer, (20 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
+        canvas.drawTextBuffer(buffer, 5 + (20 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
         buffer.close();
 
         buffer = font.hbFont.shape("GC objects: " + allocated);
-        canvas.drawTextBuffer(buffer, 25, baseline, font.skFont, fg);
+        canvas.drawTextBuffer(buffer, 35, baseline, font.skFont, fg);
         buffer.close();
         canvas.translate(0, 25);
+
+        // Native calls
+        try (var b = font.hbFont.shape("Native calls: " + nativeCalls)) {
+            canvas.drawTextBuffer(b, 35, baseline, font.skFont, fg);
+            canvas.translate(0, 25);
+        }
 
         // fps
         canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, times.length, 45, 2), bg);

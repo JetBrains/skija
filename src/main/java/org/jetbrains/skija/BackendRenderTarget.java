@@ -118,6 +118,7 @@ public class BackendRenderTarget extends Managed {
     }
 
     public static BackendRenderTarget newGL(int width, int height, int sampleCnt, int stencilBits, long fbId, long fbFormat) {
+        Native.onNativeCall();
         return new BackendRenderTarget(nNewGL(width, height, sampleCnt, stencilBits, fbId, fbFormat));
     }
 

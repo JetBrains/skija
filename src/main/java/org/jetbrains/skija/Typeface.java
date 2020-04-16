@@ -24,6 +24,7 @@ public class Typeface implements AutoCloseable {
     }
 
     public static Typeface makeFromFile(String path, int index) {
+        Native.onNativeCall(); 
         long[] ptrs = nMakeFromFile(path, index);
         if (ptrs == null)
             throw new RuntimeException("Failed to create Typeface from path=\"" + path + "\" index=" + index);

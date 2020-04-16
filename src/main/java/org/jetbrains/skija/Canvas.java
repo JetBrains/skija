@@ -12,75 +12,90 @@ public class Canvas extends Native {
     }
 
     public void drawPoint(float x, float y, Paint paint) {
+        Native.onNativeCall();
         nDrawPoint(nativeInstance, x, y, paint.nativeInstance);
     }
 
     public void drawPoints(PointMode mode, float[] coords, Paint paint) {
+        Native.onNativeCall();
         nDrawPoints(nativeInstance, mode.ordinal(), coords, paint.nativeInstance);
     }
 
     public void drawLine(float x0, float y0, float x1, float y1, Paint paint) {
+        Native.onNativeCall();
         nDrawLine(nativeInstance, x0, y0, x1, y1, paint.nativeInstance);
     }
 
     public void drawArc(float left, float top, float width, float height, float startAngle, float sweepAngle, boolean includeCenter, Paint paint) {
+        Native.onNativeCall();
         nDrawArc(nativeInstance, left, top, width, height, startAngle, sweepAngle, includeCenter, paint.nativeInstance);
     }
 
     public void drawRect(Rect r, Paint paint) {
+        Native.onNativeCall();
         nDrawRect(nativeInstance, r.left, r.top, r.right, r.bottom, paint.nativeInstance);
     }
 
     public void drawOval(Rect r, Paint paint) {
+        Native.onNativeCall();
         nDrawOval(nativeInstance, r.left, r.top, r.right, r.bottom, paint.nativeInstance);
     }
 
     public void drawCircle(float x, float y, float radius, Paint paint) {
+        Native.onNativeCall();
         nDrawOval(nativeInstance, x - radius, y - radius, x + radius, y + radius, paint.nativeInstance);
     }
 
     public void drawRoundedRect(RoundedRect r, Paint paint) {
+        Native.onNativeCall();
         nDrawRoundedRect(nativeInstance, r.left, r.top, r.right, r.bottom, r.radii, paint.nativeInstance);
     }
 
     public void drawDoubleRoundedRect(RoundedRect outer, RoundedRect inner, Paint paint) {
+        Native.onNativeCall();
         nDrawDoubleRoundedRect(nativeInstance, outer.left, outer.top, outer.right, outer.bottom, outer.radii, inner.left, inner.top, inner.right, inner.bottom, inner.radii, paint.nativeInstance);
     }
 
     public void drawPath(Path path, Paint paint) {
+        Native.onNativeCall();
         nDrawPath(nativeInstance, path.nativeInstance, paint.nativeInstance);
     }
 
-    public void drawRegion(Region r, Paint paint) { nDrawRegion(nativeInstance, r.nativeInstance, paint.nativeInstance); }
+    public void drawRegion(Region r, Paint paint) {
+        Native.onNativeCall();
+        nDrawRegion(nativeInstance, r.nativeInstance, paint.nativeInstance);
+    }
 
     public void drawTextBuffer(TextBuffer buffer, float x, float y, SkFont font, Paint paint) {
+        Native.onNativeCall();
         nDrawTextBuffer(nativeInstance, buffer.nativeInstance, x, y, font.nativeInstance, paint.nativeInstance);
     }
 
-    public void clear(long color) { nClear(nativeInstance, color); }
-    public void drawPaint(Paint paint) { nDrawPaint(nativeInstance, paint.nativeInstance); }
+    public void clear(long color) { Native.onNativeCall(); nClear(nativeInstance, color); }
+    public void drawPaint(Paint paint) { Native.onNativeCall(); nDrawPaint(nativeInstance, paint.nativeInstance); }
 
-    public void clipRect(Rect r, ClipOp op, boolean antiAlias) { nClipRect(nativeInstance, r.left, r.top, r.right, r.bottom, op.ordinal(), antiAlias); }
+    public void clipRect(Rect r, ClipOp op, boolean antiAlias) { Native.onNativeCall(); nClipRect(nativeInstance, r.left, r.top, r.right, r.bottom, op.ordinal(), antiAlias); }
     public void clipRect(Rect r, ClipOp op) { clipRect(r, op, false); }
     public void clipRect(Rect r, boolean antiAlias) { clipRect(r, ClipOp.INTERSECT, antiAlias); }
     public void clipRect(Rect r) { clipRect(r, ClipOp.INTERSECT, false); }
 
-    public void clipRoundedRect(RoundedRect r, ClipOp op, boolean antiAlias) { nClipRoundedRect(nativeInstance, r.left, r.top, r.right, r.bottom, r.radii, op.ordinal(), antiAlias); }
+    public void clipRoundedRect(RoundedRect r, ClipOp op, boolean antiAlias) { Native.onNativeCall(); nClipRoundedRect(nativeInstance, r.left, r.top, r.right, r.bottom, r.radii, op.ordinal(), antiAlias); }
     public void clipRoundedRect(RoundedRect r, ClipOp op) { clipRoundedRect(r, op, false); }
     public void clipRoundedRect(RoundedRect r, boolean antiAlias) { clipRoundedRect(r, ClipOp.INTERSECT, antiAlias); }
     public void clipRoundedRect(RoundedRect r) { clipRoundedRect(r, ClipOp.INTERSECT, false); }
 
-    public void clipPath(Path p, ClipOp op, boolean antiAlias) { nClipPath(nativeInstance, p.nativeInstance, op.ordinal(), antiAlias); }
+    public void clipPath(Path p, ClipOp op, boolean antiAlias) { Native.onNativeCall(); nClipPath(nativeInstance, p.nativeInstance, op.ordinal(), antiAlias); }
     public void clipPath(Path p, ClipOp op) { clipPath(p, op, false); }
     public void clipPath(Path p, boolean antiAlias) { clipPath(p, ClipOp.INTERSECT, antiAlias); }
     public void clipPath(Path p) { clipPath(p, ClipOp.INTERSECT, false); }
 
-    public void clipRegion(Region r, ClipOp op) { nClipRegion(nativeInstance, r.nativeInstance, op.ordinal()); }
+    public void clipRegion(Region r, ClipOp op) { Native.onNativeCall(); nClipRegion(nativeInstance, r.nativeInstance, op.ordinal()); }
     public void clipRegion(Region r) { clipRegion(r, ClipOp.INTERSECT); }
 
-    public void translate(float dx, float dy) { nConcat(nativeInstance, 1, 0, dx, 0, 1, dy, 0, 0, 1); }
-    public void scale(float sx, float sy) { nConcat(nativeInstance, sx, 0, 0, 0, sy, 0, 0, 0, 1); }
+    public void translate(float dx, float dy) { Native.onNativeCall(); nConcat(nativeInstance, 1, 0, dx, 0, 1, dy, 0, 0, 1); }
+    public void scale(float sx, float sy) { Native.onNativeCall(); nConcat(nativeInstance, sx, 0, 0, 0, sy, 0, 0, 0, 1); }
     public void rotate(float deg) {
+        Native.onNativeCall(); 
         double rad = Math.toRadians(deg);
         double sin = Math.sin(rad);
         double cos = Math.cos(rad);
@@ -90,10 +105,10 @@ public class Canvas extends Native {
         nConcat(nativeInstance, (float) cos, (float) -sin, 0, (float) sin, (float) cos, 0, 0, 0, 1);
     }
 
-    public int save() { return nSave(nativeInstance); }
-    public int getSaveCount() { return nGetSaveCount(nativeInstance); }
-    public void restore() { nRestore(nativeInstance); }
-    public void restoreToCount(int saveCount) { nRestoreToCount(nativeInstance, saveCount); }
+    public int save() { Native.onNativeCall(); return nSave(nativeInstance); }
+    public int getSaveCount() { Native.onNativeCall(); return nGetSaveCount(nativeInstance); }
+    public void restore() { Native.onNativeCall(); nRestore(nativeInstance); }
+    public void restoreToCount(int saveCount) { Native.onNativeCall(); nRestoreToCount(nativeInstance, saveCount); }
 
     private static native void nDrawPoint(long nativeCanvas, float x, float y, long nativePaint);
     private static native void nDrawPoints(long nativeCanvas, int mode, float[] coords, long nativePaint);
