@@ -3,56 +3,56 @@ package org.jetbrains.skija;
 import java.util.Arrays;
 
 public class HBFont extends Managed {
-    public final HBFace mFace;
-    public final FontFeature[] mFeatures;
-    protected final int[] mFeaturesData;
-    public final FontVariation[] mVariations;
-
+    public final HBFace face;
+    public final FontFeature[] features;
+    public final FontVariation[] variations;
+    protected final int[] featuresData;
+    
     public HBFont(HBFace face, float size) {
         this(face, size, FontFeature.EMPTY, FontVariation.EMPTY);
     }
 
-    public HBFont(HBFace face, float size, FontFeature[] features) {
+    public HBFont(HBFace face, float size, FontFeature... features) {
         this(face, size, features, FontVariation.EMPTY);
     }
 
-    public HBFont(HBFace face, float size, FontVariation[] variations) {
+    public HBFont(HBFace face, float size, FontVariation... variations) {
         this(face, size, FontFeature.EMPTY, variations);
     }
 
     public HBFont(HBFace face, float size, FontFeature[] features, FontVariation[] variations) {
-        super(nInit(face.mNativeInstance, size, variations), kNativeFinalizer);
-        mFace = face;
-        mFeatures = features;
-        mFeaturesData = new int[mFeatures.length * 4];
-        for (int i = 0; i < mFeatures.length; ++i) {
-            mFeaturesData[i * 4] = mFeatures[i].tag;
-            mFeaturesData[i * 4 + 1] = mFeatures[i].value;
-            mFeaturesData[i * 4 + 2] = mFeatures[i].start;
-            mFeaturesData[i * 4 + 3] = mFeatures[i].end;
+        super(nInit(face.nativeInstance, size, variations), nativeFinalizer);
+        this.face = face;
+        this.features = features;
+        featuresData = new int[this.features.length * 4];
+        for (int i = 0; i < this.features.length; ++i) {
+            featuresData[i * 4] = this.features[i].tag;
+            featuresData[i * 4 + 1] = this.features[i].value;
+            featuresData[i * 4 + 2] = this.features[i].start;
+            featuresData[i * 4 + 3] = this.features[i].end;
         }
-        mVariations = variations;
+        this.variations = variations;
     }
 
     public FontExtents getHorizontalExtents() {
-        float[] res = nGetHorizontalExtents(mNativeInstance);
+        float[] res = nGetHorizontalExtents(nativeInstance);
         return new FontExtents(res[0], res[1], res[2]);
     }
 
     public FontExtents getVerticalExtents() {
-        float[] res = nGetVerticalExtents(mNativeInstance);
+        float[] res = nGetVerticalExtents(nativeInstance);
         return new FontExtents(res[0], res[1], res[2]);
     }
 
     public TextBuffer shape(String text) {
-        return new TextBuffer(nShape(mNativeInstance, text, mFeaturesData));
+        return new TextBuffer(nShape(nativeInstance, text, featuresData));
     }
 
     public TextBuffer shape(String text, FontFeature[] features) {
-        int[] data = mFeaturesData;
+        int[] data = featuresData;
         if (features.length > 0) {
-            data = Arrays.copyOf(mFeaturesData, mFeaturesData.length + features.length * 4);
-            int baseIdx = mFeaturesData.length;
+            data = Arrays.copyOf(featuresData, featuresData.length + features.length * 4);
+            int baseIdx = featuresData.length;
             for (int i = 0; i < features.length; ++i) {
                 data[baseIdx + i * 4] = features[i].tag;
                 data[baseIdx + i * 4 + 1] = features[i].value;
@@ -60,10 +60,10 @@ public class HBFont extends Managed {
                 data[baseIdx + i * 4 + 3] = features[i].end;
             }
         }
-        return new TextBuffer(nShape(mNativeInstance, text, data));
+        return new TextBuffer(nShape(nativeInstance, text, data));
     }
 
-    private static long kNativeFinalizer = nGetNativeFinalizer();
+    private static final long nativeFinalizer = nGetNativeFinalizer();
     private static native long nInit(long facePtr, float size, FontVariation[] variations);
     private static native long nGetNativeFinalizer();
 

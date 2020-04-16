@@ -16,7 +16,7 @@ Use the regular
  sequence, and assuming the Skija project has been built it shall compile and run example
  showing how to use Skija in JOGL context from Kotlin.
 
- You could also use `SkiaWindow` class from your application code ass simple as
+ You could also use `SkiaWindow` class from your application code as simple as
 
  ```$kotlin
     var radius = 50f

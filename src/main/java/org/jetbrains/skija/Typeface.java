@@ -2,20 +2,21 @@ package org.jetbrains.skija;
 
 import java.util.Arrays;
 
-public class Typeface {
-    public final SkTypeface mSkTypeface;
-    public final HBFace mHBFace;
+public class Typeface implements AutoCloseable {
+    public final SkTypeface skTypeface;
+    public final HBFace hbFace;
     public final FontVariation[] variations;
 
     protected Typeface(SkTypeface skTypeface, HBFace hbFace, FontVariation[] variations) {
-        mSkTypeface = skTypeface;
-        mHBFace = hbFace;
+        this.skTypeface = skTypeface;
+        this.hbFace = hbFace;
         this.variations = variations;
     }
 
-    public void release() {
-        mSkTypeface.release();
-        mHBFace.release();
+    @Override
+    public void close() {
+        skTypeface.close();
+        hbFace.close();
     }
 
     public static Typeface makeFromFile(String path) {
@@ -32,7 +33,7 @@ public class Typeface {
     public Typeface with(FontVariation... variations) {
         FontVariation[] newVariations = Arrays.copyOf(this.variations, this.variations.length + variations.length);
         System.arraycopy(variations, 0, newVariations, this.variations.length, variations.length);
-        return new Typeface(mSkTypeface.makeClone(variations), mHBFace, newVariations);
+        return new Typeface(skTypeface.makeClone(variations), hbFace, newVariations);
     }
 
     private static native long[] nMakeFromFile(String path, int index);

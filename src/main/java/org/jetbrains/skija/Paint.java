@@ -1,50 +1,34 @@
 package org.jetbrains.skija;
 
 public class Paint extends Managed {
-    public static enum Style {
-        FILL,
-        STROKE,
-        STROKE_AND_FILL;
+    public enum Style { FILL, STROKE, STROKE_AND_FILL }
+    public enum Cap { BUTT, ROUND, SQUARE }
+    public enum Join { MITER, ROUND, BEVEL }
 
-        // Style values = Style.values()
-    }
+    public Paint() { super(nInit(), nativeFinalizer); }
 
-    public static enum Cap {
-        BUTT,
-        ROUND,
-        SQUARE
-    }
+    public boolean isAntiAlias() { return nIsAntiAlias(nativeInstance); }
+    public Paint setAntiAlias(boolean value) { nSetAntiAlias(nativeInstance, value); return this; }
 
-    public static enum Join {
-        MITER,
-        ROUND,
-        BEVEL
-    }
+    public long getColor() { return nGetColor(nativeInstance); }
+    public Paint setColor(long color) { nSetColor(nativeInstance, color); return this; }
 
-    public Paint() { super(nInit(), kNativeFinalizer); }
+    public Style getStyle() { return Style.values()[nGetStyle(nativeInstance)]; }
+    public Paint setStyle(Style style) { nSetStyle(nativeInstance, style.ordinal()); return this; }
 
-    public boolean isAntiAlias() { return nIsAntiAlias(mNativeInstance); }
-    public Paint setAntiAlias(boolean value) { nSetAntiAlias(mNativeInstance, value); return this; }
+    public float getStrokeWidth() { return nGetStrokeWidth(nativeInstance); }
+    public Paint setStrokeWidth(float width) { nSetStrokeWidth(nativeInstance, width); return this; }
 
-    public long getColor() { return nGetColor(mNativeInstance); }
-    public Paint setColor(long color) { nSetColor(mNativeInstance, color); return this; }
+    public long getStrokeMiter() { return nGetStrokeMiter(nativeInstance); }
+    public Paint setStrokeMiter(float limit) { nSetStrokeMiter(nativeInstance, limit); return this; }
 
-    public Style getStyle() { return Style.values()[nGetStyle(mNativeInstance)]; }
-    public Paint setStyle(Style style) { nSetStyle(mNativeInstance, style.ordinal()); return this; }
+    public Cap getStrokeCap() { return Cap.values()[nGetStrokeJoin(nativeInstance)]; }
+    public Paint setStrokeCap(Cap cap) { nSetStrokeCap(nativeInstance, cap.ordinal()); return this; }
 
-    public float getStrokeWidth() { return nGetStrokeWidth(mNativeInstance); }
-    public Paint setStrokeWidth(float width) { nSetStrokeWidth(mNativeInstance, width); return this; }
+    public Join getStrokeJoin() { return Join.values()[nGetStrokeJoin(nativeInstance)]; }
+    public Paint setStrokeJoin(Join join) { nSetStrokeJoin(nativeInstance, join.ordinal()); return this; }
 
-    public long getStrokeMiter() { return nGetStrokeMiter(mNativeInstance); }
-    public Paint setStrokeMiter(float limit) { nSetStrokeMiter(mNativeInstance, limit); return this; }
-
-    public Cap getStrokeCap() { return Cap.values()[nGetStrokeJoin(mNativeInstance)]; }
-    public Paint setStrokeCap(Cap cap) { nSetStrokeCap(mNativeInstance, cap.ordinal()); return this; }
-
-    public Join getStrokeJoin() { return Join.values()[nGetStrokeJoin(mNativeInstance)]; }
-    public Paint setStrokeJoin(Join join) { nSetStrokeJoin(mNativeInstance, join.ordinal()); return this; }
-
-    private static long kNativeFinalizer = nGetNativeFinalizer();
+    private static final long nativeFinalizer = nGetNativeFinalizer();
     private static native long nInit();
     private static native long nGetNativeFinalizer();
     private static native boolean nIsAntiAlias(long nativeInstance);

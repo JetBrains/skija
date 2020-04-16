@@ -5,9 +5,9 @@ public class Context extends RefCounted {
         return new Context(nMakeGL());
     }
 
-    public void flush() { nFlush(mNativeInstance); }
+    public void flush() { nFlush(nativeInstance); }
 
-    public Context(long nativeInstance) { super(nativeInstance); }
+    protected Context(long nativeInstance) { super(nativeInstance); }
 
     private static native long nMakeGL();
     private static native long nFlush(long nativeInstance);

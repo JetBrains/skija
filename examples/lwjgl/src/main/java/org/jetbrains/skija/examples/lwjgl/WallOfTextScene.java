@@ -13,6 +13,8 @@ public class WallOfTextScene implements Scene {
     private Font font;
     private List<String> words;
     private Map<String, TextBuffer> cache;
+    private Paint textColor;
+    private Paint highlightColor;
 
     public WallOfTextScene(boolean useCache) {
         var face = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf");
@@ -23,45 +25,68 @@ public class WallOfTextScene implements Scene {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        if (useCache)
+        if (useCache) {
             cache = new HashMap<>();
+            textColor = new Paint().setColor(0xFF487D58);
+            highlightColor = new Paint().setColor(0xFFEEA002);
+        } else {
+            textColor = new Paint().setColor(0xFF454A6F);
+            highlightColor = new Paint().setColor(0xFFE7582A); 
+        }
+    }
+    
+    private TextBuffer getTextBuffer(String s) {
+        if (cache == null) 
+            return font.hbFont.shape(s);
+        else
+            return cache.computeIfAbsent(s, w -> font.hbFont.shape(w));
+    }
+    
+    private void releaseTextBuffer(TextBuffer b) {
+        if (cache == null)
+            b.close();
     }
 
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
-        FontExtents extents = font.mHBFont.getHorizontalExtents();
-        try (Paint paint = new Paint().setColor(0xFF000000)) {
-            var paddingH = 20f;
-            var paddingV = 20f;
-            float wordGap;
-            if (cache == null)
-                try (TextBuffer buffer = font.mHBFont.shape(" ")) { wordGap = buffer.getAdvances()[0]; }
-            else
-                wordGap = cache.computeIfAbsent(" ", w -> font.mHBFont.shape(w)).getAdvances()[0];
-            var lineHeight = -extents.ascender + extents.descender;
-            var lineGap = extents.lineGap + 0;
-            var x = paddingH;
-            var y = paddingV;
+        FontExtents extents = font.hbFont.getHorizontalExtents();
+        
+        var paddingH = 20f;
+        var paddingV = 20f;
+        TextBuffer b = getTextBuffer(" ");
+        var wordGap = b.getAdvances()[0];
+        releaseTextBuffer(b);
+        var lineHeight = -extents.ascender + extents.descender;
+        var lineGap = extents.lineGap + 0;
+        TextBuffer countBuffer = getTextBuffer("8888 words");
+        var x = paddingH + countBuffer.getAdvances()[0] + wordGap;
+        var y = paddingV;
+        releaseTextBuffer(countBuffer);
+        
+        var count = 0;
 
-            for (var word : words) {
-                TextBuffer buffer = cache != null ? cache.computeIfAbsent(word, w -> font.mHBFont.shape(w)) : font.mHBFont.shape(word);
-                try {
-                    float[] advances = buffer.getAdvances();
-                    if (x + advances[0] > width - paddingH) {
-                        x = paddingH;
-                        y = y + lineHeight + lineGap;
-                    }
-
-                    if (y + lineHeight > height - paddingV)
-                        break;
-
-                    canvas.drawTextBuffer(buffer, x, y - extents.ascender, font.mSkFont, paint);
-                    x = x + advances[0] + wordGap;
-                } finally {
-                    if (cache == null)
-                        buffer.close();
+        for (var word: words) {
+            TextBuffer buffer = getTextBuffer(word);
+            try {
+                float[] advances = buffer.getAdvances();
+                if (x + advances[0] > width - paddingH) {
+                    x = paddingH;
+                    y = y + lineHeight + lineGap;
                 }
+
+                if (y + lineHeight > height - paddingV)
+                    break;
+
+                canvas.drawTextBuffer(buffer, x, y - extents.ascender, font.skFont, textColor);
+                x = x + advances[0] + wordGap;
+            } finally {
+                releaseTextBuffer(buffer);
             }
+            ++count;
+        }
+        
+        try (var buf = font.hbFont.shape(count + " words")) {
+            canvas.drawTextBuffer(buf, paddingH, paddingV - extents.ascender, font.skFont, highlightColor);
         }
     }
 }

@@ -1,28 +1,29 @@
 package org.jetbrains.skija;
 
-public class Font {
-    public final Typeface mTypeface;
-    public final SkFont mSkFont;
-    public final HBFont mHBFont;
+public class Font implements AutoCloseable {
+    public final Typeface typeface;
+    public final SkFont skFont;
+    public final HBFont hbFont;
 
     protected Font(Typeface typeface, SkFont skFont, HBFont hbFont) {
-        mTypeface = typeface;
-        mSkFont = skFont;
-        mHBFont = hbFont;
+        this.typeface = typeface;
+        this.skFont = skFont;
+        this.hbFont = hbFont;
     }
 
     public Font(Typeface typeface, float size, FontFeature... features) {
         this(typeface,
-             new SkFont(typeface.mSkTypeface, size),
-             new HBFont(typeface.mHBFace, size, features, typeface.variations));
+             new SkFont(typeface.skTypeface, size),
+             new HBFont(typeface.hbFace, size, features, typeface.variations));
     }
 
     public Font(Typeface typeface, float size) {
         this(typeface, size, FontFeature.EMPTY);
     }
 
-    public void release() {
-        mSkFont.release();
-        mHBFont.release();
+    @Override
+    public void close() {
+        skFont.close();
+        hbFont.close();
     }
 }

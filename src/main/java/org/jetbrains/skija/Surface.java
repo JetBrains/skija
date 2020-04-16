@@ -1,9 +1,9 @@
 package org.jetbrains.skija;
 
 public class Surface extends RefCounted {
-    public static enum Origin { TOP_LEFT, BOTTOM_LEFT }
+    public enum Origin { TOP_LEFT, BOTTOM_LEFT }
 
-    public static enum ColorType {
+    public enum ColorType {
         UNKNOWN,      //!< uninitialized
         ALPHA_8,      //!< pixel with alpha in 8-bit byte
         RGB_565,      //!< pixel with 5 bits red, 6 bits green, 5 bits blue, in 16-bit word
@@ -29,22 +29,22 @@ public class Surface extends RefCounted {
         R16G16B16A16_UNORM//<! pixel with a little endian uint16_t for red, green, blue, and alpha
     }
 
-    public Context mContext;
-    public BackendRenderTarget mRenderTarget;
+    public Context context;
+    public BackendRenderTarget renderTarget;
 
     public static Surface makeFromBackendRenderTarget(Context context, BackendRenderTarget rt, Origin origin, ColorType colorType) {
-        long nativeInstance = nMakeFromBackendRenderTarget(context.mNativeInstance, rt.mNativeInstance, origin.ordinal(), colorType.ordinal());
+        long nativeInstance = nMakeFromBackendRenderTarget(context.nativeInstance, rt.nativeInstance, origin.ordinal(), colorType.ordinal());
         return new Surface(nativeInstance, context, rt);
     }
 
     public Canvas getCanvas() {
-        return new Canvas(nGetCanvas(mNativeInstance), this);
+        return new Canvas(nGetCanvas(nativeInstance), this);
     }
 
     protected Surface(long nativeInstance, Context context, BackendRenderTarget rt) {
         super(nativeInstance);
-        mContext = context;
-        mRenderTarget = rt;
+        this.context = context;
+        renderTarget = rt;
     }
 
     private static native long nMakeFromBackendRenderTarget(long pContext, long pBackendRenderTarget, int surfaceOrigin, int colorType);

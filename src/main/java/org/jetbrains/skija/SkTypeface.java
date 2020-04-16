@@ -11,7 +11,7 @@ public class SkTypeface extends RefCounted {
     public SkTypeface makeClone(FontVariation[] variations) {
         if (variations.length == 0)
             return this;
-        return new SkTypeface(nMakeClone(mNativeInstance, variations));
+        return new SkTypeface(nMakeClone(nativeInstance, variations));
     }
 
     protected SkTypeface(long nativeInstance) { super(nativeInstance); }

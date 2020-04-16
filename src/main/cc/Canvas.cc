@@ -6,15 +6,6 @@
 #include "hb.h"
 #include "hb_util.hh"
 
-// static void deleteCanvas(SkCanvas* canvas) {
-//     delete canvas;
-// }
-
-// extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Canvas_nGetNativeFinalizer
-//   (JNIEnv* env, jclass jclass) {
-//     return static_cast<jlong>(reinterpret_cast<uintptr_t>(&deleteCanvas));
-// }
-
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawPoint
   (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloat x, jfloat y, jlong paintPtr) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));

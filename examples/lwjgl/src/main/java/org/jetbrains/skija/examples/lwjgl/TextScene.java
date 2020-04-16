@@ -16,7 +16,7 @@ public class TextScene implements Scene {
         jbMonoRegular = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf");
         interRegular  = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interVariable = Typeface.makeFromFile("fonts/Inter-V.otf");
-        axes = interVariable.mHBFace.getAxes();
+        axes = interVariable.hbFace.getAxes();
         System.out.println(Arrays.toString(axes));
     }
 
@@ -38,11 +38,11 @@ public class TextScene implements Scene {
 
         float percent = Math.abs((System.currentTimeMillis() % 3000) / 10f - 150f) - 25f;
         percent = Math.round(Math.max(0f, Math.min(100f, percent)));
-        for (int i = 0; i < axes.length; ++i) {
-            float value = Math.round(axes[i].minValue + percent * 0.01f * (axes[i].maxValue - axes[i].minValue));
-            var variation = new FontVariation(axes[i].tag, value);
+        for (FontAxisInfo axis: axes) {
+            float value = Math.round(axis.minValue + percent * 0.01f * (axis.maxValue - axis.minValue));
+            var variation = new FontVariation(axis.tag, value);
             var typeface = interVariations.computeIfAbsent(variation, v -> interVariable.with(v));
-            drawText(canvas, 0xff000000, typeface,  18, "Inter Variable 18px " + axes[i].name + "=" + value);
+            drawText(canvas, 0xff000000, typeface, 18, "Inter Variable 18px " + axis.name + "=" + value);
         }
     }
 
@@ -53,33 +53,31 @@ public class TextScene implements Scene {
     public void drawText(Canvas canvas, int color, Typeface typeface, float size, String text, FontFeature[] features) {
         FontFeature[] fontFeatures = Arrays.copyOf(features, features.length / 2);
         FontFeature[] shapeFeatures = Arrays.copyOfRange(features, features.length / 2, features.length);
-
-        Font font = new Font(typeface, size, fontFeatures);
-        FontExtents extents = font.mHBFont.getHorizontalExtents();
-
-        TextBuffer buffer = font.mHBFont.shape(text, shapeFeatures);
-        float[] advances = buffer.getAdvances();
-
-        canvas.save();
-        canvas.translate(0, -extents.ascender);
-
-        // bounds
-        Paint paint = new Paint().setColor(0x10000000 | (color & 0xFFFFFF));
-        canvas.drawRect(Rect.makeLTRB(0, extents.ascender, advances[0], extents.descender), paint);
-
-        // baseline
-        paint.setColor(0x40000000 | (color & 0xFFFFFF)).setStrokeWidth(1);
-        canvas.drawLine(0, 0, advances[0], 0, paint);
-
-        // text
-        paint.setColor(0xFF000000 | (color & 0xFFFFFF));
-        canvas.drawTextBuffer(buffer, 0, 0, font.mSkFont, paint);
-
-        canvas.restore();
-        canvas.translate(0, -extents.ascender + extents.descender + extents.lineGap + 10);
-
-        paint.release();
-        buffer.release();
-        font.release();
+        
+        try (
+                Font font = new Font(typeface, size, fontFeatures);
+                TextBuffer buffer = font.hbFont.shape(text, shapeFeatures);
+                Paint paint = new Paint().setColor(0x10000000 | (color & 0xFFFFFF))
+        ) {
+            FontExtents extents = font.hbFont.getHorizontalExtents();
+            float[] advances = buffer.getAdvances();
+    
+            canvas.save();
+            canvas.translate(0, -extents.ascender);
+    
+            // bounds
+            canvas.drawRect(Rect.makeLTRB(0, extents.ascender, advances[0], extents.descender), paint);
+        
+            // baseline
+            paint.setColor(0x40000000 | (color & 0xFFFFFF)).setStrokeWidth(1);
+            canvas.drawLine(0, 0, advances[0], 0, paint);
+        
+            // text
+            paint.setColor(0xFF000000 | (color & 0xFFFFFF));
+            canvas.drawTextBuffer(buffer, 0, 0, font.skFont, paint);
+        
+            canvas.restore();
+            canvas.translate(0, -extents.ascender + extents.descender + extents.lineGap + 10);
+        }
     }
 }

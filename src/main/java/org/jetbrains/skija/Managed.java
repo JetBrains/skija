@@ -5,26 +5,22 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class Managed extends Native implements AutoCloseable {
-    protected Cleaner.Cleanable mFinalizer;
-    public static boolean allocationStats = false;
+    protected Cleaner.Cleanable finalizer;
+    public static boolean stats = false;
 
-    protected Managed(long nativeInstance, long nativeFinalizer) {
-        super(nativeInstance);
+    protected Managed(long nativePtr, long nativeFinalizer) {
+        super(nativePtr);
         String name = getClass().getSimpleName();
-        if (allocationStats)
+        if (stats)
             allocated.merge(name, 1, Integer::sum);
-        mFinalizer = cleaner.register(this, new CleanerThunk(name, nativeInstance, nativeFinalizer));
-    }
-
-    public void release() {
-        mFinalizer.clean();
-        mFinalizer = null;
-        mNativeInstance = 0;
+        finalizer = cleaner.register(this, new CleanerThunk(name, nativePtr, nativeFinalizer));
     }
 
     @Override
     public void close() {
-        release();
+        finalizer.clean();
+        finalizer = null;
+        nativeInstance = 0;
     }
 
     public static Map<String, Integer> allocated = new ConcurrentHashMap<>();
@@ -42,7 +38,7 @@ public abstract class Managed extends Native implements AutoCloseable {
         }
 
         public void run() {
-            if (allocationStats)
+            if (stats)
                 allocated.merge(name, -1, Integer::sum);
             applyNativeFinalizer(nativePtr, nativeFinalizer);
         }

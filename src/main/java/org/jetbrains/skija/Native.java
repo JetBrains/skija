@@ -1,26 +1,26 @@
 package org.jetbrains.skija;
 
 public abstract class Native {
-    protected long mNativeInstance;
+    protected long nativeInstance;
 
     protected Native(long nativeInstance) {
         if (nativeInstance == 0)
-            throw new RuntimeException("Native returned nullptr");
-        mNativeInstance = nativeInstance;
+            throw new RuntimeException("nativeInstance returned nullptr");
+        this.nativeInstance = nativeInstance;
     }
 
     public long getNativeInstance() {
-        return mNativeInstance;
+        return nativeInstance;
     }
 
     @Override
     public boolean equals(Object object) {
-        return this == object || (object != null && getClass() == object.getClass() && mNativeInstance == ((Managed) object).mNativeInstance);
+        return this == object || (object != null && getClass() == object.getClass() && nativeInstance == ((Managed) object).nativeInstance);
     }
 
     @Override
-    public int hashCode() { return Long.hashCode(mNativeInstance); }
+    public int hashCode() { return Long.hashCode(nativeInstance); }
 
     @Override
-    public String toString() { return "[" + getClass().getSimpleName() + " 0x" + Long.toString(mNativeInstance, 16) + "]"; }
+    public String toString() { return "[" + getClass().getSimpleName() + " 0x" + Long.toString(nativeInstance, 16) + "]"; }
 }

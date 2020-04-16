@@ -121,9 +121,9 @@ public class BackendRenderTarget extends Managed {
         return new BackendRenderTarget(nNewGL(width, height, sampleCnt, stencilBits, fbId, fbFormat));
     }
 
-    BackendRenderTarget(long nativeInstance) { super(nativeInstance, kNativeFinalizer); }
+    BackendRenderTarget(long nativeInstance) { super(nativeInstance, nativeFinalizer); }
 
-    private static long kNativeFinalizer = nGetNativeFinalizer();
+    private static final long nativeFinalizer = nGetNativeFinalizer();
     private static native long nGetNativeFinalizer();
     private static native long nNewGL(int width, int height, int sampleCnt, int stencilBits, long fbId, long fbFormat);
 }
