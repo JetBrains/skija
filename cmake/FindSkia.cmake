@@ -31,6 +31,7 @@ endif()
 
 # SkShaper module + freetype + harfbuzz
 find_library(SKSHAPER_LIBRARY skshaper PATH "${SKIA_LIBRARY_DIR}")
+find_path(SKSHAPER_INCLUDE_DIR SkShaper.h HINTS "${SKIA_DIR}/modules/skshaper/include")
 if(NOT FREETYPE_LIBRARIES)
   set(FREETYPE_FOUND ON)
   find_library(FREETYPE_LIBRARY freetype2 PATH "${SKIA_LIBRARY_DIR}")
@@ -72,6 +73,7 @@ target_include_directories(skia INTERFACE
   ${SKIA_GPU_INCLUDE_DIR}
   ${SKIA_GPU2_INCLUDE_DIR}
   ${SKIA_SKCMS_INCLUDE_DIR}
+  ${SKSHAPER_INCLUDE_DIR}
   ${FREETYPE_INCLUDE_DIRS}
   ${HARFBUZZ_INCLUDE_DIRS})
 if(WIN32)

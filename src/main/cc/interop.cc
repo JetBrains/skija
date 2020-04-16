@@ -21,18 +21,6 @@ jfloatArray javaFloatArray(JNIEnv* env, FloatArray floats) {
     return res;
 }
 
-int32_t getRefCnt(SkRefCnt* ref) {
-    return reinterpret_cast<SkRefCntHack*>(ref)->fRefCnt.load(std::memory_order_relaxed);
-}
-
-void unrefSkRefCnt(SkRefCnt* p) {
-    if (p->unique())
-        std::cout << "Deleting [" << p << "]" << std::endl;
-    else
-        std::cout << "Unref [" << p << "] " << getRefCnt(p) << " - 1" << std::endl;
-    p->unref();
-}
-
 FontVariationClass* fontVariationClass = nullptr;
 
 void maybeInitFontVariationClass(JNIEnv* env) {

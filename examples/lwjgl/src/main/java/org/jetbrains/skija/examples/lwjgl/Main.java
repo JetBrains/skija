@@ -319,7 +319,7 @@ class Window {
             "Wall of Text", new WallOfTextScene(false),
             "Watches",      new WatchesScene()
         ));
-        currentScene = "Wall Cached";
+        currentScene = "Text";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13, new FontFeature("tnum"));
         t0 = System.nanoTime();

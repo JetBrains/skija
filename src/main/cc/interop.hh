@@ -12,15 +12,6 @@ jintArray javaIntArray(JNIEnv* env, IntArray ints);
 jlongArray javaLongArray(JNIEnv* env, LongArray longs);
 jfloatArray javaFloatArray(JNIEnv* env, FloatArray floats);
 
-class SkRefCntHack {
-public:
-    void* x;
-    mutable std::atomic<int32_t> fRefCnt;
-};
-
-int32_t getRefCnt(SkRefCnt* ref);
-void unrefSkRefCnt(SkRefCnt* p);
-
 typedef struct {
     jclass cls;
     jfieldID tagID;

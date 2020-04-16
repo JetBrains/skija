@@ -17,7 +17,6 @@ public class TextScene implements Scene {
         interRegular  = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interVariable = Typeface.makeFromFile("fonts/Inter-V.otf");
         axes = interVariable.hbFace.getAxes();
-        System.out.println(Arrays.toString(axes));
     }
 
     @Override
@@ -43,6 +42,33 @@ public class TextScene implements Scene {
             var variation = new FontVariation(axis.tag, value);
             var typeface = interVariations.computeIfAbsent(variation, v -> interVariable.with(v));
             drawText(canvas, 0xff000000, typeface, 18, "Inter Variable 18px " + axis.name + "=" + value);
+        }
+
+        drawBlob(canvas, 0xFF454A6F, interRegular, 18, "This TextBlob here is going to span multiple lines. If it doesn’t, please contact application administrator", 100 + percent);
+
+        drawBlob(canvas, 0xFF454A6F, interRegular, 18, "This TextBlob here is going to span multiple lines. If it doesn’t, please contact application administrator", 100 + percent);
+    }
+
+    private void drawBlob(Canvas canvas, int color, Typeface typeface, float size, String text, float width) {
+        try (
+            var font = new Font(typeface, size);
+            var blob = font.skFont.shape(text, width);
+            var paint = new Paint().setColor(0x10000000 | (color & 0xFFFFFF))
+        ) {
+            // text bounds
+            Rect bounds = blob.getBounds();
+            System.out.println(bounds);
+            canvas.drawRect(bounds, paint);
+
+            // container bounds
+            paint.setColor(0x40000000 | (color & 0xFFFFFF)).setStyle(Paint.Style.STROKE).setStrokeWidth(1);
+            canvas.drawRect(Rect.makeLTRB(0, 0, width, bounds.bottom), paint);
+
+            // text
+            paint.setColor(0xFF000000 | (color & 0xFFFFFF)).setStyle(Paint.Style.FILL);
+            canvas.drawTextBlob(blob, 0, 0, font.skFont, paint);
+
+            canvas.translate(0, bounds.bottom + 10);
         }
     }
 
