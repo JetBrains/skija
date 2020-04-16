@@ -16,7 +16,7 @@ public class Path extends Managed {
     public Path rMoveTo(float dx, float dy) { nRMoveTo(mNativeInstance, dx, dy); return this; }
     public Path lineTo(float x, float y) { nLineTo(mNativeInstance, x, y); return this; }
     public Path rLineTo(float dx, float dy) { nRLineTo(mNativeInstance, dx, dy); return this;}
-    public Path close() { nClose(mNativeInstance); return this; }
+    public Path closePath() { nClosePath(mNativeInstance); return this; }
     public Path quadTo(float x1, float y1, float x2, float y2) { nQuadTo(mNativeInstance, x1, y1, x2, y2); return this; }
     public Path rQuadTo(float dx1, float dy1, float dx2, float dy2) { nRQuadTo(mNativeInstance, dx1, dy1, dx2, dy2); return this; }
     public Path conicTo(float x1, float y1, float x2, float y2, float w) { nConicTo(mNativeInstance, x1, y1, x2, y2, w); return this; }
@@ -63,5 +63,5 @@ public class Path extends Managed {
     private static native void nEllipticalArcTo(long nativeInstance, float rx, float ry, float xAxisRotate, int size, int direction, float x, float y);
     private static native void nREllipticalArcTo(long nativeInstance, float rx, float ry, float xAxisRotate, int size, int direction, float dx, float dy);
     private static native void nAddPoly(long nativeInstance, float[] coords, boolean close);
-    private static native void nClose(long nativeInstance);
+    private static native void nClosePath(long nativeInstance);
 }

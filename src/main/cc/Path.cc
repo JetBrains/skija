@@ -127,7 +127,7 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path_nAddPoly
 }
 
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path_nClose(JNIEnv* env, jclass jclass, jlong ptr) {
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path_nClosePath(JNIEnv* env, jclass jclass, jlong ptr) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
     instance->close();
 }

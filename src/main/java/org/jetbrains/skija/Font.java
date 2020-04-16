@@ -11,7 +11,7 @@ public class Font {
         mHBFont = hbFont;
     }
 
-    public Font(Typeface typeface, float size, FontFeature[] features) {
+    public Font(Typeface typeface, float size, FontFeature... features) {
         this(typeface,
              new SkFont(typeface.mSkTypeface, size),
              new HBFont(typeface.mHBFace, size, features, typeface.variations));

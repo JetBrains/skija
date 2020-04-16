@@ -207,7 +207,7 @@ public class PrimitivesScene implements Scene {
         path.lineTo(0.9f, 15.4f);
         path.lineTo(39f, 15.4f);
         path.lineTo(8.2f, 37.8f);
-        path.close();
+        path.closePath();
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
@@ -248,11 +248,11 @@ public class PrimitivesScene implements Scene {
         canvas.translate(50, 0);
 
         // cubic apple rounding
-        path.reset().lineTo(0, 20).arcTo(0, 0, 40, 40, 180, -90, false).lineTo(40, 40).lineTo(40, 0).close();
+        path.reset().lineTo(0, 20).arcTo(0, 0, 40, 40, 180, -90, false).lineTo(40, 40).lineTo(40, 0).closePath();
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
-        path.reset().lineTo(0, 10).cubicTo(0, 30, 10, 40, 30, 40).lineTo(40, 40).lineTo(40, 0).close();
+        path.reset().lineTo(0, 10).cubicTo(0, 30, 10, 40, 30, 40).lineTo(40, 40).lineTo(40, 0).closePath();
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
@@ -267,7 +267,7 @@ public class PrimitivesScene implements Scene {
         path.cubicTo(-20.5f, -10,    -25,     -5.5f, -25,   0); // To far left of left loop
         path.cubicTo(-25,      5.5f, -20.5f,  10,    -15,  10); // To bottom of left loop
         path.cubicTo( -9.5f,  10,     -5,      5,      0,   0); // Back to center
-        path.close();
+        path.closePath();
         canvas.drawPath(path, paint);
         canvas.translate(35, -20);
 
@@ -331,12 +331,12 @@ public class PrimitivesScene implements Scene {
         // multi shapes
         path.reset().setFillType(Path.FillType.EVEN_ODD);
         path.arcTo(0, 5, 35, 40, 0, 359, true);
-        path.close();
+        path.closePath();
         path.addPoly(new float[] { 5, 0, 35, 0, 35, 30, 5, 30 }, true);
         path.moveTo(5, 35);
         path.lineTo(20, 5);
         path.lineTo(35, 35);
-        path.close();
+        path.closePath();
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
@@ -398,7 +398,7 @@ public class PrimitivesScene implements Scene {
             .rLineTo(15f, 0).rCubicTo(5, 0, 7.5f, 0, 10, 2.5f).rCubicTo(2.5f, 2.5f, 2.5f, 5f, 2.5f, 10f)
             .lineTo(40, 22f).arcTo(22f, 22f, 40, 40, 0, 90, false)
             .lineTo(18f, 40).arcTo(0, 22f, 18f, 40, 90, 90, false)
-            .close();
+            .closePath();
         canvas.clipPath(path, true);
         canvas.drawPaint(new Paint().setColor(0xFF3F80A7));
         canvas.restore();
@@ -440,7 +440,7 @@ public class PrimitivesScene implements Scene {
 
         // setPath
         Path path = new Path().setFillType(Path.FillType.EVEN_ODD).moveTo(xOffset * dpi, yOffset * dpi)
-            .rMoveTo(20 * dpi, 1.6f * dpi).rLineTo(11.7f * dpi, 36.2f * dpi).rLineTo(-30.8f * dpi, -22.4f * dpi).rLineTo(38.1f * dpi, 0f * dpi).rLineTo(-30.8f * dpi, 22.4f * dpi).close();
+            .rMoveTo(20 * dpi, 1.6f * dpi).rLineTo(11.7f * dpi, 36.2f * dpi).rLineTo(-30.8f * dpi, -22.4f * dpi).rLineTo(38.1f * dpi, 0f * dpi).rLineTo(-30.8f * dpi, 22.4f * dpi).closePath();
         Region r2 = new Region();
         r2.setRect((int) ((xOffset + 7) * dpi), (int) ((yOffset + 7) * dpi), (int) ((xOffset + 33) * dpi), (int) ((yOffset + 33) * dpi));
         r.setEmpty();

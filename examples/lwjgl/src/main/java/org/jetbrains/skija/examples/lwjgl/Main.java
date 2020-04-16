@@ -307,11 +307,13 @@ class Window {
             "Watches", new WatchesScene(),
             "Primitives", new PrimitivesScene(),
             "Text", new TextScene(),
+            "Wall of Text", new WallOfTextScene(false),
+            "Wall Cached", new WallOfTextScene(true),
             "Empty", new EmptyScene()
         ));
-        currentScene = "Text";
+        currentScene = "Wall Cached";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
-        interRegular13tnum = new Font(interRegular, 13, new FontFeature[] { new FontFeature("tnum") });
+        interRegular13tnum = new Font(interRegular, 13, new FontFeature("tnum"));
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {
