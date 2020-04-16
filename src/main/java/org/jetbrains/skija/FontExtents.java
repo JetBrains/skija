@@ -11,6 +11,9 @@ public class FontExtents {
         this.lineGap = lineGap;
     }
 
+    public float getAscenderAbs() { return Math.abs(ascender); }
+    public float getLineHeight() { return -ascender + descender + lineGap; }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;

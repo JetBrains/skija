@@ -56,7 +56,6 @@ public class WallOfTextScene implements Scene {
         TextBuffer b = getTextBuffer(" ");
         var wordGap = b.getAdvances()[0];
         releaseTextBuffer(b);
-        var lineHeight = -extents.ascender + extents.descender;
         var lineGap = extents.lineGap + 0;
         TextBuffer countBuffer = getTextBuffer("8888 words");
         var x = paddingH + countBuffer.getAdvances()[0] + wordGap;
@@ -71,13 +70,13 @@ public class WallOfTextScene implements Scene {
                 float[] advances = buffer.getAdvances();
                 if (x + advances[0] > width - paddingH) {
                     x = paddingH;
-                    y = y + lineHeight + lineGap;
+                    y = y + extents.getLineHeight();
                 }
 
-                if (y + lineHeight > height - paddingV)
+                if (y + extents.getLineHeight() > height - paddingV)
                     break;
 
-                canvas.drawTextBuffer(buffer, x, y - extents.ascender, font.skFont, textColor);
+                canvas.drawTextBuffer(buffer, x, y + extents.getAscenderAbs(), font.skFont, textColor);
                 x = x + advances[0] + wordGap;
             } finally {
                 releaseTextBuffer(buffer);
@@ -86,7 +85,7 @@ public class WallOfTextScene implements Scene {
         }
         
         try (var buf = font.hbFont.shape(count + " words")) {
-            canvas.drawTextBuffer(buf, paddingH, paddingV - extents.ascender, font.skFont, highlightColor);
+            canvas.drawTextBuffer(buf, paddingH, paddingV + extents.getAscenderAbs(), font.skFont, highlightColor);
         }
     }
 }

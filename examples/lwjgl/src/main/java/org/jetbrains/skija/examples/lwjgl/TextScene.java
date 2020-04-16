@@ -63,10 +63,10 @@ public class TextScene implements Scene {
             float[] advances = buffer.getAdvances();
     
             canvas.save();
-            canvas.translate(0, -extents.ascender);
+            canvas.translate(0, extents.getAscenderAbs());
     
             // bounds
-            canvas.drawRect(Rect.makeLTRB(0, extents.ascender, advances[0], extents.descender), paint);
+            canvas.drawRect(Rect.makeLTRB(0, -extents.getAscenderAbs(), advances[0], extents.descender), paint);
         
             // baseline
             paint.setColor(0x40000000 | (color & 0xFFFFFF)).setStrokeWidth(1);
@@ -77,7 +77,7 @@ public class TextScene implements Scene {
             canvas.drawTextBuffer(buffer, 0, 0, font.skFont, paint);
         
             canvas.restore();
-            canvas.translate(0, -extents.ascender + extents.descender + extents.lineGap + 10);
+            canvas.translate(0, extents.getLineHeight() + 10);
         }
     }
 }

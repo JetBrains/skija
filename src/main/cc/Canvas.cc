@@ -5,6 +5,7 @@
 #include "SkTextBlob.h"
 #include "hb.h"
 #include "hb_util.hh"
+#include "interop.hh"
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawPoint
   (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloat x, jfloat y, jlong paintPtr) {

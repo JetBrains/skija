@@ -19,6 +19,7 @@ public:
 };
 
 int32_t getRefCnt(SkRefCnt* ref);
+void unrefSkRefCnt(SkRefCnt* p);
 
 typedef struct {
     jclass cls;

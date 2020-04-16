@@ -181,7 +181,7 @@ class Window {
         Paint graphLimit = new Paint().setColor(0xFFcc3333).setStrokeWidth(1);
         Font font = interRegular13tnum;
         FontExtents extents = font.hbFont.getHorizontalExtents();
-        float baseline = (20 - extents.descender + extents.ascender) / 2 - extents.ascender;
+        float baseline = (20 - (extents.descender + extents.getAscenderAbs())) / 2 + extents.getAscenderAbs();
 
         // Background
         canvas.translate(width - 205, height - 135);
@@ -189,9 +189,9 @@ class Window {
         canvas.translate(5, 5);
 
         // Scene
-        canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 2), bg);
-        TextBuffer buffer = font.hbFont.shape("S");
-        canvas.drawTextBuffer(buffer, (20 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
+        canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 30, 20, 2), bg);
+        TextBuffer buffer = font.hbFont.shape("←→");
+        canvas.drawTextBuffer(buffer, (30 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
         int sceneIdx = 1;
         for (String scene : scenes.keySet()) {
             if (scene.equals(currentScene)) break;
@@ -199,7 +199,7 @@ class Window {
         }
         buffer.close();
         buffer = font.hbFont.shape("Scene: " + currentScene + " " + sceneIdx + "/" + scenes.size());
-        canvas.drawTextBuffer(buffer, 25, baseline, font.skFont, fg);
+        canvas.drawTextBuffer(buffer, 35, baseline, font.skFont, fg);
         buffer.close();
         canvas.translate(0, 25);
 
@@ -289,12 +289,6 @@ class Window {
                     case GLFW_KEY_RIGHT:
                         currentScene = Optional.ofNullable(scenes.higherKey(currentScene)).orElse(scenes.firstKey());
                         break;
-                    case GLFW_KEY_S:
-                        if ((mods & GLFW_MOD_SHIFT) == 0)
-                            currentScene = Optional.ofNullable(scenes.higherKey(currentScene)).orElse(scenes.firstKey());
-                        else
-                            currentScene = Optional.ofNullable(scenes.lowerKey(currentScene)).orElse(scenes.lastKey());
-                        break;
                     case GLFW_KEY_V:
                         vsync = !vsync;
                         glfwSwapInterval(vsync ? 1 : 0);
@@ -310,12 +304,12 @@ class Window {
         initSkia();
 
         scenes = new TreeMap(Map.of(
-            "Watches", new WatchesScene(),
-            "Primitives", new PrimitivesScene(),
-            "Text", new TextScene(),
+            "Empty",        new EmptyScene(),
+            "Primitives",   new PrimitivesScene(),
+            "Text",         new TextScene(),
+            "Wall Cached",  new WallOfTextScene(true),
             "Wall of Text", new WallOfTextScene(false),
-            "Wall Cached", new WallOfTextScene(true),
-            "Empty", new EmptyScene()
+            "Watches",      new WatchesScene()
         ));
         currentScene = "Wall Cached";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
