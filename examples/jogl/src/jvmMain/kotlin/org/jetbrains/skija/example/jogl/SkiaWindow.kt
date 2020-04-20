@@ -19,10 +19,10 @@ private class SkijaState {
 
     fun clear() {
         if (surface != null) {
-            surface!!.release()
+            surface!!.close()
         }
         if (renderTarget != null) {
-            renderTarget!!.release()
+            renderTarget!!.close()
         }
     }
 }
