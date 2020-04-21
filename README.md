@@ -5,7 +5,7 @@
 ## Checkout
 
 ```sh
-git clone ssh://git@git.jetbrains.team/Skija.git
+git clone https://github.com/JetBrains/skija.git
 cd skija
 ```
 
