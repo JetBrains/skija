@@ -1,6 +1,7 @@
 #include <iostream>
 #include <jni.h>
 #include "SkPaint.h"
+#include "SkImageFilter.h"
 
 static void deletePaint(SkPaint* paint) {
     // std::cout << "Deleting [SkPaint " << paint << "]" << std::endl;
@@ -85,4 +86,15 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Paint_nGetStrokeJoin(
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetStrokeJoin(JNIEnv* env, jclass jclass, jlong ptr, jint join) {
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
     instance->setStrokeJoin(static_cast<SkPaint::Join>(join));
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Paint_nGetImageFilter(JNIEnv* env, jclass jclass, jlong ptr) {
+    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
+    return reinterpret_cast<jlong>(instance->getImageFilter());
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetImageFilter(JNIEnv* env, jclass jclass, jlong ptr, jlong filterPtr) {
+    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
+    SkImageFilter* filter = reinterpret_cast<SkImageFilter*>(static_cast<uintptr_t>(filterPtr));
+    instance->setImageFilter(sk_ref_sp<SkImageFilter>(filter));
 }

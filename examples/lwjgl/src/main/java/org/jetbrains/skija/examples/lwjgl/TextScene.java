@@ -57,7 +57,6 @@ public class TextScene implements Scene {
         ) {
             // text bounds
             Rect bounds = blob.getBounds();
-            System.out.println(bounds);
             canvas.drawRect(bounds, paint);
 
             // container bounds
