@@ -1,6 +1,7 @@
 #include <iostream>
 #include <jni.h>
 #include "SkPaint.h"
+#include "SkShader.h"
 #include "SkImageFilter.h"
 
 static void deletePaint(SkPaint* paint) {
@@ -97,4 +98,10 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetImageFilter
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetBlendMode(JNIEnv* env, jclass jclass, jlong ptr, jint mode) {
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
     instance->setBlendMode(static_cast<SkBlendMode>(mode));
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetShader(JNIEnv* env, jclass jclass, jlong ptr, jlong shaderPtr) {
+    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
+    SkShader* shader = reinterpret_cast<SkShader*>(static_cast<uintptr_t>(shaderPtr));
+    instance->setShader(sk_ref_sp<SkShader>(shader));
 }

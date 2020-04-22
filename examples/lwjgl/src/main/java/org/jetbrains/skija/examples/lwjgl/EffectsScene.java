@@ -9,6 +9,7 @@ public class EffectsScene implements Scene {
         drawShadows(canvas); 
         drawBlurs(canvas);
         drawBlends(canvas);
+        drawGradients(canvas);
     }
 
     private void drawShadows(Canvas canvas) {
@@ -112,4 +113,67 @@ public class EffectsScene implements Scene {
         canvas.restore();
         canvas.translate(0, 40);
     }
+
+    private void drawGradients(Canvas canvas) {
+        canvas.save();
+
+        Shader[] shaders = new Shader[] {
+            Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+            Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+            Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, TileMode.REPEAT),
+            Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, TileMode.MIRROR),
+            Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, TileMode.DECAL),
+            Shader.makeLinearGradient( 0,  0,  0, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+            Shader.makeLinearGradient( 0,  0, 60, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+            Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF00FF00, 0xFFFF0000 }),
+            Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF000000, 0x00000000 }),
+            Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0xFFff1654, 0xFF70c1b3, 0xFFf3ffbd, 0xFFb2dbbf }),
+            Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0xFFff1654, 0xFF70c1b3, 0xFFf3ffbd, 0xFFb2dbbf }, new float[] {0f, 0.1f, 0.2f, 0.9f, 1f}),
+
+            Shader.makeRadialGradient(30, 30, 30, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+            Shader.makeRadialGradient(30, 30, 10, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+            Shader.makeRadialGradient(30, 30, 10, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, TileMode.REPEAT),
+
+            Shader.makeTwoPointConicalGradient(20, 20, 10, 40, 40, 40, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+
+            Shader.makeSweepGradient(30, 30, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+            Shader.makeSweepGradient(30, 30, 45, 315, new int[] { 0xFF247ba0, 0xFFff1654, 0xFF70c1b3, 0xFFf3ffbd, 0xFFb2dbbf }, null, TileMode.DECAL),
+        };
+            
+        try (Paint fill = new Paint()) {
+            for (Shader sh: shaders) {
+                fill.setShader(sh);
+                canvas.drawRect(Rect.makeXYWH(0, 0, 60, 60), fill);
+                canvas.translate(70, 0);
+                sh.close();
+            }
+        }
+
+        try (Path p1 = new Path().lineTo(30.1f, 0).lineTo(0, 32.5f).closePath();
+             Shader s1 = Shader.makeLinearGradient(0, 32.5f, 30.1f, 0, 
+                new int[] {0xFF0095D5, 0xFF3C83DC, 0xFF6D74E1, 0xFF806EE3},
+                new float[] {0.1183f, 0.4178f, 0.6962f, 0.8333f});
+             Paint f1 = new Paint().setShader(s1);
+
+             Path p2 = new Path().moveTo(30.1f, 0).lineTo(0, 31.7f).lineTo(0, 60).lineTo(30.1f, 29.9f).lineTo(60, 0).closePath();
+             Shader s2 = Shader.makeLinearGradient(0, 60, 60, 0,
+                new int[] {0xFFC757BC, 0xFFD0609A, 0xFFE1725C, 0xFFEE7E2F, 0xFFF58613, 0xFFF88909},
+                new float[] {0.1075f, 0.2138f, 0.4254f, 0.6048f, 0.743f, 0.8232f});
+             Paint f2 = new Paint().setShader(s2);
+
+             Path p3 = new Path().moveTo(0, 60).lineTo(30.1f, 29.9f).lineTo(60, 60).closePath();
+             Shader s3 = Shader.makeLinearGradient(0, 60, 30.1f, 29.9f,
+                new int[] { 0xFF0095D5, 0xFF238AD9, 0xFF557BDE, 0xFF7472E2, 0xFF806EE3 },
+                new float[] {0f, 0.3f, 0.62f, 0.8643f, 1f});
+             Paint f3 = new Paint().setShader(s3);
+             ) {
+            canvas.drawPath(p1, f1);
+            canvas.drawPath(p2, f2);
+            canvas.drawPath(p3, f3);
+            canvas.translate(70, 0);
+        }
+
+        canvas.restore();
+        canvas.translate(0, 60);
+    }    
 }
