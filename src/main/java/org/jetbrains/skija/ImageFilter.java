@@ -2,38 +2,46 @@ package org.jetbrains.skija;
 
 public class ImageFilter extends RefCounted {
     public static ImageFilter dropShadow(float dx, float dy, float sigmaX, float sigmaY, long color) {
-        Native.onNativeCall(); 
-        return new ImageFilter(nDropShadow(dx, dy, sigmaX, sigmaY, color, 0));
+        return dropShadow(dx, dy, sigmaX, sigmaY, color, null, null);
     }
 
     public static ImageFilter dropShadow(float dx, float dy, float sigmaX, float sigmaY, long color, ImageFilter input) {
-        Native.onNativeCall(); 
-        return new ImageFilter(nDropShadow(dx, dy, sigmaX, sigmaY, color, input.nativeInstance));
+        return dropShadow(dx, dy, sigmaX, sigmaY, color, input, null);
     }
 
     public static ImageFilter dropShadow(float dx, float dy, float sigmaX, float sigmaY, long color, ImageFilter input, IRect crop) {
         Native.onNativeCall(); 
-        return new ImageFilter(nDropShadowCrop(dx, dy, sigmaX, sigmaY, color, input.nativeInstance, crop.left, crop.top, crop.right, crop.bottom));
+        return new ImageFilter(nDropShadow(dx, dy, sigmaX, sigmaY, color, input == null ? 0 : input.nativeInstance, crop));
     }
 
     public static ImageFilter dropShadowOnly(float dx, float dy, float sigmaX, float sigmaY, long color) {
-        Native.onNativeCall(); 
-        return new ImageFilter(nDropShadowOnly(dx, dy, sigmaX, sigmaY, color, 0));
+        return dropShadowOnly(dx, dy, sigmaX, sigmaY, color, null, null);
     }
 
     public static ImageFilter dropShadowOnly(float dx, float dy, float sigmaX, float sigmaY, long color, ImageFilter input) {
-        Native.onNativeCall(); 
-        return new ImageFilter(nDropShadowOnly(dx, dy, sigmaX, sigmaY, color, input.nativeInstance));
+        return dropShadowOnly(dx, dy, sigmaX, sigmaY, color, input, null);
     }
 
     public static ImageFilter dropShadowOnly(float dx, float dy, float sigmaX, float sigmaY, long color, ImageFilter input, IRect crop) {
         Native.onNativeCall(); 
-        return new ImageFilter(nDropShadowOnlyCrop(dx, dy, sigmaX, sigmaY, color, input.nativeInstance, crop.left, crop.top, crop.right, crop.bottom));
+        return new ImageFilter(nDropShadowOnly(dx, dy, sigmaX, sigmaY, color, input == null ? 0 : input.nativeInstance, crop));
+    }
+
+    public static ImageFilter blur(float sigmaX, float sigmaY, TileMode mode) {
+        return blur(sigmaX, sigmaY, mode, null, null);
+    }
+
+    public static ImageFilter blur(float sigmaX, float sigmaY, TileMode mode, ImageFilter input) {
+        return blur(sigmaX, sigmaY, mode, input, null);
+    }
+
+    public static ImageFilter blur(float sigmaX, float sigmaY, TileMode mode, ImageFilter input, IRect crop) {
+        Native.onNativeCall(); 
+        return new ImageFilter(nBlur(sigmaX, sigmaY, mode.ordinal(), input == null ? 0 : input.nativeInstance, crop));
     }
 
     protected ImageFilter(long nativeInstance) { super(nativeInstance); }
-    private static native long nDropShadow(float dx, float dy, float sigmaX, float sigmaY, long color, long input);
-    private static native long nDropShadowCrop(float dx, float dy, float sigmaX, float sigmaY, long color, long input, int cropL, int cropT, int cropR, int cropB);
-    private static native long nDropShadowOnly(float dx, float dy, float sigmaX, float sigmaY, long color, long input);
-    private static native long nDropShadowOnlyCrop(float dx, float dy, float sigmaX, float sigmaY, long color, long input, int cropL, int cropT, int cropR, int cropB);
+    private static native long nDropShadow(float dx, float dy, float sigmaX, float sigmaY, long color, long input, IRect crop);
+    private static native long nDropShadowOnly(float dx, float dy, float sigmaX, float sigmaY, long color, long input, IRect crop);
+    private static native long nBlur(float sigmaX, float sigmaY, int tileMode, long input, IRect crop);
 }

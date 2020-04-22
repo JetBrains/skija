@@ -1,8 +1,8 @@
 #pragma once
-#include "SkRefCnt.h"
-
 #include <array>
 #include <jni.h>
+#include "SkRefCnt.h"
+#include "SkRect.h"
 
 typedef std::array<int, sizeof(int)> IntArray;
 typedef std::array<long, sizeof(long)> LongArray;
@@ -31,3 +31,13 @@ typedef struct {
 extern FontAxisInfoClass* fontAxisInfoClass;
 
 void maybeInitFontAxisInfoClass(JNIEnv* env);
+
+typedef struct {
+    jclass cls;
+    jfieldID left;
+    jfieldID top;
+    jfieldID right;
+    jfieldID bottom;
+} IRectClass;
+
+SkIRect skIRectFromObj(JNIEnv* env, jobject obj);

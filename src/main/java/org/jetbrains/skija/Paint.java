@@ -33,7 +33,7 @@ public class Paint extends Managed {
         long ptr = nGetImageFilter(nativeInstance);
         return 0 == ptr ? null : new ImageFilter(ptr);
     }
-    public void setImageFilter(ImageFilter f) { Native.onNativeCall(); nSetImageFilter(nativeInstance, f == null ? 0 : f.nativeInstance); }
+    public Paint setImageFilter(ImageFilter f) { Native.onNativeCall(); nSetImageFilter(nativeInstance, f == null ? 0 : f.nativeInstance); return this; }
 
     private static final long nativeFinalizer = nGetNativeFinalizer();
     private static native long nInit();

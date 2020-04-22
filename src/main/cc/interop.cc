@@ -41,3 +41,25 @@ void maybeInitFontAxisInfoClass(JNIEnv* env) {
         fontAxisInfoClass->ctorID = env->GetMethodID(fontAxisInfoClass->cls, "<init>", "(II[BIFFF)V");
     }
 }
+
+IRectClass* iRectClass = nullptr;
+void maybeInitIRectClass(JNIEnv* env) {
+    if (iRectClass == nullptr) {
+        iRectClass = new IRectClass;
+        iRectClass->cls = env->FindClass("org/jetbrains/skija/IRect");
+        iRectClass->left = env->GetFieldID(iRectClass->cls, "left", "I");
+        iRectClass->top = env->GetFieldID(iRectClass->cls, "top", "I");
+        iRectClass->right = env->GetFieldID(iRectClass->cls, "right", "I");
+        iRectClass->bottom = env->GetFieldID(iRectClass->cls, "bottom", "I");
+    }
+}
+
+SkIRect skIRectFromObj(JNIEnv* env, jobject obj) {
+    maybeInitIRectClass(env);
+    return SkIRect::MakeLTRB(
+        env->GetIntField(obj, iRectClass->left), 
+        env->GetIntField(obj, iRectClass->top), 
+        env->GetIntField(obj, iRectClass->right), 
+        env->GetIntField(obj, iRectClass->bottom)
+    );
+}

@@ -14,10 +14,10 @@ int32_t getRefCnt(SkRefCnt* ref) {
 }
 
 void unrefSkRefCnt(SkRefCnt* p) {
-    if (p->unique())
-        std::cout << "Deleting [" << p << "]" << std::endl;
-    else
-        std::cout << "Unref [" << p << "] " << getRefCnt(p) << " - 1" << std::endl;
+    // if (p->unique())
+    //     std::cout << "Deleting [" << p << "]" << std::endl;
+    // else
+    //     std::cout << "Unref [" << p << "] " << getRefCnt(p) << " - 1" << std::endl;
     p->unref();
 }
 
