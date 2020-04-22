@@ -88,13 +88,13 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetStrokeJoin(
     instance->setStrokeJoin(static_cast<SkPaint::Join>(join));
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Paint_nGetImageFilter(JNIEnv* env, jclass jclass, jlong ptr) {
-    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
-    return reinterpret_cast<jlong>(instance->getImageFilter());
-}
-
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetImageFilter(JNIEnv* env, jclass jclass, jlong ptr, jlong filterPtr) {
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
     SkImageFilter* filter = reinterpret_cast<SkImageFilter*>(static_cast<uintptr_t>(filterPtr));
     instance->setImageFilter(sk_ref_sp<SkImageFilter>(filter));
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetBlendMode(JNIEnv* env, jclass jclass, jlong ptr, jint mode) {
+    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
+    instance->setBlendMode(static_cast<SkBlendMode>(mode));
 }

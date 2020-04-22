@@ -312,16 +312,16 @@ class Window {
         initSkia();
 
         scenes = new TreeMap(Map.of(
+            "Effects",      new EffectsScene(),
             "Empty",        new EmptyScene(),
-            "Filters",      new FiltersScene(),
-            "Primitives",   new PrimitivesScene(),
+            "Geometry",     new GeometryScene(),
             "Text",         new TextScene(),
             "Text Blob",    new TextBlobScene(),
             "Wall Cached",  new WallOfTextScene(true),
             "Wall of Text", new WallOfTextScene(false),
             "Watches",      new WatchesScene()
         ));
-        currentScene = "Filters";
+        currentScene = "Effects";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13, new FontFeature("tnum"));
         t0 = System.nanoTime();

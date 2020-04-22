@@ -28,12 +28,13 @@ public class Paint extends Managed {
     public Join getStrokeJoin() { Native.onNativeCall(); return Join.values()[nGetStrokeJoin(nativeInstance)]; }
     public Paint setStrokeJoin(Join join) { Native.onNativeCall(); nSetStrokeJoin(nativeInstance, join.ordinal()); return this; }
 
-    public ImageFilter getImageFilter() {
-        Native.onNativeCall();
-        long ptr = nGetImageFilter(nativeInstance);
-        return 0 == ptr ? null : new ImageFilter(ptr);
-    }
-    public Paint setImageFilter(ImageFilter f) { Native.onNativeCall(); nSetImageFilter(nativeInstance, f == null ? 0 : f.nativeInstance); return this; }
+    protected ImageFilter imageFilter;
+    public ImageFilter getImageFilter() { return imageFilter; }
+    public Paint setImageFilter(ImageFilter f) { this.imageFilter = f; Native.onNativeCall(); nSetImageFilter(nativeInstance, f == null ? 0 : f.nativeInstance); return this; }
+
+    protected BlendMode blendMode = BlendMode.SRC_OVER;
+    public BlendMode getBlendMode() { return blendMode; }
+    public Paint setBlendMode(BlendMode mode) { this.blendMode = mode; Native.onNativeCall(); nSetBlendMode(nativeInstance, mode.ordinal()); return this; }
 
     private static final long nativeFinalizer = nGetNativeFinalizer();
     private static native long nInit();
@@ -52,8 +53,7 @@ public class Paint extends Managed {
     private static native void nSetStrokeCap(long nativeInstance, int value);
     private static native int  nGetStrokeJoin(long nativeInstance);
     private static native void nSetStrokeJoin(long nativeInstance, int value);
-    private static native long nGetImageFilter(long nativeInstance);
     private static native void nSetImageFilter(long nativeInstance, long ptr);
-
+    private static native void nSetBlendMode(long nativeInstance, int mode);
 }
 

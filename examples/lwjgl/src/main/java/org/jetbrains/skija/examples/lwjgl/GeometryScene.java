@@ -2,7 +2,7 @@ package org.jetbrains.skija.examples.lwjgl;
 
 import org.jetbrains.skija.*;
 
-public class PrimitivesScene implements Scene {
+public class GeometryScene implements Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         var borderStroke = new Paint().setColor(0xFFFF0751).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
