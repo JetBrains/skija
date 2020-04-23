@@ -29,6 +29,10 @@ public class Color4f {
         this.b = (c & 0xFF) / 256f;
     }
 
+    public float[] flatten() {
+        return new float[] {r, g, b, a};
+    }
+
     public static float[] flattenArray(Color4f[] colors) {
         float[] arr = new float[colors.length * 4];
         for (int i = 0; i < colors.length; ++i) {

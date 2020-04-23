@@ -101,3 +101,34 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeSweepGra
     env->ReleaseFloatArrayElements(posArray, pos, 0);
     return reinterpret_cast<jlong>(ptr);
 }
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeEmpty(JNIEnv* env, jclass jclass) {
+    SkShader* ptr = SkShaders::Empty().release();
+    return reinterpret_cast<jlong>(ptr);
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeColor(JNIEnv* env, jclass jclass, jint color) {
+    SkShader* ptr = SkShaders::Color(color).release();
+    return reinterpret_cast<jlong>(ptr);
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeColorCS(JNIEnv* env, jclass jclass, jfloat r, jfloat g, jfloat b, jfloat a, jlong colorSpacePtr) {
+    SkColorSpace* colorSpace = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr));
+    SkShader* ptr = SkShaders::Color(SkColor4f{r, g, b, a}, sk_ref_sp<SkColorSpace>(colorSpace)).release();
+    return reinterpret_cast<jlong>(ptr);
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeBlend(JNIEnv* env, jclass jclass, jint blendModeInt, jlong dstPtr, jlong srcPtr) {
+    SkShader* dst = reinterpret_cast<SkShader*>(static_cast<uintptr_t>(dstPtr));
+    SkShader* src = reinterpret_cast<SkShader*>(static_cast<uintptr_t>(srcPtr));
+    SkBlendMode blendMode = static_cast<SkBlendMode>(blendModeInt);
+    SkShader* ptr = SkShaders::Blend(blendMode, sk_ref_sp<SkShader>(dst), sk_ref_sp<SkShader>(src)).release();
+    return reinterpret_cast<jlong>(ptr);
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeLerp(JNIEnv* env, jclass jclass, jfloat t, jlong dstPtr, jlong srcPtr) {
+    SkShader* dst = reinterpret_cast<SkShader*>(static_cast<uintptr_t>(dstPtr));
+    SkShader* src = reinterpret_cast<SkShader*>(static_cast<uintptr_t>(srcPtr));
+    SkShader* ptr = SkShaders::Lerp(t, sk_ref_sp<SkShader>(dst), sk_ref_sp<SkShader>(src)).release();
+    return reinterpret_cast<jlong>(ptr);
+}

@@ -9,6 +9,7 @@ public class EffectsScene implements Scene {
         drawShadows(canvas); 
         drawBlurs(canvas);
         drawBlends(canvas);
+        drawShaders(canvas);
         drawGradients(canvas);
         drawColorSpace(canvas);
     }
@@ -113,6 +114,37 @@ public class EffectsScene implements Scene {
         }
         canvas.restore();
         canvas.translate(0, 40);
+    }
+
+    private void drawShaders(Canvas canvas) {
+        canvas.save();
+
+        float percent = Math.abs((System.currentTimeMillis() % 3000) / 10f - 150f) - 25f;
+        percent = Math.round(Math.max(0f, Math.min(100f, percent)));
+
+        Shader[] shaders = new Shader[] {
+            Shader.makeEmpty(),
+            Shader.makeColor(0xFF247ba0),
+            Shader.makeColor(new Color4f(0.5f, 0.5f, 0.5f), ColorSpace.SRGB_LINEAR),
+            Shader.makeLerp(percent / 100f, Shader.makeColor(0xFFFF0000), Shader.makeColor(0xFF00FF00)),
+            Shader.makeBlend(BlendMode.SRC_OVER, Shader.makeColor(0xFFFF0000), Shader.makeColor(0x9000FF00)),
+            Shader.makeBlend(BlendMode.SCREEN, Shader.makeColor(0xFFFF0000), Shader.makeColor(0x9000FF00)),
+            Shader.makeBlend(BlendMode.OVERLAY, Shader.makeColor(0xFFFF0000), Shader.makeColor(0x9000FF00)),
+            Shader.makeBlend(BlendMode.DARKEN, Shader.makeColor(0xFFFF0000), Shader.makeColor(0x9000FF00)),
+            Shader.makeBlend(BlendMode.LIGHTEN, Shader.makeColor(0xFFFF0000), Shader.makeColor(0x9000FF00)),
+        };
+
+        try (Paint fill = new Paint()) {
+            for (Shader sh: shaders) {
+                fill.setShader(sh);
+                canvas.drawRect(Rect.makeXYWH(0, 0, 60, 60), fill);
+                canvas.translate(70, 0);
+                sh.close();
+            }
+        }
+
+        canvas.restore();
+        canvas.translate(0, 70);
     }
 
     private void drawGradients(Canvas canvas) {

@@ -77,6 +77,24 @@ public class Shader extends RefCounted {
         return new Shader(nMakeSweepGradientCS(x, y, startAngle, endAngle, Color4f.flattenArray(colors), Native.pointer(cs), positions, tileMode.ordinal()));
     }
 
+    public static Shader makeEmpty() { Native.onNativeCall(); return new Shader(nMakeEmpty()); }
+    public static Shader makeColor(int color) { Native.onNativeCall(); return new Shader(nMakeColor(color)); }
+
+    public static Shader makeColor(Color4f color, ColorSpace space) {
+        Native.onNativeCall();
+        return new Shader(nMakeColorCS(color.r, color.g, color.b, color.a, Native.pointer(space)));
+    }
+
+    public static Shader makeBlend(BlendMode mode, Shader dst, Shader src) {
+        Native.onNativeCall();
+        return new Shader(nMakeBlend(mode.ordinal(), Native.pointer(dst), Native.pointer(src)));
+    }
+
+    public static Shader makeLerp(float t, Shader dst, Shader src) {
+        Native.onNativeCall();
+        return new Shader(nMakeLerp(t, Native.pointer(dst), Native.pointer(src)));
+    }
+
     protected Shader(long nativeInstance) { super(nativeInstance); }
     private static native long nMakeLinearGradient(float x0, float y0, float x1, float y1, int[] colors, float[] positions, int tileMode);
     private static native long nMakeLinearGradientCS(float x0, float y0, float x1, float y1, float[] colors, long colorSpacePtr, float[] positions, int tileMode);
@@ -86,4 +104,10 @@ public class Shader extends RefCounted {
     private static native long nMakeTwoPointConicalGradientCS(float x0, float y0, float r0, float x1, float y1, float r1, float[] colors, long colorSpacePtr, float[] positions, int tileMode);
     private static native long nMakeSweepGradient(float x, float y, float startAngle, float endAngle, int[] colors, float[] positions, int tileMode);
     private static native long nMakeSweepGradientCS(float x, float y, float startAngle, float endAngle, float[] colors, long colorSpacePtr, float[] positions, int tileMode);
+
+    private static native long nMakeEmpty();
+    private static native long nMakeColor(int color);
+    private static native long nMakeColorCS(float r, float g, float b, float a, long colorSpacePtr);
+    private static native long nMakeBlend(int blendMode, long dst, long src);
+    private static native long nMakeLerp(float t, long dst, long src);
 }
