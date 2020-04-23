@@ -10,6 +10,7 @@ public class EffectsScene implements Scene {
         drawBlurs(canvas);
         drawBlends(canvas);
         drawGradients(canvas);
+        drawColorSpace(canvas);
     }
 
     private void drawShadows(Canvas canvas) {
@@ -125,7 +126,6 @@ public class EffectsScene implements Scene {
             Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, TileMode.DECAL),
             Shader.makeLinearGradient( 0,  0,  0, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
             Shader.makeLinearGradient( 0,  0, 60, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
-            Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF00FF00, 0xFFFF0000 }),
             Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF000000, 0x00000000 }),
             Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0xFFff1654, 0xFF70c1b3, 0xFFf3ffbd, 0xFFb2dbbf }),
             Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0xFFff1654, 0xFF70c1b3, 0xFFf3ffbd, 0xFFb2dbbf }, new float[] {0f, 0.1f, 0.2f, 0.9f, 1f}),
@@ -174,6 +174,33 @@ public class EffectsScene implements Scene {
         }
 
         canvas.restore();
-        canvas.translate(0, 60);
-    }    
+        canvas.translate(0, 70);
+    }
+    
+    private void drawColorSpace(Canvas canvas) {
+        for (ColorSpace cs: new ColorSpace[] {null, ColorSpace.SRGB, ColorSpace.SRGB_LINEAR}) {
+            canvas.save();
+
+            Shader[] shaders = new Shader[] {
+                Shader.makeLinearGradient(0, 0, 120, 0,
+                    new Color4f[] { new Color4f(0, 1f, 0), new Color4f(0, 0.5f, 0), new Color4f(0.5f, 0, 0), new Color4f(1f, 0, 0) }, cs,
+                    new float[] {0, 0.33f, 0.66f, 1}, TileMode.CLAMP),
+                Shader.makeLinearGradient(0, 0, 120, 0, 
+                    new Color4f[] { new Color4f(0, 0, 0), new Color4f(0.33f, 0.33f, 0.33f), new Color4f(0.66f, 0.66f, 0.66f), new Color4f(1, 1, 1) }, cs,
+                    new float[] {0, 0.33f, 0.66f, 1}, TileMode.CLAMP),
+            };
+                
+            try (Paint fill = new Paint()) {
+                for (Shader sh: shaders) {
+                    fill.setShader(sh);
+                    canvas.drawRect(Rect.makeXYWH(0, 0, 120, 30), fill);
+                    canvas.translate(130, 0);
+                    sh.close();
+                }
+            }
+
+            canvas.restore();
+            canvas.translate(0, 40);
+        }
+    }
 }

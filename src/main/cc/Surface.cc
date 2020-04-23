@@ -3,18 +3,19 @@
 #include "SkSurface.h"
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface_nMakeFromBackendRenderTarget
-  (JNIEnv* env, jclass jclass, jlong pContext, jlong pBackendRenderTarget, jint surfaceOrigin, jint colorType) {
+  (JNIEnv* env, jclass jclass, jlong pContext, jlong pBackendRenderTarget, jint surfaceOrigin, jint colorType, jlong colorSpacePtr) {
     GrContext* context = reinterpret_cast<GrContext*>(static_cast<uintptr_t>(pContext));
     GrBackendRenderTarget* backendRenderTarget = reinterpret_cast<GrBackendRenderTarget*>(static_cast<uintptr_t>(pBackendRenderTarget));
     GrSurfaceOrigin grSurfaceOrigin = static_cast<GrSurfaceOrigin>(surfaceOrigin);
     SkColorType skColorType = static_cast<SkColorType>(colorType);
+    sk_sp<SkColorSpace> colorSpace = sk_ref_sp<SkColorSpace>(reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr)));
 
     sk_sp<SkSurface> surface = SkSurface::MakeFromBackendRenderTarget(
         context,
         *backendRenderTarget,
         grSurfaceOrigin,
         skColorType,
-        /* sk_sp<SkColorSpace> */ nullptr,
+        colorSpace,
         /* const SkSurfaceProps* */ nullptr,
         /* RenderTargetReleaseProc */ nullptr,
         /* ReleaseContext */ nullptr

@@ -32,9 +32,9 @@ public class Surface extends RefCounted {
     public Context context;
     public BackendRenderTarget renderTarget;
 
-    public static Surface makeFromBackendRenderTarget(Context context, BackendRenderTarget rt, Origin origin, ColorType colorType) {
+    public static Surface makeFromBackendRenderTarget(Context context, BackendRenderTarget rt, Origin origin, ColorType colorType, ColorSpace colorSpace) {
         Native.onNativeCall(); 
-        long nativeInstance = nMakeFromBackendRenderTarget(context.nativeInstance, rt.nativeInstance, origin.ordinal(), colorType.ordinal());
+        long nativeInstance = nMakeFromBackendRenderTarget(context.nativeInstance, rt.nativeInstance, origin.ordinal(), colorType.ordinal(), Native.pointer(colorSpace));
         return new Surface(nativeInstance, context, rt);
     }
 
@@ -49,6 +49,6 @@ public class Surface extends RefCounted {
         renderTarget = rt;
     }
 
-    private static native long nMakeFromBackendRenderTarget(long pContext, long pBackendRenderTarget, int surfaceOrigin, int colorType);
+    private static native long nMakeFromBackendRenderTarget(long pContext, long pBackendRenderTarget, int surfaceOrigin, int colorType, long colorSpacePtr);
     private static native long nGetCanvas(long nativeInstance);
 }

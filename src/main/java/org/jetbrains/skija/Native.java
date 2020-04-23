@@ -5,6 +5,7 @@ public abstract class Native {
     public static long nativeCalls = 0;
 
     public static void onNativeCall() { nativeCalls++; }
+    public static long pointer(Native n) { return n == null ? 0 : n.nativeInstance; }
 
     protected Native(long nativeInstance) {
         if (nativeInstance == 0)

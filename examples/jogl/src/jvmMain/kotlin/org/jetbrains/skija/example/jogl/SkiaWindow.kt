@@ -5,6 +5,7 @@ import com.jogamp.opengl.awt.GLCanvas
 import com.jogamp.opengl.util.FPSAnimator
 import org.jetbrains.skija.BackendRenderTarget
 import org.jetbrains.skija.Canvas
+import org.jetbrains.skija.ColorSpace
 import org.jetbrains.skija.Context
 import org.jetbrains.skija.JNI
 import org.jetbrains.skija.Surface
@@ -98,7 +99,8 @@ class SkiaWindow(width: Int, height: Int, fps: Int, renderer: (Canvas, Int, Int)
                 context,
                 renderTarget,
                 Surface.Origin.BOTTOM_LEFT,
-                Surface.ColorType.RGBA_8888
+                Surface.ColorType.RGBA_8888,
+                ColorSpace.SRGB
             )
             canvas = surface!!.canvas
             canvas!!.scale(dpi, dpi)

@@ -30,7 +30,7 @@ public class Paint extends Managed {
 
     protected ImageFilter imageFilter;
     public ImageFilter getImageFilter() { return imageFilter; }
-    public Paint setImageFilter(ImageFilter f) { this.imageFilter = f; Native.onNativeCall(); nSetImageFilter(nativeInstance, f == null ? 0 : f.nativeInstance); return this; }
+    public Paint setImageFilter(ImageFilter f) { this.imageFilter = f; Native.onNativeCall(); nSetImageFilter(nativeInstance, Native.pointer(f)); return this; }
 
     protected BlendMode blendMode = BlendMode.SRC_OVER;
     public BlendMode getBlendMode() { return blendMode; }
@@ -38,7 +38,7 @@ public class Paint extends Managed {
 
     protected Shader shader;
     public Shader getShader() { return shader; }
-    public Paint setShader(Shader shader) { this.shader = shader; Native.onNativeCall(); nSetShader(nativeInstance, shader == null ? 0 : shader.nativeInstance); return this; }
+    public Paint setShader(Shader shader) { this.shader = shader; Native.onNativeCall(); nSetShader(nativeInstance, Native.pointer(shader)); return this; }
 
     private static final long nativeFinalizer = nGetNativeFinalizer();
     private static native long nInit();

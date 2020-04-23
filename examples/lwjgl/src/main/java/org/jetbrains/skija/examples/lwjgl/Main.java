@@ -141,7 +141,7 @@ class Window {
         renderTarget = BackendRenderTarget.newGL((int) (width * dpi), (int) (height * dpi), /*samples*/0, /*stencil*/8, fbId, BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8);
         System.out.println("Allocated " + renderTarget);
 
-        surface = Surface.makeFromBackendRenderTarget(context, renderTarget, Surface.Origin.BOTTOM_LEFT, Surface.ColorType.RGBA_8888);
+        surface = Surface.makeFromBackendRenderTarget(context, renderTarget, Surface.Origin.BOTTOM_LEFT, Surface.ColorType.RGBA_8888, ColorSpace.SRGB);
         System.out.println("Allocated " + surface);
 
         canvas = surface.getCanvas();

@@ -11,7 +11,7 @@ public class ImageFilter extends RefCounted {
 
     public static ImageFilter dropShadow(float dx, float dy, float sigmaX, float sigmaY, long color, ImageFilter input, IRect crop) {
         Native.onNativeCall(); 
-        return new ImageFilter(nDropShadow(dx, dy, sigmaX, sigmaY, color, input == null ? 0 : input.nativeInstance, crop));
+        return new ImageFilter(nDropShadow(dx, dy, sigmaX, sigmaY, color, Native.pointer(input), crop));
     }
 
     public static ImageFilter dropShadowOnly(float dx, float dy, float sigmaX, float sigmaY, long color) {
@@ -24,7 +24,7 @@ public class ImageFilter extends RefCounted {
 
     public static ImageFilter dropShadowOnly(float dx, float dy, float sigmaX, float sigmaY, long color, ImageFilter input, IRect crop) {
         Native.onNativeCall(); 
-        return new ImageFilter(nDropShadowOnly(dx, dy, sigmaX, sigmaY, color, input == null ? 0 : input.nativeInstance, crop));
+        return new ImageFilter(nDropShadowOnly(dx, dy, sigmaX, sigmaY, color, Native.pointer(input), crop));
     }
 
     public static ImageFilter blur(float sigmaX, float sigmaY, TileMode mode) {
@@ -37,7 +37,7 @@ public class ImageFilter extends RefCounted {
 
     public static ImageFilter blur(float sigmaX, float sigmaY, TileMode mode, ImageFilter input, IRect crop) {
         Native.onNativeCall(); 
-        return new ImageFilter(nBlur(sigmaX, sigmaY, mode.ordinal(), input == null ? 0 : input.nativeInstance, crop));
+        return new ImageFilter(nBlur(sigmaX, sigmaY, mode.ordinal(), Native.pointer(input), crop));
     }
 
     protected ImageFilter(long nativeInstance) { super(nativeInstance); }
