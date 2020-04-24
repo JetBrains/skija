@@ -36,6 +36,10 @@ public class Paint extends Managed {
     public BlendMode getBlendMode() { return blendMode; }
     public Paint setBlendMode(BlendMode mode) { this.blendMode = mode; Native.onNativeCall(); nSetBlendMode(nativeInstance, mode.ordinal()); return this; }
 
+    protected PathEffect pathEffect;
+    public PathEffect getPathEffect() { return pathEffect; }
+    public Paint setPathEffect(PathEffect p) { this.pathEffect = p; Native.onNativeCall(); nSetPathEffect(nativeInstance, Native.pointer(p)); return this; }
+
     protected Shader shader;
     public Shader getShader() { return shader; }
     public Paint setShader(Shader shader) { this.shader = shader; Native.onNativeCall(); nSetShader(nativeInstance, Native.pointer(shader)); return this; }
@@ -59,6 +63,7 @@ public class Paint extends Managed {
     private static native void nSetStrokeJoin(long nativeInstance, int value);
     private static native void nSetImageFilter(long nativeInstance, long ptr);
     private static native void nSetBlendMode(long nativeInstance, int mode);
+    private static native void nSetPathEffect(long nativeInstance, long pathEffectPtr);
     private static native void nSetShader(long nativeInstance, long shaderPtr);
 }
 

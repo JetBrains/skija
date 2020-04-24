@@ -14,6 +14,7 @@ public class EffectsScene implements Scene {
         drawShaders(canvas);
         drawGradients(canvas);
         drawColorSpace(canvas);
+        drawPathEffects(canvas);
     }
 
     private void drawShadowsBlurs(Canvas canvas) {
@@ -274,5 +275,33 @@ public class EffectsScene implements Scene {
             canvas.restore();
             canvas.translate(0, 40);
         }
+    }
+
+    private void drawPathEffects(Canvas canvas) {
+        canvas.save();
+
+        try (Path  pattern = new Path().moveTo(-4, -3).lineTo(4, 0).lineTo(-4, 3).closePath();
+             Paint fill = new Paint().setColor(0xFFe76f51).setStyle(Paint.Style.STROKE).setStrokeWidth(1);
+             Path  figure = new Path().moveTo(30, 5).lineTo(55, 55).lineTo(5, 55).closePath();)
+        {
+
+            PathEffect[] effects = new PathEffect[] {
+                PathEffect.make1D(pattern, 5,  0, PathEffect.Style.TRANSLATE),
+                PathEffect.make1D(pattern, 10, 0, PathEffect.Style.TRANSLATE),
+                PathEffect.make1D(pattern, 10, 2, PathEffect.Style.TRANSLATE),
+                PathEffect.make1D(pattern, 10, 0, PathEffect.Style.ROTATE),
+                PathEffect.make1D(pattern, 10, 0, PathEffect.Style.MORPH),
+            };
+
+            for (PathEffect effect: effects) {
+                fill.setPathEffect(effect);
+                canvas.drawPath(figure, fill);
+                canvas.translate(70, 0);
+                effect.close();
+            }
+        }
+
+        canvas.restore();
+        canvas.translate(0, 70);
     }
 }

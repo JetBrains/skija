@@ -3,6 +3,7 @@
 #include "SkPaint.h"
 #include "SkShader.h"
 #include "SkImageFilter.h"
+#include "SkPathEffect.h"
 
 static void deletePaint(SkPaint* paint) {
     // std::cout << "Deleting [SkPaint " << paint << "]" << std::endl;
@@ -98,6 +99,12 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetImageFilter
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetBlendMode(JNIEnv* env, jclass jclass, jlong ptr, jint mode) {
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
     instance->setBlendMode(static_cast<SkBlendMode>(mode));
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetPathEffect(JNIEnv* env, jclass jclass, jlong ptr, jlong pathEffectPtr) {
+    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
+    SkPathEffect* pathEffect = reinterpret_cast<SkPathEffect*>(static_cast<uintptr_t>(pathEffectPtr));
+    instance->setPathEffect(sk_ref_sp(pathEffect));
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetShader(JNIEnv* env, jclass jclass, jlong ptr, jlong shaderPtr) {

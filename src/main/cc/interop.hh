@@ -42,3 +42,15 @@ typedef struct {
 } IRectClass;
 
 std::unique_ptr<SkIRect> objToIRect(JNIEnv* env, jobject obj);
+
+typedef struct {
+    jclass cls;
+    jmethodID makeLTRB;
+    jfieldID left;
+    jfieldID top;
+    jfieldID right;
+    jfieldID bottom;
+} RectClass;
+
+jobject javaRect(JNIEnv* env, float left, float top, float right, float bottom);
+jobject javaRect(JNIEnv* env, const SkRect& rect);

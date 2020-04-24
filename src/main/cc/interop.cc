@@ -68,3 +68,24 @@ std::unique_ptr<SkIRect> objToIRect(JNIEnv* env, jobject obj) {
         });
     }
 }
+
+RectClass* rectClass = nullptr;
+void maybeInitRectClass(JNIEnv* env) {
+    if (rectClass == nullptr) {
+        rectClass = new RectClass();
+        rectClass->cls = env->FindClass("org/jetbrains/skija/Rect");
+        rectClass->makeLTRB = env->GetMethodID(rectClass->cls, "makeLTRB", "(FFFF)Lorg/jetbrains/skija/Rect;");
+        rectClass->left = env->GetFieldID(rectClass->cls, "left", "F");
+        rectClass->top = env->GetFieldID(rectClass->cls, "top", "F");
+        rectClass->right = env->GetFieldID(rectClass->cls, "right", "F");
+        rectClass->bottom = env->GetFieldID(rectClass->cls, "bottom", "F");
+    }
+}
+
+jobject javaRect(JNIEnv* env, float left, float top, float right, float bottom) {
+    return env->CallObjectMethod(rectClass->cls, rectClass->makeLTRB, left, top, right, bottom);
+}
+
+jobject javaRect(JNIEnv* env, const SkRect& rect) {
+    return env->CallObjectMethod(rectClass->cls, rectClass->makeLTRB, rect.fLeft, rect.fTop, rect.fRight, rect.fBottom);
+}
