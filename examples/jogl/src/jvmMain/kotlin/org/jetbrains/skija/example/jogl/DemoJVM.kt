@@ -10,10 +10,10 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 fun displayScene(canvas: Canvas, width: Int, height: Int, xpos: Int, ypos: Int) {
-    val watchFill = Paint().setColor(0xFFFFFFFF)
-    val watchStroke = Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f).setAntiAlias(false)
-    val watchStrokeAA = Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f)
-    val watchFillHover = Paint().setColor(0xFFE4FF01)
+    val watchFill = Paint().setColor(0xFFFFFFFF.toInt())
+    val watchStroke = Paint().setColor(0xFF000000.toInt()).setStyle(Paint.Style.STROKE).setStrokeWidth(1f).setAntiAlias(false)
+    val watchStrokeAA = Paint().setColor(0xFF000000.toInt()).setStyle(Paint.Style.STROKE).setStrokeWidth(1f)
+    val watchFillHover = Paint().setColor(0xFFE4FF01.toInt())
     for (x in 0 .. (width - 50) step 50) {
         for (y in 0 .. (height - 50) step 50) {
             val hover = xpos > x + 0 && xpos < x + 50 && ypos > y + 0 && ypos < y + 50
@@ -79,7 +79,7 @@ actual class Demo actual constructor() {
     fun run2(): Int {
         var radius = 50f
         val frame = SkiaWindow(width = 1024, height = 768, fps = 120) { canvas, w, h ->
-            val fill = Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(4f)
+            val fill = Paint().setColor(0xFF000000.toInt()).setStyle(Paint.Style.STROKE).setStrokeWidth(4f)
             canvas.drawOval(Rect.makeXYWH( w / 2f - radius, h / 2f - radius, radius, radius), fill)
         }
         frame.glCanvas.addMouseMotionListener(object: MouseMotionAdapter() {

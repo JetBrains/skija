@@ -1,5 +1,6 @@
 #include <iostream>
 #include <array>
+#include <memory>
 #include <jni.h>
 #include "interop.hh"
 
@@ -54,12 +55,16 @@ void maybeInitIRectClass(JNIEnv* env) {
     }
 }
 
-SkIRect skIRectFromObj(JNIEnv* env, jobject obj) {
-    maybeInitIRectClass(env);
-    return SkIRect::MakeLTRB(
-        env->GetIntField(obj, iRectClass->left), 
-        env->GetIntField(obj, iRectClass->top), 
-        env->GetIntField(obj, iRectClass->right), 
-        env->GetIntField(obj, iRectClass->bottom)
-    );
+std::unique_ptr<SkIRect> objToIRect(JNIEnv* env, jobject obj) {
+    if (obj == nullptr)
+        return std::unique_ptr<SkIRect>(nullptr);
+    else {
+        maybeInitIRectClass(env);
+        return std::unique_ptr<SkIRect>(new SkIRect{
+            env->GetIntField(obj, iRectClass->left), 
+            env->GetIntField(obj, iRectClass->top), 
+            env->GetIntField(obj, iRectClass->right), 
+            env->GetIntField(obj, iRectClass->bottom)
+        });
+    }
 }

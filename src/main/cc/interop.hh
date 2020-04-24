@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <memory>
 #include <jni.h>
 #include "SkRefCnt.h"
 #include "SkRect.h"
@@ -40,4 +41,4 @@ typedef struct {
     jfieldID bottom;
 } IRectClass;
 
-SkIRect skIRectFromObj(JNIEnv* env, jobject obj);
+std::unique_ptr<SkIRect> objToIRect(JNIEnv* env, jobject obj);

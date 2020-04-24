@@ -58,7 +58,7 @@ class SkiaWindow(width: Int, height: Int, fps: Int, renderer: (Canvas, Int, Int)
 
             override fun display(drawable: GLAutoDrawable?) {
                 skijaState.apply {
-                    canvas!!.clear(0xFFFFFFFF)
+                    canvas!!.clear(0xFFFFFFFF.toInt())
                     renderer(
                         canvas!!, glCanvas.width, glCanvas.height
                     )

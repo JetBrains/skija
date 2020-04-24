@@ -29,12 +29,12 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetAntiAlias(J
     instance->setAntiAlias(value);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Paint_nGetColor(JNIEnv* env, jclass jclass, jlong ptr) {
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Paint_nGetColor(JNIEnv* env, jclass jclass, jlong ptr) {
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
     return instance->getColor();
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetColor(JNIEnv* env, jclass jclass, jlong ptr, jlong color) {
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetColor(JNIEnv* env, jclass jclass, jlong ptr, jint color) {
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
     instance->setColor(color);
 }

@@ -162,7 +162,7 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawTextBlob
     canvas->drawTextBlob(blob, x, y, *paint);
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nClear(JNIEnv* env, jclass jclass, jlong ptr, jlong color) {
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nClear(JNIEnv* env, jclass jclass, jlong ptr, jint color) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(ptr));
     canvas->clear(color);
 }

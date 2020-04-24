@@ -10,8 +10,8 @@ public class Paint extends Managed {
     public boolean isAntiAlias() { Native.onNativeCall(); return nIsAntiAlias(nativeInstance); }
     public Paint setAntiAlias(boolean value) { Native.onNativeCall(); nSetAntiAlias(nativeInstance, value); return this; }
 
-    public long getColor() { Native.onNativeCall(); return nGetColor(nativeInstance); }
-    public Paint setColor(long color) { Native.onNativeCall(); nSetColor(nativeInstance, color); return this; }
+    public int getColor() { Native.onNativeCall(); return nGetColor(nativeInstance); }
+    public Paint setColor(int color) { Native.onNativeCall(); nSetColor(nativeInstance, color); return this; }
 
     public Style getStyle() { Native.onNativeCall(); return Style.values()[nGetStyle(nativeInstance)]; }
     public Paint setStyle(Style style) { Native.onNativeCall(); nSetStyle(nativeInstance, style.ordinal()); return this; }
@@ -45,8 +45,8 @@ public class Paint extends Managed {
     private static native long nGetNativeFinalizer();
     private static native boolean nIsAntiAlias(long nativeInstance);
     private static native void nSetAntiAlias(long nativeInstance, boolean value);
-    private static native long nGetColor(long nativeInstance);
-    private static native void nSetColor(long nativeInstance, long argb);
+    private static native int nGetColor(long nativeInstance);
+    private static native void nSetColor(long nativeInstance, int argb);
     private static native int  nGetStyle(long nativeInstance);
     private static native void nSetStyle(long nativeInstance, int value);
     private static native long nGetStrokeWidth(long nativeInstance);

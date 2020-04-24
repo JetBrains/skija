@@ -76,7 +76,7 @@ public class Canvas extends Native {
         nDrawTextBlob(nativeInstance, blob.nativeInstance, x, y, font.nativeInstance, paint.nativeInstance);
     }
 
-    public void clear(long color) { Native.onNativeCall(); nClear(nativeInstance, color); }
+    public void clear(int color) { Native.onNativeCall(); nClear(nativeInstance, color); }
     public void drawPaint(Paint paint) { Native.onNativeCall(); nDrawPaint(nativeInstance, paint.nativeInstance); }
 
     public void clipRect(Rect r, ClipOp op, boolean antiAlias) { Native.onNativeCall(); nClipRect(nativeInstance, r.left, r.top, r.right, r.bottom, op.ordinal(), antiAlias); }
@@ -127,7 +127,7 @@ public class Canvas extends Native {
     private static native void nDrawRegion(long nativeCanvas, long nativeRegion, long nativePaint);
     private static native void nDrawTextBuffer(long nativeCanvas, long buffer, float x, float y, long font, long paint);
     private static native void nDrawTextBlob(long nativeCanvas, long blob, float x, float y, long font, long paint);
-    private static native void nClear(long nativeCanvas, long color);
+    private static native void nClear(long nativeCanvas, int color);
     private static native void nDrawPaint(long nativeCanvas, long nativePaint);
     private static native void nClipRect(long nativeCanvas, float left, float top, float right, float bottom, int op, boolean antiAlias);
     private static native void nClipRoundedRect(long nativeCanvas, float left, float top, float right, float bottom, float[] radii, int op, boolean antiAlias);
