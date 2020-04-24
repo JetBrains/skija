@@ -4,7 +4,7 @@
 #include "SkGradientShader.h"
 #include "interop.hh"
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeLinearGradient
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nLinearGradient
   (JNIEnv* env, jclass jclass, jfloat x0, jfloat y0, jfloat x1, jfloat y1, jintArray colorsArray, jfloatArray posArray, jint tileModeInt) {
     int* colors = env->GetIntArrayElements(colorsArray, nullptr);
     float* pos = posArray == nullptr ? nullptr : env->GetFloatArrayElements(posArray, nullptr);
@@ -17,7 +17,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeLinearGr
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeLinearGradientCS
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nLinearGradientCS
   (JNIEnv* env, jclass jclass, jfloat x0, jfloat y0, jfloat x1, jfloat y1, jfloatArray colorsArray, jlong colorSpacePtr, jfloatArray posArray, jint tileModeInt) {
     float* colors = env->GetFloatArrayElements(colorsArray, nullptr);
     sk_sp<SkColorSpace> colorSpace = sk_ref_sp<SkColorSpace>(reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr)));
@@ -30,7 +30,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeLinearGr
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeRadialGradient
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nRadialGradient
   (JNIEnv* env, jclass jclass, jfloat x, jfloat y, jfloat r, jintArray colorsArray, jfloatArray posArray, jint tileModeInt) {
     int* colors = env->GetIntArrayElements(colorsArray, nullptr);
     float* pos = posArray == nullptr ? nullptr : env->GetFloatArrayElements(posArray, nullptr);
@@ -42,7 +42,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeRadialGr
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeRadialGradientCS
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nRadialGradientCS
   (JNIEnv* env, jclass jclass, jfloat x, jfloat y, jfloat r, jfloatArray colorsArray, jlong colorSpacePtr, jfloatArray posArray, jint tileModeInt) {
     float* colors = env->GetFloatArrayElements(colorsArray, nullptr);
     sk_sp<SkColorSpace> colorSpace = sk_ref_sp<SkColorSpace>(reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr)));
@@ -54,7 +54,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeRadialGr
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeTwoPointConicalGradient
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nTwoPointConicalGradient
   (JNIEnv* env, jclass jclass, jfloat x0, jfloat y0, jfloat r0, jfloat x1, jfloat y1, jfloat r1, jintArray colorsArray, jfloatArray posArray, jint tileModeInt) {
     int* colors = env->GetIntArrayElements(colorsArray, nullptr);
     float* pos = posArray == nullptr ? nullptr : env->GetFloatArrayElements(posArray, nullptr);
@@ -66,7 +66,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeTwoPoint
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeTwoPointConicalGradientCS
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nTwoPointConicalGradientCS
   (JNIEnv* env, jclass jclass, jfloat x0, jfloat y0, jfloat r0, jfloat x1, jfloat y1, jfloat r1, jfloatArray colorsArray, jlong colorSpacePtr, jfloatArray posArray, jint tileModeInt) {
     float* colors = env->GetFloatArrayElements(colorsArray, nullptr);
     sk_sp<SkColorSpace> colorSpace = sk_ref_sp<SkColorSpace>(reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr)));
@@ -78,7 +78,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeTwoPoint
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeSweepGradient
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nSweepGradient
   (JNIEnv* env, jclass jclass, jfloat x, jfloat y, jfloat start, jfloat end, jfloat y1, jfloat r1, jintArray colorsArray, jfloatArray posArray, jint tileModeInt) {
     int* colors = env->GetIntArrayElements(colorsArray, nullptr);
     float* pos = posArray == nullptr ? nullptr : env->GetFloatArrayElements(posArray, nullptr);
@@ -90,7 +90,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeSweepGra
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeSweepGradientCS
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nSweepGradientCS
   (JNIEnv* env, jclass jclass, jfloat x, jfloat y, jfloat start, jfloat end, jfloat y1, jfloat r1, jfloatArray colorsArray, jlong colorSpacePtr, jfloatArray posArray, jint tileModeInt) {
     float* colors = env->GetFloatArrayElements(colorsArray, nullptr);
     sk_sp<SkColorSpace> colorSpace = sk_ref_sp<SkColorSpace>(reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr)));
@@ -102,23 +102,23 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeSweepGra
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeEmpty(JNIEnv* env, jclass jclass) {
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nEmpty(JNIEnv* env, jclass jclass) {
     SkShader* ptr = SkShaders::Empty().release();
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeColor(JNIEnv* env, jclass jclass, jint color) {
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nColor(JNIEnv* env, jclass jclass, jint color) {
     SkShader* ptr = SkShaders::Color(color).release();
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeColorCS(JNIEnv* env, jclass jclass, jfloat r, jfloat g, jfloat b, jfloat a, jlong colorSpacePtr) {
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nColorCS(JNIEnv* env, jclass jclass, jfloat r, jfloat g, jfloat b, jfloat a, jlong colorSpacePtr) {
     SkColorSpace* colorSpace = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr));
     SkShader* ptr = SkShaders::Color(SkColor4f{r, g, b, a}, sk_ref_sp<SkColorSpace>(colorSpace)).release();
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeBlend(JNIEnv* env, jclass jclass, jint blendModeInt, jlong dstPtr, jlong srcPtr) {
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nBlend(JNIEnv* env, jclass jclass, jint blendModeInt, jlong dstPtr, jlong srcPtr) {
     SkShader* dst = reinterpret_cast<SkShader*>(static_cast<uintptr_t>(dstPtr));
     SkShader* src = reinterpret_cast<SkShader*>(static_cast<uintptr_t>(srcPtr));
     SkBlendMode blendMode = static_cast<SkBlendMode>(blendModeInt);
@@ -126,7 +126,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeBlend(JN
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nMakeLerp(JNIEnv* env, jclass jclass, jfloat t, jlong dstPtr, jlong srcPtr) {
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nLerp(JNIEnv* env, jclass jclass, jfloat t, jlong dstPtr, jlong srcPtr) {
     SkShader* dst = reinterpret_cast<SkShader*>(static_cast<uintptr_t>(dstPtr));
     SkShader* src = reinterpret_cast<SkShader*>(static_cast<uintptr_t>(srcPtr));
     SkShader* ptr = SkShaders::Lerp(t, sk_ref_sp<SkShader>(dst), sk_ref_sp<SkShader>(src)).release();

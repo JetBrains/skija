@@ -22,6 +22,13 @@ public class Color4f {
         this.a = a;
     }
 
+    public Color4f(float[] rgba) {
+        this.r = rgba[0];
+        this.g = rgba[1];
+        this.b = rgba[2];
+        this.a = rgba[3];
+    }
+
     public Color4f(int c) {
         this.a = (c >> 24 & 0xFF) / 256f;
         this.r = (c >> 16 & 0xFF) / 256f;
