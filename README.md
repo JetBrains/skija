@@ -2,6 +2,45 @@
 
 ![](extras/logo.png)
 
+## Current status
+
+Active development. Pre-alpha. Everything will change without notice.
+
+## Using
+
+Maven:
+
+```xml
+<repositories>
+  <repository>
+    <id>Bintray</id>
+    <url>https://jetbrains.bintray.com/skija</url>
+  </repository>
+</repositories>
+
+<dependencies>
+  <dependency>
+    <groupId>org.jetbrains.skija</groupId>
+    <artifactId>skija</artifactId>
+    <version>0.1.0</version>
+  </dependency>
+</dependencies>
+```
+
+Gradle:
+
+```gradle
+repositories {
+  maven {
+    url "https://jetbrains.bintray.com/skija"
+  }
+}
+
+dependencies {
+  api "org.jetbrains.skija:skija:0.1.0"
+}
+```
+
 ## Checkout
 
 ```sh
@@ -59,6 +98,18 @@ That will install `skija:skija:0.1.0` to your local Maven repository.
 
 ## Running examples
 
+Examlpes require latest master build of Skija installed locally in `.m2` (see [Building](#building-skija)).
+
+GLFW (via LWJGL), Java and Maven:
+
 ```sh
-./script/run.sh
+cd examples/lwjgl
+mvn compile exec:exec
+```
+
+JOGL, Kotlin and Gradle:
+
+```sh
+cd examples/jogl
+./gradlew run
 ```
