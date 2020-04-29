@@ -280,22 +280,43 @@ public class EffectsScene implements Scene {
     private void drawPathEffects(Canvas canvas) {
         canvas.save();
 
-        try (Path  pattern = new Path().moveTo(-4, -3).lineTo(4, 0).lineTo(-4, 3).closePath();
-             Paint fill = new Paint().setColor(0xFFe76f51).setStyle(Paint.Style.STROKE).setStrokeWidth(1);
+        try (Path  pattern = new Path().moveTo(-2.5f, -1.5f).lineTo(2.5f, 0).lineTo(-2.5f, 1.5f).closePath();
+             Path  dash = new Path().lineTo(10, 0).lineTo(10, 1).lineTo(0, 1).closePath();
+             Paint stroke = new Paint().setColor(0x20457b9d).setStyle(Paint.Style.STROKE).setStrokeWidth(1);
+             Paint fill   = new Paint().setColor(0xFFe76f51).setStyle(Paint.Style.STROKE).setStrokeWidth(1);
              Path  figure = new Path().moveTo(30, 5).lineTo(55, 55).lineTo(5, 55).closePath();)
         {
 
             PathEffect[] effects = new PathEffect[] {
-                PathEffect.make1D(pattern, 5,  0, PathEffect.Style.TRANSLATE),
-                PathEffect.make1D(pattern, 10, 0, PathEffect.Style.TRANSLATE),
-                PathEffect.make1D(pattern, 10, 2, PathEffect.Style.TRANSLATE),
-                PathEffect.make1D(pattern, 10, 0, PathEffect.Style.ROTATE),
-                PathEffect.make1D(pattern, 10, 0, PathEffect.Style.MORPH),
+                PathEffect.path1D(pattern, 5,  0, PathEffect.Style.TRANSLATE),
+                PathEffect.path1D(pattern, 10, 0, PathEffect.Style.TRANSLATE),
+                PathEffect.path1D(pattern, 10, 2, PathEffect.Style.TRANSLATE),
+                PathEffect.path1D(pattern, 10, 0, PathEffect.Style.ROTATE),
+                PathEffect.path1D(pattern, 10, 0, PathEffect.Style.MORPH),
+                PathEffect.path1D(dash, 15, 5, PathEffect.Style.MORPH),
+                PathEffect.path2D(Matrix.scale(7), pattern),
+                PathEffect.line2D(1, Matrix.scale(3, 3)),
+                PathEffect.line2D(1, Matrix.scale(Matrix.rotate(30), 3, 3)),
+                PathEffect.corner(10),
+                PathEffect.corner(30),
+                PathEffect.dash(new float[] {10, 10}, 0),
+                PathEffect.dash(new float[] {10, 10}, 5),
+                PathEffect.dash(new float[] {10, 5}, 0),
+                PathEffect.dash(new float[] {10, 5, 2, 5}, 0),
+                PathEffect.discrete(5, 2, 0),
+                PathEffect.discrete(5, 2, (int) (System.currentTimeMillis() / 100)),
+                PathEffect.dash(new float[] {10, 5, 2, 5}, 0).compose(PathEffect.corner(10)),
+                PathEffect.dash(new float[] {10, 5, 2, 5}, 0).sum(PathEffect.corner(10)),
             };
 
             for (PathEffect effect: effects) {
+                canvas.drawPath(figure, stroke);
+                Rect bb = effect.computeFastBounds(Rect.makeLTRB(5, 5, 55, 55));
+                canvas.drawRect(bb, stroke);
+
                 fill.setPathEffect(effect);
                 canvas.drawPath(figure, fill);
+
                 canvas.translate(70, 0);
                 effect.close();
             }

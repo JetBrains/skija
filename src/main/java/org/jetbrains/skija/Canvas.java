@@ -99,15 +99,10 @@ public class Canvas extends Native {
 
     public void translate(float dx, float dy) { Native.onNativeCall(); nConcat(nativeInstance, 1, 0, dx, 0, 1, dy, 0, 0, 1); }
     public void scale(float sx, float sy) { Native.onNativeCall(); nConcat(nativeInstance, sx, 0, 0, 0, sy, 0, 0, 0, 1); }
-    public void rotate(float deg) {
-        Native.onNativeCall(); 
-        double rad = Math.toRadians(deg);
-        double sin = Math.sin(rad);
-        double cos = Math.cos(rad);
-        double tolerance = 1f / (1 << 12);
-        if (Math.abs(sin) <= tolerance) sin = 0;
-        if (Math.abs(cos) <= tolerance) cos = 0;
-        nConcat(nativeInstance, (float) cos, (float) -sin, 0, (float) sin, (float) cos, 0, 0, 0, 1);
+    public void rotate(float deg) { concat(Matrix.rotate(deg)); }
+    public void concat(float[] matrix) {
+        Native.onNativeCall();
+        nConcat(nativeInstance, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8]);
     }
 
     public int save() { Native.onNativeCall(); return nSave(nativeInstance); }

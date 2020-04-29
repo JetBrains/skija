@@ -26,10 +26,12 @@ FontVariationClass* fontVariationClass = nullptr;
 
 void maybeInitFontVariationClass(JNIEnv* env) {
     if (fontVariationClass == nullptr) {
-        fontVariationClass = new FontVariationClass;
-        fontVariationClass->cls = env->FindClass("org/jetbrains/skija/FontVariation");
-        fontVariationClass->tagID = env->GetFieldID(fontVariationClass->cls, "tag", "I");
-        fontVariationClass->valueID = env->GetFieldID(fontVariationClass->cls, "value", "F");
+        FontVariationClass* c = new FontVariationClass;
+        jclass localClass = env->FindClass("org/jetbrains/skija/FontVariation");
+        c->cls = static_cast<jclass>(env->NewGlobalRef(localClass));
+        c->tagID = env->GetFieldID(c->cls, "tag", "I");
+        c->valueID = env->GetFieldID(c->cls, "value", "F");
+        fontVariationClass = c;
     }
 }
 
@@ -37,21 +39,25 @@ FontAxisInfoClass* fontAxisInfoClass = nullptr;
 
 void maybeInitFontAxisInfoClass(JNIEnv* env) {
     if (fontAxisInfoClass == nullptr) {
-        fontAxisInfoClass = new FontAxisInfoClass;
-        fontAxisInfoClass->cls = env->FindClass("org/jetbrains/skija/FontAxisInfo");
-        fontAxisInfoClass->ctorID = env->GetMethodID(fontAxisInfoClass->cls, "<init>", "(II[BIFFF)V");
+        FontAxisInfoClass* c = new FontAxisInfoClass;
+        jclass localClass = env->FindClass("org/jetbrains/skija/FontAxisInfo");
+        c->cls = static_cast<jclass>(env->NewGlobalRef(localClass));
+        c->ctorID = env->GetMethodID(c->cls, "<init>", "(II[BIFFF)V");
+        fontAxisInfoClass = c;
     }
 }
 
 IRectClass* iRectClass = nullptr;
 void maybeInitIRectClass(JNIEnv* env) {
     if (iRectClass == nullptr) {
-        iRectClass = new IRectClass;
-        iRectClass->cls = env->FindClass("org/jetbrains/skija/IRect");
-        iRectClass->left = env->GetFieldID(iRectClass->cls, "left", "I");
-        iRectClass->top = env->GetFieldID(iRectClass->cls, "top", "I");
-        iRectClass->right = env->GetFieldID(iRectClass->cls, "right", "I");
-        iRectClass->bottom = env->GetFieldID(iRectClass->cls, "bottom", "I");
+        IRectClass* c = new IRectClass;
+        jclass localClass = env->FindClass("org/jetbrains/skija/IRect");
+        c->cls = static_cast<jclass>(env->NewGlobalRef(localClass));
+        c->left = env->GetFieldID(c->cls, "left", "I");
+        c->top = env->GetFieldID(c->cls, "top", "I");
+        c->right = env->GetFieldID(c->cls, "right", "I");
+        c->bottom = env->GetFieldID(c->cls, "bottom", "I");
+        iRectClass = c;
     }
 }
 
@@ -72,20 +78,24 @@ std::unique_ptr<SkIRect> objToIRect(JNIEnv* env, jobject obj) {
 RectClass* rectClass = nullptr;
 void maybeInitRectClass(JNIEnv* env) {
     if (rectClass == nullptr) {
-        rectClass = new RectClass();
-        rectClass->cls = env->FindClass("org/jetbrains/skija/Rect");
-        rectClass->makeLTRB = env->GetMethodID(rectClass->cls, "makeLTRB", "(FFFF)Lorg/jetbrains/skija/Rect;");
-        rectClass->left = env->GetFieldID(rectClass->cls, "left", "F");
-        rectClass->top = env->GetFieldID(rectClass->cls, "top", "F");
-        rectClass->right = env->GetFieldID(rectClass->cls, "right", "F");
-        rectClass->bottom = env->GetFieldID(rectClass->cls, "bottom", "F");
+        RectClass* c = new RectClass();
+        jclass localClass = env->FindClass("org/jetbrains/skija/Rect");
+        c->cls = static_cast<jclass>(env->NewGlobalRef(localClass));
+        c->makeLTRB = env->GetStaticMethodID(c->cls, "makeLTRB", "(FFFF)Lorg/jetbrains/skija/Rect;");
+        c->left = env->GetFieldID(c->cls, "left", "F");
+        c->top = env->GetFieldID(c->cls, "top", "F");
+        c->right = env->GetFieldID(c->cls, "right", "F");
+        c->bottom = env->GetFieldID(c->cls, "bottom", "F");
+        rectClass = c;
     }
 }
 
 jobject javaRect(JNIEnv* env, float left, float top, float right, float bottom) {
-    return env->CallObjectMethod(rectClass->cls, rectClass->makeLTRB, left, top, right, bottom);
+    maybeInitRectClass(env);
+    return env->CallStaticObjectMethod(rectClass->cls, rectClass->makeLTRB, left, top, right, bottom);
 }
 
 jobject javaRect(JNIEnv* env, const SkRect& rect) {
-    return env->CallObjectMethod(rectClass->cls, rectClass->makeLTRB, rect.fLeft, rect.fTop, rect.fRight, rect.fBottom);
+    maybeInitRectClass(env);
+    return env->CallStaticObjectMethod(rectClass->cls, rectClass->makeLTRB, rect.fLeft, rect.fTop, rect.fRight, rect.fBottom);
 }
