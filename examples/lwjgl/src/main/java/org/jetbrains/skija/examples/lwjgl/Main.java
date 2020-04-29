@@ -312,14 +312,15 @@ class Window {
         initSkia();
 
         scenes = new TreeMap(Map.of(
-            "Effects",      new EffectsScene(),
-            "Empty",        new EmptyScene(),
-            "Geometry",     new GeometryScene(),
-            "Text",         new TextScene(),
-            "Text Blob",    new TextBlobScene(),
-            "Wall Cached",  new WallOfTextScene(true),
-            "Wall of Text", new WallOfTextScene(false),
-            "Watches",      new WatchesScene()
+            "Effects",         new EffectsScene(),
+            "Empty",           new EmptyScene(),
+            "Geometry",        new GeometryScene(),
+            "Text",            new TextScene(),
+            "Text Blob",       new TextBlobScene(),
+            "Wall Cached",     new WallOfTextScene(true),
+            "Wall of Text",    new WallOfTextScene(false),
+            "Watches",         new WatchesScene(),
+            "Rotated squares", new RotatingSquares()
         ));
         currentScene = "Effects";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
