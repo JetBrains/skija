@@ -6,6 +6,32 @@
 
 Active development. Pre-alpha. Everything will change without notice.
 
+Class           | Progress
+----------------|-----------
+Bitmap          | ░░░░░░░░░░
+Canvas          | ▓▓▓▓▓░░░░░
+Color           | ▓░░░░░░░░░
+ColorFilter     | ░░░░░░░░░░
+ColorSpace      | ▓▓░░░░░░░░
+Data            | ░░░░░░░░░░
+Font            | ▓▓░░░░░░░░
+FontMgr         | ░░░░░░░░░░ 
+Image           | ░░░░░░░░░░
+ImageFilters    | ▓▓▓▓▓▓▓▓▓▓
+MaskFilter      | ░░░░░░░░░░
+Matrix          | ▓▓▓░░░░░░░
+Paint           | ▓▓▓▓▓▓▓▓░░
+Path            | ▓▓▓▓▓▓▓░░░
+PathEffects     | ▓▓▓▓▓▓▓▓▓▓
+Picture         | ░░░░░░░░░░
+PictureRecorder | ░░░░░░░░░░
+Region          | ▓▓▓▓▓▓▓▓▓▓
+Shader          | ▓▓▓▓▓▓▓▓▓▓
+Stream          | ░░░░░░░░░░
+Surface         | ▓░░░░░░░░░
+TextBlob        | ▓▓░░░░░░░░
+Typeface        | ▓▓░░░░░░░░
+
 ## Using
 
 Maven:
@@ -79,6 +105,8 @@ Download & unpack from e.g. [github.com/aseprite/skia/releases](https://github.c
 ```sh
 export SKIA_DIR=~/Downloads/Skia-macOS-Release-x64
 ```
+
+Keep in mind that Skija is based on `chrome/m83` version of Skia and might not work or even compile with other versions.
 
 ## Building Skija
 

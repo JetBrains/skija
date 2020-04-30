@@ -261,6 +261,7 @@ public class EffectsScene implements Scene {
                 linearCS(0, 0, 130, 0, 0xFF555555, 0xFFAAAAAA, cs, 10),
                 linearCS(0, 0, 130, 0, 0xFF0095D5, 0xFFD50095, cs, 10),
                 linearCS(0, 0, 130, 0, 0xFFF88909, 0xFF8909F8, cs, 10),
+                linearCS(0, 0, 130, 0, 0xFFFF9C00, 0xFFFF0000, cs, 10),
             };
                 
             try (Paint fill = new Paint()) {
