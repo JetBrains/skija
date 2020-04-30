@@ -126,8 +126,8 @@ That will install `skija:skija:0.1.0` to your local Maven repository.
 
 ## Running examples
 
-Examlpes require latest master build of Skija installed locally in `.m2` (see [Building](#building-skija)).
 
+Examples require latest master build of Skija installed locally in `.m2` (see [Building](#building-skija)).
 GLFW (via LWJGL), Java and Maven:
 
 ```sh
