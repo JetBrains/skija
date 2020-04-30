@@ -49,8 +49,9 @@ fun displayScene(renderer: Renderer, width: Int, height: Int, xpos: Int, ypos: I
         }
     }
     val text = "Hello Skija ${state.frame++}!"
-    val buffer = renderer.font.hbFont.shape(text, FontFeature.EMPTY)
-    canvas.drawTextBuffer(buffer, xpos.toFloat(), ypos.toFloat(), renderer.font.skFont, renderer.paint)
+    renderer.font.hbFont.shape(text, FontFeature.EMPTY).use { buffer ->
+        canvas.drawTextBuffer(buffer, 200f, 200f, renderer.font.skFont, renderer.paint)
+    }
 }
 
 class Renderer(val displayScene: (Renderer, Int, Int) -> Unit): SkiaRenderer {
@@ -59,30 +60,20 @@ class Renderer(val displayScene: (Renderer, Int, Int) -> Unit): SkiaRenderer {
     lateinit var paint: Paint
     var canvas: Canvas? = null
 
-    fun reinit() {
-        typeface = Typeface.makeFromFile("../lwjgl/fonts/JetBrainsMono-Regular.ttf")
-        font = Font(typeface, 40f)
-        paint = Paint()
-        paint.setColor(0xff9BC730L.toInt()).setStyle(Paint.Style.FILL).setStrokeWidth(1f)
-    }
-
     override fun onInit() {
-        reinit()
+        typeface = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf")
+        font = Font(typeface, 40f)
+        paint = Paint().setColor(0xff9BC730L.toInt())
     }
 
     override fun onDispose() {
     }
 
     override fun onReshape(width: Int, height: Int) {
-        reinit()
     }
 
     override fun onRender(canvas: Canvas, width: Int, height: Int) {
-        if (this.canvas !== canvas) {
-            reinit()
-            this.canvas = canvas
-        }
-        // reinit()
+        this.canvas = canvas
         displayScene(this, width, height)
     }
 }

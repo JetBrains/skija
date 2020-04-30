@@ -6,11 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="skija" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="lwjgl" target="11" />
       <module name="SkiaJava" target="11" />
+      <module name="skija" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -18,6 +20,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="SkiaJava" options="" />
       <module name="lwjgl" options="" />
+      <module name="skija" options="" />
     </option>
   </component>
 </project>

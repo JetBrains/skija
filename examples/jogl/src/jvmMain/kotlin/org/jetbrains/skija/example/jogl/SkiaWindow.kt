@@ -20,12 +20,8 @@ private class SkijaState {
     var canvas: Canvas? = null
 
     fun clear() {
-        if (surface != null) {
-            surface!!.close()
-        }
-        if (renderTarget != null) {
-            renderTarget!!.close()
-        }
+        surface?.close()
+        renderTarget?.close()
     }
 }
 
@@ -49,14 +45,13 @@ class SkiaWindow(
 
     val glCanvas: GLCanvas
     var animator: FPSAnimator? = null
-
     var renderer: SkiaRenderer? = null
+    private val skijaState = SkijaState()
 
     init {
         val profile = GLProfile.get(GLProfile.GL3)
         val capabilities = GLCapabilities(profile)
         glCanvas = GLCanvas(capabilities)
-        val skijaState = SkijaState()
         glCanvas.autoSwapBufferMode = true
 
         glCanvas.addGLEventListener(object : GLEventListener {
@@ -67,27 +62,28 @@ class SkiaWindow(
                 width: Int,
                 height: Int
             ) {
-                initSkija(glCanvas, skijaState)
+                initSkija(glCanvas)
                 renderer!!.onReshape(width, height)
             }
 
             override fun init(drawable: GLAutoDrawable?) {
-                initSkija(glCanvas, skijaState)
+                skijaState.context = Context.makeGL()
+                initSkija(glCanvas)
                 renderer!!.onInit()
             }
 
             override fun dispose(drawable: GLAutoDrawable?) {
                 renderer!!.onDispose()
+                skijaState.clear()
+                skijaState.context?.close()
             }
 
             override fun display(drawable: GLAutoDrawable?) {
-                skijaState.apply {
-                    canvas!!.clear(0xFFFFFFFFL.toInt())
-                    renderer!!.onRender(
-                        canvas!!, glCanvas.width, glCanvas.height
-                    )
-                    context!!.flush()
-                }
+                skijaState.canvas!!.clear(0xFFFFFFFFL.toInt())
+                renderer!!.onRender(
+                    skijaState.canvas!!, glCanvas.width, glCanvas.height
+                )
+                skijaState.context!!.flush()
             }
         })
 
@@ -111,33 +107,30 @@ class SkiaWindow(
         }
     }
 
-    private fun initSkija(glCanvas: GLCanvas, skijaState: SkijaState) {
-        with(skijaState) {
-            val width = glCanvas.width
-            val height = glCanvas.height
-            val dpi = glCanvas.width.toFloat() / width
-            skijaState.clear()
-            val intBuf1 = IntBuffer.allocate(1)
-            glCanvas.gl.glGetIntegerv(GL.GL_DRAW_FRAMEBUFFER_BINDING, intBuf1)
-            val fbId = intBuf1[0]
-            renderTarget = BackendRenderTarget.newGL(
-                (width * dpi).toInt(),
-                (height * dpi).toInt(),
-                0,
-                8,
-                fbId.toLong(),
-                BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8.toLong()
-            )
-            context = Context.makeGL()
-            surface = Surface.makeFromBackendRenderTarget(
-                context,
-                renderTarget,
-                Surface.Origin.BOTTOM_LEFT,
-                Surface.ColorType.RGBA_8888,
-                ColorSpace.SRGB
-            )
-            canvas = surface!!.canvas
-            canvas!!.scale(dpi, dpi)
-        }
+    private fun initSkija(glCanvas: GLCanvas) {
+        val width = glCanvas.width
+        val height = glCanvas.height
+        val dpi = 1f
+        skijaState.clear()
+        val intBuf1 = IntBuffer.allocate(1)
+        glCanvas.gl.glGetIntegerv(GL.GL_DRAW_FRAMEBUFFER_BINDING, intBuf1)
+        val fbId = intBuf1[0]
+        skijaState.renderTarget = BackendRenderTarget.newGL(
+            (width * dpi).toInt(),
+            (height * dpi).toInt(),
+            0,
+            8,
+            fbId,
+            BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8
+        )
+        skijaState.surface = Surface.makeFromBackendRenderTarget(
+            skijaState.context,
+            skijaState.renderTarget,
+            Surface.Origin.BOTTOM_LEFT,
+            Surface.ColorType.RGBA_8888,
+            ColorSpace.SRGB
+        )
+        skijaState.canvas = skijaState.surface!!.canvas
+        skijaState.canvas!!.scale(dpi, dpi)
     }
 }

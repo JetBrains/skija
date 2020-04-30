@@ -117,7 +117,7 @@ public class BackendRenderTarget extends Managed {
         public static int GR_GL_BGRA8                        = 0x93A1;
     }
 
-    public static BackendRenderTarget newGL(int width, int height, int sampleCnt, int stencilBits, long fbId, long fbFormat) {
+    public static BackendRenderTarget newGL(int width, int height, int sampleCnt, int stencilBits, int fbId, int fbFormat) {
         Native.onNativeCall();
         return new BackendRenderTarget(nNewGL(width, height, sampleCnt, stencilBits, fbId, fbFormat));
     }
@@ -126,5 +126,5 @@ public class BackendRenderTarget extends Managed {
 
     private static final long nativeFinalizer = nGetNativeFinalizer();
     private static native long nGetNativeFinalizer();
-    private static native long nNewGL(int width, int height, int sampleCnt, int stencilBits, long fbId, long fbFormat);
+    private static native long nNewGL(int width, int height, int sampleCnt, int stencilBits, int fbId, int fbFormat);
 }

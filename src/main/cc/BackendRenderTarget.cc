@@ -13,7 +13,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_BackendRenderTarget_
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_BackendRenderTarget_nNewGL
-  (JNIEnv* env, jclass jclass, jint width, jint height, jint sampleCnt, jint stencilBits, jlong fbId, jlong fbFormat) {
+  (JNIEnv* env, jclass jclass, jint width, jint height, jint sampleCnt, jint stencilBits, jint fbId, jint fbFormat) {
     GrGLFramebufferInfo glInfo = { static_cast<unsigned int>(fbId), static_cast<unsigned int>(fbFormat) };
     GrBackendRenderTarget* obj = new GrBackendRenderTarget(width, height, sampleCnt, stencilBits, glInfo);
     return reinterpret_cast<jlong>(obj);
