@@ -75,6 +75,18 @@ std::unique_ptr<SkIRect> objToIRect(JNIEnv* env, jobject obj) {
     }
 }
 
+std::unique_ptr<SkMatrix> arrayToMatrix(JNIEnv* env, jfloatArray matrixArray) {
+    if (matrixArray == nullptr)
+        return std::unique_ptr<SkMatrix>(nullptr);
+    else {
+        jfloat* m = env->GetFloatArrayElements(matrixArray, 0);
+        SkMatrix* ptr = new SkMatrix();
+        ptr->setAll(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
+        env->ReleaseFloatArrayElements(matrixArray, m, 0);
+        return std::unique_ptr<SkMatrix>(ptr);
+    }
+}
+
 RectClass* rectClass = nullptr;
 void maybeInitRectClass(JNIEnv* env) {
     if (rectClass == nullptr) {

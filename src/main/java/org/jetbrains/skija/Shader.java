@@ -1,80 +1,111 @@
 package org.jetbrains.skija;
 
 public class Shader extends RefCounted {
+    public static final class GradientOptions {
+        public static final int INTERPOLATE_PREMUL = 1;
+        public static GradientOptions DEFAULT = new GradientOptions(TileMode.CLAMP, GradientOptions.INTERPOLATE_PREMUL, null);
+        
+        public TileMode tileMode;
+        public int flags;
+        public float[] localMatrix;
+
+        private GradientOptions(TileMode t, int f, float[] m) {
+            tileMode = t;
+            flags = f;
+            localMatrix = m;
+        }
+
+        public GradientOptions with(TileMode t) {
+            return new GradientOptions(t, flags, localMatrix);
+        }
+
+        public GradientOptions premul() {
+            return new GradientOptions(tileMode, flags | INTERPOLATE_PREMUL, localMatrix);
+        }
+
+        public GradientOptions unpremul() {
+            return new GradientOptions(tileMode, flags & ~INTERPOLATE_PREMUL, localMatrix);
+        }
+
+        public GradientOptions with(float[] m) {
+            return new GradientOptions(tileMode, flags, m);
+        }
+    }
+
     public static Shader linearGradient(float x0, float y0, float x1, float y1, int[] colors) {
-        return linearGradient(x0, y0, x1, y1, colors, null, TileMode.CLAMP);
+        return linearGradient(x0, y0, x1, y1, colors, null, GradientOptions.DEFAULT);
     }
     
     public static Shader linearGradient(float x0, float y0, float x1, float y1, int[] colors, float[] positions) {
-        return linearGradient(x0, y0, x1, y1, colors, positions, TileMode.CLAMP);
+        return linearGradient(x0, y0, x1, y1, colors, positions, GradientOptions.DEFAULT);
     }
 
-    public static Shader linearGradient(float x0, float y0, float x1, float y1, int[] colors, float[] positions, TileMode tileMode) {
+    public static Shader linearGradient(float x0, float y0, float x1, float y1, int[] colors, float[] positions, GradientOptions opts) {
         Native.onNativeCall();
-        return new Shader(nLinearGradient(x0, y0, x1, y1, colors, positions, tileMode.ordinal()));
+        return new Shader(nLinearGradient(x0, y0, x1, y1, colors, positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
-    public static Shader linearGradient(float x0, float y0, float x1, float y1, Color4f[] colors, ColorSpace cs, float[] positions, TileMode tileMode) {
+    public static Shader linearGradient(float x0, float y0, float x1, float y1, Color4f[] colors, ColorSpace cs, float[] positions, GradientOptions opts) {
         Native.onNativeCall();
-        return new Shader(nLinearGradientCS(x0, y0, x1, y1, Color4f.flattenArray(colors), Native.pointer(cs), positions, tileMode.ordinal()));
+        return new Shader(nLinearGradientCS(x0, y0, x1, y1, Color4f.flattenArray(colors), Native.pointer(cs), positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
     public static Shader radialGradient(float x, float y, float r, int[] colors) {
-        return radialGradient(x, y, r, colors, null, TileMode.CLAMP);
+        return radialGradient(x, y, r, colors, null, GradientOptions.DEFAULT);
     }
 
     public static Shader radialGradient(float x, float y, float r, int[] colors, float[] positions) {
-        return radialGradient(x, y, r, colors, positions, TileMode.CLAMP);
+        return radialGradient(x, y, r, colors, positions, GradientOptions.DEFAULT);
     }
 
-    public static Shader radialGradient(float x, float y, float r, int[] colors, float[] positions, TileMode tileMode) {
+    public static Shader radialGradient(float x, float y, float r, int[] colors, float[] positions, GradientOptions opts) {
         Native.onNativeCall();
-        return new Shader(nRadialGradient(x, y, r, colors, positions, tileMode.ordinal()));
+        return new Shader(nRadialGradient(x, y, r, colors, positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
-    public static Shader radialGradient(float x, float y, float r, Color4f[] colors, ColorSpace cs, float[] positions, TileMode tileMode) {
+    public static Shader radialGradient(float x, float y, float r, Color4f[] colors, ColorSpace cs, float[] positions, GradientOptions opts) {
         Native.onNativeCall();
-        return new Shader(nRadialGradientCS(x, y, r, Color4f.flattenArray(colors), Native.pointer(cs), positions, tileMode.ordinal()));
+        return new Shader(nRadialGradientCS(x, y, r, Color4f.flattenArray(colors), Native.pointer(cs), positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
     public static Shader twoPointConicalGradient(float x0, float y0, float r0, float x1, float y1, float r1, int[] colors) {
-        return twoPointConicalGradient(x0, y0, r0, x1, y1, r1, colors, null, TileMode.CLAMP);
+        return twoPointConicalGradient(x0, y0, r0, x1, y1, r1, colors, null, GradientOptions.DEFAULT);
     }
 
     public static Shader twoPointConicalGradient(float x0, float y0, float r0, float x1, float y1, float r1, int[] colors, float[] positions) {
-        return twoPointConicalGradient(x0, y0, r0, x1, y1, r1, colors, positions, TileMode.CLAMP);
+        return twoPointConicalGradient(x0, y0, r0, x1, y1, r1, colors, positions, GradientOptions.DEFAULT);
     }
 
-    public static Shader twoPointConicalGradient(float x0, float y0, float r0, float x1, float y1, float r1, int[] colors, float[] positions, TileMode tileMode) {
+    public static Shader twoPointConicalGradient(float x0, float y0, float r0, float x1, float y1, float r1, int[] colors, float[] positions, GradientOptions opts) {
         Native.onNativeCall();
-        return new Shader(nTwoPointConicalGradient(x0, y0, r0, x1, y1, r1, colors, positions, tileMode.ordinal()));
+        return new Shader(nTwoPointConicalGradient(x0, y0, r0, x1, y1, r1, colors, positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
-    public static Shader twoPointConicalGradient(float x0, float y0, float r0, float x1, float y1, float r1, Color4f[] colors, ColorSpace cs, float[] positions, TileMode tileMode) {
+    public static Shader twoPointConicalGradient(float x0, float y0, float r0, float x1, float y1, float r1, Color4f[] colors, ColorSpace cs, float[] positions, GradientOptions opts) {
         Native.onNativeCall();
-        return new Shader(nTwoPointConicalGradientCS(x0, y0, r0, x1, y1, r1, Color4f.flattenArray(colors), Native.pointer(cs), positions, tileMode.ordinal()));
+        return new Shader(nTwoPointConicalGradientCS(x0, y0, r0, x1, y1, r1, Color4f.flattenArray(colors), Native.pointer(cs), positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
     public static Shader sweepGradient(float x, float y, int[] colors) {
-        return sweepGradient(x, y, 0, 360, colors, null, TileMode.CLAMP);
+        return sweepGradient(x, y, 0, 360, colors, null, GradientOptions.DEFAULT);
     }
     
     public static Shader sweepGradient(float x, float y, int[] colors, float[] positions) {
-        return sweepGradient(x, y, 0, 360, colors, positions, TileMode.CLAMP);
+        return sweepGradient(x, y, 0, 360, colors, positions, GradientOptions.DEFAULT);
     }
 
-    public static Shader sweepGradient(float x, float y, int[] colors, float[] positions, TileMode tileMode) {
-        return sweepGradient(x, y, 0, 360, colors, positions, tileMode);
+    public static Shader sweepGradient(float x, float y, int[] colors, float[] positions, GradientOptions opts) {
+        return sweepGradient(x, y, 0, 360, colors, positions, opts);
     }
 
-    public static Shader sweepGradient(float x, float y, float startAngle, float endAngle, int[] colors, float[] positions, TileMode tileMode) {
+    public static Shader sweepGradient(float x, float y, float startAngle, float endAngle, int[] colors, float[] positions, GradientOptions opts) {
         Native.onNativeCall();
-        return new Shader(nSweepGradient(x, y, startAngle, endAngle, colors, positions, tileMode.ordinal()));
+        return new Shader(nSweepGradient(x, y, startAngle, endAngle, colors, positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
-    public static Shader sweepGradient(float x, float y, float startAngle, float endAngle, Color4f[] colors, ColorSpace cs, float[] positions, TileMode tileMode) {
+    public static Shader sweepGradient(float x, float y, float startAngle, float endAngle, Color4f[] colors, ColorSpace cs, float[] positions, GradientOptions opts) {
         Native.onNativeCall();
-        return new Shader(nSweepGradientCS(x, y, startAngle, endAngle, Color4f.flattenArray(colors), Native.pointer(cs), positions, tileMode.ordinal()));
+        return new Shader(nSweepGradientCS(x, y, startAngle, endAngle, Color4f.flattenArray(colors), Native.pointer(cs), positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
     public static Shader empty() { Native.onNativeCall(); return new Shader(nEmpty()); }
@@ -96,14 +127,14 @@ public class Shader extends RefCounted {
     }
 
     protected Shader(long nativeInstance) { super(nativeInstance); }
-    private static native long nLinearGradient(float x0, float y0, float x1, float y1, int[] colors, float[] positions, int tileMode);
-    private static native long nLinearGradientCS(float x0, float y0, float x1, float y1, float[] colors, long colorSpacePtr, float[] positions, int tileMode);
-    private static native long nRadialGradient(float x, float y, float r, int[] colors, float[] positions, int tileMode);
-    private static native long nRadialGradientCS(float x, float y, float r, float[] colors, long colorSpacePtr, float[] positions, int tileMode);
-    private static native long nTwoPointConicalGradient(float x0, float y0, float r0, float x1, float y1, float r1, int[] colors, float[] positions, int tileMode);
-    private static native long nTwoPointConicalGradientCS(float x0, float y0, float r0, float x1, float y1, float r1, float[] colors, long colorSpacePtr, float[] positions, int tileMode);
-    private static native long nSweepGradient(float x, float y, float startAngle, float endAngle, int[] colors, float[] positions, int tileMode);
-    private static native long nSweepGradientCS(float x, float y, float startAngle, float endAngle, float[] colors, long colorSpacePtr, float[] positions, int tileMode);
+    private static native long nLinearGradient(float x0, float y0, float x1, float y1, int[] colors, float[] positions, int tileMode, int flags, float[] matrix);
+    private static native long nLinearGradientCS(float x0, float y0, float x1, float y1, float[] colors, long colorSpacePtr, float[] positions, int tileMode, int flags, float[] matrix);
+    private static native long nRadialGradient(float x, float y, float r, int[] colors, float[] positions, int tileMode, int flags, float[] matrix);
+    private static native long nRadialGradientCS(float x, float y, float r, float[] colors, long colorSpacePtr, float[] positions, int tileMode, int flags, float[] matrix);
+    private static native long nTwoPointConicalGradient(float x0, float y0, float r0, float x1, float y1, float r1, int[] colors, float[] positions, int tileMode, int flags, float[] matrix);
+    private static native long nTwoPointConicalGradientCS(float x0, float y0, float r0, float x1, float y1, float r1, float[] colors, long colorSpacePtr, float[] positions, int tileMode, int flags, float[] matrix);
+    private static native long nSweepGradient(float x, float y, float startAngle, float endAngle, int[] colors, float[] positions, int tileMode, int flags, float[] matrix);
+    private static native long nSweepGradientCS(float x, float y, float startAngle, float endAngle, float[] colors, long colorSpacePtr, float[] positions, int tileMode, int flags, float[] matrix);
 
     private static native long nEmpty();
     private static native long nColor(int color);

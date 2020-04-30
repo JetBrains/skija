@@ -4,6 +4,7 @@
 #include <jni.h>
 #include "SkRefCnt.h"
 #include "SkRect.h"
+#include "SkMatrix.h"
 
 typedef std::array<int, sizeof(int)> IntArray;
 typedef std::array<long, sizeof(long)> LongArray;
@@ -44,6 +45,7 @@ typedef struct {
 extern IRectClass* iRectClass;
 
 std::unique_ptr<SkIRect> objToIRect(JNIEnv* env, jobject obj);
+std::unique_ptr<SkMatrix> arrayToMatrix(JNIEnv* env, jfloatArray arr);
 
 typedef struct {
     jclass cls;

@@ -315,6 +315,7 @@ class Window {
             "Effects",      new EffectsScene(),
             "Empty",        new EmptyScene(),
             "Geometry",     new GeometryScene(),
+            "Shaders",      new ShadersScene(),
             "Squares",      new SquaresScene(),
             "Text",         new TextScene(),
             "Text Blob",    new TextBlobScene(),
@@ -322,7 +323,7 @@ class Window {
             "Wall of Text", new WallOfTextScene(false),
             "Watches",      new WatchesScene()
         ));
-        currentScene = "Effects";
+        currentScene = "Shaders";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13, new FontFeature("tnum"));
         t0 = System.nanoTime();
