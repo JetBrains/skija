@@ -1,15 +1,14 @@
 package org.jetbrains.skija.example.jogl
 
-import org.jetbrains.skija.Canvas
-import org.jetbrains.skija.Paint
-import org.jetbrains.skija.Rect
+import org.jetbrains.skija.*
 import java.awt.event.MouseEvent
 import java.awt.event.MouseMotionAdapter
 import javax.swing.WindowConstants
 import kotlin.math.cos
 import kotlin.math.sin
 
-fun displayScene(canvas: Canvas, width: Int, height: Int, xpos: Int, ypos: Int) {
+fun displayScene(renderer: Renderer, width: Int, height: Int, xpos: Int, ypos: Int, state: State) {
+    val canvas = renderer.canvas!!
     val watchFill = Paint().setColor(0xFFFFFFFF.toInt())
     val watchStroke = Paint().setColor(0xFF000000.toInt()).setStyle(Paint.Style.STROKE).setStrokeWidth(1f).setAntiAlias(false)
     val watchStrokeAA = Paint().setColor(0xFF000000.toInt()).setStyle(Paint.Style.STROKE).setStrokeWidth(1f)
@@ -49,6 +48,47 @@ fun displayScene(canvas: Canvas, width: Int, height: Int, xpos: Int, ypos: Int) 
                     stroke)
         }
     }
+    val text = "Hello Skija ${state.frame++}!"
+    val buffer = renderer.font.hbFont.shape(text, FontFeature.EMPTY)
+    canvas.drawTextBuffer(buffer, xpos.toFloat(), ypos.toFloat(), renderer.font.skFont, renderer.paint)
+}
+
+class Renderer(val displayScene: (Renderer, Int, Int) -> Unit): SkiaRenderer {
+    lateinit var typeface: Typeface
+    lateinit var font: Font
+    lateinit var paint: Paint
+    var canvas: Canvas? = null
+
+    fun reinit() {
+        typeface = Typeface.makeFromFile("../lwjgl/fonts/JetBrainsMono-Regular.ttf")
+        font = Font(typeface, 40f)
+        paint = Paint()
+        paint.setColor(0xff9BC730L.toInt()).setStyle(Paint.Style.FILL).setStrokeWidth(1f)
+    }
+
+    override fun onInit() {
+        reinit()
+    }
+
+    override fun onDispose() {
+    }
+
+    override fun onReshape(width: Int, height: Int) {
+        reinit()
+    }
+
+    override fun onRender(canvas: Canvas, width: Int, height: Int) {
+        if (this.canvas !== canvas) {
+            reinit()
+            this.canvas = canvas
+        }
+        // reinit()
+        displayScene(this, width, height)
+    }
+}
+
+class State {
+    var frame: Int = 0
 }
 
 actual class Demo actual constructor() {
@@ -59,8 +99,11 @@ actual class Demo actual constructor() {
         var mouseX = 0
         var mouseY = 0
 
-        val frame = SkiaWindow(width = width, height = height, fps = 120) {
-            canvas, w, h -> displayScene(canvas, w, h, mouseX, mouseY)
+        val frame = SkiaWindow(width = width, height = height, fps = 120)
+        // Only use Skia APIs after that moment!
+        val state = State()
+        frame.renderer = Renderer {
+            renderer, w, h -> displayScene(renderer, w, h, mouseX, mouseY, state)
         }
         frame.glCanvas.addMouseMotionListener(object : MouseMotionAdapter() {
             override fun mouseMoved(event: MouseEvent) {
@@ -73,24 +116,6 @@ actual class Demo actual constructor() {
         frame.setVisible(true)
         frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
 
-        return 0
-    }
-
-    fun run2(): Int {
-        var radius = 50f
-        val frame = SkiaWindow(width = 1024, height = 768, fps = 120) { canvas, w, h ->
-            val fill = Paint().setColor(0xFF000000.toInt()).setStyle(Paint.Style.STROKE).setStrokeWidth(4f)
-            canvas.drawOval(Rect.makeXYWH( w / 2f - radius, h / 2f - radius, radius, radius), fill)
-        }
-        frame.glCanvas.addMouseMotionListener(object: MouseMotionAdapter() {
-            var lastX = 0
-            override fun mouseDragged(e: MouseEvent) {
-                radius += if (e.x > lastX) -2f else 2f
-                lastX = e.x
-            }
-        })
-        frame.setLocation(400, 400)
-        frame.setVisible(true)
         return 0
     }
 }

@@ -5,10 +5,11 @@ import com.jogamp.opengl.awt.GLCanvas
 import com.jogamp.opengl.util.FPSAnimator
 import org.jetbrains.skija.BackendRenderTarget
 import org.jetbrains.skija.Canvas
-import org.jetbrains.skija.ColorSpace
 import org.jetbrains.skija.Context
+import org.jetbrains.skija.ColorSpace
 import org.jetbrains.skija.JNI
 import org.jetbrains.skija.Surface
+
 import java.nio.IntBuffer
 import javax.swing.JFrame
 
@@ -28,7 +29,18 @@ private class SkijaState {
     }
 }
 
-class SkiaWindow(width: Int, height: Int, fps: Int, renderer: (Canvas, Int, Int) -> Unit): JFrame() {
+interface SkiaRenderer {
+    fun onInit()
+    fun onRender(canvas: Canvas, width: Int, height: Int)
+    fun onReshape(width: Int, height: Int)
+    fun onDispose()
+}
+
+class SkiaWindow(
+    width: Int,
+    height: Int,
+    fps: Int = 0
+) : JFrame() {
     companion object {
         init {
             JNI.loadLibrary("/", "skija")
@@ -36,6 +48,9 @@ class SkiaWindow(width: Int, height: Int, fps: Int, renderer: (Canvas, Int, Int)
     }
 
     val glCanvas: GLCanvas
+    var animator: FPSAnimator? = null
+
+    var renderer: SkiaRenderer? = null
 
     init {
         val profile = GLProfile.get(GLProfile.GL3)
@@ -45,21 +60,30 @@ class SkiaWindow(width: Int, height: Int, fps: Int, renderer: (Canvas, Int, Int)
         glCanvas.autoSwapBufferMode = true
 
         glCanvas.addGLEventListener(object : GLEventListener {
-            override fun reshape(drawable: GLAutoDrawable?, x: Int, y: Int, width: Int, height: Int) {
+            override fun reshape(
+                drawable: GLAutoDrawable?,
+                x: Int,
+                y: Int,
+                width: Int,
+                height: Int
+            ) {
                 initSkija(glCanvas, skijaState)
+                renderer!!.onReshape(width, height)
             }
 
             override fun init(drawable: GLAutoDrawable?) {
                 initSkija(glCanvas, skijaState)
+                renderer!!.onInit()
             }
 
             override fun dispose(drawable: GLAutoDrawable?) {
+                renderer!!.onDispose()
             }
 
             override fun display(drawable: GLAutoDrawable?) {
                 skijaState.apply {
-                    canvas!!.clear(0xFFFFFFFF.toInt())
-                    renderer(
+                    canvas!!.clear(0xFFFFFFFFL.toInt())
+                    renderer!!.onRender(
                         canvas!!, glCanvas.width, glCanvas.height
                     )
                     context!!.flush()
@@ -69,12 +93,22 @@ class SkiaWindow(width: Int, height: Int, fps: Int, renderer: (Canvas, Int, Int)
 
         glCanvas.setSize(width, height)
 
-        val animator = FPSAnimator(fps)
-        animator.add(glCanvas)
-        animator.start()
+        setFps(fps)
 
         contentPane.add(glCanvas)
         size = contentPane.preferredSize
+    }
+
+    fun setFps(fps: Int) {
+        animator?.stop()
+        animator = if (fps > 0) {
+            FPSAnimator(fps).also {
+                it.add(glCanvas)
+                it.start()
+            }
+        } else {
+            null
+        }
     }
 
     private fun initSkija(glCanvas: GLCanvas, skijaState: SkijaState) {
