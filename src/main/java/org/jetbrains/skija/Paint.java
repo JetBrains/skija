@@ -28,7 +28,15 @@ public class Paint extends Managed {
     public Join getStrokeJoin() { Native.onNativeCall(); return Join.values()[nGetStrokeJoin(nativeInstance)]; }
     public Paint setStrokeJoin(Join join) { Native.onNativeCall(); nSetStrokeJoin(nativeInstance, join.ordinal()); return this; }
 
-    public Path getFillPath(Path src) { Native.onNativeCall(); return new Path(nGetFillPath(nativeInstance, Native.pointer(src))); }
+    public Path getFillPath(Path src) { return getFillPath(src, null, 1); }
+    
+    public Path getFillPath(Path src, Rect cull, float resScale) {
+        Native.onNativeCall();
+        if (cull == null)
+            return new Path(nGetFillPath(nativeInstance, Native.pointer(src), resScale));
+        else
+            return new Path(nGetFillPathCull(nativeInstance, Native.pointer(src), cull.left, cull.top, cull.right, cull.bottom, resScale));
+    }
 
     protected ImageFilter imageFilter;
     public ImageFilter getImageFilter() { return imageFilter; }
@@ -63,7 +71,8 @@ public class Paint extends Managed {
     private static native void nSetStrokeCap(long nativeInstance, int value);
     private static native int  nGetStrokeJoin(long nativeInstance);
     private static native void nSetStrokeJoin(long nativeInstance, int value);
-    private static native long nGetFillPath(long nativeInstance, long path);
+    private static native long nGetFillPath(long nativeInstance, long path, float resScale);
+    private static native long nGetFillPathCull(long nativeInstance, long path, float left, float top, float right, float bottom, float resScale);
     private static native void nSetImageFilter(long nativeInstance, long ptr);
     private static native void nSetBlendMode(long nativeInstance, int mode);
     private static native void nSetPathEffect(long nativeInstance, long pathEffectPtr);

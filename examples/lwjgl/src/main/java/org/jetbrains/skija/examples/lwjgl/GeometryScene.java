@@ -357,14 +357,23 @@ public class GeometryScene implements Scene {
                 new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10).setStrokeJoin(Paint.Join.ROUND),
                 new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10).setStrokeJoin(Paint.Join.BEVEL)
             };
+
             for (Paint stroke5: paints) {
+
                 canvas.drawPath(path, stroke5);
                 canvas.drawPath(path, stroke1);
                 canvas.translate(50, 0);
+
                 try (Path fillPath = stroke5.getFillPath(path)) {
                     canvas.drawPath(fillPath, stroke1);
+                    canvas.translate(50, 0);
                 }
-                canvas.translate(50, 0);
+
+                try (Path fillPath = stroke5.getFillPath(path, Rect.makeLTRB(15, 15, 25, 25), 0.1f)) {
+                    canvas.drawPath(fillPath, stroke1);
+                    canvas.translate(50, 0);
+                }
+
                 stroke5.close();
             }
         }
