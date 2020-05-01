@@ -90,6 +90,14 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetStrokeJoin(
     instance->setStrokeJoin(static_cast<SkPaint::Join>(join));
 }
 
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Paint_nGetFillPath(JNIEnv* env, jclass jclass, jlong ptr, jlong srcPtr) {
+    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
+    SkPath* src = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(srcPtr));
+    SkPath* dst = new SkPath();
+    instance->getFillPath(*src, dst);
+    return reinterpret_cast<jlong>(dst);
+}
+
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetImageFilter(JNIEnv* env, jclass jclass, jlong ptr, jlong filterPtr) {
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
     SkImageFilter* filter = reinterpret_cast<SkImageFilter*>(static_cast<uintptr_t>(filterPtr));

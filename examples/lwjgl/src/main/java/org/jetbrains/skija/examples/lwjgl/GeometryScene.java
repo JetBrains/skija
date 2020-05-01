@@ -18,6 +18,7 @@ public class GeometryScene implements Scene {
         drawRectInscribed(canvas, new Paint().setColor(0xFF9BC730));
         drawPaths(canvas, new Paint().setColor(0xFFF6BC01));
         drawPaths(canvas, new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1f));
+        drawFillPaths(canvas);
         drawClips(canvas);
         drawRegions(canvas, dpi);
     }
@@ -343,6 +344,54 @@ public class GeometryScene implements Scene {
         canvas.restore();
         canvas.translate(0, 50);
     }
+    
+    private void drawFillPaths(Canvas canvas) {
+        canvas.save();
+
+        try (Path path = new Path().moveTo(20, 5).lineTo(35, 35).lineTo(5, 35).closePath();
+             Paint stroke1 = new Paint().setColor(0xFF247ba0).setStyle(Paint.Style.STROKE).setStrokeWidth(1))
+        {
+            Paint[] paints = new Paint[] {
+                new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10),
+                new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10).setStrokeMiter(2),
+                new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10).setStrokeJoin(Paint.Join.ROUND),
+                new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10).setStrokeJoin(Paint.Join.BEVEL)
+            };
+            for (Paint stroke5: paints) {
+                canvas.drawPath(path, stroke5);
+                canvas.drawPath(path, stroke1);
+                canvas.translate(50, 0);
+                try (Path fillPath = stroke5.getFillPath(path)) {
+                    canvas.drawPath(fillPath, stroke1);
+                }
+                canvas.translate(50, 0);
+                stroke5.close();
+            }
+        }
+
+        try (Path path = new Path().moveTo(5, 35).lineTo(15, 10).lineTo(25, 30).lineTo(35, 5);
+             Paint stroke1 = new Paint().setColor(0xFF247ba0).setStyle(Paint.Style.STROKE).setStrokeWidth(1))
+        {
+            Paint[] paints = new Paint[] {
+                new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10),
+                new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10).setStrokeCap(Paint.Cap.ROUND),
+                new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10).setStrokeCap(Paint.Cap.SQUARE)
+            };
+            for (Paint stroke5: paints) {
+                canvas.drawPath(path, stroke5);
+                canvas.drawPath(path, stroke1);
+                canvas.translate(50, 0);
+                try (Path fillPath = stroke5.getFillPath(path)) {
+                    canvas.drawPath(fillPath, stroke1);
+                }
+                canvas.translate(50, 0);
+                stroke5.close();
+            }
+        }        
+
+        canvas.restore();
+        canvas.translate(0, 50);
+    }
 
     private void drawClips(Canvas canvas) {
         canvas.save();
@@ -413,7 +462,7 @@ public class GeometryScene implements Scene {
         Paint stroke1 = new Paint().setColor(0xFF3F80A7).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
         Paint stroke2 = new Paint().setColor(0xFFF55E58).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
         int xOffset = 30;
-        int yOffset = 580;
+        int yOffset = 630;
 
         canvas.save();
 

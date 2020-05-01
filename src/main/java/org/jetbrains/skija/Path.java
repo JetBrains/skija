@@ -5,7 +5,7 @@ public class Path extends Managed {
     public enum Direction { CLOCKWISE, COUNTER_CLOCKWISE }
     public enum ArcSize { SMALL, LARGE }
 
-    public Path() { super(nInit(), nativeFinalizer); Native.onNativeCall(); }
+    public Path() { this(nInit()); }
 
     public FillType getFillType() { Native.onNativeCall(); return FillType.values()[nGetFillType(nativeInstance)]; }
     public Path setFillType(FillType fillType) { Native.onNativeCall(); nSetFillType(nativeInstance, fillType.ordinal()); return this; }
@@ -43,6 +43,7 @@ public class Path extends Managed {
 
     public Path addPoly(float[] coords, boolean close) { Native.onNativeCall(); nAddPoly(nativeInstance, coords, close); return this; }
 
+    protected Path(long ptr) { super(ptr, nativeFinalizer); Native.onNativeCall(); }
     private static final long nativeFinalizer = nGetNativeFinalizer();
     private static native long nInit();
     private static native long nGetNativeFinalizer();
