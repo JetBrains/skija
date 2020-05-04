@@ -3,6 +3,7 @@
 #include "SkPaint.h"
 #include "SkShader.h"
 #include "SkImageFilter.h"
+#include "SkMaskFilter.h"
 #include "SkPathEffect.h"
 
 static void deletePaint(SkPaint* paint) {
@@ -105,6 +106,12 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Paint_nGetFillPathCu
     SkRect cull {left, top, right, bottom};
     instance->getFillPath(*src, dst, &cull, resScale);
     return reinterpret_cast<jlong>(dst);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetMaskFilter(JNIEnv* env, jclass jclass, jlong ptr, jlong filterPtr) {
+    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
+    SkMaskFilter* filter = reinterpret_cast<SkMaskFilter*>(static_cast<uintptr_t>(filterPtr));
+    instance->setMaskFilter(sk_ref_sp<SkMaskFilter>(filter));
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetImageFilter(JNIEnv* env, jclass jclass, jlong ptr, jlong filterPtr) {

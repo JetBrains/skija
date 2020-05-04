@@ -38,6 +38,10 @@ public class Paint extends Managed {
             return new Path(nGetFillPathCull(nativeInstance, Native.pointer(src), cull.left, cull.top, cull.right, cull.bottom, resScale));
     }
 
+    protected MaskFilter maskFilter;
+    public MaskFilter getMaskFilter() { return maskFilter; }
+    public Paint setMaskFilter(MaskFilter f) { this.maskFilter = f; Native.onNativeCall(); nSetMaskFilter(nativeInstance, Native.pointer(f)); return this; }
+
     protected ImageFilter imageFilter;
     public ImageFilter getImageFilter() { return imageFilter; }
     public Paint setImageFilter(ImageFilter f) { this.imageFilter = f; Native.onNativeCall(); nSetImageFilter(nativeInstance, Native.pointer(f)); return this; }
@@ -73,6 +77,7 @@ public class Paint extends Managed {
     private static native void nSetStrokeJoin(long nativeInstance, int value);
     private static native long nGetFillPath(long nativeInstance, long path, float resScale);
     private static native long nGetFillPathCull(long nativeInstance, long path, float left, float top, float right, float bottom, float resScale);
+    private static native void nSetMaskFilter(long nativeInstance, long ptr);
     private static native void nSetImageFilter(long nativeInstance, long ptr);
     private static native void nSetBlendMode(long nativeInstance, int mode);
     private static native void nSetPathEffect(long nativeInstance, long pathEffectPtr);

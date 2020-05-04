@@ -315,6 +315,7 @@ class Window {
         scenes.put("Effects",      new EffectsScene());
         scenes.put("Empty",        new EmptyScene());
         scenes.put("Geometry",     new GeometryScene());
+        scenes.put("Mask Filters", new MaskFiltersScene());
         scenes.put("Path Effects", new PathEffectsScene());
         scenes.put("Shaders",      new ShadersScene());
         scenes.put("Squares",      new SquaresScene());
@@ -323,7 +324,7 @@ class Window {
         scenes.put("Wall Cached",  new WallOfTextScene(true));
         scenes.put("Wall of Text", new WallOfTextScene(false));
         scenes.put("Watches",      new WatchesScene());
-        currentScene = "Geometry";
+        currentScene = "Mask Filters";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13, new FontFeature("tnum"));
         t0 = System.nanoTime();

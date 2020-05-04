@@ -18,7 +18,7 @@ Font            | ▓▓░░░░░░░░
 FontMgr         | ░░░░░░░░░░ 
 Image           | ░░░░░░░░░░
 ImageFilters    | ▓▓▓▓▓▓▓▓▓▓
-MaskFilter      | ░░░░░░░░░░
+MaskFilter      | ▓▓▓▓▓▓▓▓▓▓
 Matrix          | ▓▓▓░░░░░░░
 Paint           | ▓▓▓▓▓▓▓▓░░
 Path            | ▓▓▓▓▓▓▓░░░
