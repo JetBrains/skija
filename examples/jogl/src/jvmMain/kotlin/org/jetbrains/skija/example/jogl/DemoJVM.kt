@@ -50,20 +50,21 @@ fun displayScene(renderer: Renderer, width: Int, height: Int, xpos: Int, ypos: I
     }
     val text = "Hello Skija ${state.frame++}!"
     renderer.font.hbFont.shape(text, FontFeature.EMPTY).use { buffer ->
-        canvas.drawTextBuffer(buffer, 200f, 200f, renderer.font.skFont, renderer.paint)
+        canvas.drawTextBuffer(buffer, xpos.toFloat(), ypos.toFloat(), renderer.font.skFont, renderer.paint)
     }
 }
 
 class Renderer(val displayScene: (Renderer, Int, Int) -> Unit): SkiaRenderer {
-    lateinit var typeface: Typeface
-    lateinit var font: Font
-    lateinit var paint: Paint
+    val typeface = Typeface.makeFromFile("../lwjgl/fonts/JetBrainsMono-Regular.ttf")
+    val font = Font(typeface, 40f)
+    val paint = Paint().apply {
+            setColor(0xff9BC730L.toInt())
+            setStyle(Paint.Style.FILL)
+            setStrokeWidth(1f)
+    }
     var canvas: Canvas? = null
 
     override fun onInit() {
-        typeface = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf")
-        font = Font(typeface, 40f)
-        paint = Paint().setColor(0xff9BC730L.toInt())
     }
 
     override fun onDispose() {
@@ -90,7 +91,7 @@ actual class Demo actual constructor() {
         var mouseX = 0
         var mouseY = 0
 
-        val frame = SkiaWindow(width = width, height = height, fps = 120)
+        val frame = SkiaWindow(width = width, height = height, fps = 60)
         // Only use Skia APIs after that moment!
         val state = State()
         frame.renderer = Renderer {

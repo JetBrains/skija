@@ -18,6 +18,8 @@ private class SkijaState {
     var renderTarget: BackendRenderTarget? = null
     var surface: Surface? = null
     var canvas: Canvas? = null
+    var textureId: Int = 0
+    val intBuf1 = IntBuffer.allocate(1)
 
     fun clear() {
         surface?.close()
@@ -51,6 +53,7 @@ class SkiaWindow(
     init {
         val profile = GLProfile.get(GLProfile.GL3)
         val capabilities = GLCapabilities(profile)
+        capabilities.doubleBuffered = true
         glCanvas = GLCanvas(capabilities)
         glCanvas.autoSwapBufferMode = true
 
@@ -79,11 +82,17 @@ class SkiaWindow(
             }
 
             override fun display(drawable: GLAutoDrawable?) {
-                skijaState.canvas!!.clear(0xFFFFFFFFL.toInt())
-                renderer!!.onRender(
-                    skijaState.canvas!!, glCanvas.width, glCanvas.height
-                )
-                skijaState.context!!.flush()
+                skijaState.apply {
+                    val gl = drawable!!.gl!!
+                    gl.glBindTexture(GL.GL_TEXTURE_2D, textureId)
+                    canvas!!.clear(0xFFFFFFFFL.toInt())
+                    renderer!!.onRender(
+                        canvas!!, glCanvas.width, glCanvas.height
+                    )
+                    skijaState.context!!.flush()
+                    glCanvas.gl.glGetIntegerv(GL.GL_TEXTURE_BINDING_2D, intBuf1)
+                    textureId = intBuf1[0]
+                }
             }
         })
 
@@ -120,8 +129,8 @@ class SkiaWindow(
             (height * dpi).toInt(),
             0,
             8,
-            fbId,
-            BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8
+            fbId.toLong(),
+            BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8.toLong()
         )
         skijaState.surface = Surface.makeFromBackendRenderTarget(
             skijaState.context,
@@ -132,5 +141,7 @@ class SkiaWindow(
         )
         skijaState.canvas = skijaState.surface!!.canvas
         skijaState.canvas!!.scale(dpi, dpi)
+        glCanvas.gl.glGetIntegerv(GL.GL_TEXTURE_BINDING_2D, intBuf1)
+        skijaState.textureId = intBuf1[0]
     }
 }
