@@ -23,6 +23,7 @@ public class ImagesScene implements Scene {
                 Image.fromEncoded(Files.readAllBytes(Path.of("images", "purple-displayprofile.png"))),
                 Image.fromEncoded(Files.readAllBytes(Path.of("images", "wide-gamut.png"))),
                 Image.fromEncoded(Files.readAllBytes(Path.of("images", "wide_gamut_yellow_224_224_64.jpeg"))),
+                Image.fromEncoded(Files.readAllBytes(Path.of("images", "webkit_logo_p3.png"))),
             };
         } catch (IOException e) {
             throw new RuntimeException(e);
