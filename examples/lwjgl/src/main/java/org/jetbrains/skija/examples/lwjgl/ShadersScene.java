@@ -22,7 +22,7 @@ public class ShadersScene implements Scene {
         Shader[] shaders = new Shader[] {
             Shader.empty(),
             Shader.color(0xFF247ba0),
-            Shader.color(new Color4f(0.5f, 0.5f, 0.5f), ColorSpace.SRGB_LINEAR),
+            Shader.color(new Color4f(0.5f, 0.5f, 0.5f), ColorSpace.getSRGBLinear()),
             Shader.lerp(percent / 100f, Shader.color(0xFFFF0000), Shader.color(0xFF00FF00)),
             Shader.blend(BlendMode.SRC_OVER, Shader.color(0xFFFF0000), Shader.color(0x9000FF00)),
             Shader.blend(BlendMode.SCREEN, Shader.color(0xFFFF0000), Shader.color(0x9000FF00)),
@@ -115,8 +115,8 @@ public class ShadersScene implements Scene {
     }
 
     private Shader linearCS(float x0, float y0, float x1, float y1, int colorFrom, int colorTo, ColorSpace cs, int steps) {
-        Color4f from = ColorSpace.SRGB.convert(cs, new Color4f(colorFrom));
-        Color4f to = ColorSpace.SRGB.convert(cs, new Color4f(colorTo));
+        Color4f from = ColorSpace.getSRGB().convert(cs, new Color4f(colorFrom));
+        Color4f to = ColorSpace.getSRGB().convert(cs, new Color4f(colorTo));
         Color4f[] colors = new Color4f[steps + 1];
         float[] pos = new float[steps + 1];
         for (int i = 0; i < steps + 1; ++i) {
@@ -130,7 +130,7 @@ public class ShadersScene implements Scene {
     } 
 
     private void drawLinearCS(Canvas canvas) {
-        for (ColorSpace cs: new ColorSpace[] {null, ColorSpace.SRGB, ColorSpace.SRGB_LINEAR}) {
+        for (ColorSpace cs: new ColorSpace[] {null, ColorSpace.getSRGB(), ColorSpace.getSRGBLinear()}) {
             canvas.save();
 
             int[][] colors = new int[][] {

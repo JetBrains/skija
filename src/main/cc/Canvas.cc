@@ -107,6 +107,30 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawPath
     canvas->drawPath(*path, *paint);
 }
 
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawImageRect
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong imagePtr, jfloat sl, jfloat st, jfloat sr, jfloat sb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jlong paintPtr, jint 
+constraintInt) {
+    SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
+    SkImage* image = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(imagePtr));
+    SkRect src {sl, st, sr, sb};
+    SkRect dst {dl, dt, dr, db};
+    SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
+    SkCanvas::SrcRectConstraint constraint = static_cast<SkCanvas::SrcRectConstraint>(constraintInt);
+    canvas->drawImageRect(image, src, dst, paint, constraint);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawImageIRect
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong imagePtr, jint sl, jint st, jint sr, jint sb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jlong paintPtr, jint 
+constraintInt) {
+    SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
+    SkImage* image = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(imagePtr));
+    SkIRect src {sl, st, sr, sb};
+    SkRect dst {dl, dt, dr, db};
+    SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
+    SkCanvas::SrcRectConstraint constraint = static_cast<SkCanvas::SrcRectConstraint>(constraintInt);
+    canvas->drawImageRect(image, src, dst, paint, constraint);
+}
+
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawRegion
   (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong regionPtr, jlong paintPtr) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));

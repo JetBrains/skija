@@ -22,6 +22,11 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorSpace_nMakeSRGB
     return reinterpret_cast<jlong>(ptr);
 }
 
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorSpace_nMakeDisplayP3(JNIEnv* env, jclass jclass) {
+    SkColorSpace* ptr = SkColorSpace::MakeRGB(SkNamedTransferFn::kSRGB, SkNamedGamut::kDisplayP3).release();
+    return reinterpret_cast<jlong>(ptr);
+}
+
 extern "C" JNIEXPORT jfloatArray JNICALL Java_org_jetbrains_skija_ColorSpace_nConvert
   (JNIEnv* env, jclass jclass, jlong fromPtr, jlong toPtr, float r, float g, float b, float a) {
     SkColorSpace* from = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(fromPtr));

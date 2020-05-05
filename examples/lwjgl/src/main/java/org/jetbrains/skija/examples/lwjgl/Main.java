@@ -141,7 +141,7 @@ class Window {
         renderTarget = BackendRenderTarget.newGL((int) (width * dpi), (int) (height * dpi), /*samples*/0, /*stencil*/8, fbId, BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8);
         System.out.println("Allocated " + renderTarget);
 
-        surface = Surface.makeFromBackendRenderTarget(context, renderTarget, Surface.Origin.BOTTOM_LEFT, Surface.ColorType.RGBA_8888, ColorSpace.SRGB);
+        surface = Surface.makeFromBackendRenderTarget(context, renderTarget, Surface.Origin.BOTTOM_LEFT, Surface.ColorType.RGBA_8888, ColorSpace.getDisplayP3());
         System.out.println("Allocated " + surface);
 
         canvas = surface.getCanvas();
@@ -315,6 +315,7 @@ class Window {
         scenes.put("Effects",      new EffectsScene());
         scenes.put("Empty",        new EmptyScene());
         scenes.put("Geometry",     new GeometryScene());
+        scenes.put("Images",       new ImagesScene());
         scenes.put("Mask Filters", new MaskFiltersScene());
         scenes.put("Path Effects", new PathEffectsScene());
         scenes.put("Shaders",      new ShadersScene());
@@ -324,7 +325,7 @@ class Window {
         scenes.put("Wall Cached",  new WallOfTextScene(true));
         scenes.put("Wall of Text", new WallOfTextScene(false));
         scenes.put("Watches",      new WatchesScene());
-        currentScene = "Mask Filters";
+        currentScene = "Images";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13, new FontFeature("tnum"));
         t0 = System.nanoTime();

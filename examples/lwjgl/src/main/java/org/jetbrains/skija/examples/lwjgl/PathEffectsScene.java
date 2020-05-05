@@ -40,7 +40,7 @@ public class PathEffectsScene implements Scene {
             };
 
             for (PathEffect effect: effects) {
-                if (x + 200 > width) {
+                if (x > 0 && x + 200 > width) {
                     x = 0;
                     y += 200;
                 }

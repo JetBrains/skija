@@ -20,7 +20,7 @@ public class TextBlobScene implements Scene {
         var face = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf");
         font = new Font(face, 13);
         try {
-            text = Files.lines(Path.of("google-10000-english.txt"))
+            text = Files.lines(Path.of("texts/google-10000-english.txt"))
                         .sorted()
                         .limit(2000)
                         .reduce("2000 words", (a, b) -> a + " " + b);

@@ -3,6 +3,7 @@ package org.jetbrains.skija;
 public class Canvas extends Native {
     public enum PointMode { POINTS, LINES, POLYGON }
     public enum ClipOp { DIFFERENCE, INTERSECT }
+    public enum SrcRectConstraint { STRICT, FAST }
 
     protected Surface surface;
 
@@ -59,6 +60,46 @@ public class Canvas extends Native {
     public void drawPath(Path path, Paint paint) {
         Native.onNativeCall();
         nDrawPath(nativeInstance, path.nativeInstance, paint.nativeInstance);
+    }
+
+    public void drawImage(Image image, float left, float top) {
+        drawImage(image, left, top, null);
+    }
+
+    public void drawImage(Image image, float left, float top, Paint paint) {
+        Native.onNativeCall();
+        nDrawImageIRect(nativeInstance, Native.pointer(image), 0, 0, image.getWidth(), image.getHeight(), left, top, image.getWidth(), image.getHeight(), Native.pointer(paint), SrcRectConstraint.STRICT.ordinal());
+    }
+
+    public void drawImageRect(Image image, Rect dst) {
+        drawImageRect(image, dst, null);
+    }
+    
+    public void drawImageRect(Image image, Rect dst, Paint paint) {
+        Native.onNativeCall();
+        nDrawImageIRect(nativeInstance, Native.pointer(image), 0, 0, image.getWidth(), image.getHeight(), dst.left, dst.top, dst.right, dst.bottom, Native.pointer(paint), SrcRectConstraint.STRICT.ordinal());
+    }
+
+    public void drawImageRect(Image image, Rect src, Rect dst, Paint paint) {
+        drawImageRect(image, src, dst, paint, SrcRectConstraint.STRICT);
+    }
+
+    public void drawImageRect(Image image, Rect src, Rect dst, Paint paint, SrcRectConstraint constraint) {
+        Native.onNativeCall();
+        nDrawImageRect(nativeInstance, Native.pointer(image), src.left, src.top, src.right, src.bottom, dst.left, dst.top, dst.right, dst.bottom, Native.pointer(paint), constraint.ordinal());
+    }
+
+    public void drawImageRect(Image image, IRect src, Rect dst) {
+        drawImageRect(image, src, dst, null);
+    }
+
+    public void drawImageRect(Image image, IRect src, Rect dst, Paint paint) {
+        drawImageRect(image, src, dst, paint, SrcRectConstraint.STRICT);
+    }
+
+    public void drawImageRect(Image image, IRect src, Rect dst, Paint paint, SrcRectConstraint constraint) {
+        Native.onNativeCall();
+        nDrawImageIRect(nativeInstance, Native.pointer(image), src.left, src.top, src.right, src.bottom, dst.left, dst.top, dst.right, dst.bottom, Native.pointer(paint), constraint.ordinal());
     }
 
     public void drawRegion(Region r, Paint paint) {
@@ -119,6 +160,10 @@ public class Canvas extends Native {
     private static native void nDrawRoundedRect(long nativeCanvas, float left, float top, float right, float bottom, float radii[], long nativePaint);
     private static native void nDrawDoubleRoundedRect(long nativeCanvas, float ol, float ot, float or, float ob, float oradii[], float il, float it, float ir, float ib, float iradii[], long nativePaint);
     private static native void nDrawPath(long nativeCanvas, long nativePath, long nativePaint);
+    private static native void nDrawImageRect(long nativeCanvas, long nativeImage, float sl, float st, float sr, float sb, float dl, float dt, float dr, float db, long nativePaint, int 
+constraint);
+    private static native void nDrawImageIRect(long nativeCanvas, long nativeImage, int sl, int st, int sr, int sb, float dl, float dt, float dr, float db, long nativePaint, int 
+constraint);
     private static native void nDrawRegion(long nativeCanvas, long nativeRegion, long nativePaint);
     private static native void nDrawTextBuffer(long nativeCanvas, long buffer, float x, float y, long font, long paint);
     private static native void nDrawTextBlob(long nativeCanvas, long blob, float x, float y, long font, long paint);

@@ -20,7 +20,7 @@ public class WallOfTextScene implements Scene {
         var face = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf");
         font = new Font(face, 13);
         try {
-            words = Files.readAllLines(Path.of("google-10000-english.txt"));
+            words = Files.readAllLines(Path.of("texts/google-10000-english.txt"));
             Collections.sort(words);
         } catch (IOException e) {
             throw new RuntimeException(e);

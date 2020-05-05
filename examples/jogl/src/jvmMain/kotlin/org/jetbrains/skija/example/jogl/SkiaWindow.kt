@@ -129,15 +129,15 @@ class SkiaWindow(
             (height * dpi).toInt(),
             0,
             8,
-            fbId.toLong(),
-            BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8.toLong()
+            fbId,
+            BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8
         )
         skijaState.surface = Surface.makeFromBackendRenderTarget(
             skijaState.context,
             skijaState.renderTarget,
             Surface.Origin.BOTTOM_LEFT,
             Surface.ColorType.RGBA_8888,
-            ColorSpace.SRGB
+            ColorSpace.getSRGB()
         )
         skijaState.canvas = skijaState.surface!!.canvas
         skijaState.canvas!!.scale(dpi, dpi)

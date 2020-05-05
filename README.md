@@ -9,14 +9,14 @@ Active development. Pre-alpha. Everything will change without notice.
 Class           | Progress
 ----------------|-----------
 Bitmap          | ░░░░░░░░░░
-Canvas          | ▓▓▓▓▓░░░░░
+Canvas          | ▓▓▓▓▓▓░░░░
 Color           | ▓░░░░░░░░░
 ColorFilter     | ░░░░░░░░░░
 ColorSpace      | ▓▓░░░░░░░░
 Data            | ░░░░░░░░░░
 Font            | ▓▓░░░░░░░░
 FontMgr         | ░░░░░░░░░░ 
-Image           | ░░░░░░░░░░
+Image           | ▓▓░░░░░░░░
 ImageFilters    | ▓▓▓▓▓▓▓▓▓▓
 MaskFilter      | ▓▓▓▓▓▓▓▓▓▓
 Matrix          | ▓▓▓░░░░░░░
