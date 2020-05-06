@@ -35,10 +35,10 @@ public class ImageFilter extends RefCounted {
         return new ImageFilter(nBlur(sigmaX, sigmaY, mode.ordinal(), Native.pointer(input), crop));
     }
 
-    // public static ImageFilter colorFilter(ColorFilter f, ImageFilter input, IRect crop) {
-    //     Native.onNativeCall(); 
-    //     return new ImageFilter(nColorFilter(Native.pointer(f), Native.pointer(input), crop));
-    // }
+    public static ImageFilter colorFilter(ColorFilter f, ImageFilter input, IRect crop) {
+        Native.onNativeCall(); 
+        return new ImageFilter(nColorFilter(Native.pointer(f), Native.pointer(input), crop));
+    }
 
     public static ImageFilter compose(ImageFilter outer, ImageFilter inner) {
         Native.onNativeCall(); 

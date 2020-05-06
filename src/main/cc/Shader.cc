@@ -1,8 +1,17 @@
 #include <iostream>
 #include <jni.h>
+#include "SkColorFilter.h"
 #include "SkShader.h"
 #include "SkGradientShader.h"
 #include "interop.hh"
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nWithColorFilter
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong filterPtr) {
+    SkShader* instance = reinterpret_cast<SkShader*>(static_cast<uintptr_t>(ptr));
+    SkColorFilter* filter = reinterpret_cast<SkColorFilter*>(static_cast<uintptr_t>(filterPtr));
+    SkShader* newPtr = instance->makeWithColorFilter(sk_ref_sp(filter)).release();
+    return reinterpret_cast<jlong>(newPtr);
+}
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nLinearGradient
   (JNIEnv* env, jclass jclass, jfloat x0, jfloat y0, jfloat x1, jfloat y1, jintArray colorsArray, jfloatArray posArray, jint tileModeInt, jint flags, jfloatArray matrixArray) {

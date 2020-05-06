@@ -5,22 +5,32 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class Managed extends Native implements AutoCloseable {
+    protected final boolean allowClose;
+
     protected Cleaner.Cleanable finalizer;
     public static boolean stats = false;
 
     protected Managed(long nativePtr, long nativeFinalizer) {
+        this(nativePtr, nativeFinalizer, true);
+    }
+
+    protected Managed(long nativePtr, long nativeFinalizer, boolean allowClose) {
         super(nativePtr);
         String name = getClass().getSimpleName();
         if (stats)
             allocated.merge(name, 1, Integer::sum);
         finalizer = cleaner.register(this, new CleanerThunk(name, nativePtr, nativeFinalizer));
+        this.allowClose = allowClose;
     }
 
     @Override
     public void close() {
-        finalizer.clean();
-        finalizer = null;
-        nativeInstance = 0;
+        if (allowClose) {
+            finalizer.clean();
+            finalizer = null;
+            nativeInstance = 0;
+        } else
+            throw new RuntimeException("close() not allowed on " + this);
     }
 
     public static Map<String, Integer> allocated = new ConcurrentHashMap<>();

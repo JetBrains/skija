@@ -1,10 +1,11 @@
 #include <iostream>
 #include <jni.h>
-#include "SkPaint.h"
-#include "SkShader.h"
+#include "SkColorFilter.h"
 #include "SkImageFilter.h"
 #include "SkMaskFilter.h"
+#include "SkPaint.h"
 #include "SkPathEffect.h"
+#include "SkShader.h"
 
 static void deletePaint(SkPaint* paint) {
     // std::cout << "Deleting [SkPaint " << paint << "]" << std::endl;
@@ -135,4 +136,10 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetShader(JNIE
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
     SkShader* shader = reinterpret_cast<SkShader*>(static_cast<uintptr_t>(shaderPtr));
     instance->setShader(sk_ref_sp<SkShader>(shader));
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint_nSetColorFilter(JNIEnv* env, jclass jclass, jlong ptr, jlong colorFilterPtr) {
+    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
+    SkColorFilter* colorFilter = reinterpret_cast<SkColorFilter*>(static_cast<uintptr_t>(colorFilterPtr));
+    instance->setColorFilter(sk_ref_sp<SkColorFilter>(colorFilter));
 }

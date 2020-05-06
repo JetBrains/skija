@@ -2,19 +2,22 @@ package org.jetbrains.skija;
 
 public class ColorSpace extends Managed {
     private static class SRGBHolder {
-        public static final ColorSpace INSTANCE = new ColorSpace(nMakeSRGB());
+        static { Native.onNativeCall(); }
+        public static final ColorSpace INSTANCE = new ColorSpace(nMakeSRGB(), false);
     }
 
     public static ColorSpace getSRGB() { return SRGBHolder.INSTANCE; }
 
     private static class SRGBLinearHolder {
-        public static final ColorSpace INSTANCE = new ColorSpace(nMakeSRGBLinear());
+        static { Native.onNativeCall(); }
+        public static final ColorSpace INSTANCE = new ColorSpace(nMakeSRGBLinear(), false);
     }
 
     public static ColorSpace getSRGBLinear() { return SRGBLinearHolder.INSTANCE; }
 
     private static class DisplayP3Holder {
-        public static final ColorSpace INSTANCE = new ColorSpace(nMakeDisplayP3());
+        static { Native.onNativeCall(); }
+        public static final ColorSpace INSTANCE = new ColorSpace(nMakeDisplayP3(), false);
     }
 
     public static ColorSpace getDisplayP3() { return DisplayP3Holder.INSTANCE; }
@@ -25,6 +28,7 @@ public class ColorSpace extends Managed {
     }
 
     protected ColorSpace(long nativeInstance) { super(nativeInstance, nativeFinalizer); }
+    protected ColorSpace(long nativeInstance, boolean allowClose) { super(nativeInstance, nativeFinalizer, allowClose); }
     private static final long nativeFinalizer = nGetNativeFinalizer();
     private static native long nGetNativeFinalizer();
     private static native long nMakeSRGB();

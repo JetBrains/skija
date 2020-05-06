@@ -58,6 +58,10 @@ public class Paint extends Managed {
     public Shader getShader() { return shader; }
     public Paint setShader(Shader shader) { this.shader = shader; Native.onNativeCall(); nSetShader(nativeInstance, Native.pointer(shader)); return this; }
 
+    protected ColorFilter colorFilter;
+    public ColorFilter getColorFilter() { return colorFilter; }
+    public Paint setColorFilter(ColorFilter colorFilter) { this.colorFilter = colorFilter; Native.onNativeCall(); nSetColorFilter(nativeInstance, Native.pointer(colorFilter)); return this; }
+
     private static final long nativeFinalizer = nGetNativeFinalizer();
     private static native long nInit();
     private static native long nGetNativeFinalizer();
@@ -82,5 +86,6 @@ public class Paint extends Managed {
     private static native void nSetBlendMode(long nativeInstance, int mode);
     private static native void nSetPathEffect(long nativeInstance, long pathEffectPtr);
     private static native void nSetShader(long nativeInstance, long shaderPtr);
+    private static native void nSetColorFilter(long nativeInstance, long colorFilterPtr);
 }
 

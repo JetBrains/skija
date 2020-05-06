@@ -29,6 +29,7 @@ public class ShadersScene implements Scene {
             Shader.blend(BlendMode.OVERLAY, Shader.color(0xFFFF0000), Shader.color(0x9000FF00)),
             Shader.blend(BlendMode.DARKEN, Shader.color(0xFFFF0000), Shader.color(0x9000FF00)),
             Shader.blend(BlendMode.LIGHTEN, Shader.color(0xFFFF0000), Shader.color(0x9000FF00)),
+            Shader.linearGradient(0, 0, 60, 0, new int[] { 0xFF247ba0, 0xFFf3ffbd }).withColorFilter(ColorFilter.blend(0xFFCC3333, BlendMode.SCREEN)),
         };
 
         try (Paint fill = new Paint()) {

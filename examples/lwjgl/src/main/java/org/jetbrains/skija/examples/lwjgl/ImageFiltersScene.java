@@ -3,14 +3,13 @@ package org.jetbrains.skija.examples.lwjgl;
 import java.util.stream.IntStream;
 import org.jetbrains.skija.*;
 
-public class EffectsScene implements Scene {
+public class ImageFiltersScene implements Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         canvas.translate(20, 20);
         drawShadowsBlurs(canvas);
         drawImageFilters(canvas, width, dpi); 
         drawLights(canvas);
-        drawBlends(canvas);
     }
 
     private void drawShadowsBlurs(Canvas canvas) {
@@ -21,7 +20,8 @@ public class EffectsScene implements Scene {
             path.setFillType(Path.FillType.EVEN_ODD);
             path.lineTo(0, 60).lineTo(60, 60).lineTo(60, 0).closePath();
             path.moveTo(10, 5).lineTo(55, 10).lineTo(50, 55).lineTo(5, 50).closePath();
-            
+            IRect crop = IRect.makeXYWH(0, 0, 60, 60);
+
             ImageFilter[] filters = new ImageFilter[] {
                 ImageFilter.dropShadow(0, 0, 10, 10, 0xFF000000),
                 ImageFilter.dropShadow(2, 2, 0, 0, 0xFF000000),
@@ -33,6 +33,10 @@ public class EffectsScene implements Scene {
                 ImageFilter.blur(2, 2, TileMode.REPEAT),
                 ImageFilter.blur(2, 2, TileMode.MIRROR),
                 ImageFilter.blur(2, 2, TileMode.DECAL),
+                ImageFilter.colorFilter(
+                    ColorFilter.blend(0x80FF0000, BlendMode.SRC_OVER),
+                    ImageFilter.dropShadow(0, 0, 10, 10, 0xFF000000),
+                    crop),
             };
 
             for (var filter: filters) {
@@ -109,21 +113,5 @@ public class EffectsScene implements Scene {
         }
         canvas.restore();
         canvas.translate(0, 70);
-    }
-
-
-    private void drawBlends(Canvas canvas) {
-        canvas.save();
-        try (Paint dst = new Paint().setColor(0xFFD62828);
-             Paint src = new Paint().setColor(0xFF01D6A0);) {
-            for (var blendMode: BlendMode.values()) {
-                canvas.drawRect(Rect.makeXYWH(0, 0, 20, 20), dst);
-                src.setBlendMode(blendMode);
-                canvas.drawRect(Rect.makeXYWH(10, 10, 20, 20), src);
-                canvas.translate(40, 0);
-            }
-        }
-        canvas.restore();
-        canvas.translate(0, 40);
     }
 }

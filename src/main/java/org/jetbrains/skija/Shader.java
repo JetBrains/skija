@@ -32,6 +32,10 @@ public class Shader extends RefCounted {
         }
     }
 
+    public Shader withColorFilter(ColorFilter f) {
+        return new Shader(nWithColorFilter(nativeInstance, Native.pointer(f)));
+    }
+
     public static Shader linearGradient(float x0, float y0, float x1, float y1, int[] colors) {
         return linearGradient(x0, y0, x1, y1, colors, null, GradientOptions.DEFAULT);
     }
@@ -127,6 +131,8 @@ public class Shader extends RefCounted {
     }
 
     protected Shader(long nativeInstance) { super(nativeInstance); }
+    private static native long nWithColorFilter(long nativeInstance, long colorFilterPtr);
+
     private static native long nLinearGradient(float x0, float y0, float x1, float y1, int[] colors, float[] positions, int tileMode, int flags, float[] matrix);
     private static native long nLinearGradientCS(float x0, float y0, float x1, float y1, float[] colors, long colorSpacePtr, float[] positions, int tileMode, int flags, float[] matrix);
     private static native long nRadialGradient(float x, float y, float r, int[] colors, float[] positions, int tileMode, int flags, float[] matrix);

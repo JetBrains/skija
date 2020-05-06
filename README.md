@@ -11,7 +11,7 @@ Class           | Progress
 Bitmap          | ░░░░░░░░░░
 Canvas          | ▓▓▓▓▓▓░░░░
 Color           | ▓░░░░░░░░░
-ColorFilter     | ░░░░░░░░░░
+ColorFilter     | ▓▓▓▓▓▓▓▓▓▓
 ColorSpace      | ▓▓░░░░░░░░
 Data            | ░░░░░░░░░░
 Font            | ▓▓░░░░░░░░

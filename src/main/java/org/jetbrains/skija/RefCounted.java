@@ -5,6 +5,10 @@ public abstract class RefCounted extends Managed {
         super(nativeInstance, nativeFinalizer);
     }
 
+    protected RefCounted(long nativeInstance, boolean allowClose) {
+        super(nativeInstance, nativeFinalizer, allowClose);
+    }
+
     protected static long nativeFinalizer = nGetNativeFinalizer();
     private static native long nGetNativeFinalizer();
 }
