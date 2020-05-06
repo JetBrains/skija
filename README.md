@@ -98,16 +98,6 @@ gn gen out/Release-x64 --args="is_debug=false is_official_build=true skia_use_sy
 ninja -C out/Release-x64 skia modules
 ```
 
-## Using prebuilt Skia
-
-Download & unpack from e.g. [github.com/aseprite/skia/releases](https://github.com/aseprite/skia/releases).
-
-```sh
-export SKIA_DIR=~/Downloads/Skia-macOS-Release-x64
-```
-
-Keep in mind that Skija is based on `chrome/m83` version of Skia and might not work or even compile with other versions.
-
 ## Building Skija
 
 Prerequisites:
