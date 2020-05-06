@@ -6,11 +6,11 @@ import java.nio.file.Path;
 import org.jetbrains.skija.*;
 
 public class ImagesScene implements Scene {
-    Image circus;
-    Image circusCropped;
-    Image cloud;
-    Image ducks;
-    Image[] tests;
+    protected final Image circus;
+    protected final Image circusCropped;
+    protected final Image cloud;
+    protected final Image ducks;
+    protected final Image[] tests;
 
     public ImagesScene() {
         try {

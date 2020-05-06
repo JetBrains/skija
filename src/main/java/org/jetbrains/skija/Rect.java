@@ -20,6 +20,10 @@ public class Rect {
         return new Rect(l, t, r, b);
     }
 
+    public static Rect makeWH(float w, float h) {
+        return new Rect(0, 0, w, h);
+    }
+
     public static Rect makeXYWH(float l, float t, float w, float h) {
         return new Rect(l, t, l + w, t + h);
     }

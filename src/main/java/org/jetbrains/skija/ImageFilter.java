@@ -68,10 +68,15 @@ public class ImageFilter extends RefCounted {
         return new ImageFilter(nDropShadowOnly(dx, dy, sigmaX, sigmaY, color, Native.pointer(input), crop));
     }
 
-    // public static ImageFilter image(Image image, Rect src, Rect dst, FilterQuality q) {
-    //     Native.onNativeCall(); 
-    //     return new ImageFilter(nImage(Native.pointer(image), src.left, src.top, src.right, src.bottom, dst.left, dst.top, dst.right, dst.bottom, q.ordinal));
-    // }
+    public static ImageFilter image(Image image) {
+        Rect r = Rect.makeWH(image.getWidth(), image.getHeight());
+        return ImageFilter.image(image, r, r, FilterQuality.HIGH);
+    }
+
+    public static ImageFilter image(Image image, Rect src, Rect dst, FilterQuality q) {
+        Native.onNativeCall(); 
+        return new ImageFilter(nImage(Native.pointer(image), src.left, src.top, src.right, src.bottom, dst.left, dst.top, dst.right, dst.bottom, q.ordinal()));
+    }
 
     public static ImageFilter magnifier(Rect r, float inset, ImageFilter input, IRect crop) {
         Native.onNativeCall();

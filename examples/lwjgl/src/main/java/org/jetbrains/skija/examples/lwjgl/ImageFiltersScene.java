@@ -1,9 +1,21 @@
 package org.jetbrains.skija.examples.lwjgl;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.stream.IntStream;
 import org.jetbrains.skija.*;
 
 public class ImageFiltersScene implements Scene {
+    protected final Image image;
+
+    public ImageFiltersScene() {
+        try {
+            image = Image.fromEncoded(Files.readAllBytes(java.nio.file.Path.of("images", "circus.jpg")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         canvas.translate(20, 20);
@@ -20,7 +32,6 @@ public class ImageFiltersScene implements Scene {
             path.setFillType(Path.FillType.EVEN_ODD);
             path.lineTo(0, 60).lineTo(60, 60).lineTo(60, 0).closePath();
             path.moveTo(10, 5).lineTo(55, 10).lineTo(50, 55).lineTo(5, 50).closePath();
-            IRect crop = IRect.makeXYWH(0, 0, 60, 60);
 
             ImageFilter[] filters = new ImageFilter[] {
                 ImageFilter.dropShadow(0, 0, 10, 10, 0xFF000000),
@@ -33,10 +44,6 @@ public class ImageFiltersScene implements Scene {
                 ImageFilter.blur(2, 2, TileMode.REPEAT),
                 ImageFilter.blur(2, 2, TileMode.MIRROR),
                 ImageFilter.blur(2, 2, TileMode.DECAL),
-                ImageFilter.colorFilter(
-                    ColorFilter.blend(0x80FF0000, BlendMode.SRC_OVER),
-                    ImageFilter.dropShadow(0, 0, 10, 10, 0xFF000000),
-                    crop),
             };
 
             for (var filter: filters) {
@@ -69,6 +76,11 @@ public class ImageFiltersScene implements Scene {
                 ImageFilter.tile(Rect.makeXYWH(10, 10, 40, 40), Rect.makeXYWH(0, 0, 60, 60), null),
                 ImageFilter.dilate(2, 2, null, bb),
                 ImageFilter.erode(2, 2, null, bb),
+                ImageFilter.colorFilter(
+                    ColorFilter.blend(0x800000FF, BlendMode.SRC_OVER),
+                    ImageFilter.dropShadow(0, 0, 10, 10, 0xFF000000),
+                    bb),
+                ImageFilter.image(image, Rect.makeXYWH(200, 200, 200, 200), Rect.makeXYWH(10, 10, 40, 40), ImageFilter.FilterQuality.LOW),
             };
 
             for (var filter: filters) {

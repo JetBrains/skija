@@ -24,6 +24,10 @@ public class IRect {
         return new IRect(l, t, l + w, t + h);
     }
 
+    public static Rect makeWH(int w, int h) {
+        return new Rect(0, 0, w, h);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
