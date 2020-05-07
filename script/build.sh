@@ -1,4 +1,4 @@
-#!/bin/zsh -xeuo pipefail
+#!/bin/zsh -euo pipefail
 
 SKIA_DIR=${SKIA_DIR:-`dirname $0`/../third_party/skia}
 SKIA_DIR_ABS=$(cd $SKIA_DIR; pwd)
@@ -11,4 +11,4 @@ cmake -G Ninja -DSKIA_DIR=$SKIA_DIR_ABS ../..
 ninja
 popd
 
-mvn compile install
+mvn install

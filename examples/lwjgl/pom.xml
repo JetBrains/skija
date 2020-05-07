@@ -9,6 +9,7 @@
         <exec.mainClass>org.jetbrains.skija.examples.lwjgl.Main</exec.mainClass>
         <lwjgl.version>3.2.3</lwjgl.version>
         <lwjgl.natives>natives-macos</lwjgl.natives>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <build>

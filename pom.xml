@@ -2,10 +2,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jetbrains.skija</groupId>
     <artifactId>skija</artifactId>
-    <version>0.2.0</version>
+    <version>${revision}</version>
     <properties>
+        <revision>0.2.0</revision>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <build>
         <resources>
@@ -24,18 +26,19 @@
                 <executions>
                     <execution>
                         <id>attach-sources</id>
+                        <phase>verify</phase>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>jar-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
                     <excludes>
-                      <exclude>*.dylib</exclude>
-                      <exclude>*.so</exclude>
-                      <exclude>*.dll</exclude>
+                        <exclude>*.dylib</exclude>
+                        <exclude>*.so</exclude>
+                        <exclude>*.dll</exclude>
                     </excludes>
-                  </configuration>
+                </configuration>
            </plugin>
         </plugins>
     </build>
