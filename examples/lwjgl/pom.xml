@@ -52,7 +52,7 @@
         <dependency>
             <groupId>org.jetbrains.skija</groupId>
             <artifactId>skija</artifactId>
-            <version>0.2.0</version>
+            <version>0.0.0-local</version>
         </dependency>
 
         <dependency>
@@ -110,4 +110,12 @@
             <classifier>${lwjgl.natives}</classifier>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>bintray-jetbrains-skija</id>
+            <name>bintray</name>
+            <url>https://jetbrains.bintray.com/skija</url>
+        </repository>
+    </repositories>
 </project>

@@ -4,7 +4,7 @@
     <artifactId>skija</artifactId>
     <version>${revision}</version>
     <properties>
-        <revision>0.2.0</revision>
+        <revision>0.0.0-local</revision>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
