@@ -16,27 +16,25 @@ public class PathEffectsScene implements Scene {
              Paint fill   = new Paint().setColor(0xFFe76f51).setStyle(Paint.Style.STROKE).setStrokeWidth(1);
              Path  figure = new Path().moveTo(100, 10).lineTo(190, 190).lineTo(10, 190).closePath();)
         {
+            float offset = 1f - System.currentTimeMillis() % 1000 / 1000f;
 
             PathEffect[] effects = new PathEffect[] {
-                PathEffect.path1D(pattern, 10,  0, PathEffect.Style.TRANSLATE),
-                PathEffect.path1D(pattern, 20, 0, PathEffect.Style.TRANSLATE),
-                PathEffect.path1D(pattern, 20, 2, PathEffect.Style.TRANSLATE),
-                PathEffect.path1D(pattern, 20, 0, PathEffect.Style.ROTATE),
-                PathEffect.path1D(pattern, 20, 0, PathEffect.Style.MORPH),
-                PathEffect.path1D(dash, 15, 5, PathEffect.Style.MORPH),
+                PathEffect.path1D(pattern, 10, 10 * offset, PathEffect.Style.TRANSLATE),
+                PathEffect.path1D(pattern, 20, 20 * offset, PathEffect.Style.TRANSLATE),
+                PathEffect.path1D(pattern, 20, 20 * offset, PathEffect.Style.ROTATE),
+                PathEffect.path1D(pattern, 20, 20 * offset, PathEffect.Style.MORPH),
+                PathEffect.path1D(dash, 15, 15 * offset, PathEffect.Style.MORPH),
                 PathEffect.path2D(Matrix.scale(15), pattern),
                 PathEffect.line2D(1, Matrix.scale(3, 3)),
                 PathEffect.line2D(1, Matrix.scale(Matrix.rotate(30), 3, 3)),
                 PathEffect.corner(10),
                 PathEffect.corner(30),
-                PathEffect.dash(new float[] {10, 10}, 0),
-                PathEffect.dash(new float[] {10, 10}, 5),
-                PathEffect.dash(new float[] {10, 5}, 0),
-                PathEffect.dash(new float[] {10, 5, 2, 5}, 0),
-                PathEffect.discrete(5, 2, 0),
+                PathEffect.dash(new float[] {10, 10}, 20 * offset),
+                PathEffect.dash(new float[] {10, 5}, 15 * offset),
+                PathEffect.dash(new float[] {10, 5, 2, 5}, 22 * offset),
                 PathEffect.discrete(5, 2, (int) (System.currentTimeMillis() / 100)),
-                PathEffect.dash(new float[] {10, 5, 2, 5}, 0).compose(PathEffect.corner(50)),
-                PathEffect.dash(new float[] {10, 5, 2, 5}, 0).sum(PathEffect.corner(50)),
+                PathEffect.dash(new float[] {10, 5, 2, 5}, 22 * offset).compose(PathEffect.corner(50)),
+                PathEffect.dash(new float[] {10, 5, 2, 5}, 22 * offset).sum(PathEffect.corner(50)),
             };
 
             for (PathEffect effect: effects) {
