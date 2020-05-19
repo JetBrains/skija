@@ -249,7 +249,7 @@ public class GeometryScene implements Scene {
         canvas.translate(50, 0);
 
         // cubic apple rounding
-        path.reset().lineTo(0, 20).arcTo(0, 0, 40, 40, 180, -90, false).lineTo(40, 40).lineTo(40, 0).closePath();
+        path.reset().lineTo(0, 20).arcTo(Rect.makeLTRB(0, 0, 40, 40), 180, -90, false).lineTo(40, 40).lineTo(40, 0).closePath();
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
@@ -276,7 +276,7 @@ public class GeometryScene implements Scene {
         canvas.drawOval(Rect.makeXYWH(0, 0, 40, 40), tangentStroke);
         canvas.drawLine(20, 20, 20, 0, tangentStroke);
         canvas.drawLine(20, 20, 40, 20, tangentStroke);
-        path.reset().moveTo(0, 0).arcTo(0, 0, 40, 40, -90, 90, false);
+        path.reset().moveTo(0, 0).arcTo(Rect.makeLTRB(0, 0, 40, 40), -90, 90, false);
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
@@ -284,7 +284,7 @@ public class GeometryScene implements Scene {
         canvas.drawOval(Rect.makeXYWH(0, 0, 40, 40), tangentStroke);
         canvas.drawLine(20, 20, 20, 0, tangentStroke);
         canvas.drawLine(20, 20, 40, 20, tangentStroke);
-        path.reset().moveTo(0, 0).arcTo(0, 0, 40, 40, -90, 90, true);
+        path.reset().moveTo(0, 0).arcTo(Rect.makeLTRB(0, 0, 40, 40), -90, 90, true);
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
@@ -331,7 +331,7 @@ public class GeometryScene implements Scene {
 
         // multi shapes
         path.reset().setFillType(Path.FillType.EVEN_ODD);
-        path.arcTo(0, 5, 35, 40, 0, 359, true);
+        path.arcTo(Rect.makeLTRB(0, 5, 35, 40), 0, 359, true);
         path.closePath();
         path.addPoly(new float[] { 5, 0, 35, 0, 35, 30, 5, 30 }, true);
         path.moveTo(5, 35);
@@ -454,8 +454,8 @@ public class GeometryScene implements Scene {
         Path path = new Path()
             .moveTo(0, 12.5f).rCubicTo(0, -5f, 0, -7.5f, 2.5f, -10f).rCubicTo(2.5f, -2.5f, 5f, -2.5f, 10f, -2.5f)
             .rLineTo(15f, 0).rCubicTo(5, 0, 7.5f, 0, 10, 2.5f).rCubicTo(2.5f, 2.5f, 2.5f, 5f, 2.5f, 10f)
-            .lineTo(40, 22f).arcTo(22f, 22f, 40, 40, 0, 90, false)
-            .lineTo(18f, 40).arcTo(0, 22f, 18f, 40, 90, 90, false)
+            .lineTo(40, 22f).arcTo(Rect.makeLTRB(22f, 22f, 40, 40), 0, 90, false)
+            .lineTo(18f, 40).arcTo(Rect.makeLTRB(0, 22f, 18f, 40), 90, 90, false)
             .closePath();
         canvas.clipPath(path, true);
         canvas.drawPaint(new Paint().setColor(0xFF3F80A7));

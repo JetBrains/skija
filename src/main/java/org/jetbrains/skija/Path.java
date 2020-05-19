@@ -538,85 +538,1103 @@ public class Path extends Managed {
         return this;
     }
 
-    public Rect getBounds() { Native.onNativeCall(); float[] b = nGetBounds(nativeInstance); return Rect.makeLTRB(b[0], b[1], b[2], b[3]); }
-    public Rect computeTightBounds() { Native.onNativeCall(); float[] b = nComputeTightBounds(nativeInstance); return Rect.makeLTRB(b[0], b[1], b[2], b[3]); }
-    public Path moveTo(float x, float y) { Native.onNativeCall(); nMoveTo(nativeInstance, x, y); return this; }
-    public Path rMoveTo(float dx, float dy) { Native.onNativeCall(); nRMoveTo(nativeInstance, dx, dy); return this; }
-    public Path lineTo(float x, float y) { Native.onNativeCall(); nLineTo(nativeInstance, x, y); return this; }
-    public Path rLineTo(float dx, float dy) { Native.onNativeCall(); nRLineTo(nativeInstance, dx, dy); return this;}
-    public Path closePath() { Native.onNativeCall(); nClosePath(nativeInstance); return this; }
-    public Path quadTo(float x1, float y1, float x2, float y2) { Native.onNativeCall(); nQuadTo(nativeInstance, x1, y1, x2, y2); return this; }
-    public Path rQuadTo(float dx1, float dy1, float dx2, float dy2) { Native.onNativeCall(); nRQuadTo(nativeInstance, dx1, dy1, dx2, dy2); return this; }
-    public Path conicTo(float x1, float y1, float x2, float y2, float w) { Native.onNativeCall(); nConicTo(nativeInstance, x1, y1, x2, y2, w); return this; }
-    public Path rConicTo(float dx1, float dy1, float dx2, float dy2, float w) { Native.onNativeCall(); nRConicTo(nativeInstance, dx1, dy1, dx2, dy2, w); return this; }
-    public Path cubicTo(float x1, float y1, float x2, float y2, float x3, float y3) { Native.onNativeCall(); nCubicTo(nativeInstance, x1, y1, x2, y2, x3, y3); return this; }
-    public Path rCubicTo(float dx1, float dy1, float dx2, float dy2, float dx3, float dy3) { Native.onNativeCall(); nRCubicTo(nativeInstance, dx1, dy1, dx2, dy2, dx3, dy3); return this; }
-    public Path arcTo(float left, float top, float right, float bottom, float startAngle, float sweepAngle, boolean forceMoveTo) {
-        Native.onNativeCall(); 
-        nArcTo(nativeInstance, left, top, right, bottom, startAngle, sweepAngle, forceMoveTo);
+    /** 
+     * <p>Returns minimum and maximum axes values of Point array.</p>
+     * 
+     * <p>Returns (0, 0, 0, 0) if Path contains no points. Returned bounds width and height may
+     * be larger or smaller than area affected when Path is drawn.</p>
+     *
+     * <p>Rect returned includes all Point added to Path, including Point associated with
+     * {@link Verb#MOVE} that define empty contours.</p>
+     *
+     * @return  bounds of all Point in Point array
+     */
+    public Rect getBounds() {
+        Native.onNativeCall();
+        return nGetBounds(nativeInstance);
+    }
+
+    /**
+     * <p>Updates internal bounds so that subsequent calls to {@link getBounds()} are instantaneous.
+     * Unaltered copies of Path may also access cached bounds through {@link getBounds()}.</p>
+     *
+     * <p>For now, identical to calling {@link getBounds()} and ignoring the returned value.</p>
+     *
+     * <p>Call to prepare Path subsequently drawn from multiple threads,
+     * to avoid a race condition where each draw separately computes the bounds.</p>
+     *
+     * @return  this
+     */
+    public Path updateBoundsCache() {
+        Native.onNativeCall();
+        nUpdateBoundsCache(nativeInstance);
         return this;
     }
-    public Path tangentArcTo(float x1, float y1, float x2, float y2, float radius) { Native.onNativeCall(); nTangentArcTo(nativeInstance, x1, y1, x2, y2, radius); return this; }
+
+    /**
+     * <p>Returns minimum and maximum axes values of the lines and curves in Path.
+     * Returns (0, 0, 0, 0) if Path contains no points.
+     * Returned bounds width and height may be larger or smaller than area affected
+     * when Path is drawn.</p>
+     *
+     * <p>Includes Point associated with {@link Verb#MOVE} that define empty
+     * contours.</p>
+     *
+     * Behaves identically to {@link getBounds()} when Path contains
+     * only lines. If Path contains curves, computed bounds includes
+     * the maximum extent of the quad, conic, or cubic; is slower than {@link getBounds()};
+     * and unlike {@link getBounds()}, does not cache the result.
+     *
+     * @return  tight bounds of curves in Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_computeTightBounds">https://fiddle.skia.org/c/@Path_computeTightBounds</a>
+    */
+    public Rect computeTightBounds() {
+        Native.onNativeCall();
+        return nComputeTightBounds(nativeInstance);
+    }
+
+    /**
+     * <p>Returns true if rect is contained by Path.
+     * May return false when rect is contained by Path.</p>
+     *
+     * <p>For now, only returns true if Path has one contour and is convex.
+     * rect may share points and edges with Path and be contained.
+     * Returns true if rect is empty, that is, it has zero width or height; and
+     * the Point or line described by rect is contained by Path.</p>
+     *
+     * @param rect  Rect, line, or Point checked for containment
+     * @return      true if rect is contained
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_conservativelyContainsRect">https://fiddle.skia.org/c/@Path_conservativelyContainsRect</a>
+     */
+    public boolean conservativelyContainsRect(Rect rect) {
+        Native.onNativeCall();
+        return nConservativelyContainsRect(nativeInstance, rect.left, rect.top, rect.right, rect.bottom);
+    }
+
+    /**
+     * <p>Grows Path verb array and Point array to contain extraPtCount additional Point.
+     * May improve performance and use less memory by
+     * reducing the number and size of allocations when creating Path.</p>
+     *
+     * @param extraPtCount  number of additional Point to allocate
+     * @return              this
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_incReserve">https://fiddle.skia.org/c/@Path_incReserve</a>
+     */
+    public Path incReserve(int extraPtCount) {
+        Native.onNativeCall();
+        nIncReserve(nativeInstance, extraPtCount);
+        return this;
+    }
+
+    /**
+     * Shrinks Path verb array and Point array storage to discard unused capacity.
+     * May reduce the heap overhead for Path known to be fully constructed.
+     *
+     * @return  this
+     */
+    public Path shrinkToFit() {
+        Native.onNativeCall();
+        nShrinkToFit(nativeInstance);
+        return this;
+    }
+
+    /**
+     * Adds beginning of contour at Point (x, y).
+     *
+     * @param x  x-axis value of contour start
+     * @param y  y-axis value of contour start
+     * @return   reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_moveTo">https://fiddle.skia.org/c/@Path_moveTo</a>
+     */
+    public Path moveTo(float x, float y) {
+        Native.onNativeCall();
+        nMoveTo(nativeInstance, x, y);
+        return this;
+    }
+
+    /**
+     * Adds beginning of contour at Point p.
+     *
+     * @param p  contour start
+     * @return   this
+     */
+    public Path moveTo(Point p) {
+        return moveTo(p.x, p.y);
+    }
+
+    /**
+     * <p>Adds beginning of contour relative to last point.</p>
+     *
+     * <p>If Path is empty, starts contour at (dx, dy).
+     * Otherwise, start contour at last point offset by (dx, dy).
+     * Function name stands for "relative move to".</p>
+     *
+     * @param dx  offset from last point to contour start on x-axis
+     * @param dy  offset from last point to contour start on y-axis
+     * @return    reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_rMoveTo">https://fiddle.skia.org/c/@Path_rMoveTo</a>
+     */
+    public Path rMoveTo(float dx, float dy) {
+        Native.onNativeCall();
+        nRMoveTo(nativeInstance, dx, dy);
+        return this;
+    }
+
+    /**
+     * <p>Adds line from last point to (x, y). If Path is empty, or last Verb is
+     * {@link Verb#CLOSE}, last point is set to (0, 0) before adding line.</p>
+     *
+     * <p>lineTo() appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed.
+     * lineTo() then appends {@link Verb#LINE} to verb array and (x, y) to Point array.</p>
+     *
+     * @param x  end of added line on x-axis
+     * @param y  end of added line on y-axis
+     * @return   this
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_lineTo">https://fiddle.skia.org/c/@Path_lineTo</a>
+     */
+    public Path lineTo(float x, float y) {
+        Native.onNativeCall();
+        nLineTo(nativeInstance, x, y);
+        return this;
+    }
+
+    /**
+     * <p>Adds line from last point to Point p. If Path is empty, or last {@link Verb} is
+     * {@link Verb#CLOSE}, last point is set to (0, 0) before adding line.</p>
+     *
+     * <p>lineTo() first appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed.
+     * lineTo() then appends {@link Verb#LINE} to verb array and Point p to Point array.</p>
+     *
+     * @param p  end Point of added line
+     * @return   reference to Path
+     */
+    public Path lineTo(Point p) {
+        return lineTo(p.x, p.y);
+    }
+
+    /**
+     * <p>Adds line from last point to vector (dx, dy). If Path is empty, or last {@link Verb} is
+     * {@link Verb#CLOSE}, last point is set to (0, 0) before adding line.</p>
+     *
+     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed;
+     * then appends {@link Verb#LINE} to verb array and line end to Point array.</p>
+     *
+     * <p>Line end is last point plus vector (dx, dy).</p>
+     * 
+     * <p>Function name stands for "relative line to".</p>
+     *
+     * @param dx  offset from last point to line end on x-axis
+     * @param dy  offset from last point to line end on y-axis
+     * @return    reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_rLineTo">https://fiddle.skia.org/c/@Path_rLineTo</a>
+     * @see <a href="https://fiddle.skia.org/c/@Quad_a">https://fiddle.skia.org/c/@Quad_a</a>
+     * @see <a href="https://fiddle.skia.org/c/@Quad_b">https://fiddle.skia.org/c/@Quad_b</a>
+     */
+    public Path rLineTo(float dx, float dy) {
+        Native.onNativeCall();
+        nRLineTo(nativeInstance, dx, dy);
+        return this;
+    }
+
+    /**
+     * Adds quad from last point towards (x1, y1), to (x2, y2).
+     * If Path is empty, or last {@link Verb} is {@link Verb#CLOSE}, last point is set to (0, 0)
+     * before adding quad.
+     *
+     * Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed;
+     * then appends {@link Verb#QUAD} to verb array; and (x1, y1), (x2, y2)
+     * to Point array.
+     *
+     * @param x1  control Point of quad on x-axis
+     * @param y1  control Point of quad on y-axis
+     * @param x2  end Point of quad on x-axis
+     * @param y2  end Point of quad on y-axis
+     * @return    reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_quadTo">https://fiddle.skia.org/c/@Path_quadTo</a>
+     */
+    public Path quadTo(float x1, float y1, float x2, float y2) {
+        Native.onNativeCall();
+        nQuadTo(nativeInstance, x1, y1, x2, y2);
+        return this;
+    }
+
+    /**
+     * <p>Adds quad from last point towards Point p1, to Point p2.</p>
+     *
+     * <p>If Path is empty, or last {@link Verb} is {@link Verb#CLOSE}, last point is set to (0, 0)
+     * before adding quad.</p>
+     *
+     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed;
+     * then appends {@link Verb#QUAD} to verb array; and Point p1, p2
+     * to Point array.</p>
+     *
+     * @param p1  control Point of added quad
+     * @param p2  end Point of added quad
+     * @return    reference to Path
+     */
+    public Path quadTo(Point p1, Point p2) {
+        return quadTo(p1.x, p1.y, p2.x, p2.y);
+    }
+
+    /**
+     * <p>Adds quad from last point towards vector (dx1, dy1), to vector (dx2, dy2).
+     * If Path is empty, or last {@link Verb}
+     * is {@link Verb#CLOSE}, last point is set to (0, 0) before adding quad.</p>
+     *
+     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array,
+     * if needed; then appends {@link Verb#QUAD} to verb array; and appends quad
+     * control and quad end to Point array.</p>
+     *
+     * <p>Quad control is last point plus vector (dx1, dy1).</p>
+     *
+     * <p>Quad end is last point plus vector (dx2, dy2).</p>
+     *
+     * <p>Function name stands for "relative quad to".</p>
+     *
+     * @param dx1  offset from last point to quad control on x-axis
+     * @param dy1  offset from last point to quad control on y-axis
+     * @param dx2  offset from last point to quad end on x-axis
+     * @param dy2  offset from last point to quad end on y-axis
+     * @return     reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Conic_Weight_a">https://fiddle.skia.org/c/@Conic_Weight_a</a>
+     * @see <a href="https://fiddle.skia.org/c/@Conic_Weight_b">https://fiddle.skia.org/c/@Conic_Weight_b</a>
+     * @see <a href="https://fiddle.skia.org/c/@Conic_Weight_c">https://fiddle.skia.org/c/@Conic_Weight_c</a>
+     * @see <a href="https://fiddle.skia.org/c/@Path_rQuadTo">https://fiddle.skia.org/c/@Path_rQuadTo</a>
+    */
+    public Path rQuadTo(float dx1, float dy1, float dx2, float dy2) {
+        Native.onNativeCall();
+        nRQuadTo(nativeInstance, dx1, dy1, dx2, dy2);
+        return this;
+    }
+
+    /** 
+     * <p>Adds conic from last point towards (x1, y1), to (x2, y2), weighted by w.</p>
+     *
+     * <p>If Path is empty, or last {@link Verb} is {@link Verb#CLOSE}, last point is set to (0, 0)
+     * before adding conic.</p>
+     *
+     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed.</p>
+     *
+     * <p>If w is finite and not one, appends {@link Verb#CONIC} to verb array;
+     * and (x1, y1), (x2, y2) to Point array; and w to conic weights.</p>
+     *
+     * <p>If w is one, appends {@link Verb#QUAD} to verb array, and
+     * (x1, y1), (x2, y2) to Point array.</p>
+     *
+     * <p>If w is not finite, appends {@link Verb#LINE} twice to verb array, and
+     * (x1, y1), (x2, y2) to Point array.</p>
+     *
+     * @param x1  control Point of conic on x-axis
+     * @param y1  control Point of conic on y-axis
+     * @param x2  end Point of conic on x-axis
+     * @param y2  end Point of conic on y-axis
+     * @param w   weight of added conic
+     * @return    reference to Path
+     */
+    public Path conicTo(float x1, float y1, float x2, float y2, float w) {
+        Native.onNativeCall();
+        nConicTo(nativeInstance, x1, y1, x2, y2, w);
+        return this;
+    }
+
+    /** 
+     * <p>Adds conic from last point towards Point p1, to Point p2, weighted by w.</p>
+     *
+     * <p>If Path is empty, or last {@link Verb} is {@link Verb#CLOSE}, last point is set to (0, 0)
+     * before adding conic.</p>
+     *
+     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed.</p>
+     *
+     * <p>If w is finite and not one, appends {@link Verb#CONIC} to verb array;
+     * and Point p1, p2 to Point array; and w to conic weights.</p>
+     *
+     * <p>If w is one, appends {@link Verb#QUAD} to verb array, and Point p1, p2
+     * to Point array.</p>
+     *
+     * <p>If w is not finite, appends {@link Verb#LINE} twice to verb array, and
+     * Point p1, p2 to Point array.</p>
+     *
+     * @param p1  control Point of added conic
+     * @param p2  end Point of added conic
+     * @param w   weight of added conic
+     * @return    reference to Path
+    */
+    public Path conicTo(Point p1, Point p2, float w) {
+        return conicTo(p1.x, p1.y, p2.x, p2.y, w);
+    }
+
+    /**
+     * <p>Adds conic from last point towards vector (dx1, dy1), to vector (dx2, dy2),
+     * weighted by w. If Path is empty, or last {@link Verb}
+     * is {@link Verb#CLOSE}, last point is set to (0, 0) before adding conic.</p>
+     *
+     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array,
+     * if needed.</p>
+     *
+     * <p>If w is finite and not one, next appends {@link Verb#CONIC} to verb array,
+     * and w is recorded as conic weight; otherwise, if w is one, appends
+     * {@link Verb#QUAD} to verb array; or if w is not finite, appends {@link Verb#LINE}
+     * twice to verb array.</p>
+     *
+     * <p>In all cases appends Point control and end to Point array.
+     * control is last point plus vector (dx1, dy1).
+     * end is last point plus vector (dx2, dy2).</p>
+     *
+     * <p>Function name stands for "relative conic to".</p>
+     *
+     * @param dx1  offset from last point to conic control on x-axis
+     * @param dy1  offset from last point to conic control on y-axis
+     * @param dx2  offset from last point to conic end on x-axis
+     * @param dy2  offset from last point to conic end on y-axis
+     * @param w    weight of added conic
+     * @return     reference to Path
+     */
+    public Path rConicTo(float dx1, float dy1, float dx2, float dy2, float w) {
+        Native.onNativeCall();
+        nRConicTo(nativeInstance, dx1, dy1, dx2, dy2, w);
+        return this;
+    }
+
+    /**
+     * <p>Adds cubic from last point towards (x1, y1), then towards (x2, y2), ending at
+     * (x3, y3). If Path is empty, or last {@link Verb} is {@link Verb#CLOSE}, last point is set to
+     * (0, 0) before adding cubic.</p>
+     *
+     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed;
+     * then appends {@link Verb#CUBIC} to verb array; and (x1, y1), (x2, y2), (x3, y3)
+     * to Point array.</p>
+     *
+     * @param x1  first control Point of cubic on x-axis
+     * @param y1  first control Point of cubic on y-axis
+     * @param x2  second control Point of cubic on x-axis
+     * @param y2  second control Point of cubic on y-axis
+     * @param x3  end Point of cubic on x-axis
+     * @param y3  end Point of cubic on y-axis
+     * @return    reference to Path
+     */
+    public Path cubicTo(float x1, float y1, float x2, float y2, float x3, float y3) {
+        Native.onNativeCall();
+        nCubicTo(nativeInstance, x1, y1, x2, y2, x3, y3);
+        return this;
+    }
+
+    /**
+     * <p>Adds cubic from last point towards Point p1, then towards Point p2, ending at
+     * Point p3. If Path is empty, or last {@link Verb} is {@link Verb#CLOSE}, last point is set to
+     * (0, 0) before adding cubic.</p>
+     *
+     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed;
+     * then appends {@link Verb#CUBIC} to verb array; and Point p1, p2, p3
+     * to Point array.</p>
+     *
+     * @param p1  first control Point of cubic
+     * @param p2  second control Point of cubic
+     * @param p3  end Point of cubic
+     * @return    reference to Path
+    */
+    public Path cubicTo(Point p1, Point p2, Point p3) {
+        return cubicTo(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+    }
+
+    /**
+     * <p>Adds cubic from last point towards vector (dx1, dy1), then towards
+     * vector (dx2, dy2), to vector (dx3, dy3).
+     * If Path is empty, or last {@link Verb}
+     * is {@link Verb#CLOSE}, last point is set to (0, 0) before adding cubic.</p>
+     *
+     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array,
+     * if needed; then appends {@link Verb#CUBIC} to verb array; and appends cubic
+     * control and cubic end to Point array.</p>
+     *
+     * <p>Cubic control is last point plus vector (dx1, dy1).</p>
+     *
+     * <p>Cubic end is last point plus vector (dx2, dy2).</p>
+     *
+     * <p>Function name stands for "relative cubic to".</p>
+     *
+     * @param dx1  offset from last point to first cubic control on x-axis
+     * @param dy1  offset from last point to first cubic control on y-axis
+     * @param dx2  offset from last point to second cubic control on x-axis
+     * @param dy2  offset from last point to second cubic control on y-axis
+     * @param dx3  offset from last point to cubic end on x-axis
+     * @param dy3  offset from last point to cubic end on y-axis
+     * @return    reference to Path
+     */
+    public Path rCubicTo(float dx1, float dy1, float dx2, float dy2, float dx3, float dy3) {
+        Native.onNativeCall();
+        nRCubicTo(nativeInstance, dx1, dy1, dx2, dy2, dx3, dy3);
+        return this;
+    }
+
+    /**
+     * <p>Appends arc to Path. Arc added is part of ellipse
+     * bounded by oval, from startAngle through sweepAngle. Both startAngle and
+     * sweepAngle are measured in degrees, where zero degrees is aligned with the
+     * positive x-axis, and positive sweeps extends arc clockwise.</p>
+     *
+     * <p>arcTo() adds line connecting Path last Point to initial arc Point if forceMoveTo
+     * is false and Path is not empty. Otherwise, added contour begins with first point
+     * of arc. Angles greater than -360 and less than 360 are treated modulo 360.</p>
+     *
+     * @param oval         bounds of ellipse containing arc
+     * @param startAngle   starting angle of arc in degrees
+     * @param sweepAngle   sweep, in degrees. Positive is clockwise; treated modulo 360
+     * @param forceMoveTo  true to start a new contour with arc
+     * @return             reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_arcTo">https://fiddle.skia.org/c/@Path_arcTo</a>
+     */
+    public Path arcTo(Rect oval, float startAngle, float sweepAngle, boolean forceMoveTo) {
+        Native.onNativeCall(); 
+        nArcTo(nativeInstance, oval.left, oval.top, oval.right, oval.bottom, startAngle, sweepAngle, forceMoveTo);
+        return this;
+    }
+
+    /** 
+     * <p>Appends arc to Path, after appending line if needed. Arc is implemented by conic
+     * weighted to describe part of circle. Arc is contained by tangent from
+     * last Path point to (x1, y1), and tangent from (x1, y1) to (x2, y2). Arc
+     * is part of circle sized to radius, positioned so it touches both tangent lines.</p>
+     *
+     * <p>If last Path Point does not start Arc, tangentArcTo appends connecting Line to Path.
+     * The length of Vector from (x1, y1) to (x2, y2) does not affect Arc.</p>
+     *
+     * <p>Arc sweep is always less than 180 degrees. If radius is zero, or if
+     * tangents are nearly parallel, tangentArcTo appends Line from last Path Point to (x1, y1).</p>
+     *
+     * <p>tangentArcTo appends at most one Line and one conic.</p>
+     *
+     * <p>tangentArcTo implements the functionality of PostScript arct and HTML Canvas tangentArcTo.</p>
+     *
+     * @param x1      x-axis value common to pair of tangents
+     * @param y1      y-axis value common to pair of tangents
+     * @param x2      x-axis value end of second tangent
+     * @param y2      y-axis value end of second tangent
+     * @param radius  distance from arc to circle center
+     * @return        reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_arcTo_2_a">https://fiddle.skia.org/c/@Path_arcTo_2_a</a>
+     * @see <a href="https://fiddle.skia.org/c/@Path_arcTo_2_b">https://fiddle.skia.org/c/@Path_arcTo_2_b</a>
+     * @see <a href="https://fiddle.skia.org/c/@Path_arcTo_2_c">https://fiddle.skia.org/c/@Path_arcTo_2_c</a>
+     */
+    public Path tangentArcTo(float x1, float y1, float x2, float y2, float radius) {
+        Native.onNativeCall();
+        nTangentArcTo(nativeInstance, x1, y1, x2, y2, radius);
+        return this;
+    }
+        
+    /**
+     * <p>Appends arc to Path, after appending line if needed. Arc is implemented by conic
+     * weighted to describe part of circle. Arc is contained by tangent from
+     * last Path point to p1, and tangent from p1 to p2. Arc
+     * is part of circle sized to radius, positioned so it touches both tangent lines.</p>
+     *
+     * <p>If last Path Point does not start arc, tangentArcTo() appends connecting line to Path.
+     * The length of vector from p1 to p2 does not affect arc.</p>
+     *
+     * <p>Arc sweep is always less than 180 degrees. If radius is zero, or if
+     * tangents are nearly parallel, tangentArcTo() appends line from last Path Point to p1.</p>
+     *
+     * <p>tangentArcTo() appends at most one line and one conic.</p>
+     * 
+     * <p>tangentArcTo() implements the functionality of PostScript arct and HTML Canvas tangentArcTo.</p>
+     *
+     * @param p1      Point common to pair of tangents
+     * @param p2      end of second tangent
+     * @param radius  distance from arc to circle center
+     * @return        reference to Path
+     */
+    public Path tangentArcTo(Point p1, Point p2, float radius) {
+        return tangentArcTo(p1.x, p1.y, p2.x, p2.y, radius);
+    }
+
+    /** <p>Appends arc to Path. Arc is implemented by one or more conics weighted to
+     * describe part of oval with radii (rx, ry) rotated by xAxisRotate degrees. Arc
+     * curves from last Path Point to (x, y), choosing one of four possible routes:
+     * clockwise or counterclockwise, and smaller or larger.</p>
+     *
+     * <p>Arc sweep is always less than 360 degrees. ellipticalArcTo() appends line to (x, y) if
+     * either radii are zero, or if last Path Point equals (x, y). ellipticalArcTo() scales radii
+     * (rx, ry) to fit last Path Point and (x, y) if both are greater than zero but
+     * too small.</p>
+     *
+     * <p>ellipticalArcTo() appends up to four conic curves.</p>
+     *
+     * <p>ellipticalArcTo() implements the functionality of SVG arc, although SVG sweep-flag value
+     * is opposite the integer value of sweep; SVG sweep-flag uses 1 for clockwise,
+     * while {@link Direction#CLOCKWISE} cast to int is zero.</p>
+     *
+     * @param rx           radius on x-axis before x-axis rotation
+     * @param ry           radius on y-axis before x-axis rotation
+     * @param xAxisRotate  x-axis rotation in degrees; positive values are clockwise
+     * @param size         chooses smaller or larger arc
+     * @param direction    chooses clockwise or counterclockwise arc
+     * @param x            end of arc
+     * @param y            end of arc
+     * @return             reference to Path
+     */
     public Path ellipticalArcTo(float rx, float ry, float xAxisRotate, ArcSize size, Direction direction, float x, float y) {
         Native.onNativeCall(); 
         nEllipticalArcTo(nativeInstance, rx, ry, xAxisRotate, size.ordinal(), direction.ordinal(), x, y);
         return this;
     }
 
+    /**
+     * <p>Appends arc to Path. Arc is implemented by one or more conic weighted to describe
+     * part of oval with radii (r.fX, r.fY) rotated by xAxisRotate degrees. Arc curves
+     * from last Path Point to (xy.fX, xy.fY), choosing one of four possible routes:
+     * clockwise or counterclockwise, and smaller or larger.</p>
+     *
+     * <p>Arc sweep is always less than 360 degrees. ellipticalArcTo() appends line to xy if either
+     * radii are zero, or if last Path Point equals (xy.fX, xy.fY). ellipticalArcTo() scales radii r to
+     * fit last Path Point and xy if both are greater than zero but too small to describe
+     * an arc.</p>
+     *
+     * <p>ellipticalArcTo() appends up to four conic curves.</p>
+     *
+     * <p>ellipticalArcTo() implements the functionality of SVG arc, although SVG sweep-flag value is
+     * opposite the integer value of sweep; SVG sweep-flag uses 1 for clockwise, while
+     * {@link Direction#CLOCKWISE} cast to int is zero.</p>
+     *
+     * @param r            radii on axes before x-axis rotation
+     * @param xAxisRotate  x-axis rotation in degrees; positive values are clockwise
+     * @param size         chooses smaller or larger arc
+     * @param direction    chooses clockwise or counterclockwise arc
+     * @param xy           end of arc
+     * @return             reference to Path
+     */
+    public Path ellipticalArcTo(Point r, float xAxisRotate, ArcSize size, Direction direction, Point xy) {
+        return ellipticalArcTo(r.x, r.y, xAxisRotate, size, direction, xy.x, xy.y);
+    }
+
+    /**
+     * <p>Appends arc to Path, relative to last Path Point. Arc is implemented by one or
+     * more conic, weighted to describe part of oval with radii (rx, ry) rotated by
+     * xAxisRotate degrees. Arc curves from last Path Point to relative end Point:
+     * (dx, dy), choosing one of four possible routes: clockwise or
+     * counterclockwise, and smaller or larger. If Path is empty, the start arc Point
+     * is (0, 0).</p>
+     *
+     * <p>Arc sweep is always less than 360 degrees. rEllipticalArcTo() appends line to end Point
+     * if either radii are zero, or if last Path Point equals end Point.
+     * rEllipticalArcTo() scales radii (rx, ry) to fit last Path Point and end Point if both are
+     * greater than zero but too small to describe an arc.</p>
+     *
+     * <p>rEllipticalArcTo() appends up to four conic curves.</p>
+     *
+     * <p>rEllipticalArcTo() implements the functionality of svg arc, although SVG "sweep-flag" value is
+     * opposite the integer value of sweep; SVG "sweep-flag" uses 1 for clockwise, while
+     * {@link Direction#CLOCKWISE} cast to int is zero.</p>
+     *
+     * @param rx           radius before x-axis rotation
+     * @param ry           radius before x-axis rotation
+     * @param xAxisRotate  x-axis rotation in degrees; positive values are clockwise
+     * @param size         chooses smaller or larger arc
+     * @param direction    chooses clockwise or counterclockwise arc
+     * @param dx           x-axis offset end of arc from last Path Point
+     * @param dy           y-axis offset end of arc from last Path Point
+     * @return             reference to Path
+    */
     public Path rEllipticalArcTo(float rx, float ry, float xAxisRotate, ArcSize size, Direction direction, float dx, float dy) {
         Native.onNativeCall(); 
         nREllipticalArcTo(nativeInstance, rx, ry, xAxisRotate, size.ordinal(), direction.ordinal(), dx, dy);
         return this;
     }
 
-    public Path addPoly(float[] coords, boolean close) { Native.onNativeCall(); nAddPoly(nativeInstance, coords, close); return this; }
+    /**
+     * <p>Appends {@link Verb#CLOSE} to Path. A closed contour connects the first and last Point
+     * with line, forming a continuous loop. Open and closed contour draw the same
+     * with {@link Paint.Style#FILL}. With {@link Paint.Style#STROKE}, open contour draws
+     * {@link Paint.Cap} at contour start and end; closed contour draws
+     * {@link Paint.Join} at contour start and end.</p>
+     *
+     * <p>closePath() has no effect if Path is empty or last Path {@link Verb} is {@link Verb#CLOSE}.</p>
+     *
+     * @return  reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_close">https://fiddle.skia.org/c/@Path_close</a>
+     */
+    public Path closePath() {
+        Native.onNativeCall();
+        nClosePath(nativeInstance);
+        return this;
+    }
+
+    /**
+     * <p>Approximates conic with quad array. Conic is constructed from start Point p0,
+     * control Point p1, end Point p2, and weight w.</p>
+     * 
+     * <p>Quad array is stored in pts; this storage is supplied by caller.</p>
+     *
+     * <p>Maximum quad count is 2 to the pow2.</p>
+     *
+     * <p>Every third point in array shares last Point of previous quad and first Point of
+     * next quad. Maximum pts storage size is given by: {@code (1 + 2 * (1 << pow2)).</p>}</p>
+     *
+     * <p>Returns quad count used the approximation, which may be smaller
+     * than the number requested.</p>
+     *
+     * <p>conic weight determines the amount of influence conic control point has on the curve.</p>
+     *
+     * <p>w less than one represents an elliptical section. w greater than one represents
+     * a hyperbolic section. w equal to one represents a parabolic section.</p>
+     *
+     * <p>Two quad curves are sufficient to approximate an elliptical conic with a sweep
+     * of up to 90 degrees; in this case, set pow2 to one.</p>
+     *
+     * @param p0    conic start Point
+     * @param p1    conic control Point
+     * @param p2    conic end Point
+     * @param w     conic weight
+     * @param pow2  quad count, as power of two, normally 0 to 5 (1 to 32 quad curves)
+     * @return      number of quad curves written to pts
+     */
+    public static Point[] convertConicToQuads(Point p0, Point p1, Point p2, float w, int pow2) {
+        Native.onNativeCall();
+        return nConvertConicToQuads(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, w, pow2);
+    }
+
+    /**
+     * <p>Returns Rect if Path is equivalent to Rect when filled.</p>
+     *
+     * rect may be smaller than the Path bounds. Path bounds may include {@link Verb#MOVE} points
+     * that do not alter the area drawn by the returned rect.
+     *
+     * @return  bounds if Path contains Rect, null otherwise
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_isRect">https://fiddle.skia.org/c/@Path_isRect</a>
+     */
+    public Rect isRect() {
+        Native.onNativeCall();
+        return nIsRect(nativeInstance);
+    }
+
+    /**
+     * Adds Rect to Path, appending {@link Verb#MOVE}, three {@link Verb#LINE}, and {@link Verb#CLOSE},
+     * starting with top-left corner of Rect; followed by top-right, bottom-right,
+     * and bottom-left.
+     *
+     * @param rect  Rect to add as a closed contour
+     * @return      reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_addRect">https://fiddle.skia.org/c/@Path_addRect</a>
+     */
+    public Path addRect(Rect rect) {
+        return addRect(rect, Direction.CLOCKWISE, 0);
+    }
+
+    /**
+     * Adds Rect to Path, appending {@link Verb#MOVE}, three {@link Verb#LINE}, and {@link Verb#CLOSE},
+     * starting with top-left corner of Rect; followed by top-right, bottom-right,
+     * and bottom-left if dir is {@link Direction#CLOCKWISE}; or followed by bottom-left,
+     * bottom-right, and top-right if dir is {@link Direction#COUNTER_CLOCKWISE}.
+     *
+     * @param rect  Rect to add as a closed contour
+     * @param dir   Direction to wind added contour
+     * @return      reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_addRect">https://fiddle.skia.org/c/@Path_addRect</a>
+     */
+    public Path addRect(Rect rect, Direction dir) {
+        return addRect(rect, dir, 0);
+    }
+
+    /**
+     * Adds Rect to Path, appending {@link Verb#MOVE}, three {@link Verb#LINE}, and {@link Verb#CLOSE}.
+     * If dir is {@link Direction#CLOCKWISE}, Rect corners are added clockwise; if dir is
+     * {@link Direction#COUNTER_CLOCKWISE}, Rect corners are added counterclockwise.
+     * start determines the first corner added.
+     *
+     * @param rect   Rect to add as a closed contour
+     * @param dir    Direction to wind added contour
+     * @param start  initial corner of Rect to add. 0 for top left, 1 for top right, 2 for lower right, 3 for lower left
+     * @return       reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_addRect_2">https://fiddle.skia.org/c/@Path_addRect_2</a>
+     */
+    public Path addRect(Rect rect, Direction dir, int start) {
+        Native.onNativeCall();
+        nAddRect(nativeInstance, rect.left, rect.top, rect.right, rect.bottom, dir.ordinal(), start);
+        return this;
+    }
+
+    /**
+     * <p>Adds oval to path, appending {@link Verb#MOVE}, four {@link Verb#CONIC}, and {@link Verb#CLOSE}.</p>
+     *
+     * <p>Oval is upright ellipse bounded by Rect oval with radii equal to half oval width
+     * and half oval height. Oval begins at (oval.fRight, oval.centerY()) and continues
+     * clockwise.</p>
+     *
+     * @param oval  bounds of ellipse added
+     * @return      reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_addOval">https://fiddle.skia.org/c/@Path_addOval</a>
+     */
+
+    public Path addOval(Rect oval) {
+        return addOval(oval, Direction.CLOCKWISE, 1);
+    }
+
+    /**
+     * <p>Adds oval to path, appending {@link Verb#MOVE}, four {@link Verb#CONIC}, and {@link Verb#CLOSE}.</p>
+     *
+     * <p>Oval is upright ellipse bounded by Rect oval with radii equal to half oval width
+     * and half oval height. Oval begins at (oval.fRight, oval.centerY()) and continues
+     * clockwise if dir is {@link Direction#CLOCKWISE}, counterclockwise if dir is {@link Direction#COUNTER_CLOCKWISE}.</p>
+     *
+     * @param oval  bounds of ellipse added
+     * @param dir   Direction to wind ellipse
+     * @return      reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_addOval">https://fiddle.skia.org/c/@Path_addOval</a>
+     */
+    public Path addOval(Rect oval, Direction dir) {
+        return addOval(oval, dir, 1);
+    }
+
+    /**
+     * Adds oval to Path, appending {@link Verb#MOVE}, four {@link Verb#CONIC}, and {@link Verb#CLOSE}.
+     * Oval is upright ellipse bounded by Rect oval with radii equal to half oval width
+     * and half oval height. Oval begins at start and continues
+     * clockwise if dir is {@link Direction#CLOCKWISE}, counterclockwise if dir is {@link Direction#COUNTER_CLOCKWISE}.
+     *
+     * @param oval   bounds of ellipse added
+     * @param dir    Direction to wind ellipse
+     * @param start  index of initial point of ellipse. 0 for top, 1 for right, 2 for bottom, 3 for left
+     * @return       reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_addOval_2">https://fiddle.skia.org/c/@Path_addOval_2</a>
+     */
+    public Path addOval(Rect oval, Direction dir, int start) {
+        Native.onNativeCall();
+        nAddOval(nativeInstance, oval.left, oval.top, oval.right, oval.bottom, dir.ordinal(), start);
+        return this;
+    }
+
+    /** 
+     * <p>Adds circle centered at (x, y) of size radius to Path, appending {@link Verb#MOVE},
+     * four {@link Verb#CONIC}, and {@link Verb#CLOSE}. Circle begins at: (x + radius, y)</p>
+     *
+     * <p>Has no effect if radius is zero or negative.</p>
+     *
+     * @param x       center of circle
+     * @param y       center of circle
+     * @param radius  distance from center to edge
+     * @return        reference to Path
+     */
+    public Path addCircle(float x, float y, float radius) {
+        return addCircle(x, y, radius, Direction.CLOCKWISE);
+    }
+
+    /** 
+     * <p>Adds circle centered at (x, y) of size radius to Path, appending {@link Verb#MOVE},
+     * four {@link Verb#CONIC}, and {@link Verb#CLOSE}. Circle begins at: (x + radius, y), continuing
+     * clockwise if dir is {@link Direction#CLOCKWISE}, and counterclockwise if dir is {@link Direction#COUNTER_CLOCKWISE}.</p>
+     *
+     * <p>Has no effect if radius is zero or negative.</p>
+     *
+     * @param x       center of circle
+     * @param y       center of circle
+     * @param radius  distance from center to edge
+     * @param dir     Direction to wind circle
+     * @return        reference to Path
+     */
+    public Path addCircle(float x, float y, float radius, Direction dir) {
+        Native.onNativeCall();
+        nAddCircle(nativeInstance, x, y, radius, dir.ordinal());
+        return this;
+    }
+
+    /**
+     * <p>Appends arc to Path, as the start of new contour. Arc added is part of ellipse
+     * bounded by oval, from startAngle through sweepAngle. Both startAngle and
+     * sweepAngle are measured in degrees, where zero degrees is aligned with the
+     * positive x-axis, and positive sweeps extends arc clockwise.</p>
+     *
+     * <p>If sweepAngle &le; -360, or sweepAngle &ge; 360; and startAngle modulo 90 is nearly
+     * zero, append oval instead of arc. Otherwise, sweepAngle values are treated
+     * modulo 360, and arc may or may not draw depending on numeric rounding.</p>
+     *
+     * @param oval        bounds of ellipse containing arc
+     * @param startAngle  starting angle of arc in degrees
+     * @param sweepAngle  sweep, in degrees. Positive is clockwise; treated modulo 360
+     * @return            reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_addArc">https://fiddle.skia.org/c/@Path_addArc</a>
+     */
+    public Path addArc(Rect oval, float startAngle, float sweepAngle) {
+        Native.onNativeCall();
+        nAddArc(nativeInstance, oval.left, oval.top, oval.right, oval.bottom, startAngle, sweepAngle);
+        return this;
+    }
+
+    /**
+     * <p>Adds rrect to Path, creating a new closed contour. RRect starts at top-left of the lower-left corner and
+     * winds clockwise.</p>
+     *
+     * <p>After appending, Path may be empty, or may contain: Rect, Oval, or RoundedRect.</p>
+     *
+     * @param rrect  bounds and radii of rounded rectangle
+     * @return       reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_addRRect">https://fiddle.skia.org/c/@Path_addRRect</a>
+     */
+    public Path addRoundedRect(RoundedRect rrect) {
+        return addRoundedRect(rrect, Direction.CLOCKWISE, 6);
+    }
+
+    /**
+     * <p>Adds rrect to Path, creating a new closed contour. If
+     * dir is {@link Direction#CLOCKWISE}, rrect starts at top-left of the lower-left corner and
+     * winds clockwise. If dir is {@link Direction#COUNTER_CLOCKWISE}, rrect starts at the bottom-left
+     * of the upper-left corner and winds counterclockwise.</p>
+     *
+     * <p>After appending, Path may be empty, or may contain: Rect, Oval, or RoundedRect.</p>
+     *
+     * @param rrect  bounds and radii of rounded rectangle
+     * @param dir    Direction to wind RoundedRect
+     * @return       reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_addRRect">https://fiddle.skia.org/c/@Path_addRRect</a>
+     */
+    public Path addRoundedRect(RoundedRect rrect, Direction dir) {
+        return addRoundedRect(rrect, dir, dir == Direction.CLOCKWISE ? 6 : 7);
+    }
+
+    /**
+     * <p>Adds rrect to Path, creating a new closed contour. If dir is {@link Direction#CLOCKWISE}, rrect
+     * winds clockwise; if dir is {@link Direction#COUNTER_CLOCKWISE}, rrect winds counterclockwise.
+     * start determines the first point of rrect to add.</p>
+     *
+     * @param rrect  bounds and radii of rounded rectangle
+     * @param dir    Direction to wind RoundedRect
+     * @param start  index of initial point of RoundedRect. 0 for top-right end of the arc at top left,
+     *               1 for top-left end of the arc at top right, 2 for bottom-right end of top right arc, etc.
+     * @return       reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_addRRect_2">https://fiddle.skia.org/c/@Path_addRRect_2</a>
+     */
+    public Path addRoundedRect(RoundedRect rrect, Direction dir, int start) {
+        Native.onNativeCall();
+        nAddRoundedRect(nativeInstance, rrect.left, rrect.top, rrect.right, rrect.bottom, rrect.radii, dir.ordinal(), start);
+        return this;
+    }
+
+    /**
+     * <p>Adds contour created from line array, adding (pts.length - 1) line segments.
+     * Contour added starts at pts[0], then adds a line for every additional Point
+     * in pts array. If close is true, appends {@link Verb#CLOSE} to Path, connecting
+     * pts[pts.length - 1] and pts[0].</p>
+     *
+     * <p>If pts is empty, append {@link Verb#MOVE} to path.</p>
+     *
+     * @param pts    array of line sharing end and start Point
+     * @param close  true to add line connecting contour end and start
+     * @return       reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_addPoly">https://fiddle.skia.org/c/@Path_addPoly</a>
+     */
+    public Path addPoly(Point[] pts, boolean close) {
+        float[] flat = new float[pts.length * 2];
+        for (int i = 0; i < pts.length; ++i) {
+            flat[i * 2] = pts[i].x;
+            flat[i * 2 + 1] = pts[i].y;
+        }
+        return addPoly(flat, close);
+    }
+
+    /**
+     * <p>Adds contour created from line array, adding (pts.length / 2 - 1) line segments.
+     * Contour added starts at (pts[0], pts[1]), then adds a line for every additional pair of floats
+     * in pts array. If close is true, appends {@link Verb#CLOSE} to Path, connecting
+     * (pts[count - 2], pts[count - 1]) and (pts[0], pts[1]).</p>
+     *
+     * <p>If pts is empty, append {@link Verb#MOVE} to path.</p>
+     *
+     * @param pts    flat array of line sharing end and start Point
+     * @param close  true to add line connecting contour end and start
+     * @return       reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_addPoly">https://fiddle.skia.org/c/@Path_addPoly</a>
+     */
+    public Path addPoly(float[] pts, boolean close) {
+        assert pts.length % 2 == 0 : "Expected even amount of pts, got " + pts.length;
+        Native.onNativeCall();
+        nAddPoly(nativeInstance, pts, close);
+        return this;
+    }
+
+    /**
+     * <p>Appends src to Path.</p>
+     *
+     * <p>src verb array, Point array, and conic weights are
+     * added unaltered.</p>
+     *
+     * @param src  Path verbs, Point, and conic weights to add
+     * @return     reference to Path
+     */
+    public Path addPath(Path src) {
+        return addPath(src, false);
+    }
+
+    /**
+     * <p>Appends src to Path.</p>
+     *
+     * <p>If extend is false, src verb array, Point array, and conic weights are
+     * added unaltered. If extend is true, add line before appending
+     * verbs, Point, and conic weights.</p>
+     *
+     * @param src     Path verbs, Point, and conic weights to add
+     * @param extend  if should add a line before appending verbs
+     * @return        reference to Path
+     */
+    public Path addPath(Path src, boolean extend) {
+        Native.onNativeCall();
+        nAddPath(nativeInstance, Native.pointer(src), extend);
+        return this;
+    }
+
+    /**
+     * <p>Appends src to Path, offset by (dx, dy).</p>
+     *
+     * <p>Src verb array, Point array, and conic weights are
+     * added unaltered.</p>
+     *
+     * @param src     Path verbs, Point, and conic weights to add
+     * @param dx      offset added to src Point array x-axis coordinates
+     * @param dy      offset added to src Point array y-axis coordinates
+     * @return        reference to Path
+     */
+    public Path addPath(Path src, float dx, float dy) {
+        return addPath(src, dx, dy, false);
+    }
+
+    /**
+     * <p>Appends src to Path, offset by (dx, dy).</p>
+     *
+     * <p>If extend is false, src verb array, Point array, and conic weights are
+     * added unaltered. If extend is true, add line before appending
+     * verbs, Point, and conic weights.</p>
+     *
+     * @param src     Path verbs, Point, and conic weights to add
+     * @param dx      offset added to src Point array x-axis coordinates
+     * @param dy      offset added to src Point array y-axis coordinates
+     * @param extend  if should add a line before appending verbs
+     * @return        reference to Path
+     */
+    public Path addPath(Path src, float dx, float dy, boolean extend) {
+        Native.onNativeCall();
+        nAddPathOffset(nativeInstance, Native.pointer(src), dx, dy, extend);
+        return this;
+    }
+
+    /**
+     * <p>Appends src to Path, transformed by matrix. Transformed curves may have different
+     * verbs, Point, and conic weights.</p>
+     *
+     * <p>Src verb array, Point array, and conic weights are
+     * added unaltered.</p>
+     *
+     * @param src     Path verbs, Point, and conic weights to add
+     * @param matrix  transform applied to src
+     * @return        reference to Path
+     */
+    public Path addPath(Path src, float[] matrix) {
+        return addPath(src, matrix, false);
+    }
+
+    /**
+     * <p>Appends src to Path, transformed by matrix. Transformed curves may have different
+     * verbs, Point, and conic weights.</p>
+     *
+     * <p>If extend is false, src verb array, Point array, and conic weights are
+     * added unaltered. If extend is true, add line before appending
+     * verbs, Point, and conic weights.</p>
+     *
+     * @param src     Path verbs, Point, and conic weights to add
+     * @param matrix  transform applied to src
+     * @param extend  if should add a line before appending verbs
+     * @return        reference to Path
+     */
+    public Path addPath(Path src, float[] matrix, boolean extend) {
+        Native.onNativeCall();
+        nAddPathTransform(nativeInstance, Native.pointer(src), matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8], extend);
+        return this;
+    }
 
     protected Path(long ptr) { super(ptr, nativeFinalizer); Native.onNativeCall(); }
-    private static final  long        nativeFinalizer = nGetNativeFinalizer();
-    private static native long        nInit();
-    private static native long        nGetNativeFinalizer();
-    private static native boolean     nIsInterpolatable(long ptr, long comparePtr);
-    private static native long        nInterpolate(long ptr, long endingPtr, float weight);
-    private static native void        nSetFillType(long ptr, int fillType);
-    private static native int         nGetConvexityType(long ptr);
-    private static native int         nGetConvexityTypeOrUnknown(long ptr);
-    private static native void        nSetConvexityType(long ptr, int convexity);
-    private static native Rect        nIsOval(long ptr);
+    private static final  long    nativeFinalizer = nGetNativeFinalizer();
+    private static native long    nInit();
+    private static native long    nGetNativeFinalizer();
+    private static native boolean nIsInterpolatable(long ptr, long comparePtr);
+    private static native long    nInterpolate(long ptr, long endingPtr, float weight);
+    private static native void    nSetFillType(long ptr, int fillType);
+    private static native int     nGetConvexityType(long ptr);
+    private static native int     nGetConvexityTypeOrUnknown(long ptr);
+    private static native void    nSetConvexityType(long ptr, int convexity);
+    private static native Rect    nIsOval(long ptr);
     private static native RoundedRect nIsRRect(long ptr);
-    private static native void        nReset(long ptr);
-    private static native void        nRewind(long ptr);
-    private static native boolean     nIsEmpty(long ptr);
-    private static native boolean     nIsLastContourClosed(long ptr);
-    private static native boolean     nIsFinite(long ptr);
-    private static native void        nSetIsVolatile(long ptr, boolean isVolatile);
-    private static native boolean     nIsLineDegenerate(float x0, float y0, float x1, float y1, boolean exact);
-    private static native boolean     nIsQuadDegenerate(float x0, float y0, float x1, float y1, float x2, float y2, boolean exact);
-    private static native boolean     nIsCubicDegenerate(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, boolean exact);
-    private static native Point[]     nIsLine(long ptr);
-    private static native int         nCountPoints(long ptr);
-    private static native Point       nGetPoint(long ptr, int index);
-    private static native int         nGetPoints(long ptr, Point[] points, int max);
-    private static native int         nCountVerbs(long ptr);
-    private static native int         nGetVerbs(long ptr, byte[] verbs, int max);
-    private static native long        nApproximateBytesUsed(long ptr);
-    private static native void        nSwap(long ptr, long otherPtr);
+    private static native void    nReset(long ptr);
+    private static native void    nRewind(long ptr);
+    private static native boolean nIsEmpty(long ptr);
+    private static native boolean nIsLastContourClosed(long ptr);
+    private static native boolean nIsFinite(long ptr);
+    private static native void    nSetIsVolatile(long ptr, boolean isVolatile);
+    private static native boolean nIsLineDegenerate(float x0, float y0, float x1, float y1, boolean exact);
+    private static native boolean nIsQuadDegenerate(float x0, float y0, float x1, float y1, float x2, float y2, boolean exact);
+    private static native boolean nIsCubicDegenerate(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, boolean exact);
+    private static native Point[] nIsLine(long ptr);
+    private static native int     nCountPoints(long ptr);
+    private static native Point   nGetPoint(long ptr, int index);
+    private static native int     nGetPoints(long ptr, Point[] points, int max);
+    private static native int     nCountVerbs(long ptr);
+    private static native int     nGetVerbs(long ptr, byte[] verbs, int max);
+    private static native long    nApproximateBytesUsed(long ptr);
+    private static native void    nSwap(long ptr, long otherPtr);
 
-    private static native float[] nGetBounds(long ptr);
-    private static native float[] nComputeTightBounds(long ptr);
-    private static native void nMoveTo(long ptr, float x, float y);
-    private static native void nRMoveTo(long ptr, float dx, float dy);
-    private static native void nLineTo(long ptr, float x, float y);
-    private static native void nRLineTo(long ptr, float dx, float dy);
-    private static native void nQuadTo(long ptr, float x1, float y1, float x2, float y2);
-    private static native void nRQuadTo(long ptr, float dx1, float dy1, float dx2, float dy2);
-    private static native void nConicTo(long ptr, float x1, float y1, float x2, float y2, float w);
-    private static native void nRConicTo(long ptr, float dx1, float dy1, float dx2, float dy2, float w);
-    private static native void nCubicTo(long ptr, float x1, float y1, float x2, float y2, float x3, float y3);
-    private static native void nRCubicTo(long ptr, float dx1, float dy1, float dx2, float dy2, float dx3, float dy3);
-    private static native void nArcTo(long ptr, float left, float top, float right, float bottom, float startAngle, float sweepAngle, boolean forceMoveTo);
-    private static native void nTangentArcTo(long ptr, float x1, float y1, float x2, float y2, float radius);
-    private static native void nEllipticalArcTo(long ptr, float rx, float ry, float xAxisRotate, int size, int direction, float x, float y);
-    private static native void nREllipticalArcTo(long ptr, float rx, float ry, float xAxisRotate, int size, int direction, float dx, float dy);
-    private static native void nAddPoly(long ptr, float[] coords, boolean close);
-    private static native void nClosePath(long ptr);
+    private static native Rect    nGetBounds(long ptr);
+    private static native void    nUpdateBoundsCache(long ptr);
+    private static native Rect    nComputeTightBounds(long ptr);
+    private static native boolean nConservativelyContainsRect(long ptr, float l, float t, float r, float b);
+    private static native void    nIncReserve(long ptr, int extraPtCount);
+    private static native void    nShrinkToFit(long ptr);
+    private static native void    nMoveTo(long ptr, float x, float y);
+    private static native void    nRMoveTo(long ptr, float dx, float dy);
+    private static native void    nLineTo(long ptr, float x, float y);
+    private static native void    nRLineTo(long ptr, float dx, float dy);
+    private static native void    nQuadTo(long ptr, float x1, float y1, float x2, float y2);
+    private static native void    nRQuadTo(long ptr, float dx1, float dy1, float dx2, float dy2);
+    private static native void    nConicTo(long ptr, float x1, float y1, float x2, float y2, float w);
+    private static native void    nRConicTo(long ptr, float dx1, float dy1, float dx2, float dy2, float w);
+    private static native void    nCubicTo(long ptr, float x1, float y1, float x2, float y2, float x3, float y3);
+    private static native void    nRCubicTo(long ptr, float dx1, float dy1, float dx2, float dy2, float dx3, float dy3);
+    private static native void    nArcTo(long ptr, float left, float top, float right, float bottom, float startAngle, float sweepAngle, boolean forceMoveTo);
+    private static native void    nTangentArcTo(long ptr, float x1, float y1, float x2, float y2, float radius);
+    private static native void    nEllipticalArcTo(long ptr, float rx, float ry, float xAxisRotate, int size, int direction, float x, float y);
+    private static native void    nREllipticalArcTo(long ptr, float rx, float ry, float xAxisRotate, int size, int direction, float dx, float dy);
+    private static native void    nClosePath(long ptr);
+    private static native Point[] nConvertConicToQuads(float x0, float y0, float x1, float y1, float x2, float y2, float w, int pow2);
+    private static native Rect    nIsRect(long ptr);
+    private static native void    nAddRect(long ptr, float l, float t, float r, float b, int dir, int start);
+    private static native void    nAddOval(long ptr, float l, float t, float r, float b, int dir, int start);
+    private static native void    nAddCircle(long ptr, float x, float y, float r, int dir);
+    private static native void    nAddArc(long ptr, float l, float t, float r, float b, float startAngle, float sweepAngle);
+    private static native void    nAddRoundedRect(long ptr, float l, float t, float r, float b, float[] radii, int dir, int start);
+    private static native void    nAddPoly(long ptr, float[] coords, boolean close);
+    private static native void    nAddPath(long ptr, long srcPath, boolean extend);
+    private static native void    nAddPathOffset(long ptr, long srcPath, float dx, float dy, boolean extend);
+    private static native void    nAddPathTransform(long ptr, long srcPath,
+        float scaleX, float skewX,  float transX,
+        float skewY,  float scaleY, float transY,
+        float persp0, float persp1, float persp2,
+        boolean extend);
 }

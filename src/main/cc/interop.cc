@@ -152,6 +152,32 @@ namespace skija {
             env->DeleteGlobalRef(cls);
         }
 
+        SkRRect toSkRRect(JNIEnv* env, jfloat left, jfloat top, jfloat right, jfloat bottom, jfloatArray jradii) {
+            SkRect rect {left, top, right, bottom};
+            SkRRect rrect = SkRRect::MakeEmpty();
+            jfloat* radii = env->GetFloatArrayElements(jradii, 0);
+            switch (env->GetArrayLength(jradii)) {
+                case 1:
+                    rrect.setRectXY(rect, radii[0], radii[0]);
+                    break;
+                case 2:
+                    rrect.setRectXY(rect, radii[0], radii[1]);
+                    break;
+                case 4: {
+                    SkVector vradii[4] = {{radii[0], radii[0]}, {radii[1], radii[1]}, {radii[2], radii[2]}, {radii[3], radii[3]}};
+                    rrect.setRectRadii(rect, vradii);
+                    break;
+                }
+                case 8: {
+                    SkVector vradii[4] = {{radii[0], radii[1]}, {radii[2], radii[3]}, {radii[4], radii[5]}, {radii[6], radii[7]}};
+                    rrect.setRectRadii(rect, vradii);
+                    break;
+                }
+            }
+            env->ReleaseFloatArrayElements(jradii, radii, 0);
+            return rrect;
+        }
+
         jobject fromSkRRect(JNIEnv* env, const SkRRect& rr) {
             const SkRect& r = rr.rect();
             switch (rr.getType()) {

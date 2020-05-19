@@ -142,6 +142,7 @@ public class Canvas extends Native {
     public void scale(float sx, float sy) { Native.onNativeCall(); nConcat(nativeInstance, sx, 0, 0, 0, sy, 0, 0, 0, 1); }
     public void rotate(float deg) { concat(Matrix.rotate(deg)); }
     public void concat(float[] matrix) {
+        assert matrix.length == 9 : "Expected 9 elements in matrix, got " + matrix == null ? null : matrix.length;
         Native.onNativeCall();
         nConcat(nativeInstance, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8]);
     }

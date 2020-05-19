@@ -56,37 +56,11 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawOval
     canvas->drawOval({left, top, right, bottom}, *paint);
 }
 
-SkRRect makeRRect(JNIEnv* env, jfloat left, jfloat top, jfloat right, jfloat bottom, jfloatArray jradii) {
-    SkRect rect {left, top, right, bottom};
-    SkRRect rrect = SkRRect::MakeEmpty();
-    jfloat* radii = env->GetFloatArrayElements(jradii, 0);
-    switch (env->GetArrayLength(jradii)) {
-        case 1:
-            rrect.setRectXY(rect, radii[0], radii[0]);
-            break;
-        case 2:
-            rrect.setRectXY(rect, radii[0], radii[1]);
-            break;
-        case 4: {
-            SkVector vradii[4] = {{radii[0], radii[0]}, {radii[1], radii[1]}, {radii[2], radii[2]}, {radii[3], radii[3]}};
-            rrect.setRectRadii(rect, vradii);
-            break;
-        }
-        case 8: {
-            SkVector vradii[4] = {{radii[0], radii[1]}, {radii[2], radii[3]}, {radii[4], radii[5]}, {radii[6], radii[7]}};
-            rrect.setRectRadii(rect, vradii);
-            break;
-        }
-    }
-    env->ReleaseFloatArrayElements(jradii, radii, 0);
-    return rrect;
-}
-
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawRoundedRect
   (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloat left, jfloat top, jfloat right, jfloat bottom, jfloatArray jradii, jlong paintPtr) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
-    canvas->drawRRect(makeRRect(env, left, top, right, bottom, jradii), *paint);
+    canvas->drawRRect(skija::RoundedRect::toSkRRect(env, left, top, right, bottom, jradii), *paint);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawDoubleRoundedRect
@@ -96,7 +70,8 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawDoubleRou
    jlong paintPtr) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
-    canvas->drawDRRect(makeRRect(env, ol, ot, oright, ob, ojradii), makeRRect(env, il, it, ir, ib, ijradii), *paint);
+    canvas->drawDRRect(skija::RoundedRect::toSkRRect(env, ol, ot, oright, ob, ojradii),
+        skija::RoundedRect::toSkRRect(env, il, it, ir, ib, ijradii), *paint);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawPath
@@ -207,7 +182,7 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nClipRect
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nClipRoundedRect
   (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloat left, jfloat top, jfloat right, jfloat bottom, jfloatArray jradii, jint op, jboolean antiAlias) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
-    canvas->clipRRect(makeRRect(env, left, top, right, bottom, jradii), static_cast<SkClipOp>(op), antiAlias);
+    canvas->clipRRect(skija::RoundedRect::toSkRRect(env, left, top, right, bottom, jradii), static_cast<SkClipOp>(op), antiAlias);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nClipPath
