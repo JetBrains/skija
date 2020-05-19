@@ -14,12 +14,11 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_HBFont_nInit(JNIEnv*
 
     int variationCount = env->GetArrayLength(variations);
     if (variationCount > 0) {
-        maybeInitFontVariationClass(env);
         hb_variation_t variationData[variationCount];
         for (int i=0; i < variationCount; ++i) {
             jobject jvar = env->GetObjectArrayElement(variations, i);
-            variationData[i].tag = env->GetIntField(jvar, fontVariationClass->tagID);
-            variationData[i].value = env->GetFloatField(jvar, fontVariationClass->valueID);
+            variationData[i].tag = env->GetIntField(jvar, skija::FontVariation::tag);
+            variationData[i].value = env->GetFloatField(jvar, skija::FontVariation::value);
         }
         hb_font_set_variations(font, variationData, variationCount);
     }

@@ -33,8 +33,7 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_HBFace_nGetAx
     hb_ot_var_axis_info_t axes_array[axis_count];
     hb_ot_var_get_axis_infos(face, 0, &axis_count, axes_array);
 
-    maybeInitFontAxisInfoClass(env);
-    jobjectArray res = env->NewObjectArray(axis_count, fontAxisInfoClass->cls, nullptr);
+    jobjectArray res = env->NewObjectArray(axis_count, skija::FontAxisInfo::cls, nullptr);
     for (int i = 0; i < axis_count; ++i) {
         hb_ot_var_axis_info_t info = axes_array[i];
         char nameBuf[256];
@@ -42,7 +41,7 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_HBFace_nGetAx
         hb_ot_name_get_utf8(face, info.name_id, HB_LANGUAGE_INVALID, &nameBufLen, nameBuf);
         jbyteArray nameBytes = env->NewByteArray(nameBufLen);
         env->SetByteArrayRegion(nameBytes, 0, nameBufLen, reinterpret_cast<signed char *>(nameBuf));
-        jobject obj = env->NewObject(fontAxisInfoClass->cls, fontAxisInfoClass->ctorID, info.axis_index, info.tag, nameBytes, info.flags, info.min_value, info.default_value, info.max_value);
+        jobject obj = env->NewObject(skija::FontAxisInfo::cls, skija::FontAxisInfo::ctor, info.axis_index, info.tag, nameBytes, info.flags, info.min_value, info.default_value, info.max_value);
         env->SetObjectArrayElement(res, i, obj);
     }
 

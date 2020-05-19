@@ -29,7 +29,7 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_PathEffect_nComput
     SkPathEffect* instance = reinterpret_cast<SkPathEffect*>(static_cast<uintptr_t>(ptr));
     SkRect res;
     instance->computeFastBounds(&res, SkRect{l, t, r, b});
-    return javaRect(env, res);
+    return skija::Rect::fromSkRect(env, res);
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_PathEffect_nPath1D

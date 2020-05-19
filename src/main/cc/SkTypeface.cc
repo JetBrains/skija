@@ -13,13 +13,12 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_SkTypeface_nMakeFrom
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_SkTypeface_nMakeClone(JNIEnv* env, jclass jclass, jlong typefacePtr, jobjectArray variations) {
     SkTypeface* typeface = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(typefacePtr));
     int variationCount = env->GetArrayLength(variations);
-    maybeInitFontVariationClass(env);
     SkFontArguments::VariationPosition::Coordinate coordinates[variationCount];
     for (int i=0; i < variationCount; ++i) {
         jobject jvar = env->GetObjectArrayElement(variations, i);
         coordinates[i] = {
-            static_cast<SkFourByteTag>(env->GetIntField(jvar, fontVariationClass->tagID)),
-            env->GetFloatField(jvar, fontVariationClass->valueID)
+            static_cast<SkFourByteTag>(env->GetIntField(jvar, skija::FontVariation::tag)),
+            env->GetFloatField(jvar, skija::FontVariation::value)
         };
     }
     SkFontArguments arg = SkFontArguments().setVariationDesignPosition({coordinates, variationCount});
