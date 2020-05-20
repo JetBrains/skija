@@ -1,4 +1,5 @@
 #include <jni.h>
+#include <cassert>
 #include "SkData.h"
 #include "SkStream.h"
 #include "SkTypeface.h"
