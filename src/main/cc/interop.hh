@@ -73,6 +73,21 @@ namespace skija {
         jobject make(JNIEnv* env, float x, float y);
         jobject fromSkPoint(JNIEnv* env, const SkPoint& p);
     }
+
+    namespace Path {
+        namespace Segment {
+            extern jclass cls;
+            extern jmethodID ctor;
+            extern jfieldID verb;
+            extern jfieldID p0;
+            extern jfieldID p1;
+            extern jfieldID p2;
+            extern jfieldID p3;
+            extern jfieldID conicWeight;
+            extern jfieldID isCloseLine;
+            extern jfieldID isClosedContour;
+        }
+    }
 }
 
 std::unique_ptr<SkMatrix> arrayToMatrix(JNIEnv* env, jfloatArray arr);

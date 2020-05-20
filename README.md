@@ -21,7 +21,7 @@ ImageFilters    | ▓▓▓▓▓▓▓▓▓▓
 MaskFilter      | ▓▓▓▓▓▓▓▓▓▓
 Matrix          | ▓▓▓░░░░░░░
 Paint           | ▓▓▓▓▓▓▓▓░░
-Path            | ▓▓▓▓▓▓▓░░░
+Path            | ▓▓▓▓▓▓▓▓▓▓
 PathEffects     | ▓▓▓▓▓▓▓▓▓▓
 Picture         | ░░░░░░░░░░
 PictureRecorder | ░░░░░░░░░░

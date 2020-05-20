@@ -423,6 +423,46 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Path_nGetSegmentMasks
     return instance->getSegmentMasks();
 }
 
+static void deletePathIter(SkPath::Iter* iter) {
+    // std::cout << "Deleting [SkPath " << path << "]" << std::endl;
+    delete iter;
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path_00024Iter_nInit
+  (JNIEnv* env, jclass jclass, jlong pathPtr, jboolean forceClose) {
+    SkPath* path = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(pathPtr));
+    SkPath::Iter* iter = new SkPath::Iter(*path, forceClose);
+    return reinterpret_cast<jlong>(iter);
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path_00024Iter_nGetNativeFinalizer
+  (JNIEnv* env, jclass jclass) {
+    return static_cast<jlong>(reinterpret_cast<uintptr_t>(&deletePathIter));
+}
+
+extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Path_00024Iter_nNext
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkPath::Iter* instance = reinterpret_cast<SkPath::Iter*>(static_cast<uintptr_t>(ptr));
+    SkPoint pts[4];
+    SkPath::Verb verb = instance->next(pts);
+    jobject segment = env->NewObject(skija::Path::Segment::cls, skija::Path::Segment::ctor, static_cast<jint>(verb));
+    if (verb != SkPath::Verb::kDone_Verb)
+        env->SetObjectField(segment, skija::Path::Segment::p0, skija::Point::make(env, pts[0].fX, pts[0].fY));
+    if (verb == SkPath::Verb::kLine_Verb || verb == SkPath::Verb::kQuad_Verb || verb == SkPath::Verb::kConic_Verb || verb == SkPath::Verb::kCubic_Verb)
+        env->SetObjectField(segment, skija::Path::Segment::p1, skija::Point::make(env, pts[1].fX, pts[1].fY));
+    if (verb == SkPath::Verb::kQuad_Verb || verb == SkPath::Verb::kConic_Verb || verb == SkPath::Verb::kCubic_Verb)
+        env->SetObjectField(segment, skija::Path::Segment::p2, skija::Point::make(env, pts[2].fX, pts[2].fY));
+    if (verb == SkPath::Verb::kCubic_Verb)
+        env->SetObjectField(segment, skija::Path::Segment::p3, skija::Point::make(env, pts[3].fX, pts[3].fY));
+    if (verb == SkPath::Verb::kConic_Verb)
+        env->SetFloatField(segment, skija::Path::Segment::conicWeight, instance->conicWeight());
+    if (verb == SkPath::Verb::kLine_Verb)
+        env->SetBooleanField(segment, skija::Path::Segment::isCloseLine, instance->isCloseLine());
+    if (verb != SkPath::Verb::kDone_Verb)
+        env->SetBooleanField(segment, skija::Path::Segment::isClosedContour, instance->isClosedContour());
+    return segment;
+}
+
 extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Path_nContains
   (JNIEnv* env, jclass jclass, jlong ptr, jfloat x, jfloat y) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));

@@ -20,6 +20,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_SkTypeface_nMakeClon
             static_cast<SkFourByteTag>(env->GetIntField(jvar, skija::FontVariation::tag)),
             env->GetFloatField(jvar, skija::FontVariation::value)
         };
+        env->DeleteLocalRef(jvar);
     }
     SkFontArguments arg = SkFontArguments().setVariationDesignPosition({coordinates, variationCount});
     SkTypeface* clone = typeface->makeClone(arg).release();

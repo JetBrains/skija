@@ -19,6 +19,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_HBFont_nInit(JNIEnv*
             jobject jvar = env->GetObjectArrayElement(variations, i);
             variationData[i].tag = env->GetIntField(jvar, skija::FontVariation::tag);
             variationData[i].value = env->GetFloatField(jvar, skija::FontVariation::value);
+            env->DeleteLocalRef(jvar);
         }
         hb_font_set_variations(font, variationData, variationCount);
     }

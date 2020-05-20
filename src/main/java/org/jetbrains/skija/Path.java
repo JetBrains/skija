@@ -1,5 +1,9 @@
 package org.jetbrains.skija;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+
 /**
  * <p>Path contain geometry. Path may be empty, or contain one or more verbs that
  * outline a figure. Path always starts with a move verb to a Cartesian coordinate,
@@ -19,7 +23,7 @@ package org.jetbrains.skija;
  * <p>Internally, Path lazily computes metrics likes bounds and convexity. Call
  * {@link #updateBoundsCache()} to make Path thread safe.</p>
  */
-public class Path extends Managed {
+public class Path extends Managed implements Iterable {
     public enum FillType { 
         /** Specifies that "inside" is computed by a non-zero sum of signed edge crossings. */
         WINDING,
@@ -118,6 +122,22 @@ public class Path extends Managed {
      */
     public Path() {
         this(nInit());
+    }
+
+    /**
+     * Compares this path and o; Returns true if {@link FillType}, verb array, Point array, and weights
+     * are equivalent.
+     *
+     * @param o  Path to compare
+     * @return   true if this and Path are equivalent
+    */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Path op = (Path) o;
+        if (nativeInstance == op.nativeInstance) return true;
+        return nEquals(nativeInstance, op.nativeInstance);
     }
 
     /**
@@ -1744,6 +1764,116 @@ public class Path extends Managed {
         return nGetSegmentMasks(nativeInstance);
     }
 
+    public static class Segment {
+        public Verb    verb;
+        public Point   p0;
+        public Point   p1;
+        public Point   p2;
+        public Point   p3;
+        public float   conicWeight;
+        public boolean isCloseLine;
+        public boolean isClosedContour;
+
+        public Segment(int verbOrdinal) {
+            verb = Verb.values()[verbOrdinal];
+        }
+
+        @Override
+        public String toString() {
+            return "Segment{" +
+                    "verb=" + verb +
+                    (verb != Verb.DONE ? ", p0=" + p0 : "") +
+                    (verb == Verb.LINE || verb == Verb.QUAD || verb == Verb.CONIC || verb == Verb.CUBIC ? ", p1=" + p1 : "") +
+                    (verb == Verb.QUAD || verb == Verb.CONIC || verb == Verb.CUBIC ? ", p2=" + p2 : "") +
+                    (verb == Verb.CUBIC ? ", p3=" + p3 : "") +
+                    (verb == Verb.CONIC ? ", conicWeight=" + conicWeight : "") +
+                    (verb == Verb.LINE  ? ", isCloseLine=" + isCloseLine : "") +
+                    (verb != Verb.DONE ? ", isClosedContour=" + isClosedContour : "") +
+                    '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Segment segment = (Segment) o;
+            return verb == segment.verb &&
+                   (verb != Verb.DONE ? Objects.equals(p0, segment.p0) : true) &&
+                   (verb == Verb.LINE || verb == Verb.QUAD || verb == Verb.CONIC || verb == Verb.CUBIC ? Objects.equals(p1, segment.p1) : true) &&
+                   (verb == Verb.QUAD || verb == Verb.CONIC || verb == Verb.CUBIC ? Objects.equals(p2, segment.p2) : true) &&
+                   (verb == Verb.CUBIC ? Objects.equals(p3, segment.p3) : true) &&
+                   (verb == Verb.CONIC ? Float.compare(segment.conicWeight, conicWeight) == 0 : true) &&
+                   (verb == Verb.LINE  ? isCloseLine == segment.isCloseLine : true) &&
+                   (verb != Verb.DONE ? isClosedContour == segment.isClosedContour : true);
+        }
+
+        @Override
+        public int hashCode() {
+            switch (verb) {
+                case DONE:
+                    return Objects.hash(verb);
+                case MOVE:
+                    return Objects.hash(verb, p0, isClosedContour);
+                case LINE:
+                    return Objects.hash(verb, p0, p1, isCloseLine, isClosedContour);
+                case QUAD:
+                    return Objects.hash(verb, p0, p1, p2, isClosedContour);
+                case CONIC:
+                    return Objects.hash(verb, p0, p1, p2, conicWeight, isClosedContour);
+                case CUBIC:    
+                    return Objects.hash(verb, p0, p1, p2, p3, isClosedContour);
+                default:
+                    throw new RuntimeException("Unreachable");
+            }
+        }
+    }
+
+    public static class Iter extends Managed implements Iterator<Segment> {
+        protected Path path;
+        protected Segment nextSegment;
+
+        @Override
+        public Segment next() {
+            if (nextSegment.verb == Verb.DONE)
+                throw new NoSuchElementException();
+            Segment res = nextSegment;
+            nextSegment = nNext(nativeInstance);
+            return res;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return nextSegment.verb != Verb.DONE;
+        }
+
+        protected Iter(Path path, long ptr) {
+            super(ptr, nGetNativeFinalizer());
+            this.path = path;
+            Native.onNativeCall();
+        }
+
+        public static Iter make(Path path, boolean forceClose) {
+            long ptr = nInit(Native.pointer(path), forceClose);
+            Iter i = new Iter(path, ptr);
+            i.nextSegment = nNext(ptr);
+            return i;
+        }
+
+        private static final  long nativeFinalizer = nGetNativeFinalizer();
+        private static native long nInit(long pathPtr, boolean forceClose);
+        private static native long nGetNativeFinalizer();
+        private static native Segment nNext(long ptr);
+    } 
+
+    @Override
+    public Iter iterator() {
+        return iterator(false);
+    }
+
+    public Iter iterator(boolean forceClose) {
+        return Iter.make(this, forceClose);
+    }
+
     /**
      * Returns true if the point (x, y) is contained by Path, taking into
      * account {@link FillType}.
@@ -1879,6 +2009,7 @@ public class Path extends Managed {
     private static final  long    nativeFinalizer = nGetNativeFinalizer();
     private static native long    nInit();
     private static native long    nGetNativeFinalizer();
+    private static native boolean nEquals(long aPtr, long bPtr);
     private static native boolean nIsInterpolatable(long ptr, long comparePtr);
     private static native long    nInterpolate(long ptr, long endingPtr, float weight);
     private static native void    nSetFillType(long ptr, int fillType);

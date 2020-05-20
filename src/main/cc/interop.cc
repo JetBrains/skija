@@ -246,6 +246,39 @@ namespace skija {
             return env->NewObject(cls, ctor, p.fX, p.fY);
         }
     }
+
+    namespace Path {
+        namespace Segment {
+            jclass cls;
+            jmethodID ctor;
+            jfieldID verb;
+            jfieldID p0;
+            jfieldID p1;
+            jfieldID p2;
+            jfieldID p3;
+            jfieldID conicWeight;
+            jfieldID isCloseLine;
+            jfieldID isClosedContour;
+
+            void onLoad(JNIEnv* env) {
+                jclass local = env->FindClass("org/jetbrains/skija/Path$Segment");
+                cls  = static_cast<jclass>(env->NewGlobalRef(local));
+                ctor = env->GetMethodID(cls, "<init>", "(I)V");
+                verb = env->GetFieldID(cls, "verb", "Lorg/jetbrains/skija/Path$Verb;");
+                p0   = env->GetFieldID(cls, "p0", "Lorg/jetbrains/skija/Point;");
+                p1   = env->GetFieldID(cls, "p1", "Lorg/jetbrains/skija/Point;");
+                p2   = env->GetFieldID(cls, "p2", "Lorg/jetbrains/skija/Point;");
+                p3   = env->GetFieldID(cls, "p3", "Lorg/jetbrains/skija/Point;");
+                conicWeight     = env->GetFieldID(cls, "conicWeight", "F");
+                isCloseLine     = env->GetFieldID(cls, "isCloseLine", "Z");
+                isClosedContour = env->GetFieldID(cls, "isClosedContour", "Z");
+            }
+
+            void onUnload(JNIEnv* env) {
+                env->DeleteGlobalRef(cls);
+            }
+        }
+    }
 }
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
@@ -257,6 +290,8 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::FontAxisInfo::onLoad(env);
     skija::IRect::onLoad(env);
     skija::Rect::onLoad(env);
+    skija::Point::onLoad(env);
+    skija::Path::Segment::onLoad(env);
     return JNI_VERSION_10;
 }
 
@@ -269,6 +304,8 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::FontAxisInfo::onUnload(env);
     skija::IRect::onUnload(env);
     skija::Rect::onUnload(env);
+    skija::Point::onUnload(env);
+    skija::Path::Segment::onUnload(env);
 }
 
 std::unique_ptr<SkMatrix> arrayToMatrix(JNIEnv* env, jfloatArray matrixArray) {
