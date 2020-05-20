@@ -14,7 +14,7 @@ public class JNI {
             tempDir.mkdirs();
             tempDir.deleteOnExit();
 
-            String fileName = "lib" + name + ".dylib";
+            String fileName = "lib" + name + "." + libraryExtension();
             File temp = new File(tempDir, fileName);
             temp.deleteOnExit();
 
@@ -32,4 +32,16 @@ public class JNI {
             throw new RuntimeException(e);
         }
     }
+
+    public static String libraryExtension() {
+        String os = System.getProperty("os.name");
+        if (os == null) throw new RuntimeException("Unknown operation system");
+        String lowerCaseOs = os.toLowerCase();
+        if (lowerCaseOs.contains("mac") || lowerCaseOs.contains("darwin")) return "dylib";
+        if (lowerCaseOs.contains("windows")) return "dll";
+        if (lowerCaseOs.contains("nux")) return "so";
+
+        throw new RuntimeException("Unknown operation system: " + os);
+    }
+
 }

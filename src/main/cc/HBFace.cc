@@ -1,5 +1,6 @@
 #include <iostream>
 #include <jni.h>
+#include <cassert>
 #include "hb-ot.h"
 #include "hb_util.hh"
 #include "interop.hh"
