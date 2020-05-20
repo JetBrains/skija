@@ -11,7 +11,13 @@ file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/*.cc)
 add_library(skija SHARED ${SOURCES})
 
 # JNI
+if(APPLE)
 target_include_directories(skija PRIVATE $ENV{JAVA_HOME}/include $ENV{JAVA_HOME}/include/darwin)
+elseif(UNIX)
+target_include_directories(skija PRIVATE $ENV{JAVA_HOME}/include $ENV{JAVA_HOME}/include/linux)
+elseif(WIN32)
+target_include_directories(skija PRIVATE $ENV{JAVA_HOME}/include $ENV{JAVA_HOME}/include/windows)
+endif()
 
 # Skia
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
