@@ -85,6 +85,10 @@ public class Path extends Managed {
         CONCAVE
     }
 
+    /**
+     * Verb instructs Path how to interpret one or more Point and optional conic weight;
+     * manage contour, and terminate Path.
+     */
     public enum Verb {
         /** iter.next returns 1 point */
         MOVE,
@@ -333,7 +337,7 @@ public class Path extends Managed {
      * may not speed repeated drawing.
      *
      * @return  true if caller will alter Path after drawing
-    */
+     */
     public boolean isVolatile() {
         return isVolatile;
     }
@@ -414,7 +418,7 @@ public class Path extends Managed {
      * @param exact  if true, returns true only if p1, p2, p3, and p4 are equal;
      *               if false, returns true if p1, p2, p3, and p4 are equal or nearly equal
      * @return       true if cubic is degenerate; its length is effectively zero
-    */
+     */
     public static boolean isCubicDegenerate(Point p1, Point p2, Point p3, Point p4, boolean exact) {
         Native.onNativeCall();
         return nIsCubicDegenerate(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, exact);
@@ -466,10 +470,10 @@ public class Path extends Managed {
     /**
      * <p>Returns number of points in Path. Up to max points are copied.</p>
      * 
-     * <p>points may be nullptr; then, max must be zero.
+     * <p>points may be null; then, max must be zero.
      * If max is greater than number of points, excess points storage is unaltered.</p>
      *
-     * @param points  storage for Path Point array. May be nullptr
+     * @param points  storage for Path Point array. May be null
      * @param max     maximum to copy; must be greater than or equal to zero
      * @return        Path Point array length
      * 
@@ -588,7 +592,7 @@ public class Path extends Managed {
      * @return  tight bounds of curves in Path
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_computeTightBounds">https://fiddle.skia.org/c/@Path_computeTightBounds</a>
-    */
+     */
     public Rect computeTightBounds() {
         Native.onNativeCall();
         return nComputeTightBounds(nativeInstance);
@@ -809,7 +813,7 @@ public class Path extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Conic_Weight_b">https://fiddle.skia.org/c/@Conic_Weight_b</a>
      * @see <a href="https://fiddle.skia.org/c/@Conic_Weight_c">https://fiddle.skia.org/c/@Conic_Weight_c</a>
      * @see <a href="https://fiddle.skia.org/c/@Path_rQuadTo">https://fiddle.skia.org/c/@Path_rQuadTo</a>
-    */
+     */
     public Path rQuadTo(float dx1, float dy1, float dx2, float dy2) {
         Native.onNativeCall();
         nRQuadTo(nativeInstance, dx1, dy1, dx2, dy2);
@@ -867,7 +871,7 @@ public class Path extends Managed {
      * @param p2  end Point of added conic
      * @param w   weight of added conic
      * @return    reference to Path
-    */
+     */
     public Path conicTo(Point p1, Point p2, float w) {
         return conicTo(p1.x, p1.y, p2.x, p2.y, w);
     }
@@ -940,7 +944,7 @@ public class Path extends Managed {
      * @param p2  second control Point of cubic
      * @param p3  end Point of cubic
      * @return    reference to Path
-    */
+     */
     public Path cubicTo(Point p1, Point p2, Point p3) {
         return cubicTo(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
     }
@@ -1143,7 +1147,7 @@ public class Path extends Managed {
      * @param dx           x-axis offset end of arc from last Path Point
      * @param dy           y-axis offset end of arc from last Path Point
      * @return             reference to Path
-    */
+     */
     public Path rEllipticalArcTo(float rx, float ry, float xAxisRotate, ArcSize size, Direction direction, float dx, float dy) {
         Native.onNativeCall(); 
         nREllipticalArcTo(nativeInstance, rx, ry, xAxisRotate, size.ordinal(), direction.ordinal(), dx, dy);
@@ -1571,6 +1575,306 @@ public class Path extends Managed {
         return this;
     }
 
+    /** 
+     * Appends src to Path, from back to front.
+     * Reversed src always appends a new contour to Path.
+     *
+     * @param src  Path verbs, Point, and conic weights to add
+     * @return     reference to Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_reverseAddPath">https://fiddle.skia.org/c/@Path_reverseAddPath</a>
+     */
+    public Path reverseAddPath(Path src) {
+        Native.onNativeCall();
+        nReverseAddPath(nativeInstance, Native.pointer(src));
+        return this;
+    }
+
+    /**
+     * Offsets Point array by (dx, dy). Path is replaced by offset data.
+     *
+     * @param dx  offset added to Point array x-axis coordinates
+     * @param dy  offset added to Point array y-axis coordinates
+     * @return    this
+     */
+    public Path offset(float dx, float dy) {
+        return offset(dx, dy, null);
+    }
+
+    /** 
+     * Offsets Point array by (dx, dy). Offset Path replaces dst.
+     * If dst is null, Path is replaced by offset data.
+     *
+     * @param dx   offset added to Point array x-axis coordinates
+     * @param dy   offset added to Point array y-axis coordinates
+     * @param dst  overwritten, translated copy of Path; may be null
+     * @return     this
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_offset">https://fiddle.skia.org/c/@Path_offset</a>
+     */
+    public Path offset(float dx, float dy, Path dst) {
+        Native.onNativeCall();
+        nOffset(nativeInstance, dx, dy, Native.pointer(dst));
+        return this;
+    }
+
+    /**
+     * Transforms verb array, Point array, and weight by matrix.
+     * transform may change verbs and increase their number.
+     * Path is replaced by transformed data.
+     *
+     * @return  this
+     *
+     * @param matrix  float[9] to apply to Path
+     */
+    public Path transform(float[] matrix) {
+        return transform(matrix, null, true);
+    }
+
+    /**
+     * Transforms verb array, Point array, and weight by matrix.
+     * transform may change verbs and increase their number.
+     * Path is replaced by transformed data.
+     *
+     * @param matrix                float[9] to apply to Path
+     * @param applyPerspectiveClip  whether to apply perspective clipping
+     * @return                      this
+     */
+    public Path transform(float[] matrix, boolean applyPerspectiveClip) {
+        return transform(matrix, null, applyPerspectiveClip);
+    }
+
+    /**
+     * Transforms verb array, Point array, and weight by matrix.
+     * transform may change verbs and increase their number.
+     * Transformed Path replaces dst; if dst is null, original data
+     * is replaced.
+     *
+     * @param matrix  float[9] to apply to Path
+     * @param dst     overwritten, transformed copy of Path; may be null
+     * @return        this
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_transform">https://fiddle.skia.org/c/@Path_transform</a>
+     */
+    public Path transform(float[] matrix, Path dst) {
+        return transform(matrix, dst, true);
+    }
+
+    /**
+     * Transforms verb array, Point array, and weight by matrix.
+     * transform may change verbs and increase their number.
+     * Transformed Path replaces dst; if dst is null, original data
+     * is replaced.
+     *
+     * @param matrix                float[9] to apply to Path
+     * @param dst                   overwritten, transformed copy of Path; may be null
+     * @param applyPerspectiveClip  whether to apply perspective clipping
+     * @return                      this
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_transform">https://fiddle.skia.org/c/@Path_transform</a>
+     */
+    public Path transform(float[] matrix, Path dst, boolean applyPerspectiveClip) {
+        Native.onNativeCall();
+        nTransform(nativeInstance, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8], Native.pointer(dst), applyPerspectiveClip);
+        return this;
+    }
+
+    /**
+     * Returns last point on Path in lastPt. Returns null if Point array is empty.
+     *
+     * @param lastPt  storage for final Point in Point array; may be null
+     * @return        point if Point array contains one or more Point, null otherwise
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_getLastPt">https://fiddle.skia.org/c/@Path_getLastPt</a>
+     */
+    public Point getLastPt() {
+        Native.onNativeCall();
+        return nGetLastPt(nativeInstance);
+    }
+
+    /**
+     * Sets last point to (x, y). If Point array is empty, append {@link Verb#MOVE} to
+     * verb array and append (x, y) to Point array.
+     *
+     * @param x  set x-axis value of last point
+     * @param y  set y-axis value of last point
+     * @return   this
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_setLastPt">https://fiddle.skia.org/c/@Path_setLastPt</a>
+     */
+    public Path setLastPt(float x, float y) {
+        Native.onNativeCall();
+        nSetLastPt(nativeInstance, x, y);
+        return this;
+    }
+
+    /**
+     * Sets the last point on the path. If Point array is empty, append {@link Verb#MOVE} to
+     * verb array and append p to Point array.
+     *
+     * @param p  set value of last point
+     * @return   this
+     */
+    public Path setLastPt(Point p) {
+        return setLastPt(p.x, p.y);
+    }
+
+    public static final int SEGMENT_MASK_LINE  = 1 << 0;
+    public static final int SEGMENT_MASK_QUAD  = 1 << 1;
+    public static final int SEGMENT_MASK_CONIC = 1 << 2;
+    public static final int SEGMENT_MASK_CUBIC = 1 << 3;
+
+    /**
+     * <p>Returns a mask, where each set bit corresponds to a SegmentMask constant
+     * if Path contains one or more verbs of that type.</p>
+     *
+     * <p>Returns zero if Path contains no lines, or curves: quads, conics, or cubics.</p>
+     *
+     * <p>getSegmentMasks() returns a cached result; it is very fast.</p>
+     *
+     * @return  SegmentMask bits or zero
+     *
+     * @see {@link SEGMENT_MASK_LINE}
+     * @see {@link SEGMENT_MASK_QUAD}
+     * @see {@link SEGMENT_MASK_CONIC}
+     * @see {@link SEGMENT_MASK_CUBIC}
+     */
+    public int getSegmentMasks() {
+        Native.onNativeCall();
+        return nGetSegmentMasks(nativeInstance);
+    }
+
+    /**
+     * Returns true if the point (x, y) is contained by Path, taking into
+     * account {@link FillType}.
+     *
+     * @param x  x-axis value of containment test
+     * @param y  y-axis value of containment test
+     * @return   true if Point is in Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_contains">https://fiddle.skia.org/c/@Path_contains</a>
+     */
+    public boolean contains(float x, float y) {
+        Native.onNativeCall();
+        return nContains(nativeInstance, x, y);
+    }
+
+    /**
+     * Returns true if the point is contained by Path, taking into
+     * account {@link FillType}.
+     *
+     * @param p  point of containment test
+     * @return   true if Point is in Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_contains">https://fiddle.skia.org/c/@Path_contains</a>
+     */
+    public boolean contains(Point p) {
+        return contains(p.x, p.y);
+    }
+
+    /**
+     * Writes text representation of Path to standard output. The representation may be
+     * directly compiled as C++ code. Floating point values are written
+     * with limited precision; it may not be possible to reconstruct original Path
+     * from output.
+     *
+     * @return  this
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_dump_2">https://fiddle.skia.org/c/@Path_dump_2</a>
+     */
+    public Path dump() {
+        Native.onNativeCall();
+        nDump(nativeInstance);
+        return this;
+    }
+
+    /**
+     * <p>Writes text representation of Path to standard output. The representation may be
+     * directly compiled as C++ code. Floating point values are written
+     * in hexadecimal to preserve their exact bit pattern. The output reconstructs the
+     * original Path.</p>
+     *
+     * <p>Use instead of {@link dump()} when submitting</p>
+     *
+     * @return  this
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_dumpHex">https://fiddle.skia.org/c/@Path_dumpHex</a>
+     */
+    public Path dumpHex() {
+        Native.onNativeCall();
+        nDumpHex(nativeInstance);
+        return this;
+    }
+
+    /**
+     * <p>Writes Path to byte buffer.</p>
+     *
+     * <p>Writes {@link FillType}, verb array, Point array, conic weight, and
+     * additionally writes computed information like {@link ConvexityType} and bounds.</p>
+     *
+     * <p>Use only be used in concert with {@link readFromMemory(byte[])};
+     * the format used for Path in memory is not guaranteed.</p>
+     *
+     * @return  serialized Path; length always a multiple of 4
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_writeToMemory">https://fiddle.skia.org/c/@Path_writeToMemory</a>
+     */
+    public byte[] writeToMemory() {
+        Native.onNativeCall();
+        return nWriteToMemory(nativeInstance);
+    }
+
+    /**
+     * <p>Initializes Path from byte buffer. Returns null if the buffer is
+     * data is inconsistent, or the length is too small.</p>
+     *
+     * <p>Reads {@link FillType}, verb array, Point array, conic weight, and
+     * additionally reads computed information like {@link ConvexityType} and bounds.</p>
+     *
+     * <p>Used only in concert with {@link writeToMemory()};
+     * the format used for Path in memory is not guaranteed.</p>
+     *
+     * @param data  storage for Path
+     * @return      reconstructed Path
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_readFromMemory">https://fiddle.skia.org/c/@Path_readFromMemory</a>
+     */
+    public static Path readFromMemory(byte[] data) {
+        Native.onNativeCall();
+        return new Path(nReadFromMemory(data));
+    }
+
+    /** 
+     * <p>Returns a non-zero, globally unique value. A different value is returned
+     * if verb array, Point array, or conic weight changes.</p>
+     *
+     * <p>Setting {@link FillType} does not change generation identifier.</p>
+     *
+     * <p>Each time the path is modified, a different generation identifier will be returned.
+     * {@link FillType} does affect generation identifier on Android framework.</p>
+     *
+     * @return  non-zero, globally unique value
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_getGenerationID">https://fiddle.skia.org/c/@Path_getGenerationID</a>
+     * @see Skia bug 1762
+     */
+    public int nGetGenerationID() {
+        Native.onNativeCall();
+        return nGetGenerationID(nativeInstance);
+    }    
+
+    /**
+     * Returns if Path data is consistent. Corrupt Path data is detected if
+     * internal values are out of range or internal storage does not match
+     * array dimensions.
+     *
+     * @return  true if Path data is consistent
+     */
+    public boolean isValid() {
+        Native.onNativeCall();
+        return nIsValid(nativeInstance);
+    }
+
     protected Path(long ptr) { super(ptr, nativeFinalizer); Native.onNativeCall(); }
     private static final  long    nativeFinalizer = nGetNativeFinalizer();
     private static native long    nInit();
@@ -1630,11 +1934,28 @@ public class Path extends Managed {
     private static native void    nAddArc(long ptr, float l, float t, float r, float b, float startAngle, float sweepAngle);
     private static native void    nAddRoundedRect(long ptr, float l, float t, float r, float b, float[] radii, int dir, int start);
     private static native void    nAddPoly(long ptr, float[] coords, boolean close);
-    private static native void    nAddPath(long ptr, long srcPath, boolean extend);
-    private static native void    nAddPathOffset(long ptr, long srcPath, float dx, float dy, boolean extend);
-    private static native void    nAddPathTransform(long ptr, long srcPath,
+    private static native void    nAddPath(long ptr, long srcPtr, boolean extend);
+    private static native void    nAddPathOffset(long ptr, long srcPtr, float dx, float dy, boolean extend);
+    private static native void    nAddPathTransform(long ptr, long srcPtr,
         float scaleX, float skewX,  float transX,
         float skewY,  float scaleY, float transY,
         float persp0, float persp1, float persp2,
         boolean extend);
+    private static native void    nReverseAddPath(long ptr, long srcPtr);
+    private static native void    nOffset(long ptr, float dx, float dy, long dst);
+    private static native void    nTransform(long ptr,
+        float scaleX, float skewX,  float transX,
+        float skewY,  float scaleY, float transY,
+        float persp0, float persp1, float persp2,
+        long dst, boolean applyPerspectiveClip);
+    private static native Point   nGetLastPt(long ptr);
+    private static native void    nSetLastPt(long ptr, float x, float y);
+    private static native int     nGetSegmentMasks(long ptr);
+    private static native boolean nContains(long ptr, float x, float y);
+    private static native void    nDump(long ptr);
+    private static native void    nDumpHex(long ptr);
+    private static native byte[]  nWriteToMemory(long ptr);
+    private static native long    nReadFromMemory(byte[] data);
+    private static native int     nGetGenerationID(long ptr);
+    private static native boolean nIsValid(long ptr);
 }
