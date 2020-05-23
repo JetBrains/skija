@@ -311,7 +311,7 @@ class Window {
 
         initSkia();
 
-        scenes = new TreeMap();
+        scenes = new TreeMap<>();
         scenes.put("Blends",        new BlendsScene());
         scenes.put("Color Filters", new ColorFiltersScene());
         scenes.put("Empty",         new EmptyScene());

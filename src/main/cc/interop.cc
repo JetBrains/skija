@@ -136,11 +136,11 @@ namespace skija {
         void onLoad(JNIEnv* env) {
             jclass local = env->FindClass("org/jetbrains/skija/RoundedRect");
             cls      = static_cast<jclass>(env->NewGlobalRef(local));
-            makeLTRB1 = env->GetStaticMethodID(cls, "makeLTRB", "(FFFFF)Lorg/jetbrains/skija/RRect;");
-            makeLTRB2 = env->GetStaticMethodID(cls, "makeLTRB", "(FFFFFF)Lorg/jetbrains/skija/RRect;");
-            makeLTRB4 = env->GetStaticMethodID(cls, "makeLTRB", "(FFFFFFFF)Lorg/jetbrains/skija/RRect;");
-            makeNinePatchLTRB = env->GetStaticMethodID(cls, "makeLTRB", "(FFFFFFFF)Lorg/jetbrains/skija/RRect;");
-            makeComplexLTRB = env->GetStaticMethodID(cls, "makeLTRB", "(FFFF[F)Lorg/jetbrains/skija/RRect;");
+            makeLTRB1 = env->GetStaticMethodID(cls, "makeLTRB", "(FFFFF)Lorg/jetbrains/skija/RoundedRect;");
+            makeLTRB2 = env->GetStaticMethodID(cls, "makeLTRB", "(FFFFFF)Lorg/jetbrains/skija/RoundedRect;");
+            makeLTRB4 = env->GetStaticMethodID(cls, "makeLTRB", "(FFFFFFFF)Lorg/jetbrains/skija/RoundedRect;");
+            makeNinePatchLTRB = env->GetStaticMethodID(cls, "makeNinePatchLTRB", "(FFFFFFFF)Lorg/jetbrains/skija/RoundedRect;");
+            makeComplexLTRB = env->GetStaticMethodID(cls, "makeComplexLTRB", "(FFFF[F)Lorg/jetbrains/skija/RoundedRect;");
             left     = env->GetFieldID(cls, "left",   "F");
             top      = env->GetFieldID(cls, "top",    "F");
             right    = env->GetFieldID(cls, "right",  "F");
@@ -290,6 +290,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::FontAxisInfo::onLoad(env);
     skija::IRect::onLoad(env);
     skija::Rect::onLoad(env);
+    skija::RoundedRect::onLoad(env);
     skija::Point::onLoad(env);
     skija::Path::Segment::onLoad(env);
     return JNI_VERSION_10;
@@ -304,6 +305,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::FontAxisInfo::onUnload(env);
     skija::IRect::onUnload(env);
     skija::Rect::onUnload(env);
+    skija::RoundedRect::onUnload(env);
     skija::Point::onUnload(env);
     skija::Path::Segment::onUnload(env);
 }

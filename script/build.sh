@@ -11,4 +11,5 @@ cmake -G Ninja -DSKIA_DIR=$SKIA_DIR_ABS ../..
 ninja
 popd
 
+# mvn -Dmaven.test.skip=true install
 mvn install

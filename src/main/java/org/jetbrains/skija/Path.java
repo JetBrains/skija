@@ -269,9 +269,9 @@ public class Path extends Managed implements Iterable {
      * 
      * @see <a href="https://fiddle.skia.org/c/@Path_isRRect">https://fiddle.skia.org/c/@Path_isRRect</a>
      */
-    public RoundedRect isRRect() {
+    public RoundedRect isRoundedRect() {
         Native.onNativeCall();
-        return nIsRRect(nativeInstance);
+        return nIsRoundedRect(nativeInstance);
     }
 
     /**
@@ -304,7 +304,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path rewind() {
         Native.onNativeCall();
-        nReset(nativeInstance);
+        nRewind(nativeInstance);
         return this;
     }
 
@@ -500,6 +500,7 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_getPoints">https://fiddle.skia.org/c/@Path_getPoints</a>
      */
     public int getPoints(Point[] points, int max) {
+        assert points == null ? max == 0 : true;
         Native.onNativeCall();
         return nGetPoints(nativeInstance, points, max);
     }
@@ -527,6 +528,7 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_getVerbs">https://fiddle.skia.org/c/@Path_getVerbs</a>
      */
     public int getVerbs(Verb[] verbs, int max) {
+        assert verbs == null ? max == 0 : true;
         Native.onNativeCall();
         byte[] out = verbs == null ? null : new byte[max];
         int count = nGetVerbs(nativeInstance, out, max);
@@ -2017,7 +2019,7 @@ public class Path extends Managed implements Iterable {
     private static native int     nGetConvexityTypeOrUnknown(long ptr);
     private static native void    nSetConvexityType(long ptr, int convexity);
     private static native Rect    nIsOval(long ptr);
-    private static native RoundedRect nIsRRect(long ptr);
+    private static native RoundedRect nIsRoundedRect(long ptr);
     private static native void    nReset(long ptr);
     private static native void    nRewind(long ptr);
     private static native boolean nIsEmpty(long ptr);

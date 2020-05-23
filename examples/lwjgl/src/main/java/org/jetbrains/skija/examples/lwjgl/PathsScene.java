@@ -4,56 +4,16 @@ import java.util.Iterator;
 import org.jetbrains.skija.*;
 
 public class PathsScene implements Scene {
-    public PathsScene() {
-        testIter();
-    }
-
-    public void testIter() {
-        try (Path p = new Path().moveTo(10, 10).lineTo(20, 0).lineTo(20, 20).closePath();
-             var i = p.iterator();) {
-            assert i.hasNext();
-            Path.Segment s = i.next();
-            assert s.verb == Path.Verb.MOVE : s;
-            assert s.p0.equals(new Point(10, 10)) : s;
-            assert s.isClosedContour;
-
-            assert i.hasNext();
-            s = i.next();
-            assert s.verb == Path.Verb.LINE : s;
-            assert s.p0.equals(new Point(10, 10)) : s;
-            assert s.p1.equals(new Point(20, 0)) : s;
-            assert !s.isCloseLine;
-
-            assert i.hasNext();
-            s = i.next();
-            assert s.verb == Path.Verb.LINE : s;
-            assert s.p0.equals(new Point(20, 0)) : s;
-            assert s.p1.equals(new Point(20, 20)) : s;
-            assert !s.isCloseLine;
-
-            assert i.hasNext();
-            s = i.next();
-            assert s.verb == Path.Verb.LINE : s;
-            assert s.p0.equals(new Point(20, 20)) : s;
-            assert s.p1.equals(new Point(10, 10)) : s;
-            assert s.isCloseLine;
-
-            assert i.hasNext();
-            s = i.next();
-            assert s.verb == Path.Verb.CLOSE : s;
-            assert s.p0.equals(new Point(10, 10)) : s;
-
-            assert i.hasNext() == false;
-        }
-    }
-
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         canvas.translate(30, 30);
 
         drawPaths(canvas, new Paint().setColor(0xFFF6BC01));
         drawPaths(canvas, new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1f));
+        drawAdds(canvas);
+        drawTransforms(canvas);
         drawFillPaths(canvas);
+        drawInterpolate(canvas);
     }
 
     public void drawPaths(Canvas canvas, Paint paint) {
@@ -61,17 +21,23 @@ public class PathsScene implements Scene {
 
         canvas.save();
 
-        // moveTo, lineTo, close
         Path path = new Path();
-        path.setFillType(Path.FillType.WINDING);
-        path.moveTo(20, 1.6f);
-        path.lineTo(31.7f, 37.8f);
-        path.lineTo(0.9f, 15.4f);
-        path.lineTo(39f, 15.4f);
-        path.lineTo(8.2f, 37.8f);
-        path.closePath();
-        canvas.drawPath(path, paint);
-        canvas.translate(50, 0);
+
+        // moveTo, lineTo, close
+        for (var fillType: Path.FillType.values()) {
+            canvas.save();
+            canvas.clipRect(Rect.makeLTRB(0, 0, 40, 40));
+            path.reset().setFillType(fillType);
+            path.moveTo(20, 1.6f);
+            path.lineTo(31.7f, 37.8f);
+            path.lineTo(0.9f, 15.4f);
+            path.lineTo(39f, 15.4f);
+            path.lineTo(8.2f, 37.8f);
+            path.closePath();
+            canvas.drawPath(path, paint);
+            canvas.restore();
+            canvas.translate(50, 0);
+        }
 
         // rMoveTo, rLineTo
         path.reset().setFillType(Path.FillType.EVEN_ODD);
@@ -185,11 +151,6 @@ public class PathsScene implements Scene {
         canvas.drawPath(path, paint);
         canvas.translate(70, 0);
 
-        // addPoly
-        path.reset().addPoly(new float[] { 40, 0, 40, 40, 30, 40, 10, 20, 10, 40, 0, 40, 0, 0, 10, 0, 30, 20, 30, 0 }, false);
-        canvas.drawPath(path, paint);
-        canvas.translate(50, 0);
-
         // multi shapes
         path.reset().setFillType(Path.FillType.EVEN_ODD);
         path.arcTo(Rect.makeLTRB(0, 5, 35, 40), 0, 359, true);
@@ -202,6 +163,113 @@ public class PathsScene implements Scene {
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
+        canvas.restore();
+        canvas.translate(0, 50);
+    }
+
+    private void drawAdds(Canvas canvas) {
+        canvas.save();
+        try (var path = new Path();
+             var paint = new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1f)) {
+
+            // addRect
+            path.reset().addRect(Rect.makeLTRB(10, 10, 30, 30), Path.Direction.CLOCKWISE, 0).lineTo(40, 20);
+            canvas.drawPath(path, paint);
+            canvas.translate(50, 0);
+
+            path.reset().addRect(Rect.makeLTRB(10, 10, 30, 30), Path.Direction.COUNTER_CLOCKWISE, 1).lineTo(40, 20);
+            canvas.drawPath(path, paint);
+            canvas.translate(50, 0);
+
+            // addOval
+            path.reset().addOval(Rect.makeLTRB(10, 0, 30, 40), Path.Direction.CLOCKWISE, 0).lineTo(40, 20);
+            canvas.drawPath(path, paint);
+            canvas.translate(50, 0);
+
+            path.reset().addOval(Rect.makeLTRB(10, 0, 30, 40), Path.Direction.COUNTER_CLOCKWISE, 1).lineTo(40, 20);
+            canvas.drawPath(path, paint);
+            canvas.translate(50, 0);
+
+            // addCircle
+            path.reset().addCircle(20, 20, 15, Path.Direction.CLOCKWISE).lineTo(40, 20);
+            canvas.drawPath(path, paint);
+            canvas.translate(50, 0);
+
+            // addArc
+            path.reset().addArc(Rect.makeLTRB(-40, -40, 40, 40), 0, 90);
+            canvas.drawPath(path, paint);
+            canvas.translate(50, 0);
+
+            // addRoundedRect
+            for (int i = 0; i < 4; ++i) {
+                path.reset().addRoundedRect(RoundedRect.makeLTRB(10, 10, 30, 30, 5), Path.Direction.CLOCKWISE, i).lineTo(40, 20);
+                canvas.drawPath(path, paint);
+                canvas.translate(50, 0);            
+            }
+
+            // addPoly
+            path.reset().addPoly(new float[] { 40, 0, 40, 40, 30, 40, 10, 20, 10, 40, 0, 40, 0, 0, 10, 0, 30, 20, 30, 0 }, false);
+            canvas.drawPath(path, paint);
+            canvas.translate(50, 0);
+
+            // addPath
+            try (Path subpath = new Path().addRect(Rect.makeLTRB(0, 0, 10, 10)).closePath()) {
+                path.reset().addRect(Rect.makeLTRB(0, 0, 40, 40)).addPath(subpath, 10, 10, true);
+                canvas.drawPath(path, paint);
+                canvas.translate(50, 0);
+
+                path.reset().addRect(Rect.makeLTRB(0, 0, 40, 40)).addPath(subpath, 10, 10, false);
+                canvas.drawPath(path, paint);
+                canvas.translate(50, 0);
+
+                path.reset().addRect(Rect.makeLTRB(0, 0, 40, 40)).addPath(subpath, Matrix.rotate(-15), true);
+                canvas.drawPath(path, paint);
+                canvas.translate(50, 0);
+
+                path.reset().addRect(Rect.makeLTRB(0, 0, 40, 40)).reverseAddPath(subpath);
+                canvas.drawPath(path, paint);
+                canvas.translate(50, 0);
+            }
+        }
+        canvas.restore();
+        canvas.translate(0, 50);
+    }
+
+    private void drawTransforms(Canvas canvas) {
+        canvas.save();
+        try (var path = new Path();
+             var paint = new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+             var secondaryPaint = new Paint().setColor(0xFFFAA6B2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);) {
+
+            // offsets
+            path.reset().addRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 5));
+            canvas.drawPath(path, secondaryPaint);
+            path.offset(5, 5);
+            canvas.drawPath(path, paint);
+            canvas.translate(50, 0);
+
+            try (Path subpath = new Path().addRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 5))) {
+                canvas.drawPath(subpath, secondaryPaint);
+                subpath.offset(5, 5, path);
+                canvas.drawPath(path, paint);
+                canvas.translate(50, 0);
+            }
+
+            // transform
+            path.reset().addRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 5));
+            canvas.drawPath(path, secondaryPaint);
+            path.transform(Matrix.rotate(-15));
+            canvas.drawPath(path, paint);
+            canvas.translate(50, 0);
+
+            try (Path subpath = new Path().addRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 5))) {
+                canvas.drawPath(subpath, secondaryPaint);
+                subpath.transform(Matrix.rotate(-15), path);
+                canvas.drawPath(path, paint);
+                canvas.translate(50, 0);
+            }
+
+        }
         canvas.restore();
         canvas.translate(0, 50);
     }
@@ -261,5 +329,43 @@ public class PathsScene implements Scene {
 
         canvas.restore();
         canvas.translate(0, 50);
+    }
+
+    private void drawInterpolate(Canvas canvas) {
+        float weight = 1f - System.currentTimeMillis() % 500 / 500f;
+        long pair = (System.currentTimeMillis() / 500) % 4;
+        
+        try (Path p1 = new Path().moveTo(0, 14).lineTo(20, 14).lineTo(20, 0).lineTo(40, 20).lineTo(20, 40).lineTo(20, 26).lineTo(0, 26).lineTo(0, 14).closePath();
+             Path p2 = new Path().moveTo(0, 20).lineTo(14, 20).lineTo(14, 0).lineTo(26, 0).lineTo(26, 20).lineTo(40, 20).lineTo(20, 40).lineTo(0, 20).closePath();
+             Path p3 = new Path().moveTo(0, 20).lineTo(20, 0).lineTo(20, 14).lineTo(40, 14).lineTo(40, 26).lineTo(20, 26).lineTo(20, 40).lineTo(0, 20).closePath();
+             Path p4 = new Path().moveTo(0, 20).lineTo(20, 0).lineTo(40, 20).lineTo(26, 20).lineTo(26, 40).lineTo(14, 40).lineTo(14, 20).lineTo(0, 20).closePath();
+             Path target = pair == 0 ? p1.interpolate(p2, weight)
+                         : pair == 1 ? p2.interpolate(p3, weight)
+                         : pair == 2 ? p3.interpolate(p4, weight)
+                         : p4.interpolate(p1, weight);
+             Paint stroke = new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1);)
+        {
+            target.setVolatile(true);
+            assert p1.isInterpolatable(p2);
+            assert p1.isInterpolatable(p3);
+            assert p1.isInterpolatable(p4);
+
+            canvas.save();
+            canvas.drawPath(target, stroke);
+            canvas.translate(50, 0);
+
+            for (long i = 0; i < 31; ++i) {
+                try (var shader = Shader.lerp(i / 30f, Shader.color(0xFF437AA0), Shader.color(0xFFFAA6B2));
+                     var interpolated = p1.interpolate(p3, i / 30f);)
+                {
+                    stroke.setShader(shader);
+                    canvas.drawPath(interpolated, stroke);
+                    canvas.translate(30, 0);
+                }
+            }
+
+            canvas.restore();
+            canvas.translate(0, 50);
+        }
     }
 }

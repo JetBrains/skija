@@ -7,8 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 public class JNI {
+    public static boolean loaded = false;
+
     // https://github.com/adamheinrich/native-utils/blob/e6a39489662846a77504634b6fafa4995ede3b1d/src/main/java/cz/adamh/utils/NativeUtils.java
     public static void loadLibrary(String resourcePath, String name) {
+        if (loaded) return;
         try {
             File tempDir = new File(System.getProperty("java.io.tmpdir"), "skija_" + System.nanoTime());
             tempDir.mkdirs();
@@ -28,6 +31,7 @@ public class JNI {
             }
 
             System.load(temp.getAbsolutePath());
+            loaded = true;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
