@@ -4,6 +4,7 @@ import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -198,6 +199,7 @@ public class PathTests {
             Point p2 = new Point(40, 0);
             Point p3 = new Point(0, 40);
             Point p4 = new Point(0, 0);
+            Point p5 = new Point(10, 10);
 
             assertEquals(5, p.countPoints());
             assertEquals(p0, p.getPoint(0));
@@ -205,12 +207,16 @@ public class PathTests {
             assertEquals(p2, p.getPoint(2));
             assertEquals(p3, p.getPoint(3));
             assertEquals(p4, p.getPoint(4));
+            assertEquals(p4, p.getLastPt());
+            p.setLastPt(p5);
+            assertEquals(p5, p.getPoint(4));
+            assertEquals(p5, p.getLastPt());
 
             assertEquals(5, p.getPoints(null, 0));
             
             Point[] pts = new Point[5];
             p.getPoints(pts, 5);
-            assertArrayEquals(new Point[] { p0, p1, p2, p3, p4 }, pts);
+            assertArrayEquals(new Point[] { p0, p1, p2, p3, p5 }, pts);
 
             pts = new Point[3];
             p.getPoints(pts, 3);
@@ -222,7 +228,7 @@ public class PathTests {
 
             pts = new Point[10];
             p.getPoints(pts, 10);
-            assertArrayEquals(new Point[] { p0, p1, p2, p3, p4, null, null, null, null, null }, pts);
+            assertArrayEquals(new Point[] { p0, p1, p2, p3, p5, null, null, null, null, null }, pts);
 
             assertEquals(6, p.countVerbs());
             assertEquals(6, p.getVerbs(null, 0));
@@ -244,6 +250,8 @@ public class PathTests {
             assertArrayEquals(new Path.Verb[] { Path.Verb.MOVE, Path.Verb.LINE, Path.Verb.LINE, Path.Verb.LINE, Path.Verb.LINE, Path.Verb.CLOSE, null, null, null, null }, verbs);
 
             assertEquals(62, p.approximateBytesUsed());
+
+            assertEquals(Path.SEGMENT_MASK_LINE, p.getSegmentMasks());
         }
     }
 
@@ -266,6 +274,9 @@ public class PathTests {
             assertEquals(true, p.conservativelyContainsRect(Rect.makeLTRB(13, 27, 51, 113)));
 
             assertEquals(false, p.conservativelyContainsRect(Rect.makeLTRB(0, 40, 60, 80)));
+
+            assertEquals(true, p.contains(30, 70));
+            assertEquals(false, p.contains(0, 0));
         }
     }
 
@@ -287,5 +298,23 @@ public class PathTests {
             Path.convertConicToQuads(new Point(0, 20), new Point(20, 0), new Point(40, 20), 0.5f, 1));
         assertArrayEquals(new Point[] {new Point(0, 20), new Point(3.0940108f, 16.905989f), new Point(8.452994f, 15.119661f), new Point(13.811978f, 13.333334f)},
             Path.convertConicToQuads(new Point(0, 20), new Point(20, 0), new Point(40, 20), 0.5f, 2));
+
+        try (Path p = new Path().lineTo(40, 40)) {
+            var g1 = p.nGetGenerationID();
+            p.lineTo(10, 40);
+            var g2 = p.nGetGenerationID();
+            assertNotEquals(g1, g2);
+            p.setFillType(Path.FillType.EVEN_ODD);
+            var g3 = p.nGetGenerationID();
+            assertEquals(g2, g3);
+        }
+    }
+
+    @Test
+    public void serialize() {
+        try (Path p = new Path().lineTo(40, 40).lineTo(40, 0).lineTo(0, 40).lineTo(0, 0).closePath();) {
+            Path p2 = Path.readFromMemory(p.writeToMemory());
+            assertEquals(p, p2);
+        }
     }
 }

@@ -261,7 +261,7 @@ public class GeometryScene implements Scene {
         Paint stroke1 = new Paint().setColor(0xFF3F80A7).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
         Paint stroke2 = new Paint().setColor(0xFFF55E58).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
         int xOffset = 30;
-        int yOffset = 630;
+        int yOffset = 480;
 
         canvas.save();
 

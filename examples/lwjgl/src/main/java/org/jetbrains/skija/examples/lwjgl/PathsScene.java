@@ -173,25 +173,25 @@ public class PathsScene implements Scene {
              var paint = new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1f)) {
 
             // addRect
-            path.reset().addRect(Rect.makeLTRB(10, 10, 30, 30), Path.Direction.CLOCKWISE, 0).lineTo(40, 20);
+            path.reset().addRect(Rect.makeLTRB(10, 10, 30, 30), Path.Direction.CLOCKWISE, 0).lineTo(20, 20);
             canvas.drawPath(path, paint);
             canvas.translate(50, 0);
 
-            path.reset().addRect(Rect.makeLTRB(10, 10, 30, 30), Path.Direction.COUNTER_CLOCKWISE, 1).lineTo(40, 20);
+            path.reset().addRect(Rect.makeLTRB(10, 10, 30, 30), Path.Direction.COUNTER_CLOCKWISE, 1).lineTo(20, 20);
             canvas.drawPath(path, paint);
             canvas.translate(50, 0);
 
             // addOval
-            path.reset().addOval(Rect.makeLTRB(10, 0, 30, 40), Path.Direction.CLOCKWISE, 0).lineTo(40, 20);
+            path.reset().addOval(Rect.makeLTRB(10, 0, 30, 40), Path.Direction.CLOCKWISE, 0).lineTo(20, 20);
             canvas.drawPath(path, paint);
             canvas.translate(50, 0);
 
-            path.reset().addOval(Rect.makeLTRB(10, 0, 30, 40), Path.Direction.COUNTER_CLOCKWISE, 1).lineTo(40, 20);
+            path.reset().addOval(Rect.makeLTRB(10, 0, 30, 40), Path.Direction.COUNTER_CLOCKWISE, 1).lineTo(20, 20);
             canvas.drawPath(path, paint);
             canvas.translate(50, 0);
 
             // addCircle
-            path.reset().addCircle(20, 20, 15, Path.Direction.CLOCKWISE).lineTo(40, 20);
+            path.reset().addCircle(20, 20, 15, Path.Direction.CLOCKWISE).lineTo(20, 20);
             canvas.drawPath(path, paint);
             canvas.translate(50, 0);
 
@@ -201,8 +201,8 @@ public class PathsScene implements Scene {
             canvas.translate(50, 0);
 
             // addRoundedRect
-            for (int i = 0; i < 4; ++i) {
-                path.reset().addRoundedRect(RoundedRect.makeLTRB(10, 10, 30, 30, 5), Path.Direction.CLOCKWISE, i).lineTo(40, 20);
+            for (int i = 0; i < 8; ++i) {
+                path.reset().addRoundedRect(RoundedRect.makeLTRB(10, 10, 30, 30, 5), Path.Direction.CLOCKWISE, i).lineTo(20, 20);
                 canvas.drawPath(path, paint);
                 canvas.translate(50, 0);            
             }
