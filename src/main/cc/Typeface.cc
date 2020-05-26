@@ -20,13 +20,14 @@ extern "C" JNIEXPORT jlongArray JNICALL Java_org_jetbrains_skija_Typeface_nMakeF
 
     // blob
     auto destroy = [](void *d) { static_cast<SkData*>(d)->unref(); };
-    hb_blob_t* blob = hb_blob_create((const char*)data->data(),
-                                     (unsigned int)data->size(),
+    const char* dataData = (const char*) data->data();
+    unsigned int dataSize = (unsigned int) data->size();
+    void * dataPtr = data.release();
+    hb_blob_t* blob = hb_blob_create(dataData,
+                                     dataSize,
                                      HB_MEMORY_MODE_READONLY,
-                                     data.get(),
+                                     dataPtr,
                                      destroy);
-    data.release();
-
     assert(blob);
     if (!blob || hb_blob_get_length(blob) == 0) return nullptr;
     hb_blob_make_immutable(blob);
