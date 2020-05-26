@@ -23,8 +23,10 @@ extern "C" JNIEXPORT jlongArray JNICALL Java_org_jetbrains_skija_Typeface_nMakeF
     hb_blob_t* blob = hb_blob_create((const char*)data->data(),
                                      (unsigned int)data->size(),
                                      HB_MEMORY_MODE_READONLY,
-                                     data.release(),
+                                     data.get(),
                                      destroy);
+    data.release();
+
     assert(blob);
     if (!blob || hb_blob_get_length(blob) == 0) return nullptr;
     hb_blob_make_immutable(blob);
