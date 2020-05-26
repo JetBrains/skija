@@ -1,15 +1,23 @@
 #!/bin/zsh -euo pipefail
 
-SKIA_DIR=${SKIA_DIR:-`dirname $0`/../third_party/skia}
-SKIA_DIR_ABS=$(cd $SKIA_DIR; pwd)
-
 cd "`dirname $0`/.."
 
-mkdir -p target/native
-pushd target/native
-cmake -G Ninja -DSKIA_DIR=$SKIA_DIR_ABS ../..
-ninja
-popd
+./script/native.sh
 
-# mvn -Dmaven.test.skip=true install
-mvn install
+# javac
+if [ ! -f "target/build_timestamp" ]; then
+    touch -t 200912310000 target/build_timestamp
+fi
+
+find src -name "*.java" -newer target/build_timestamp | xargs javac --release 11 -cp target/classes:target/test-classes
+
+mkdir -p target/classes/org/jetbrains/skija
+find src/main/java -name '*.class' | xargs -I '{}' mv '{}' target/classes/org/jetbrains/skija
+
+mkdir -p target/test-classes/org/jetbrains/skija
+find src/test/java -name '*.class' | xargs -I '{}' mv '{}' target/test-classes/org/jetbrains/skija
+
+touch target/build_timestamp
+
+# tests
+java -cp target/classes:target/test-classes org.jetbrains.skija.TestSuite

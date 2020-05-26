@@ -1,20 +1,17 @@
 package org.jetbrains.skija;
 
 import java.util.NoSuchElementException;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.jetbrains.skija.TestRunner.assertEquals;
+import static org.jetbrains.skija.TestRunner.assertNotEquals;
+import static org.jetbrains.skija.TestRunner.assertArrayEquals;
+import static org.jetbrains.skija.TestRunner.assertThrows;
 
-public class PathTests {
-    @BeforeAll
-    public static void loadSkija() {
-        JNI.loadLibrary("/", "skija");
+public class PathTests implements Executable {
+    @Override
+    public void execute() throws Exception {
+        TestRunner.testMethod(this, "iter");
     }
 
-    @Test
     public void iter() {
         try (Path p = new Path().moveTo(10, 10).lineTo(20, 0).lineTo(20, 20).closePath();
              var i = p.iterator();) {
@@ -56,7 +53,6 @@ public class PathTests {
     }
 
 
-    @Test
     public void convex() {
         try (Path p = new Path().lineTo(40, 20).lineTo(0, 40).lineTo(0, 0).closePath()) {
             assertEquals(Path.ConvexityType.UNKNOWN, p.getConvexityTypeOrUnknown());
@@ -77,7 +73,6 @@ public class PathTests {
         }
     }
 
-    @Test
     public void isShape() {
         for (var dir: Path.Direction.values()) {
             for (int start = 0; start < 4; ++start) {
@@ -136,7 +131,6 @@ public class PathTests {
         }
     }
 
-    @Test
     public void checks() {
         try (Path p = new Path().lineTo(40, 40).lineTo(40, 0).lineTo(0, 40).lineTo(0, 0).closePath()) {
             assertEquals(false, p.isEmpty());
@@ -185,7 +179,6 @@ public class PathTests {
         }
     }
 
-    @Test
     public void storage() {
         Path subpath = new Path().lineTo(40, 40).lineTo(40, 0).lineTo(0, 40).lineTo(0, 0).closePath();
         for (Path p: new Path[] {
@@ -255,7 +248,6 @@ public class PathTests {
         }
     }
 
-    @Test
     public void swap() {
         try (Path p1 = new Path().lineTo(40, 40).lineTo(40, 0).lineTo(0, 40).lineTo(0, 0).closePath();
              Path p2 = new Path().lineTo(0, 0).lineTo(20, 20);) {
@@ -265,7 +257,6 @@ public class PathTests {
         }
     }
 
-    @Test
     public void contains() {
         try (Path p = new Path().addRoundedRect(RoundedRect.makeLTRB(10, 20, 54, 120, 10, 20))) {
             assertEquals(true, p.conservativelyContainsRect(Rect.makeLTRB(10, 40, 54, 80)));
@@ -280,7 +271,6 @@ public class PathTests {
         }
     }
 
-    @Test
     public void utils() {
         assertEquals(false, Path.isLineDegenerate(new Point(0, 0), new Point(10, 0), false));
         assertEquals(true, Path.isLineDegenerate(new Point(0, 0), new Point(0, 0), true));
@@ -310,7 +300,6 @@ public class PathTests {
         }
     }
 
-    @Test
     public void serialize() {
         try (Path p = new Path().lineTo(40, 40).lineTo(40, 0).lineTo(0, 40).lineTo(0, 0).closePath();) {
             Path p2 = Path.readFromMemory(p.writeToMemory());

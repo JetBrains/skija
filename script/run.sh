@@ -1,4 +1,2 @@
 #!/bin/zsh -euo pipefail
-cd `dirname $0`/../examples/lwjgl
-
-mvn compile exec:exec
+`dirname $0`/../examples/lwjgl/script/run.sh

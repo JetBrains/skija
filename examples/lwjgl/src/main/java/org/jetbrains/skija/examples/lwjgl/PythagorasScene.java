@@ -13,6 +13,8 @@ public class PythagorasScene implements Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         double angle   = (90 - (2f * minAngle)) * (1.0 - (double) xpos / (double) width) + minAngle;
+        angle = Math.max(minAngle, angle);
+        angle = Math.min(90 - minAngle, angle);
         var startWidth = height / 4.0;
         
         canvas.save();
