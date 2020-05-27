@@ -22,7 +22,7 @@ endif()
 # Skia
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(FindSkia)
-target_link_libraries(skija skia skshaper)
+target_link_libraries(skija skia skshaper skparagraph)
 
 # file(GLOB SKIA_LIBS ${CMAKE_SOURCE_DIR}/third_party/skia/out/Release-x64/*.a)
 # target_link_libraries(skija ${SKIA_LIBS})

@@ -43,6 +43,14 @@ if(NOT HARFBUZZ_LIBRARIES)
   set(HARFBUZZ_LIBRARIES ${HARFBUZZ_LIBRARY})
   set(HARFBUZZ_INCLUDE_DIRS "${SKIA_DIR}/third_party/externals/harfbuzz/src")
 endif()
+add_library(skshaper INTERFACE)
+target_link_libraries(skshaper INTERFACE ${SKSHAPER_LIBRARY})
+
+# SkParagraph
+find_library(SKPARAGRAPH_LIBRARY skparagraph PATH "${SKIA_LIBRARY_DIR}")
+find_path(SKPARAGRAPH_INCLUDE_DIR Paragraph.h HINTS "${SKIA_DIR}/modules/skparagraph/include")
+add_library(skparagraph INTERFACE)
+target_link_libraries(skparagraph INTERFACE ${SKPARAGRAPH_LIBRARY})
 
 find_path(SKIA_CONFIG_INCLUDE_DIR SkUserConfig.h HINTS "${SKIA_DIR}/include/config")
 find_path(SKIA_CORE_INCLUDE_DIR SkCanvas.h HINTS "${SKIA_DIR}/include/core")
@@ -75,6 +83,7 @@ target_include_directories(skia INTERFACE
   ${SKIA_GPU2_INCLUDE_DIR}
   ${SKIA_SKCMS_INCLUDE_DIR}
   ${SKSHAPER_INCLUDE_DIR}
+  ${SKPARAGRAPH_INCLUDE_DIR}
   ${FREETYPE_INCLUDE_DIRS}
   ${HARFBUZZ_INCLUDE_DIRS})
 if(WIN32)
@@ -122,5 +131,3 @@ if(UNIX AND NOT APPLE)
     ${FONTCONFIG_LIBRARY})
 endif()
 
-add_library(skshaper INTERFACE)
-target_link_libraries(skshaper INTERFACE ${SKSHAPER_LIBRARY})

@@ -15,12 +15,13 @@ ColorFilter     | ▓▓▓▓▓▓▓▓▓▓
 ColorSpace      | ▓▓░░░░░░░░
 Data            | ░░░░░░░░░░
 Font            | ▓▓░░░░░░░░
-FontMgr         | ░░░░░░░░░░ 
+FontMgr         | ▓░░░░░░░░░ 
 Image           | ▓▓░░░░░░░░
 ImageFilters    | ▓▓▓▓▓▓▓▓▓▓
 MaskFilter      | ▓▓▓▓▓▓▓▓▓▓
 Matrix          | ▓▓▓░░░░░░░
 Paint           | ▓▓▓▓▓▓▓▓░░
+Paragraph       | ▓░░░░░░░░░
 Path            | ▓▓▓▓▓▓▓▓▓▓
 PathEffects     | ▓▓▓▓▓▓▓▓▓▓
 Picture         | ░░░░░░░░░░
@@ -76,7 +77,7 @@ cd skija
 
 ## Using prebuilt Skia
 
-At the moment Skija is built against `chrome/m83` branch of Skia.
+At the moment Skija is built against `chrome/m83` branch of Skia with `skshaper` and `skparagraph` modules.
 
 Prebuilt Skia can be downloaded from [JetBrains Bintray](https://bintray.com/beta/#/jetbrains/skija/Skia?tab=files).
 
@@ -108,6 +109,12 @@ Build Skia (macOS):
 So next configuration command would be useful if you have several python distribution installed
 ```sh
 echo 'script_executable = "python2"' >> ./third_party/skia/.gn
+```
+
+Patch BUILD.gn to include `skparagraph`:
+
+```sh
+( cd third_party/skia && git apply ../skia_skparagraph.patch )
 ```
 
 ```sh
