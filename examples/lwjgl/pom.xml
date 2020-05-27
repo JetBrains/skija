@@ -3,12 +3,41 @@
     <groupId>org.jetbrains.skija.examples</groupId>
     <artifactId>lwjgl</artifactId>
     <version>0.1.0</version>
+    <profiles>
+        <profile>
+            <id>mac</id>
+            <activation>
+                <os><family>mac</family></os>
+            </activation>
+            <properties>
+                <lwjgl.natives>natives-macos</lwjgl.natives>
+            </properties>
+        </profile>
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os><family>linux</family></os>
+            </activation>
+            <properties>
+                <lwjgl.natives>natives-linux</lwjgl.natives>
+            </properties>
+        </profile>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os><family>windows</family></os>
+            </activation>
+            <properties>
+                <lwjgl.natives>natives-windows</lwjgl.natives>
+            </properties>
+        </profile>
+    </profiles>
+
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <exec.mainClass>org.jetbrains.skija.examples.lwjgl.Main</exec.mainClass>
         <lwjgl.version>3.2.3</lwjgl.version>
-        <lwjgl.natives>natives-macos</lwjgl.natives>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
