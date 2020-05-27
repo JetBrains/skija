@@ -11,8 +11,8 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image_nFromEncoded
     sk_sp<SkData> encodedData = SkData::MakeWithCopy(encoded, encodedLen);
     env->ReleaseByteArrayElements(encodedArray, encoded, 0);
 
-    SkIRect* subset = skija::IRect::toSkIRect(env, subsetObj).get();
-    SkImage* ptr = SkImage::MakeFromEncoded(encodedData, subset).release();
+    std::unique_ptr<SkIRect> subset = skija::IRect::toSkIRect(env, subsetObj);
+    SkImage* ptr = SkImage::MakeFromEncoded(encodedData, subset.get()).release();
 
     return reinterpret_cast<jlong>(ptr);
 }
