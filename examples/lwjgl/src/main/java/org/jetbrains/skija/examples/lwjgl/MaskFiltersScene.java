@@ -27,29 +27,7 @@ public class MaskFiltersScene implements Scene {
                     outer,
                     inner,
                     MaskFilter.blur(MaskFilter.BlurStyle.NORMAL, 5, false),
-                },
-                new MaskFilter[] {
-                    outer.compose(inner),
-                    outer.combine(inner, MaskFilter.CoverageMode.UNION),
-                    outer.combine(inner, MaskFilter.CoverageMode.INTERSECT),
-                    outer.combine(inner, MaskFilter.CoverageMode.DIFFERENCE),
-                    outer.combine(inner, MaskFilter.CoverageMode.REVERSE_DIFFERENCE),
-                    outer.combine(inner, MaskFilter.CoverageMode.XOR),
-                },
-                new MaskFilter[] {
-                    inner.compose(outer),
-                    inner.combine(outer, MaskFilter.CoverageMode.UNION),
-                    inner.combine(outer, MaskFilter.CoverageMode.INTERSECT),
-                    inner.combine(outer, MaskFilter.CoverageMode.DIFFERENCE),
-                    inner.combine(outer, MaskFilter.CoverageMode.REVERSE_DIFFERENCE),
-                    inner.combine(outer, MaskFilter.CoverageMode.XOR),
-                },
-                new MaskFilter[] {
-                    shader,
-                    MaskFilter.blur(MaskFilter.BlurStyle.NORMAL, 5).compose(shader),
-                    MaskFilter.gamma(4.4f).compose(shader),
-                    MaskFilter.clip(75, 181).compose(shader),
-                    MaskFilter.table(table).compose(shader)
+                    shader
                 }
             };
 

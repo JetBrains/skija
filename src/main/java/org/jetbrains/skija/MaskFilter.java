@@ -12,19 +12,6 @@ public class MaskFilter extends RefCounted {
         INNER
     }
 
-    public enum CoverageMode {
-        /** A ∪ B    A+B-A*B */
-        UNION,             
-        /** A ∩ B    A*B */
-        INTERSECT,         
-        /** A - B    A*(1-B) */
-        DIFFERENCE,        
-        /** B - A    B*(1-A) */
-        REVERSE_DIFFERENCE, 
-        /** A ⊕ B    A+B-2*A*B */
-        XOR
-    }
-
     public static MaskFilter blur(BlurStyle style, float sigma) {
         return blur(style, sigma, true);
     }
@@ -32,16 +19,6 @@ public class MaskFilter extends RefCounted {
     public static MaskFilter blur(BlurStyle style, float sigma, boolean respectCTM) {
         Native.onNativeCall();
         return new MaskFilter(nBlur(style.ordinal(), sigma, respectCTM));
-    }
-
-    public MaskFilter compose(MaskFilter inner) {
-        Native.onNativeCall();
-        return new MaskFilter(nCompose(nativeInstance, Native.pointer(inner)));
-    }
-
-    public MaskFilter combine(MaskFilter inner, CoverageMode mode) {
-        Native.onNativeCall();
-        return new MaskFilter(nCombine(nativeInstance, Native.pointer(inner), mode.ordinal()));
     }
 
     public static MaskFilter shader(Shader s) {
@@ -71,8 +48,6 @@ public class MaskFilter extends RefCounted {
 
     protected MaskFilter(long nativeInstance) { super(nativeInstance); }
     private static native long nBlur(int style, float sigma, boolean respectCTM);
-    private static native long nCompose(long outer, long inner);
-    private static native long nCombine(long filterA, long filterB, int coverageMode);
     private static native long nShader(long shaderPtr);
     // private static native long nEmboss(float sigma, float x, float y, float z, int pad, int ambient, int specular);
     private static native long nTable(byte[] table);
