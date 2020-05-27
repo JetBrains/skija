@@ -13,8 +13,4 @@ ninja
 popd
 
 mkdir -p target/classes
-if [ -f "target/classes/libskija.dylib" ]; then
-    find target/native/libskija.dylib -newer target/classes/libskija.dylib | xargs -I '{}' cp '{}' target/classes
-else
-    cp target/native/libskija.dylib target/classes
-fi
+cp target/native/libskija.* target/classes
