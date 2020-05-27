@@ -5,7 +5,7 @@ cd "`dirname $0`/.."
 ./script/native.sh
 
 # javac
-if [ ! -f "target/build_timestamp" ]; then
+if [ ! -f target/build_timestamp ]; then
     touch -t 200912310000 target/build_timestamp
 fi
 
