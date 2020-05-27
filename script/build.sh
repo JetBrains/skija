@@ -1,4 +1,4 @@
-#!/bin/zsh -euo pipefail
+#!/usr/bin/env -S sh -eu
 
 cd "`dirname $0`/.."
 
@@ -9,7 +9,7 @@ if [ ! -f "target/build_timestamp" ]; then
     touch -t 200912310000 target/build_timestamp
 fi
 
-find src -name "*.java" -newer target/build_timestamp | xargs javac --release 11 -cp target/classes:target/test-classes
+find src -name "*.java" -newer target/build_timestamp | xargs $JAVA_HOME/bin/javac --release 11 -cp target/classes:target/test-classes
 
 mkdir -p target/classes/org/jetbrains/skija
 find src/main/java -name '*.class' | xargs -I '{}' mv '{}' target/classes/org/jetbrains/skija
