@@ -6,11 +6,11 @@ import java.util.HashMap;
 import org.jetbrains.skija.*;
 
 public class TextScene implements Scene {
-    private Typeface jbMonoRegular;
-    private Typeface interRegular;
+    private Typeface   jbMonoRegular;
+    private Typeface   interRegular;
     private Typeface interVariable;
-    private Map<FontVariation, Typeface> interVariations = new HashMap<>();
     private FontAxisInfo[] axes;
+    private Map<FontVariation, SkTypeface> interVariations = new HashMap<>();
 
     public TextScene() {
         jbMonoRegular = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf");
@@ -22,6 +22,8 @@ public class TextScene implements Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         canvas.translate(30, 30);
+
+        canvas.save();
         drawText(canvas, 0xff9BC730, jbMonoRegular, 13, "JetBrains Mono Regular 13px: <=>");
         drawText(canvas, 0xff9BC730, jbMonoRegular, 16, "JetBrains Mono Regular 16px: <=>");
         drawText(canvas, 0xff9BC730, jbMonoRegular, 20, "JetBrains Mono Regular 20px: <=>");
@@ -40,19 +42,31 @@ public class TextScene implements Scene {
         for (FontAxisInfo axis: axes) {
             float value = Math.round(axis.minValue + percent * 0.01f * (axis.maxValue - axis.minValue));
             var variation = new FontVariation(axis.tag, value);
-            var typeface = interVariations.computeIfAbsent(variation, v -> interVariable.with(v));
-            drawText(canvas, 0xff000000, typeface, 18, "Inter Variable 18px " + axis.name + "=" + value);
+            try (var typeface = interVariable.skTypeface.makeClone(new FontVariation[] { variation });) {
+                drawBlob(canvas, 0xff000000, typeface, 18, "Inter Variable 18px " + axis.name + "=" + value, Float.POSITIVE_INFINITY); 
+            }
         }
 
-        drawBlob(canvas, 0xFF454A6F, interRegular, 18, "This TextBlob here is going to span multiple lines. If it doesn’t, please contact application administrator", 100 + percent);
+        drawBlob(canvas, 0xFF454A6F, interRegular.skTypeface, 18, "This TextBlob here is going to span multiple lines. If it doesn’t, please contact application administrator", 100 + percent);
+        canvas.restore();
 
-        drawBlob(canvas, 0xFF454A6F, interRegular, 18, "This TextBlob here is going to span multiple lines. If it doesn’t, please contact application administrator", 100 + percent);
+        canvas.translate(600, 0);
+        canvas.save();
+        var axis = axes[0];
+        for (float w = 0; w <= 1f; w += 0.025) {
+            float value = Math.round(axis.minValue + w * (axis.maxValue - axis.minValue));
+            var variation = new FontVariation(axis.tag, value);
+            var color = ((int) value) % 100 == 0 ? 0xffcc3333 : 0xff000000;
+            var typeface = interVariations.computeIfAbsent(variation, v -> interVariable.skTypeface.makeClone(new FontVariation[] { v }));
+            drawBlob(canvas, color, typeface, 13, "Inter Variable 13px " + axis.name + "=" + value, Float.POSITIVE_INFINITY);
+        }
+        canvas.restore();
     }
 
-    private void drawBlob(Canvas canvas, int color, Typeface typeface, float size, String text, float width) {
+    private void drawBlob(Canvas canvas, int color, SkTypeface typeface, float size, String text, float width) {
         try (
-            var font = new Font(typeface, size);
-            var blob = font.skFont.shape(text, width);
+            var font = new SkFont(typeface, size);
+            var blob = font.shape(text, width);
             var paint = new Paint().setColor(0x10000000 | (color & 0xFFFFFF))
         ) {
             // text bounds
@@ -65,9 +79,9 @@ public class TextScene implements Scene {
 
             // text
             paint.setColor(0xFF000000 | (color & 0xFFFFFF)).setStyle(Paint.Style.FILL);
-            canvas.drawTextBlob(blob, 0, 0, font.skFont, paint);
+            canvas.drawTextBlob(blob, 0, 0, font, paint);
 
-            canvas.translate(0, bounds.bottom + 10);
+            canvas.translate(0, bounds.getHeight());
         }
     }
 
