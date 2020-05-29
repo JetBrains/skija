@@ -1,5 +1,6 @@
 #include <iostream>
 #include <jni.h>
+#include <vector>
 #include "TextStyle.h"
 
 using namespace std;
@@ -30,4 +31,20 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_TextStyle_nSetFontSiz
   (JNIEnv* env, jclass jclass, jlong ptr, jfloat size) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
     instance->setFontSize(size);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_TextStyle_nSetFontFamilies
+  (JNIEnv* env, jclass jclass, jlong ptr, jobjectArray familiesArray) {
+    TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
+
+    std::vector<SkString> families;
+    for (int i=0; i < env->GetArrayLength(familiesArray); ++i) {
+        jstring family    = static_cast<jstring>(env->GetObjectArrayElement(familiesArray, i));
+        jsize   len       = env->GetStringUTFLength(family);
+        const char* chars = env->GetStringUTFChars(family, nullptr);
+        families.push_back(SkString(chars, len));
+        env->ReleaseStringUTFChars(family, chars);
+    }
+
+    instance->setFontFamilies(families);
 }

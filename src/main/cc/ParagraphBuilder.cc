@@ -1,5 +1,6 @@
 #include <iostream>
 #include <jni.h>
+#include <string>
 #include "ParagraphBuilder.h"
 
 using namespace std;
@@ -36,12 +37,13 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_ParagraphBuilder_nPop
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_ParagraphBuilder_nAddText
-  (JNIEnv* env, jclass jclass, jlong ptr, jstring text) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jstring textString) {
     ParagraphBuilder* instance = reinterpret_cast<ParagraphBuilder*>(static_cast<uintptr_t>(ptr));
-    const char* textChars = env->GetStringUTFChars(text, nullptr);
-    size_t textLen = env->GetStringUTFLength(text);
-    instance->addText(textChars, textLen);
-    env->ReleaseStringUTFChars(text, textChars);
+    const unsigned short* textChars = env->GetStringChars(textString, nullptr);
+    size_t textLen = env->GetStringLength(textString);
+    std::u16string text(reinterpret_cast<const char16_t*>(textChars), 0, textLen);
+    env->ReleaseStringChars(textString, textChars);
+    instance->addText(text);
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ParagraphBuilder_nBuild

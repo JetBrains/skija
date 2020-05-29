@@ -9,7 +9,6 @@ static void deleteParagraphStyle(skia::textlayout::ParagraphStyle* instance) {
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ParagraphStyle_nInit
   (JNIEnv* env, jclass jclass) {
     skia::textlayout::ParagraphStyle* instance = new skia::textlayout::ParagraphStyle();
-    instance->turnHintingOff();
     return reinterpret_cast<jlong>(instance);
 }
 

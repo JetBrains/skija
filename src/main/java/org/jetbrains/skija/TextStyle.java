@@ -15,9 +15,16 @@ public class TextStyle extends Managed {
         return this;
     }
 
+    public TextStyle setFontFamilies(String[] families) {
+        Native.onNativeCall();
+        nSetFontFamilies(nativeInstance, families);
+        return this;
+    }
+
     private static final long nativeFinalizer = nGetNativeFinalizer();
     private static native long nInit();
     private static native long nGetNativeFinalizer();
     private static native void nSetColor(long ptr, int color);
     private static native void nSetFontSize(long ptr, float size);
+    private static native void nSetFontFamilies(long ptr, String[] families);
 }
