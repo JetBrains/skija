@@ -131,13 +131,10 @@ Prerequisites:
 - cmake
 - ninja
 - JDK 11+ and JAVA_HOME
-- maven
 
 ```sh
 ./script/build.sh
 ```
-
-That will install `skija:skija:0.1.0` to your local Maven repository.
 
 ## Running examples
 
@@ -147,8 +144,16 @@ GLFW (via LWJGL), Java and Maven:
 
 ```sh
 cd examples/lwjgl
-mvn compile exec:exec
+./script/run.sh
 ```
+
+![](extras/tree.png)
+
+![](extras/gradients.png)
+
+![](extras/paths.png)
+
+![](extras/text.png)
 
 JOGL, Kotlin and Gradle:
 
