@@ -3,7 +3,7 @@
 #include "GrBackendSurface.h"
 
 static void deleteBackendRenderTarget(GrBackendRenderTarget* rt) {
-    std::cout << "Deleting [GrBackendRenderTarget " << rt << "]" << std::endl;
+    // std::cout << "Deleting [GrBackendRenderTarget " << rt << "]" << std::endl;
     delete rt;
 }
 

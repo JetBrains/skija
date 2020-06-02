@@ -35,7 +35,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nLinearGradie
     float* pos = env->GetFloatArrayElements(posArray, nullptr);
     SkTileMode tileMode = static_cast<SkTileMode>(tileModeInt);
     std::unique_ptr<SkMatrix> localMatrix = arrayToMatrix(env, matrixArray);
-    SkShader* ptr = SkGradientShader::MakeLinear(pts, reinterpret_cast<SkColor4f*>(colors), colorSpace, pos, env->GetArrayLength(colorsArray), tileMode, static_cast<uint32_t>(flags), localMatrix.get()).release();
+    SkShader* ptr = SkGradientShader::MakeLinear(pts, reinterpret_cast<SkColor4f*>(colors), colorSpace, pos, env->GetArrayLength(posArray), tileMode, static_cast<uint32_t>(flags), localMatrix.get()).release();
     env->ReleaseFloatArrayElements(colorsArray, colors, 0);
     env->ReleaseFloatArrayElements(posArray, pos, 0);
     return reinterpret_cast<jlong>(ptr);
@@ -61,7 +61,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nRadialGradie
     float* pos = env->GetFloatArrayElements(posArray, nullptr);
     SkTileMode tileMode = static_cast<SkTileMode>(tileModeInt);
     std::unique_ptr<SkMatrix> localMatrix = arrayToMatrix(env, matrixArray);
-    SkShader* ptr = SkGradientShader::MakeRadial(SkPoint::Make(x, y), r, reinterpret_cast<SkColor4f*>(colors), colorSpace, pos, env->GetArrayLength(colorsArray), tileMode, static_cast<uint32_t>(flags), localMatrix.get()).release();
+    SkShader* ptr = SkGradientShader::MakeRadial(SkPoint::Make(x, y), r, reinterpret_cast<SkColor4f*>(colors), colorSpace, pos, env->GetArrayLength(posArray), tileMode, static_cast<uint32_t>(flags), localMatrix.get()).release();
     env->ReleaseFloatArrayElements(colorsArray, colors, 0);
     env->ReleaseFloatArrayElements(posArray, pos, 0);
     return reinterpret_cast<jlong>(ptr);
@@ -87,7 +87,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader_nTwoPointConi
     float* pos = env->GetFloatArrayElements(posArray, nullptr);
     SkTileMode tileMode = static_cast<SkTileMode>(tileModeInt);
     std::unique_ptr<SkMatrix> localMatrix = arrayToMatrix(env, matrixArray);
-    SkShader* ptr = SkGradientShader::MakeTwoPointConical(SkPoint::Make(x0, y0), r0, SkPoint::Make(x1, y1), r1, reinterpret_cast<SkColor4f*>(colors), colorSpace, pos, env->GetArrayLength(colorsArray), tileMode, static_cast<uint32_t>(flags), localMatrix.get()).release();
+    SkShader* ptr = SkGradientShader::MakeTwoPointConical(SkPoint::Make(x0, y0), r0, SkPoint::Make(x1, y1), r1, reinterpret_cast<SkColor4f*>(colors), colorSpace, pos, env->GetArrayLength(posArray), tileMode, static_cast<uint32_t>(flags), localMatrix.get()).release();
     env->ReleaseFloatArrayElements(colorsArray, colors, 0);
     env->ReleaseFloatArrayElements(posArray, pos, 0);
     return reinterpret_cast<jlong>(ptr);
