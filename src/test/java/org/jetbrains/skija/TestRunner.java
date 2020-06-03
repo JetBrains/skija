@@ -84,7 +84,7 @@ public class TestRunner {
             executable.execute();
             runner.fail("Expected '" + expected.getName() + "', caught nothing");
         } catch(Exception e) {
-            if (expected.isInstance​(e))
+            if (expected.isInstance(e))
                 System.out.print(".");
             else
                 runner.fail("Expected '" + expected.getName() + "', caught '" + e + "'");
