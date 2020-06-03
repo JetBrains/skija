@@ -147,6 +147,7 @@ GLFW (via LWJGL), Java and Maven:
 
 ```sh
 cd examples/lwjgl
+./script/build.sh
 ./script/run.sh
 ```
 
