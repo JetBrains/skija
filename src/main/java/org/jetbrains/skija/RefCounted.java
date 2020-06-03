@@ -9,6 +9,12 @@ public abstract class RefCounted extends Managed {
         super(nativeInstance, nativeFinalizer, allowClose);
     }
 
+    public int getRefCount() {
+        Native.onNativeCall();
+        return nGetRefCount(nativeInstance);
+    }
+
     protected static long nativeFinalizer = nGetNativeFinalizer();
     private static native long nGetNativeFinalizer();
+    private static native int nGetRefCount(long ptr);
 }

@@ -61,6 +61,28 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_FontCollection_nGetF
     return reinterpret_cast<jlong>(instance->getFallbackManager().release());
 }
 
+extern "C" JNIEXPORT jlongArray JNICALL Java_org_jetbrains_skija_FontCollection_nFindTypefaces
+  (JNIEnv* env, jclass jclass, jlong ptr, jobjectArray familyNamesArray, jint weight, jint width, jint slant) {
+    FontCollection* instance = reinterpret_cast<FontCollection*>(static_cast<uintptr_t>(ptr));
+
+    jsize len = env->GetArrayLength(familyNamesArray);
+    vector<SkString> familyNames(len);
+    for (int i = 0; i < len; ++i) {
+        jstring str = static_cast<jstring>(env->GetObjectArrayElement(familyNamesArray, i));
+        familyNames.push_back(skString(env, str));
+    }
+
+    SkFontStyle style(weight, width, static_cast<SkFontStyle::Slant>(slant));
+    vector<sk_sp<SkTypeface>> found = instance->findTypefaces(familyNames, style);
+    vector<jlong> res(found.size());
+    for (int i = 0; i < found.size(); ++i)
+        res[i] = reinterpret_cast<jlong>(found[i].release());
+
+    jlongArray resArray = env->NewLongArray(found.size());
+    env->SetLongArrayRegion(resArray, 0, found.size(), res.data());
+    return resArray;
+}
+
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_FontCollection_nDefaultFallbackChar
   (JNIEnv* env, jclass jclass, jlong ptr, jint unicode, jint weight, jint width, jint slant, jstring locale) {
     FontCollection* instance = reinterpret_cast<FontCollection*>(static_cast<uintptr_t>(ptr));

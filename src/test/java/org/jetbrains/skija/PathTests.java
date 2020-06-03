@@ -1,15 +1,26 @@
 package org.jetbrains.skija;
 
 import java.util.NoSuchElementException;
-import static org.jetbrains.skija.TestRunner.assertEquals;
-import static org.jetbrains.skija.TestRunner.assertNotEquals;
-import static org.jetbrains.skija.TestRunner.assertArrayEquals;
-import static org.jetbrains.skija.TestRunner.assertThrows;
+import org.jetbrains.skija.test.Executable;
+import org.jetbrains.skija.test.TestRunner;
+
+import static org.jetbrains.skija.test.TestRunner.assertArrayEquals;
+import static org.jetbrains.skija.test.TestRunner.assertEquals;
+import static org.jetbrains.skija.test.TestRunner.assertNotEquals;
+import static org.jetbrains.skija.test.TestRunner.assertThrows;
 
 public class PathTests implements Executable {
     @Override
     public void execute() throws Exception {
         TestRunner.testMethod(this, "iter");
+        TestRunner.testMethod(this, "convex");
+        TestRunner.testMethod(this, "isShape");
+        TestRunner.testMethod(this, "checks");
+        TestRunner.testMethod(this, "storage");
+        TestRunner.testMethod(this, "swap");
+        TestRunner.testMethod(this, "contains");
+        TestRunner.testMethod(this, "utils");
+        TestRunner.testMethod(this, "serialize");
     }
 
     public void iter() {
@@ -187,6 +198,8 @@ public class PathTests implements Executable {
                        new Path().incReserve(10).addPath(subpath).shrinkToFit()
                      })
         {
+            TestRunner.pushStack(p.toString());
+
             Point p0 = new Point(0, 0);
             Point p1 = new Point(40, 40);
             Point p2 = new Point(40, 0);
@@ -242,9 +255,11 @@ public class PathTests implements Executable {
             p.getVerbs(verbs, 10);
             assertArrayEquals(new Path.Verb[] { Path.Verb.MOVE, Path.Verb.LINE, Path.Verb.LINE, Path.Verb.LINE, Path.Verb.LINE, Path.Verb.CLOSE, null, null, null, null }, verbs);
 
-            assertEquals(62, p.approximateBytesUsed());
+            assertEquals(62L, p.approximateBytesUsed());
 
             assertEquals(Path.SEGMENT_MASK_LINE, p.getSegmentMasks());
+
+            TestRunner.popStack();
         }
     }
 

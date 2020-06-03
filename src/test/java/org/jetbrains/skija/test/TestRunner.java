@@ -1,4 +1,4 @@
-package org.jetbrains.skija;
+package org.jetbrains.skija.test;
 
 import java.lang.reflect.Method;
 import java.util.ArrayDeque;
@@ -22,7 +22,7 @@ public class TestRunner {
         var st = Thread.currentThread().getStackTrace();
         var ste = st[1];
         for (int i = 1; i < st.length; ++i) {
-            if (st[i].getClassName() != "org.jetbrains.skija.TestRunner") {
+            if (st[i].getClassName() != "org.jetbrains.skija.test.TestRunner") {
                 ste = st[i];
                 break;
             }
@@ -46,7 +46,7 @@ public class TestRunner {
         runner.asserts++;
         try {
             if (!Objects.equals(expected, actual))
-                runner.fail("Expected '" + expected + "' == '" + actual + "'");
+                runner.fail("Expected '" + expected + "'" + (expected == null ? "" : " (" + expected.getClass() + ")") + " == '" + actual + "'" + (actual == null ? "" : "(" + actual.getClass() + ")"));
             else
                 System.out.print(".");
         } catch(Exception e) {
@@ -107,6 +107,8 @@ public class TestRunner {
         try {
             Method m = o.getClass().getMethod(methodName);
             m.invoke(o);
+        } catch(java.lang.reflect.InvocationTargetException e) {
+            runner.error(e.getCause());
         } catch(Exception e) {
             runner.error(e);
         }

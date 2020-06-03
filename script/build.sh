@@ -14,8 +14,9 @@ find src -name "*.java" -newer target/build_timestamp | xargs javac --release 11
 mkdir -p target/classes/org/jetbrains/skija
 find src/main/java -name '*.class' | xargs -I '{}' mv '{}' target/classes/org/jetbrains/skija
 
-mkdir -p target/test-classes/org/jetbrains/skija
-find src/test/java -name '*.class' | xargs -I '{}' mv '{}' target/test-classes/org/jetbrains/skija
+mkdir -p target/test-classes/org/jetbrains/skija/test
+find src/test/java/org/jetbrains/skija/test -name '*.class' | xargs -I '{}' mv '{}' target/test-classes/org/jetbrains/skija/test
+find src/test/java/org/jetbrains/skija -name '*.class' | xargs -I '{}' mv '{}' target/test-classes/org/jetbrains/skija
 
 touch target/build_timestamp
 

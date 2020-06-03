@@ -16,7 +16,7 @@ ColorSpace           | ▓▓░░░░░░░░
 Data                 | ░░░░░░░░░░
 Font                 | ▓▓░░░░░░░░
 FontCollection       | ▓▓▓▓▓▓▓▓▓▓
-FontMgr              | ▓░░░░░░░░░ 
+FontManager          | ▓░░░░░░░░░ 
 FontStyle            | ▓▓▓▓▓▓▓▓▓▓
 Image                | ▓▓░░░░░░░░
 ImageFilters         | ▓▓▓▓▓▓▓▓▓▓

@@ -136,7 +136,7 @@ public class ParagraphScene implements Scene {
                     canvas.drawRect(Rect.makeXYWH(0, 0, minW, h), boundaries);
                     canvas.drawRect(Rect.makeXYWH(0, 0, w,    h), boundaries);
                     // canvas.drawRect(Rect.makeXYWH(0, 0, maxW, h), boundaries);
-                    canvas.translate(w + 40, 0);
+                    canvas.translate(w + 15, 0);
                 }
             }
         }

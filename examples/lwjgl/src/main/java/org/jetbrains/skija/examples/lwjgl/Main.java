@@ -140,7 +140,7 @@ class Window {
         int fbId = GL11.glGetInteger(0x8CA6); // GL_FRAMEBUFFER_BINDING
         renderTarget = BackendRenderTarget.newGL((int) (width * dpi), (int) (height * dpi), /*samples*/0, /*stencil*/8, fbId, BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8);
 
-        surface = Surface.makeFromBackendRenderTarget(context, renderTarget, Surface.Origin.BOTTOM_LEFT, Surface.ColorType.RGBA_8888, ColorSpace.getDisplayP3());
+        surface = Surface.makeFromBackendRenderTarget(context, renderTarget, Surface.Origin.BOTTOM_LEFT, Surface.ColorType.RGBA_8888, ColorSpace.getDisplayP3()); // TODO load monitor profile
 
         canvas = surface.getCanvas();
         canvas.scale(dpi, dpi);

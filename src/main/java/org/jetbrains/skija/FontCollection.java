@@ -44,6 +44,16 @@ public class FontCollection extends RefCounted {
         return new FontManager(nGetFallbackManager(nativeInstance));
     }
 
+    public SkTypeface[] findTypefaces(String[] familyNames, FontStyle style) {
+        Native.onNativeCall();
+        long[] ptrs = nFindTypefaces(nativeInstance, familyNames, style.getWeight(), style.getWidth(), style.getSlant().ordinal());
+        SkTypeface[] res = new SkTypeface[ptrs.length];
+        for (int i = 0; i < ptrs.length; ++i) {
+            res[i] = new SkTypeface(ptrs[i]);
+        }
+        return res;
+    }
+
     public SkTypeface defaultFallback(int unicode, FontStyle style, String locale) {
         Native.onNativeCall();
         return new SkTypeface(nDefaultFallbackChar(nativeInstance, unicode, style.getWeight(), style.getWidth(), style.getSlant().ordinal(), locale));
@@ -61,14 +71,15 @@ public class FontCollection extends RefCounted {
     }
 
     protected FontCollection(long nativeInstance) { super(nativeInstance); }
-    private static native long nInit();
-    private static native long nGetFontManagersCount(long ptr);
-    private static native long nSetAssetFontManager(long ptr, long fontManagerPtr);
-    private static native long nSetDynamicFontManager(long ptr, long fontManagerPtr);
-    private static native long nSetTestFontManager(long ptr, long fontManagerPtr);
-    private static native long nSetDefaultFontManager(long ptr, long fontManagerPtr, String defaultFamilyName);
-    private static native long nGetFallbackManager(long ptr);
-    private static native long nDefaultFallbackChar(long ptr, int unicode, int weight, int width, int slant, String locale);
-    private static native long nDefaultFallback(long ptr);
-    private static native long nSetEnableFallback(long ptr, boolean value);
+    private static native long   nInit();
+    private static native long   nGetFontManagersCount(long ptr);
+    private static native long   nSetAssetFontManager(long ptr, long fontManagerPtr);
+    private static native long   nSetDynamicFontManager(long ptr, long fontManagerPtr);
+    private static native long   nSetTestFontManager(long ptr, long fontManagerPtr);
+    private static native long   nSetDefaultFontManager(long ptr, long fontManagerPtr, String defaultFamilyName);
+    private static native long   nGetFallbackManager(long ptr);
+    private static native long[] nFindTypefaces(long ptr, String[] familyNames, int weight, int width, int slant);
+    private static native long   nDefaultFallbackChar(long ptr, int unicode, int weight, int width, int slant, String locale);
+    private static native long   nDefaultFallback(long ptr);
+    private static native long   nSetEnableFallback(long ptr, boolean value);
 }

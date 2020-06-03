@@ -24,3 +24,8 @@ void unrefSkRefCnt(SkRefCnt* p) {
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_RefCounted_nGetNativeFinalizer(JNIEnv* env, jclass jclass) {
     return static_cast<jlong>(reinterpret_cast<uintptr_t>(&unrefSkRefCnt));
 }
+
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_RefCounted_nGetRefCount(JNIEnv* env, jclass jclass, jlong ptr) {
+    SkRefCnt* instance = reinterpret_cast<SkRefCnt*>(static_cast<uintptr_t>(ptr));
+    return getRefCnt(instance);
+}
