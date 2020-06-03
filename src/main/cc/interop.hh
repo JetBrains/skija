@@ -2,10 +2,11 @@
 #include <jni.h>
 #include <memory>
 #include <vector>
+#include "SkMatrix.h"
 #include "SkRefCnt.h"
 #include "SkRect.h"
 #include "SkRRect.h"
-#include "SkMatrix.h"
+#include "SkString.h"
 
 jintArray javaIntArray(JNIEnv* env, std::vector<int> ints);
 
@@ -91,3 +92,4 @@ namespace skija {
 }
 
 std::unique_ptr<SkMatrix> arrayToMatrix(JNIEnv* env, jfloatArray arr);
+SkString skString(JNIEnv* env, jstring str);

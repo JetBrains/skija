@@ -321,3 +321,11 @@ std::unique_ptr<SkMatrix> arrayToMatrix(JNIEnv* env, jfloatArray matrixArray) {
         return std::unique_ptr<SkMatrix>(ptr);
     }
 }
+
+SkString skString(JNIEnv* env, jstring s) {
+    jsize       len   = env->GetStringUTFLength(s);
+    const char* chars = env->GetStringUTFChars(s, nullptr);
+    SkString res(chars, len);
+    env->ReleaseStringUTFChars(s, chars);
+    return res;
+}

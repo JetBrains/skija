@@ -10,6 +10,13 @@ public class ParagraphScene implements Scene {
     
     public ParagraphScene() {
         fc.setDefaultFontManager(FontManager.getDefault());
+        
+        TypefaceFontProvider fm = new TypefaceFontProvider();
+        SkTypeface jbMono = SkTypeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf", 0);
+        fm.registerTypeface(jbMono);
+        SkTypeface inter = SkTypeface.makeFromFile("fonts/Inter-Regular.ttf", 0);
+        fm.registerTypeface(inter, "Interface");
+        fc.setAssetFontManager(fm);
     }
 
     @Override
@@ -83,13 +90,25 @@ public class ParagraphScene implements Scene {
             }
 
             // emojis
-            try (TextStyle ts  = new TextStyle().setColor(0xFF000000).setFontFamilies(new String[] { "System Font", "Apple Color Emoji" }).setFontSize(26);) {
+            try (TextStyle ts  = new TextStyle().setColor(0xFF000000).setFontFamilies(new String[] { "System Font", "Apple Color Emoji" });) {
                 pb.pushStyle(ts);
                 pb.addText("And every 🧑🏿‍🦰 fair 🦾 from\nfair 🥱 sometime 🧑🏾‍⚕️ declines 👩‍👩‍👧‍👧,\n");
                 pb.popStyle();
             }
 
-            // pb.addText("Shall I compare thee to a summer's day?\n"
+            // emojis
+            try (TextStyle ts  = new TextStyle().setColor(0xFF000000).setFontFamilies(new String[] { "JetBrains Mono" });
+                 TextStyle ts2  = new TextStyle().setColor(0xFF2a9d8f).setFontFamilies(new String[] { "Interface" });
+                 TextStyle ts3  = new TextStyle().setColor(0xFF000000).setFontFamilies(new String[] { "Inter" });) {
+                pb.pushStyle(ts);
+                pb.addText("Shall I compare ");
+                pb.popStyle().pushStyle(ts2);
+                pb.addText("thee to a ");
+                pb.popStyle().pushStyle(ts3);
+                pb.addText("summer’s day?\n");
+                pb.popStyle();
+            }
+
             //            + "Thou art more lovely and more temperate:\n"
             //            + "Rough winds do shake the darling buds of May,\n"
             //            + "And summer's lease hath all too short a date:\n"
@@ -110,14 +129,14 @@ public class ParagraphScene implements Scene {
                 float minW = p.getMinIntrinsicWidth();
                 float maxW = p.getMaxIntrinsicWidth();
                 float range = maxW - minW;
-                for (float w: new float[] { maxW, minW + range * 2 / 3, minW + range / 3,  }) {
+                for (float w = maxW; w >= minW; w -= range / 5) {
                     p.layout(w);
                     p.paint(canvas, 0, 0);
-                    float h = p.getHeight();                    
-                    canvas.drawLine(minW, 0, minW, h, boundaries);
-                    canvas.drawLine(w,    0, w,    h, boundaries);
-                    canvas.drawLine(maxW, 0, maxW, h, boundaries);
-                    canvas.translate(0, h);
+                    float h = p.getHeight();
+                    canvas.drawRect(Rect.makeXYWH(0, 0, minW, h), boundaries);
+                    canvas.drawRect(Rect.makeXYWH(0, 0, w,    h), boundaries);
+                    // canvas.drawRect(Rect.makeXYWH(0, 0, maxW, h), boundaries);
+                    canvas.translate(w + 40, 0);
                 }
             }
         }

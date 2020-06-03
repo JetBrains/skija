@@ -6,32 +6,35 @@
 
 Active development. Pre-alpha. Everything will change without notice.
 
-Class           | Progress
-----------------|-----------
-Bitmap          | ░░░░░░░░░░
-Canvas          | ▓▓▓▓▓▓░░░░
-Color           | ▓░░░░░░░░░
-ColorFilter     | ▓▓▓▓▓▓▓▓▓▓
-ColorSpace      | ▓▓░░░░░░░░
-Data            | ░░░░░░░░░░
-Font            | ▓▓░░░░░░░░
-FontMgr         | ▓░░░░░░░░░ 
-Image           | ▓▓░░░░░░░░
-ImageFilters    | ▓▓▓▓▓▓▓▓▓▓
-MaskFilter      | ▓▓▓▓▓▓▓▓▓▓
-Matrix          | ▓▓▓░░░░░░░
-Paint           | ▓▓▓▓▓▓▓▓░░
-Paragraph       | ▓░░░░░░░░░
-Path            | ▓▓▓▓▓▓▓▓▓▓
-PathEffects     | ▓▓▓▓▓▓▓▓▓▓
-Picture         | ░░░░░░░░░░
-PictureRecorder | ░░░░░░░░░░
-Region          | ▓▓▓▓▓▓▓▓▓▓
-Shader          | ▓▓▓▓▓▓▓▓▓▓
-Stream          | ░░░░░░░░░░
-Surface         | ▓░░░░░░░░░
-TextBlob        | ▓▓░░░░░░░░
-Typeface        | ▓▓░░░░░░░░
+Class                | Progress
+---------------------|-----------
+Bitmap               | ░░░░░░░░░░
+Canvas               | ▓▓▓▓▓▓░░░░
+Color                | ▓░░░░░░░░░
+ColorFilter          | ▓▓▓▓▓▓▓▓▓▓
+ColorSpace           | ▓▓░░░░░░░░
+Data                 | ░░░░░░░░░░
+Font                 | ▓▓░░░░░░░░
+FontCollection       | ▓▓▓▓▓▓▓▓▓▓
+FontMgr              | ▓░░░░░░░░░ 
+FontStyle            | ▓▓▓▓▓▓▓▓▓▓
+Image                | ▓▓░░░░░░░░
+ImageFilters         | ▓▓▓▓▓▓▓▓▓▓
+MaskFilter           | ▓▓▓▓▓▓▓▓▓▓
+Matrix               | ▓▓▓░░░░░░░
+Paint                | ▓▓▓▓▓▓▓▓░░
+Paragraph            | ▓░░░░░░░░░
+Path                 | ▓▓▓▓▓▓▓▓▓▓
+PathEffects          | ▓▓▓▓▓▓▓▓▓▓
+Picture              | ░░░░░░░░░░
+PictureRecorder      | ░░░░░░░░░░
+Region               | ▓▓▓▓▓▓▓▓▓▓
+Shader               | ▓▓▓▓▓▓▓▓▓▓
+Stream               | ░░░░░░░░░░
+Surface              | ▓░░░░░░░░░
+TextBlob             | ▓▓░░░░░░░░
+Typeface             | ▓▓░░░░░░░░
+TypefaceFontProvider | ▓▓▓▓▓▓▓▓▓▓
 
 ## Using
 
