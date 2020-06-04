@@ -10,7 +10,7 @@ import static org.jetbrains.skija.test.TestRunner.assertThrows;
 import static org.jetbrains.skija.test.TestRunner.pushStack;
 import static org.jetbrains.skija.test.TestRunner.popStack;
 
-public class TestsTest implements Executable {
+public class TestTest implements Executable {
     @Override
     public void execute() throws Exception {
         TestRunner.testMethod(this, "abc");

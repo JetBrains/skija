@@ -1,5 +1,8 @@
 package org.jetbrains.skija;
 
+/**
+ *  Data holds an immutable data buffer.
+ */
 public class Data extends Managed {
 
     public long size() {
@@ -16,6 +19,10 @@ public class Data extends Managed {
         return nBytes(nativeInstance, offset, length);
     }
 
+    /**
+     *  Returns true if these two objects have the same length and contents,
+     *  effectively returning 0 == memcmp(...)
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -35,11 +42,19 @@ public class Data extends Managed {
         return new Data(nMakeFromBytes(bytes, offset, length));
     }
 
+    /**
+     *  Create a new dataref the file with the specified path.
+     *  If the file cannot be opened, this returns null.
+     */
     public static Data makeFromFileName(String path) {
         Native.onNativeCall();
         return new Data(nMakeFromFileName(path));
     }
 
+    /**
+     *  Create a new dataref using a subset of the data in the specified
+     *  src dataref.
+     */
     public Data makeSubset(long offset, long length) {
         Native.onNativeCall();
         return new Data(nMakeSubset(nativeInstance, offset, length));
@@ -50,7 +65,11 @@ public class Data extends Managed {
         return new Data(nMakeSubset(nativeInstance, 0, size()));
     }
 
-    public Data makeEmpty() {
+    /**
+     *  Returns a new empty dataref (or a reference to a shared empty dataref).
+     *  New or shared, the caller must see that {@link close()} is eventually called.
+     */
+    public static Data makeEmpty() {
         Native.onNativeCall();
         return new Data(nMakeEmpty());
     }

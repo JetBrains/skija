@@ -9,19 +9,100 @@ import static org.jetbrains.skija.test.TestRunner.assertEquals;
 import static org.jetbrains.skija.test.TestRunner.assertNotEquals;
 import static org.jetbrains.skija.test.TestRunner.assertThrows;
 
-
-public class FontsTests implements Executable {
+public class FontTest implements Executable {
     @Override
     public void execute() throws Exception {
         TestRunner.testMethod(this, "fontManager");
+        TestRunner.testMethod(this, "fontCollection");
     }
 
     public void fontManager() throws Exception {
         // FontManager
         TypefaceFontProvider fm = new TypefaceFontProvider();
-        SkTypeface jbMono = SkTypeface.makeFromFile("src/test/resources/FontsTests/JetBrainsMono-Regular.ttf", 0);
+        SkTypeface jbMono = SkTypeface.makeFromFile("src/test/resources/FontTest/JetBrainsMono-Regular.ttf", 0);
         fm.registerTypeface(jbMono);
-        SkTypeface inter = SkTypeface.makeFromFile("src/test/resources/FontsTests/Inter-Regular.ttf", 0);
+        SkTypeface jbMonoBold = SkTypeface.makeFromFile("src/test/resources/FontTest/JetBrainsMono-Bold.ttf", 0);
+        fm.registerTypeface(jbMonoBold);
+        SkTypeface inter = SkTypeface.makeFromFile("src/test/resources/FontTest/Inter-Regular.ttf", 0);
+        fm.registerTypeface(inter, "Interface");
+
+        assertEquals(2, fm.countFamilies());
+        assertEquals("JetBrains Mono", fm.getFamilyName(0));
+        assertEquals("Interface", fm.getFamilyName(1));
+
+        try (var ss = fm.createStyleSet(0)) {
+            assertEquals(0, ss.count()); // ?
+        }
+
+        try (var ss = fm.createStyleSet(1)) {
+            assertEquals(0, ss.count()); // ?
+        }
+
+        // FontStyleSet
+        try (var ss = fm.matchFamily("JetBrains Mono")) {
+            assertEquals(2, ss.count());
+            assertEquals(FontStyle.NORMAL, ss.getStyle(0));
+            assertEquals("JetBrains Mono", ss.getStyleName(0));
+
+            assertEquals(FontStyle.BOLD, ss.getStyle(1));
+            assertEquals("JetBrains Mono", ss.getStyleName(1));
+
+            assertEquals(2, jbMono.getRefCount());
+            try (var face = ss.createTypeface(0)) {
+                assertEquals(3, jbMono.getRefCount());
+                assertEquals(jbMono, face);
+            }
+            assertEquals(2, jbMono.getRefCount());
+
+            assertEquals(2, jbMonoBold.getRefCount());
+            try (var face = ss.createTypeface(1)) {
+                assertEquals(3, jbMonoBold.getRefCount());
+                assertEquals(jbMonoBold, face);
+            }
+            assertEquals(2, jbMonoBold.getRefCount());
+
+            assertEquals(2, jbMono.getRefCount());
+            try (var face = ss.matchStyle(FontStyle.NORMAL)) {
+                assertEquals(3, jbMono.getRefCount());
+                assertEquals(jbMono, face);
+            }
+            assertEquals(2, jbMono.getRefCount());            
+
+            assertEquals(2, jbMonoBold.getRefCount());
+            try (var face = ss.matchStyle(FontStyle.BOLD)) {
+                assertEquals(3, jbMonoBold.getRefCount());
+                assertEquals(jbMonoBold, face);
+            }
+            assertEquals(2, jbMonoBold.getRefCount());
+
+            assertEquals(jbMono, ss.matchStyle(FontStyle.ITALIC)); // ?
+        }
+
+        assertEquals(null, fm.matchFamilyStyle("JetBrains Mono", FontStyle.BOLD)); // ?
+        assertEquals(null, fm.matchFamilyStyle("Interface", FontStyle.NORMAL)); // ?
+
+        assertEquals(null, fm.matchFamilyStyleCharacter("JetBrains Mono", FontStyle.BOLD, new String[] {"en-US"}, 65 /* A */)); // ?
+
+        assertEquals(null, fm.matchFaceStyle(jbMono, FontStyle.BOLD)); // ?
+        assertEquals(null, fm.matchFaceStyle(jbMonoBold, FontStyle.NORMAL)); // ?
+
+        try (var data = Data.makeFromFileName("src/test/resources/FontTest/JetBrainsMono-Italic.ttf");
+             var face = fm.makeFromData(data);
+             var ss = fm.matchFamily("JetBrains Mono"); )
+        {
+            assertEquals(2, fm.countFamilies());
+            assertEquals(2, ss.count()); // ?
+        }
+
+        fm.close();
+    }
+
+
+    public void fontCollection() throws Exception {
+        TypefaceFontProvider fm = new TypefaceFontProvider();
+        SkTypeface jbMono = SkTypeface.makeFromFile("src/test/resources/FontTest/JetBrainsMono-Regular.ttf", 0);
+        fm.registerTypeface(jbMono);
+        SkTypeface inter = SkTypeface.makeFromFile("src/test/resources/FontTest/Inter-Regular.ttf", 0);
         fm.registerTypeface(inter, "Interface");
 
         // FontCollection
@@ -91,5 +172,8 @@ public class FontsTests implements Executable {
             }
             assertEquals(2, t1.getRefCount());
         }
+
+        fc.close();
+        fm.close();
     }
 }

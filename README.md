@@ -14,10 +14,10 @@ Canvas               ▓▓▓▓▓▓░░░░
 Color                ▓░░░░░░░░░
 ColorFilter          ▓▓▓▓▓▓▓▓▓▓
 ColorSpace           ▓▓░░░░░░░░
-Data                 ▓▓▓▓▓░░░░░
+Data                 ▓▓▓▓▓▓▓▓▓░
 Font                 ▓▓░░░░░░░░
 FontCollection       ▓▓▓▓▓▓▓▓▓▓
-FontManager          ▓▓▓▓▓░░░░░ 
+FontManager          ▓▓▓▓▓▓▓▓▓░ 
 FontStyle            ▓▓▓▓▓▓▓▓▓▓
 FontStyleSet         ▓▓▓▓▓▓▓▓▓▓
 Image                ▓▓░░░░░░░░

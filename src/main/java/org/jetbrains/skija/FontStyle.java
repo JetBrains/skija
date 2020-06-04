@@ -67,4 +67,25 @@ public class FontStyle {
     public FontStyle withSlant(Slant slant) {
         return new FontStyle(getWeight(), getWidth(), slant);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FontStyle that = (FontStyle) o;
+        return value == that.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(value);
+    }
+
+    @Override
+    public String toString() {
+        return "FontStyle{" +
+                "weight=" + getWeight() +
+                ", width=" + getWidth() +
+                ", slant='" + getSlant() + '}';
+    }
 }

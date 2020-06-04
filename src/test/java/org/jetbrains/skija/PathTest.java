@@ -9,7 +9,7 @@ import static org.jetbrains.skija.test.TestRunner.assertEquals;
 import static org.jetbrains.skija.test.TestRunner.assertNotEquals;
 import static org.jetbrains.skija.test.TestRunner.assertThrows;
 
-public class PathTests implements Executable {
+public class PathTest implements Executable {
     @Override
     public void execute() throws Exception {
         TestRunner.testMethod(this, "iter");

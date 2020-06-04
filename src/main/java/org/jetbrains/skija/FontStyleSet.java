@@ -23,12 +23,14 @@ public class FontStyleSet extends RefCounted {
 
     public SkTypeface createTypeface(int index) {
         Native.onNativeCall();
-        return new SkTypeface(nCreateTypeface(nativeInstance, index));
+        long ptr = nCreateTypeface(nativeInstance, index);
+        return ptr == 0 ? null : new SkTypeface(ptr);
     }    
 
     public SkTypeface matchStyle(FontStyle style) {
         Native.onNativeCall();
-        return new SkTypeface(nMatchStyle(nativeInstance, style.value));
+        long ptr = nMatchStyle(nativeInstance, style.value);
+        return ptr == 0 ? null : new SkTypeface(ptr);
     }    
 
     protected FontStyleSet(long nativeInstance) { super(nativeInstance); }
