@@ -137,6 +137,7 @@ public class Path extends Managed implements Iterable {
         if (o == null || getClass() != o.getClass()) return false;
         Path op = (Path) o;
         if (nativeInstance == op.nativeInstance) return true;
+        Native.onNativeCall();
         return nEquals(nativeInstance, op.nativeInstance);
     }
 

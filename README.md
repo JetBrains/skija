@@ -6,35 +6,38 @@
 
 Active development. Pre-alpha. Everything will change without notice.
 
-Class                | Progress
----------------------|-----------
-Bitmap               | ░░░░░░░░░░
-Canvas               | ▓▓▓▓▓▓░░░░
-Color                | ▓░░░░░░░░░
-ColorFilter          | ▓▓▓▓▓▓▓▓▓▓
-ColorSpace           | ▓▓░░░░░░░░
-Data                 | ░░░░░░░░░░
-Font                 | ▓▓░░░░░░░░
-FontCollection       | ▓▓▓▓▓▓▓▓▓▓
-FontManager          | ▓░░░░░░░░░ 
-FontStyle            | ▓▓▓▓▓▓▓▓▓▓
-Image                | ▓▓░░░░░░░░
-ImageFilters         | ▓▓▓▓▓▓▓▓▓▓
-MaskFilter           | ▓▓▓▓▓▓▓▓▓▓
-Matrix               | ▓▓▓░░░░░░░
-Paint                | ▓▓▓▓▓▓▓▓░░
-Paragraph            | ▓░░░░░░░░░
-Path                 | ▓▓▓▓▓▓▓▓▓▓
-PathEffects          | ▓▓▓▓▓▓▓▓▓▓
-Picture              | ░░░░░░░░░░
-PictureRecorder      | ░░░░░░░░░░
-Region               | ▓▓▓▓▓▓▓▓▓▓
-Shader               | ▓▓▓▓▓▓▓▓▓▓
-Stream               | ░░░░░░░░░░
-Surface              | ▓░░░░░░░░░
-TextBlob             | ▓▓░░░░░░░░
-Typeface             | ▓▓░░░░░░░░
-TypefaceFontProvider | ▓▓▓▓▓▓▓▓▓▓
+```
+Class                Progress
+-------------------------------
+Bitmap               ░░░░░░░░░░
+Canvas               ▓▓▓▓▓▓░░░░
+Color                ▓░░░░░░░░░
+ColorFilter          ▓▓▓▓▓▓▓▓▓▓
+ColorSpace           ▓▓░░░░░░░░
+Data                 ▓▓▓▓▓░░░░░
+Font                 ▓▓░░░░░░░░
+FontCollection       ▓▓▓▓▓▓▓▓▓▓
+FontManager          ▓▓▓▓▓░░░░░ 
+FontStyle            ▓▓▓▓▓▓▓▓▓▓
+FontStyleSet         ▓▓▓▓▓▓▓▓▓▓
+Image                ▓▓░░░░░░░░
+ImageFilters         ▓▓▓▓▓▓▓▓▓▓
+MaskFilter           ▓▓▓▓▓▓▓▓▓▓
+Matrix               ▓▓▓░░░░░░░
+Paint                ▓▓▓▓▓▓▓▓░░
+Paragraph            ▓░░░░░░░░░
+Path                 ▓▓▓▓▓▓▓▓▓▓
+PathEffects          ▓▓▓▓▓▓▓▓▓▓
+Picture              ░░░░░░░░░░
+PictureRecorder      ░░░░░░░░░░
+Region               ▓▓▓▓▓▓▓▓▓▓
+Shader               ▓▓▓▓▓▓▓▓▓▓
+Stream               ░░░░░░░░░░
+Surface              ▓░░░░░░░░░
+TextBlob             ▓▓░░░░░░░░
+Typeface             ▓▓░░░░░░░░
+TypefaceFontProvider ▓▓▓▓▓▓▓▓▓▓
+```
 
 ## Using
 

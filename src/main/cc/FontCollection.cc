@@ -62,7 +62,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_FontCollection_nGetF
 }
 
 extern "C" JNIEXPORT jlongArray JNICALL Java_org_jetbrains_skija_FontCollection_nFindTypefaces
-  (JNIEnv* env, jclass jclass, jlong ptr, jobjectArray familyNamesArray, jint weight, jint width, jint slant) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jobjectArray familyNamesArray, jint fontStyle) {
     FontCollection* instance = reinterpret_cast<FontCollection*>(static_cast<uintptr_t>(ptr));
 
     jsize len = env->GetArrayLength(familyNamesArray);
@@ -72,8 +72,7 @@ extern "C" JNIEXPORT jlongArray JNICALL Java_org_jetbrains_skija_FontCollection_
         familyNames.push_back(skString(env, str));
     }
 
-    SkFontStyle style(weight, width, static_cast<SkFontStyle::Slant>(slant));
-    vector<sk_sp<SkTypeface>> found = instance->findTypefaces(familyNames, style);
+    vector<sk_sp<SkTypeface>> found = instance->findTypefaces(familyNames, skFontStyle(fontStyle));
     vector<jlong> res(found.size());
     for (int i = 0; i < found.size(); ++i)
         res[i] = reinterpret_cast<jlong>(found[i].release());
@@ -84,10 +83,9 @@ extern "C" JNIEXPORT jlongArray JNICALL Java_org_jetbrains_skija_FontCollection_
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_FontCollection_nDefaultFallbackChar
-  (JNIEnv* env, jclass jclass, jlong ptr, jint unicode, jint weight, jint width, jint slant, jstring locale) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jint unicode, jint fontStyle, jstring locale) {
     FontCollection* instance = reinterpret_cast<FontCollection*>(static_cast<uintptr_t>(ptr));
-    SkFontStyle style(weight, width, static_cast<SkFontStyle::Slant>(slant));
-    return reinterpret_cast<jlong>(instance->defaultFallback(unicode, style, skString(env, locale)).release());
+    return reinterpret_cast<jlong>(instance->defaultFallback(unicode, skFontStyle(fontStyle), skString(env, locale)).release());
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_FontCollection_nDefaultFallback

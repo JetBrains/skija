@@ -23,7 +23,7 @@ public class FontStyle {
     public static final int WIDTH_EXTRA_EXPANDED  = 8;
     public static final int WIDTH_ULTRA_EXPANDED  = 9;
 
-    private final int value;
+    protected final int value;
 
     public enum Slant {
         UPRIGHT,
@@ -38,6 +38,10 @@ public class FontStyle {
 
     public FontStyle(int weight, int width, Slant slant) {
         value = (weight & 0xFFFF) | ((width & 0xFF) << 16) | (slant.ordinal() << 24);
+    }
+
+    protected FontStyle(int value) {
+        this.value = value;
     }
 
     public int getWeight() {

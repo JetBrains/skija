@@ -2,6 +2,7 @@
 #include <jni.h>
 #include <memory>
 #include <vector>
+#include "SkFontStyle.h"
 #include "SkMatrix.h"
 #include "SkRefCnt.h"
 #include "SkRect.h"
@@ -15,15 +16,15 @@ jlongArray javaLongArray(JNIEnv* env, std::vector<long> longs);
 jfloatArray javaFloatArray(JNIEnv* env, std::vector<float> floats);
 
 namespace skija {
+    namespace FontAxisInfo {
+        extern jclass cls;
+        extern jmethodID ctor;
+    }
+
     namespace FontVariation {
         extern jclass cls;
         extern jfieldID tag;
         extern jfieldID value;
-    }
-
-    namespace FontAxisInfo {
-        extern jclass cls;
-        extern jmethodID ctor;
     }
 
     namespace IRect {
@@ -34,6 +35,31 @@ namespace skija {
         extern jfieldID bottom;
 
         std::unique_ptr<SkIRect> toSkIRect(JNIEnv* env, jobject obj);
+    }
+
+    namespace Path {
+        namespace Segment {
+            extern jclass cls;
+            extern jmethodID ctor;
+            extern jfieldID verb;
+            extern jfieldID p0;
+            extern jfieldID p1;
+            extern jfieldID p2;
+            extern jfieldID p3;
+            extern jfieldID conicWeight;
+            extern jfieldID isCloseLine;
+            extern jfieldID isClosedContour;
+        }
+    }
+
+    namespace Point {
+        extern jclass cls;
+        extern jmethodID ctor;
+        extern jfieldID x;
+        extern jfieldID y;
+
+        jobject make(JNIEnv* env, float x, float y);
+        jobject fromSkPoint(JNIEnv* env, const SkPoint& p);
     }
 
     namespace Rect {
@@ -64,32 +90,9 @@ namespace skija {
         SkRRect toSkRRect(JNIEnv* env, jfloat left, jfloat top, jfloat right, jfloat bottom, jfloatArray jradii);
         jobject fromSkRRect(JNIEnv* env, const SkRRect& rect);   
     }
-
-    namespace Point {
-        extern jclass cls;
-        extern jmethodID ctor;
-        extern jfieldID x;
-        extern jfieldID y;
-
-        jobject make(JNIEnv* env, float x, float y);
-        jobject fromSkPoint(JNIEnv* env, const SkPoint& p);
-    }
-
-    namespace Path {
-        namespace Segment {
-            extern jclass cls;
-            extern jmethodID ctor;
-            extern jfieldID verb;
-            extern jfieldID p0;
-            extern jfieldID p1;
-            extern jfieldID p2;
-            extern jfieldID p3;
-            extern jfieldID conicWeight;
-            extern jfieldID isCloseLine;
-            extern jfieldID isClosedContour;
-        }
-    }
 }
 
 std::unique_ptr<SkMatrix> arrayToMatrix(JNIEnv* env, jfloatArray arr);
 SkString skString(JNIEnv* env, jstring str);
+jstring javaString(JNIEnv* env, const SkString& str);
+SkFontStyle skFontStyle(jint style);

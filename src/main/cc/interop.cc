@@ -23,6 +23,21 @@ jfloatArray javaFloatArray(JNIEnv* env, std::vector<float> floats) {
 }
 
 namespace skija {
+    namespace FontAxisInfo {
+        jclass    cls;
+        jmethodID ctor;
+
+        void onLoad(JNIEnv* env) {
+            jclass local = env->FindClass("org/jetbrains/skija/FontAxisInfo");
+            cls  = static_cast<jclass>(env->NewGlobalRef(local));
+            ctor = env->GetMethodID(cls, "<init>", "(II[BIFFF)V");
+        }
+
+        void onUnload(JNIEnv* env) {
+            env->DeleteGlobalRef(cls);
+        }
+    }
+
     namespace FontVariation {
         jclass   cls;
         jfieldID tag;
@@ -33,21 +48,6 @@ namespace skija {
             cls   = static_cast<jclass>(env->NewGlobalRef(local));
             tag   = env->GetFieldID(cls, "tag", "I");
             value = env->GetFieldID(cls, "value", "F");
-        }
-
-        void onUnload(JNIEnv* env) {
-            env->DeleteGlobalRef(cls);
-        }
-    }
-
-    namespace FontAxisInfo {
-        jclass    cls;
-        jmethodID ctor;
-
-        void onLoad(JNIEnv* env) {
-            jclass local = env->FindClass("org/jetbrains/skija/FontAxisInfo");
-            cls  = static_cast<jclass>(env->NewGlobalRef(local));
-            ctor = env->GetMethodID(cls, "<init>", "(II[BIFFF)V");
         }
 
         void onUnload(JNIEnv* env) {
@@ -86,6 +86,66 @@ namespace skija {
                     env->GetIntField(obj, bottom)
                 });
             }
+        }
+    }
+
+    namespace Path {
+        namespace Segment {
+            jclass cls;
+            jmethodID ctor;
+            jfieldID verb;
+            jfieldID p0;
+            jfieldID p1;
+            jfieldID p2;
+            jfieldID p3;
+            jfieldID conicWeight;
+            jfieldID isCloseLine;
+            jfieldID isClosedContour;
+
+            void onLoad(JNIEnv* env) {
+                jclass local = env->FindClass("org/jetbrains/skija/Path$Segment");
+                cls  = static_cast<jclass>(env->NewGlobalRef(local));
+                ctor = env->GetMethodID(cls, "<init>", "(I)V");
+                verb = env->GetFieldID(cls, "verb", "Lorg/jetbrains/skija/Path$Verb;");
+                p0   = env->GetFieldID(cls, "p0", "Lorg/jetbrains/skija/Point;");
+                p1   = env->GetFieldID(cls, "p1", "Lorg/jetbrains/skija/Point;");
+                p2   = env->GetFieldID(cls, "p2", "Lorg/jetbrains/skija/Point;");
+                p3   = env->GetFieldID(cls, "p3", "Lorg/jetbrains/skija/Point;");
+                conicWeight     = env->GetFieldID(cls, "conicWeight", "F");
+                isCloseLine     = env->GetFieldID(cls, "isCloseLine", "Z");
+                isClosedContour = env->GetFieldID(cls, "isClosedContour", "Z");
+            }
+
+            void onUnload(JNIEnv* env) {
+                env->DeleteGlobalRef(cls);
+            }
+        }
+    }
+
+    namespace Point {
+        jclass    cls;
+        jmethodID ctor;
+        jfieldID  x;
+        jfieldID  y;
+
+        void onLoad(JNIEnv* env) {
+            jclass local = env->FindClass("org/jetbrains/skija/Point");
+            cls  = static_cast<jclass>(env->NewGlobalRef(local));
+            ctor = env->GetMethodID(cls, "<init>", "(FF)V");
+            x    = env->GetFieldID(cls, "x", "F");
+            y    = env->GetFieldID(cls, "y", "F");
+        }
+
+        void onUnload(JNIEnv* env) {
+            env->DeleteGlobalRef(cls);
+        }
+
+        jobject make(JNIEnv* env, float x, float y) {
+            return env->NewObject(cls, ctor, x, y);
+        }
+
+        jobject fromSkPoint(JNIEnv* env, const SkPoint& p) {
+            return env->NewObject(cls, ctor, p.fX, p.fY);
         }
     }
 
@@ -219,66 +279,6 @@ namespace skija {
             }
         }
     }
-
-    namespace Point {
-        jclass    cls;
-        jmethodID ctor;
-        jfieldID  x;
-        jfieldID  y;
-
-        void onLoad(JNIEnv* env) {
-            jclass local = env->FindClass("org/jetbrains/skija/Point");
-            cls  = static_cast<jclass>(env->NewGlobalRef(local));
-            ctor = env->GetMethodID(cls, "<init>", "(FF)V");
-            x    = env->GetFieldID(cls, "x", "F");
-            y    = env->GetFieldID(cls, "y", "F");
-        }
-
-        void onUnload(JNIEnv* env) {
-            env->DeleteGlobalRef(cls);
-        }
-
-        jobject make(JNIEnv* env, float x, float y) {
-            return env->NewObject(cls, ctor, x, y);
-        }
-
-        jobject fromSkPoint(JNIEnv* env, const SkPoint& p) {
-            return env->NewObject(cls, ctor, p.fX, p.fY);
-        }
-    }
-
-    namespace Path {
-        namespace Segment {
-            jclass cls;
-            jmethodID ctor;
-            jfieldID verb;
-            jfieldID p0;
-            jfieldID p1;
-            jfieldID p2;
-            jfieldID p3;
-            jfieldID conicWeight;
-            jfieldID isCloseLine;
-            jfieldID isClosedContour;
-
-            void onLoad(JNIEnv* env) {
-                jclass local = env->FindClass("org/jetbrains/skija/Path$Segment");
-                cls  = static_cast<jclass>(env->NewGlobalRef(local));
-                ctor = env->GetMethodID(cls, "<init>", "(I)V");
-                verb = env->GetFieldID(cls, "verb", "Lorg/jetbrains/skija/Path$Verb;");
-                p0   = env->GetFieldID(cls, "p0", "Lorg/jetbrains/skija/Point;");
-                p1   = env->GetFieldID(cls, "p1", "Lorg/jetbrains/skija/Point;");
-                p2   = env->GetFieldID(cls, "p2", "Lorg/jetbrains/skija/Point;");
-                p3   = env->GetFieldID(cls, "p3", "Lorg/jetbrains/skija/Point;");
-                conicWeight     = env->GetFieldID(cls, "conicWeight", "F");
-                isCloseLine     = env->GetFieldID(cls, "isCloseLine", "Z");
-                isClosedContour = env->GetFieldID(cls, "isClosedContour", "Z");
-            }
-
-            void onUnload(JNIEnv* env) {
-                env->DeleteGlobalRef(cls);
-            }
-        }
-    }
 }
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
@@ -286,13 +286,14 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_10) != JNI_OK)
         return JNI_ERR;
 
-    skija::FontVariation::onLoad(env);
     skija::FontAxisInfo::onLoad(env);
+    skija::FontVariation::onLoad(env);
     skija::IRect::onLoad(env);
+    skija::Path::Segment::onLoad(env);
+    skija::Point::onLoad(env);
     skija::Rect::onLoad(env);
     skija::RoundedRect::onLoad(env);
-    skija::Point::onLoad(env);
-    skija::Path::Segment::onLoad(env);
+    
     return JNI_VERSION_10;
 }
 
@@ -301,13 +302,13 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_10) != JNI_OK)
         return;
 
-    skija::FontVariation::onUnload(env);
     skija::FontAxisInfo::onUnload(env);
+    skija::FontVariation::onUnload(env);
     skija::IRect::onUnload(env);
+    skija::Path::Segment::onUnload(env);
+    skija::Point::onUnload(env);
     skija::Rect::onUnload(env);
     skija::RoundedRect::onUnload(env);
-    skija::Point::onUnload(env);
-    skija::Path::Segment::onUnload(env);
 }
 
 std::unique_ptr<SkMatrix> arrayToMatrix(JNIEnv* env, jfloatArray matrixArray) {
@@ -328,4 +329,12 @@ SkString skString(JNIEnv* env, jstring s) {
     SkString res(chars, len);
     env->ReleaseStringUTFChars(s, chars);
     return res;
+}
+
+jstring javaString(JNIEnv* env, const SkString& str) {
+    return env->NewStringUTF(str.c_str());
+}
+
+SkFontStyle skFontStyle(jint style) {
+    return SkFontStyle(style & 0xFFFF, (style >> 16) & 0xFF, static_cast<SkFontStyle::Slant>((style >> 24) & 0xFF));
 }
