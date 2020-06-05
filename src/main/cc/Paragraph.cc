@@ -38,6 +38,12 @@ extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_Paragraph_nGetMaxIn
     return instance->getMaxIntrinsicWidth();
 }
 
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Paragraph_nLineNumber
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
+    return instance->lineNumber();
+}
+
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paragraph_nLayout
   (JNIEnv* env, jclass jclass, jlong ptr, jfloat width) {
     Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
