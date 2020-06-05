@@ -21,6 +21,11 @@ public class Paragraph extends Managed {
         return nGetMaxIntrinsicWidth(nativeInstance);
     }
 
+    public long lineNumber() {
+        Native.onNativeCall();
+        return nLineNumber(nativeInstance);
+    }
+
     public Paragraph layout(float width) {
         Native.onNativeCall();
         nLayout(nativeInstance, width);
@@ -40,6 +45,7 @@ public class Paragraph extends Managed {
     private static native float nGetHeight(long ptr);
     private static native float nGetMinIntrinsicWidth(long ptr);
     private static native float nGetMaxIntrinsicWidth(long ptr);
+    private static native long nLineNumber(long ptr);
     private static native void  nLayout(long ptr, float width);
     private static native long  nPaint(long ptr, long canvasPtr, float x, float y);
 }
