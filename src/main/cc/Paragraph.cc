@@ -1,5 +1,6 @@
 #include <iostream>
 #include <jni.h>
+#include "interop.hh"
 #include "Paragraph.h"
 
 using namespace std;
@@ -55,4 +56,18 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paragraph_nPaint
     Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
     instance->paint(canvas, x, y);
+}
+
+extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_Paragraph_nGetLineMetrics
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
+    std::vector<LineMetrics> res;
+    instance->getLineMetrics(res);
+    jobjectArray resArray = env->NewObjectArray(res.size(), skija::LineMetrics::cls, nullptr);
+    for (int i = 0; i < res.size(); ++i) {
+      LineMetrics lm = res[i];
+      jobject lmObj = env->NewObject(skija::LineMetrics::cls, skija::LineMetrics::ctor, lm.fStartIndex, lm.fEndIndex, lm.fEndExcludingWhitespaces, lm.fEndIncludingNewline, lm.fHardBreak, lm.fAscent, lm.fDescent, lm.fUnscaledAscent, lm.fHeight, lm.fWidth, lm.fLeft, lm.fBaseline, lm.fLineNumber);
+      env->SetObjectArrayElement(resArray, i, lmObj);
+    }
+    return resArray;
 }

@@ -38,6 +38,11 @@ public class Paragraph extends Managed {
         return this;
     }
 
+    public LineMetrics[] getLineMetrics() {
+        Native.onNativeCall();
+        return nGetLineMetrics(nativeInstance);
+    }
+
     protected Paragraph(long ptr) { super(ptr, nativeFinalizer); Native.onNativeCall(); }
     private static final  long  nativeFinalizer = nGetNativeFinalizer();
     private static native long  nGetNativeFinalizer();
@@ -48,4 +53,5 @@ public class Paragraph extends Managed {
     private static native long nLineNumber(long ptr);
     private static native void  nLayout(long ptr, float width);
     private static native long  nPaint(long ptr, long canvasPtr, float x, float y);
+    private static native LineMetrics[] nGetLineMetrics(long ptr);
 }

@@ -22,6 +22,13 @@ public class ParagraphScene implements Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         canvas.translate(30, 30);
+        drawSonnet(canvas);
+        canvas.translate(0, 300);
+        drawMetrics(canvas);
+    }
+
+    public void drawSonnet(Canvas canvas) {
+        canvas.save();
 
         try (TextStyle defaultTs = new TextStyle().setColor(0xFF000000);
              ParagraphStyle ps = new ParagraphStyle();
@@ -140,5 +147,47 @@ public class ParagraphScene implements Scene {
                 }
             }
         }
+
+        canvas.restore();
+    }
+
+    public void drawMetrics(Canvas canvas) {
+        canvas.save();
+         try (TextStyle defaultTs = new TextStyle().setFontSize(24).setColor(0xFF000000);
+              TextStyle largeTs   = new TextStyle().setFontSize(36).setColor(0xFF000000);
+              ParagraphStyle ps   = new ParagraphStyle();
+              ParagraphBuilder pb = new ParagraphBuilder(ps, fc);
+              Paint boundaries    = new Paint().setColor(0xFFFAA6B2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);)
+        {
+            // default style
+            pb.pushStyle(defaultTs);
+            
+            pb.addText("The following ");
+            pb.pushStyle(largeTs);
+            pb.addText("sentence");
+            pb.popStyle();
+            pb.addText(" is true\n");
+
+            pb.pushStyle(largeTs);
+            pb.addText("The previous ");
+            pb.popStyle();
+            pb.addText("sentence");
+            pb.pushStyle(largeTs);
+            pb.addText(" is false\n");
+            pb.popStyle();
+
+            pb.addText("— Vicious circularity, \n  or infinite regress");
+
+            try (Paragraph p = pb.build();) {
+                p.layout(Float.POSITIVE_INFINITY);
+                p.paint(canvas, 0, 0);
+                for (LineMetrics lm: p.getLineMetrics()) {
+                    canvas.drawRect(Rect.makeXYWH((float) lm.getLeft(), (float) (lm.getBaseline() - lm.getAscent()), (float) lm.getWidth(), (float) (lm.getAscent() + lm.getDescent())), boundaries);
+                    canvas.drawLine((float) lm.getLeft(), (float) lm.getBaseline(), (float) (lm.getLeft() + lm.getWidth()), (float) lm.getBaseline(), boundaries);
+                }
+            }
+
+        }       
+        canvas.restore();
     }
 }

@@ -37,6 +37,11 @@ namespace skija {
         std::unique_ptr<SkIRect> toSkIRect(JNIEnv* env, jobject obj);
     }
 
+    namespace LineMetrics {
+        extern jclass cls;
+        extern jmethodID ctor;
+    }
+
     namespace Path {
         namespace Segment {
             extern jclass cls;

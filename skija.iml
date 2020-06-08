@@ -10,20 +10,13 @@
       <sourceFolder url="file://$MODULE_DIR$/target/native" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/examples/lwjgl/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
-      <excludeFolder url="file://$MODULE_DIR$/target.nosync" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-assimp:3.2.3" level="project" />
-    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-assimp:natives-macos:3.2.3" level="project" />
     <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-glfw:3.2.3" level="project" />
     <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-glfw:natives-macos:3.2.3" level="project" />
-    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-openal:3.2.3" level="project" />
-    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-openal:natives-macos:3.2.3" level="project" />
     <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-opengl:3.2.3" level="project" />
     <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-opengl:natives-macos:3.2.3" level="project" />
-    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-stb:3.2.3" level="project" />
-    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-stb:natives-macos:3.2.3" level="project" />
     <orderEntry type="library" name="Maven: org.lwjgl:lwjgl:3.2.3" level="project" />
     <orderEntry type="library" name="Maven: org.lwjgl:lwjgl:natives-macos:3.2.3" level="project" />
   </component>
