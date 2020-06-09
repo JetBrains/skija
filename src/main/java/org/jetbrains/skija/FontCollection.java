@@ -44,24 +44,24 @@ public class FontCollection extends RefCounted {
         return new FontManager(nGetFallbackManager(nativeInstance));
     }
 
-    public SkTypeface[] findTypefaces(String[] familyNames, FontStyle style) {
+    public Typeface[] findTypefaces(String[] familyNames, FontStyle style) {
         Native.onNativeCall();
         long[] ptrs = nFindTypefaces(nativeInstance, familyNames, style.value);
-        SkTypeface[] res = new SkTypeface[ptrs.length];
+        Typeface[] res = new Typeface[ptrs.length];
         for (int i = 0; i < ptrs.length; ++i) {
-            res[i] = new SkTypeface(ptrs[i]);
+            res[i] = new Typeface(ptrs[i]);
         }
         return res;
     }
 
-    public SkTypeface defaultFallback(int unicode, FontStyle style, String locale) {
+    public Typeface defaultFallback(int unicode, FontStyle style, String locale) {
         Native.onNativeCall();
-        return new SkTypeface(nDefaultFallbackChar(nativeInstance, unicode, style.value, locale));
+        return new Typeface(nDefaultFallbackChar(nativeInstance, unicode, style.value, locale));
     }
 
-    public SkTypeface defaultFallback() {
+    public Typeface defaultFallback() {
         Native.onNativeCall();
-        return new SkTypeface(nDefaultFallback(nativeInstance));
+        return new Typeface(nDefaultFallback(nativeInstance));
     }
 
     public FontCollection setEnableFallback(boolean value) {

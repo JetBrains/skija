@@ -21,16 +21,16 @@ public class FontStyleSet extends RefCounted {
         return nGetStyleName(nativeInstance, index);
     }        
 
-    public SkTypeface createTypeface(int index) {
+    public Typeface createTypeface(int index) {
         Native.onNativeCall();
         long ptr = nCreateTypeface(nativeInstance, index);
-        return ptr == 0 ? null : new SkTypeface(ptr);
+        return ptr == 0 ? null : new Typeface(ptr);
     }    
 
-    public SkTypeface matchStyle(FontStyle style) {
+    public Typeface matchStyle(FontStyle style) {
         Native.onNativeCall();
         long ptr = nMatchStyle(nativeInstance, style.value);
-        return ptr == 0 ? null : new SkTypeface(ptr);
+        return ptr == 0 ? null : new Typeface(ptr);
     }    
 
     protected FontStyleSet(long nativeInstance) { super(nativeInstance); }

@@ -6,11 +6,11 @@ public class TypefaceFontProvider extends FontManager {
         Native.onNativeCall();
     }
 
-    public TypefaceFontProvider registerTypeface(SkTypeface typeface) {
+    public TypefaceFontProvider registerTypeface(Typeface typeface) {
         return registerTypeface(typeface, null);
     }
 
-    public TypefaceFontProvider registerTypeface(SkTypeface typeface, String alias) {
+    public TypefaceFontProvider registerTypeface(Typeface typeface, String alias) {
         Native.onNativeCall();
         nRegisterTypeface(nativeInstance, Native.pointer(typeface), alias);
         return this;

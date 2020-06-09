@@ -4,7 +4,6 @@
 #include "SkRRect.h"
 #include "SkTextBlob.h"
 #include "hb.h"
-#include "hb_util.hh"
 #include "interop.hh"
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawPoint
@@ -114,42 +113,16 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawRegion
     canvas->drawRegion(*region, *paint);
 }
 
-hb_user_data_key_t skTextBlobKey;
-
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawTextBuffer
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong bufferPtr, jfloat x, jfloat y, jlong skFontPtr, jlong paintPtr) {
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawString
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jstring stringObj, jfloat x, jfloat y, jlong skFontPtr, jlong paintPtr) {
     SkCanvas* canvas    = reinterpret_cast<SkCanvas*>   (static_cast<uintptr_t>(canvasPtr));
-    hb_buffer_t* buffer = reinterpret_cast<hb_buffer_t*>(static_cast<uintptr_t>(bufferPtr));
+    SkString string     = skString(env, stringObj);
     SkFont* font        = reinterpret_cast<SkFont*>     (static_cast<uintptr_t>(skFontPtr));
     SkPaint* paint      = reinterpret_cast<SkPaint*>    (static_cast<uintptr_t>(paintPtr));
 
-    SkTextBlob* blob = static_cast<SkTextBlob*>(hb_buffer_get_user_data(buffer, &skTextBlobKey));
-    if (blob == nullptr) {
-        SkTextBlobBuilder builder;
-        unsigned len = hb_buffer_get_length(buffer);
-        if (len == 0) { return; }
-        hb_glyph_info_t *info = hb_buffer_get_glyph_infos(buffer, NULL);
-        hb_glyph_position_t *pos = hb_buffer_get_glyph_positions(buffer, NULL);
-        auto runBuffer = builder.allocRunPos(*font, len);
-
-        float offsetX = 0;
-        float offsetY = 0;
-        for (unsigned int i = 0; i < len; i++) {
-          runBuffer.glyphs[i] = info[i].codepoint;
-          reinterpret_cast<SkPoint*>(runBuffer.pos)[i] = SkPoint::Make(
-            offsetX + HBFixedToFloat(pos[i].x_offset),
-            offsetY - HBFixedToFloat(pos[i].y_offset));
-          offsetX += HBFixedToFloat(pos[i].x_advance);
-          offsetY += HBFixedToFloat(pos[i].y_advance);
-        }
-
-        blob = builder.make().release();
-        auto destroy = [](void *b) { static_cast<SkTextBlob*>(b)->unref(); };
-        hb_buffer_set_user_data(buffer, &skTextBlobKey, blob, destroy, false);
-    }
-
-    canvas->drawTextBlob(blob, x, y, *paint);
+    canvas->drawString(string, x, y, *font, *paint);
 }
+
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas_nDrawTextBlob
   (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong blobPtr, jfloat x, jfloat y, jlong skFontPtr, jlong paintPtr) {

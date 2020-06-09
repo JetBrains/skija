@@ -107,12 +107,12 @@ public class Canvas extends Native {
         nDrawRegion(nativeInstance, r.nativeInstance, paint.nativeInstance);
     }
 
-    public void drawTextBuffer(TextBuffer buffer, float x, float y, SkFont font, Paint paint) {
+    public void drawString(String s, float x, float y, Font font, Paint paint) {
         Native.onNativeCall();
-        nDrawTextBuffer(nativeInstance, buffer.nativeInstance, x, y, font.nativeInstance, paint.nativeInstance);
+        nDrawString(nativeInstance, s, x, y, Native.pointer(font), Native.pointer(paint));
     }
 
-    public void drawTextBlob(TextBlob blob, float x, float y, SkFont font, Paint paint) {
+    public void drawTextBlob(TextBlob blob, float x, float y, Font font, Paint paint) {
         Native.onNativeCall();
         nDrawTextBlob(nativeInstance, blob.nativeInstance, x, y, font.nativeInstance, paint.nativeInstance);
     }
@@ -166,7 +166,7 @@ constraint);
     private static native void nDrawImageIRect(long nativeCanvas, long nativeImage, int sl, int st, int sr, int sb, float dl, float dt, float dr, float db, long nativePaint, int 
 constraint);
     private static native void nDrawRegion(long nativeCanvas, long nativeRegion, long nativePaint);
-    private static native void nDrawTextBuffer(long nativeCanvas, long buffer, float x, float y, long font, long paint);
+    private static native void nDrawString(long nativeCanvas, String string, float x, float y, long font, long paint);
     private static native void nDrawTextBlob(long nativeCanvas, long blob, float x, float y, long font, long paint);
     private static native void nClear(long nativeCanvas, int color);
     private static native void nDrawPaint(long nativeCanvas, long nativePaint);

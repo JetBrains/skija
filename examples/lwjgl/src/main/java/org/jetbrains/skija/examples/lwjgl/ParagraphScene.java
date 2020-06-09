@@ -12,9 +12,9 @@ public class ParagraphScene implements Scene {
         fc.setDefaultFontManager(FontManager.getDefault());
         
         TypefaceFontProvider fm = new TypefaceFontProvider();
-        SkTypeface jbMono = SkTypeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf", 0);
+        Typeface jbMono = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf", 0);
         fm.registerTypeface(jbMono);
-        SkTypeface inter = SkTypeface.makeFromFile("fonts/Inter-Regular.ttf", 0);
+        Typeface inter = Typeface.makeFromFile("fonts/Inter-Regular.ttf", 0);
         fm.registerTypeface(inter, "Interface");
         fc.setAssetFontManager(fm);
     }
@@ -194,7 +194,7 @@ public class ParagraphScene implements Scene {
                 // getGlyphPositionAtCoordinate
                 int glyphIdx = p.getGlyphPositionAtCoordinate(dx, dy).position;
                 try (var typeface = fc.defaultFallback();
-                     var font = new SkFont(typeface, 16);
+                     var font = new Font(typeface, 16);
                      var blob = font.shape("idx: " + glyphIdx, Float.POSITIVE_INFINITY);
                      var paint = new Paint().setColor(0xFFcc3333)) {
                     canvas.drawTextBlob(blob, 0, p.getHeight(), font, paint);

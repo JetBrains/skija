@@ -49,9 +49,7 @@ fun displayScene(renderer: Renderer, width: Int, height: Int, xpos: Int, ypos: I
         }
     }
     val text = "Hello Skija ${state.frame++}!"
-    renderer.font.hbFont.shape(text, FontFeature.EMPTY).use { buffer ->
-        canvas.drawTextBuffer(buffer, xpos.toFloat(), ypos.toFloat(), renderer.font.skFont, renderer.paint)
-    }
+    canvas.drawString(text, xpos.toFloat(), ypos.toFloat(), renderer.font, renderer.paint)
 }
 
 class Renderer(val displayScene: (Renderer, Int, Int) -> Unit): SkiaRenderer {

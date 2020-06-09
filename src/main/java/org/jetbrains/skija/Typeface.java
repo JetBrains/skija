@@ -1,41 +1,26 @@
 package org.jetbrains.skija;
 
-import java.util.Arrays;
-
-public class Typeface implements AutoCloseable {
-    public final SkTypeface skTypeface;
-    public final HBFace hbFace;
-    public final FontVariation[] variations;
-
-    protected Typeface(SkTypeface skTypeface, HBFace hbFace, FontVariation[] variations) {
-        this.skTypeface = skTypeface;
-        this.hbFace = hbFace;
-        this.variations = variations;
-    }
-
-    @Override
-    public void close() {
-        skTypeface.close();
-        hbFace.close();
-    }
-
+public class Typeface extends RefCounted {
     public static Typeface makeFromFile(String path) {
         return makeFromFile(path, 0);
     }
 
     public static Typeface makeFromFile(String path, int index) {
         Native.onNativeCall(); 
-        long[] ptrs = nMakeFromFile(path, index);
-        if (ptrs == null)
+        long ptr = nMakeFromFile(path, index);
+        if (ptr == 0)
             throw new RuntimeException("Failed to create Typeface from path=\"" + path + "\" index=" + index);
-        return new Typeface(new SkTypeface(ptrs[0]), new HBFace(ptrs[1]), FontVariation.EMPTY);
+        return new Typeface(ptr);
     }
 
-    public Typeface with(FontVariation... variations) {
-        FontVariation[] newVariations = Arrays.copyOf(this.variations, this.variations.length + variations.length);
-        System.arraycopy(variations, 0, newVariations, this.variations.length, variations.length);
-        return new Typeface(skTypeface.makeClone(variations), hbFace, newVariations);
+    public Typeface makeClone(FontVariation[] variations) {
+        if (variations.length == 0)
+            return this;
+        Native.onNativeCall(); 
+        return new Typeface(nMakeClone(nativeInstance, variations));
     }
 
-    private static native long[] nMakeFromFile(String path, int index);
+    protected Typeface(long nativeInstance) { super(nativeInstance); }
+    private static native long nMakeFromFile(String path, int index);
+    private static native long nMakeClone(long ptr, FontVariation[] variations);
 }

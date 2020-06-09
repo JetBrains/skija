@@ -32,19 +32,17 @@ public class TextBlobScene implements Scene {
     }
     
     @Override
-    public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
-        FontExtents extents = font.hbFont.getHorizontalExtents();
-        
+    public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {        
         var paddingH = 20f;
         var paddingV = 20f;
 
         if (cachedWidth != width || cachedBlob == null) {
             if (cachedBlob != null)
                 cachedBlob.close();
-            cachedBlob = font.skFont.shape(text, width - paddingH * 2);
+            cachedBlob = font.shape(text, width - paddingH * 2);
             cachedWidth = width;
         }
 
-        canvas.drawTextBlob(cachedBlob, 20f, 20f, font.skFont, textColor);
+        canvas.drawTextBlob(cachedBlob, 20f, 20f, font, textColor);
     }
 }

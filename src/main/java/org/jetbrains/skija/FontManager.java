@@ -45,10 +45,10 @@ public class FontManager extends RefCounted {
      * {@link #createStyleSet(int)} or {@link #matchFamily(String)} due to hidden or
      * auto-activated fonts.
      */
-    public SkTypeface matchFamilyStyle(String familyName, FontStyle style) {
+    public Typeface matchFamilyStyle(String familyName, FontStyle style) {
         Native.onNativeCall();
         long ptr = nMatchFamilyStyle(nativeInstance, familyName, style.value);
-        return ptr == 0 ? null : new SkTypeface(ptr);
+        return ptr == 0 ? null : new Typeface(ptr);
     }
 
     /**
@@ -66,16 +66,16 @@ public class FontManager extends RefCounted {
      * most significant. If no specified bcp47 codes match, any font with the
      * requested character will be matched.
      */
-    public SkTypeface matchFamilyStyleCharacter(String familyName, FontStyle style, String[] bcp47, int character) {
+    public Typeface matchFamilyStyleCharacter(String familyName, FontStyle style, String[] bcp47, int character) {
         Native.onNativeCall();
         long ptr = nMatchFamilyStyleCharacter(nativeInstance, familyName, style.value, bcp47, character);
-        return ptr == 0 ? null : new SkTypeface(ptr);
+        return ptr == 0 ? null : new Typeface(ptr);
     }
 
-    public SkTypeface matchFaceStyle(SkTypeface typeface, FontStyle style) {
+    public Typeface matchFaceStyle(Typeface typeface, FontStyle style) {
         Native.onNativeCall();
         long ptr = nMatchFaceStyle(nativeInstance, Native.pointer(typeface), style.value);
-        return ptr == 0 ? null : new SkTypeface(ptr);
+        return ptr == 0 ? null : new Typeface(ptr);
     }
 
     /**
@@ -83,14 +83,14 @@ public class FontManager extends RefCounted {
      * or null if the data is not recognized. The caller must call {@link #close()} on
      * the returned object if it is not null.
      */
-    public SkTypeface makeFromData(Data data) {
+    public Typeface makeFromData(Data data) {
         return makeFromData(data, 0);
     }
 
-    public SkTypeface makeFromData(Data data, int ttcIndex) {
+    public Typeface makeFromData(Data data, int ttcIndex) {
         Native.onNativeCall();
         long ptr = nMakeFromData(nativeInstance, Native.pointer(data), ttcIndex);
-        return ptr == 0 ? null : new SkTypeface(ptr);
+        return ptr == 0 ? null : new Typeface(ptr);
     }
 
     private static class DefaultHolder {

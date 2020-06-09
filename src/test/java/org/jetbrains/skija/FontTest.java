@@ -19,11 +19,11 @@ public class FontTest implements Executable {
     public void fontManager() throws Exception {
         // FontManager
         TypefaceFontProvider fm = new TypefaceFontProvider();
-        SkTypeface jbMono = SkTypeface.makeFromFile("src/test/resources/FontTest/JetBrainsMono-Regular.ttf", 0);
+        Typeface jbMono = Typeface.makeFromFile("src/test/resources/FontTest/JetBrainsMono-Regular.ttf", 0);
         fm.registerTypeface(jbMono);
-        SkTypeface jbMonoBold = SkTypeface.makeFromFile("src/test/resources/FontTest/JetBrainsMono-Bold.ttf", 0);
+        Typeface jbMonoBold = Typeface.makeFromFile("src/test/resources/FontTest/JetBrainsMono-Bold.ttf", 0);
         fm.registerTypeface(jbMonoBold);
-        SkTypeface inter = SkTypeface.makeFromFile("src/test/resources/FontTest/Inter-Regular.ttf", 0);
+        Typeface inter = Typeface.makeFromFile("src/test/resources/FontTest/Inter-Regular.ttf", 0);
         fm.registerTypeface(inter, "Interface");
 
         assertEquals(2, fm.countFamilies());
@@ -100,9 +100,9 @@ public class FontTest implements Executable {
 
     public void fontCollection() throws Exception {
         TypefaceFontProvider fm = new TypefaceFontProvider();
-        SkTypeface jbMono = SkTypeface.makeFromFile("src/test/resources/FontTest/JetBrainsMono-Regular.ttf", 0);
+        Typeface jbMono = Typeface.makeFromFile("src/test/resources/FontTest/JetBrainsMono-Regular.ttf", 0);
         fm.registerTypeface(jbMono);
-        SkTypeface inter = SkTypeface.makeFromFile("src/test/resources/FontTest/Inter-Regular.ttf", 0);
+        Typeface inter = Typeface.makeFromFile("src/test/resources/FontTest/Inter-Regular.ttf", 0);
         fm.registerTypeface(inter, "Interface");
 
         // FontCollection
@@ -124,11 +124,11 @@ public class FontTest implements Executable {
         }
         assertEquals(3, jbMono.getRefCount());
 
-        assertArrayEquals(new SkTypeface[] {}, fc.findTypefaces(new String[] { "No Such Font" }, FontStyle.NORMAL));
-        assertArrayEquals(new SkTypeface[] { jbMono }, fc.findTypefaces(new String[] { "JetBrains Mono" }, FontStyle.NORMAL));
-        assertArrayEquals(new SkTypeface[] {}, fc.findTypefaces(new String[] { "Inter" }, FontStyle.NORMAL));
-        assertArrayEquals(new SkTypeface[] { inter }, fc.findTypefaces(new String[] { "Interface" }, FontStyle.NORMAL));
-        assertArrayEquals(new SkTypeface[] { jbMono, inter }, fc.findTypefaces(new String[] { "JetBrains Mono", "Interface" }, FontStyle.NORMAL));
+        assertArrayEquals(new Typeface[] {}, fc.findTypefaces(new String[] { "No Such Font" }, FontStyle.NORMAL));
+        assertArrayEquals(new Typeface[] { jbMono }, fc.findTypefaces(new String[] { "JetBrains Mono" }, FontStyle.NORMAL));
+        assertArrayEquals(new Typeface[] {}, fc.findTypefaces(new String[] { "Inter" }, FontStyle.NORMAL));
+        assertArrayEquals(new Typeface[] { inter }, fc.findTypefaces(new String[] { "Interface" }, FontStyle.NORMAL));
+        assertArrayEquals(new Typeface[] { jbMono, inter }, fc.findTypefaces(new String[] { "JetBrains Mono", "Interface" }, FontStyle.NORMAL));
 
         // default fm
         var defaultFM = FontManager.getDefault();

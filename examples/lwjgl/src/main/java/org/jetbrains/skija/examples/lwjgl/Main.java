@@ -32,7 +32,7 @@ class Window {
     public int ypos = 0;
     public boolean vsync = true;
     private Typeface interRegular;
-    private Font interRegular13tnum;
+    private Font     interRegular13tnum;
     private int[] refreshRates;
 
     public Window(int width, int height) {
@@ -180,7 +180,8 @@ class Window {
         Paint graphPast = new Paint().setColor(0x9000FF00).setStrokeWidth(1);
         Paint graphLimit = new Paint().setColor(0xFFcc3333).setStrokeWidth(1);
         Font font = interRegular13tnum;
-        FontExtents extents = font.hbFont.getHorizontalExtents();
+        // FontExtents extents = font.hbFont.getHorizontalExtents();
+        FontExtents extents = new FontExtents(10, 3, 0); // FIXME
         float baseline = (20 - (extents.descender + extents.getAscenderAbs())) / 2 + extents.getAscenderAbs();
 
         // Background
@@ -190,45 +191,33 @@ class Window {
 
         // Scene
         canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 30, 20, 2), bg);
-        TextBuffer buffer = font.hbFont.shape("←→");
-        canvas.drawTextBuffer(buffer, (30 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
+        // canvas.drawTextBuffer(buffer, (30 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
+        canvas.drawString("←→", 0, baseline, font, fg); // FIXME center align
         int sceneIdx = 1;
         for (String scene : scenes.keySet()) {
             if (scene.equals(currentScene)) break;
             sceneIdx++;
         }
-        buffer.close();
-        buffer = font.hbFont.shape("Scene: " + currentScene + " " + sceneIdx + "/" + scenes.size());
-        canvas.drawTextBuffer(buffer, 35, baseline, font.skFont, fg);
-        buffer.close();
+        canvas.drawString("Scene: " + currentScene + " " + sceneIdx + "/" + scenes.size(), 35, baseline, font, fg);
         canvas.translate(0, 25);
 
         // VSync
         canvas.drawRoundedRect(RoundedRect.makeXYWH(5, 0, 20, 20, 2), bg);
-        buffer = font.hbFont.shape("V");
-        canvas.drawTextBuffer(buffer, 5 + (20 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
-        buffer.close();
-        buffer = font.hbFont.shape("VSync: " + (vsync ? "ON" : "OFF"));
-        canvas.drawTextBuffer(buffer, 35, baseline, font.skFont, fg);
-        buffer.close();
+        // canvas.drawTextBuffer(buffer, 5 + (20 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
+        canvas.drawString("V", 5, baseline, font, fg); // FIXME center align
+        canvas.drawString("VSync: " + (vsync ? "ON" : "OFF"), 35, baseline, font, fg);
         canvas.translate(0, 25);
 
         // GC
         canvas.drawRoundedRect(RoundedRect.makeXYWH(5, 0, 20, 20, 2), bg);
-        buffer = font.hbFont.shape("G");
-        canvas.drawTextBuffer(buffer, 5 + (20 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
-        buffer.close();
-
-        buffer = font.hbFont.shape("GC objects: " + allocated);
-        canvas.drawTextBuffer(buffer, 35, baseline, font.skFont, fg);
-        buffer.close();
+        // canvas.drawTextBuffer(buffer, 5 + (20 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
+        canvas.drawString("G", 5, baseline, font, fg); // FIXME center align
+        canvas.drawString("GC objects: " + allocated, 35, baseline, font, fg);
         canvas.translate(0, 25);
 
         // Native calls
-        try (var b = font.hbFont.shape("Native calls: " + nativeCalls)) {
-            canvas.drawTextBuffer(b, 35, baseline, font.skFont, fg);
-            canvas.translate(0, 25);
-        }
+        canvas.drawString("Native calls: " + nativeCalls, 35, baseline, font, fg);
+        canvas.translate(0, 25);
 
         // fps
         canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, times.length, 45, 2), bg);
@@ -241,13 +230,9 @@ class Window {
             canvas.drawLine(0, 45 - frameTime, times.length, 45 - frameTime, graphLimit);
         }
 
-        buffer = font.hbFont.shape(String.format("%.1fms", Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble()));
-        canvas.drawTextBuffer(buffer, times.length + 5, baseline, font.skFont, fg);
-        buffer.close();
+        canvas.drawString(String.format("%.1fms", Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble()), times.length + 5, baseline, font, fg);
 
-        buffer = font.hbFont.shape(String.format("%.0f fps", 1000.0 / Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble()));
-        canvas.drawTextBuffer(buffer, times.length + 5, baseline + 25, font.skFont, fg);
-        buffer.close();
+        canvas.drawString(String.format("%.0f fps", 1000.0 / Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble()), times.length + 5, baseline + 25, font, fg);
         canvas.translate(0, 25);
 
         bg.close();
@@ -329,7 +314,7 @@ class Window {
         scenes.put("Watches",       new WatchesScene());
         currentScene = "Paragraph";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
-        interRegular13tnum = new Font(interRegular, 13, new FontFeature("tnum"));
+        interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {

@@ -1,48 +1,28 @@
+#include <iostream>
 #include <jni.h>
-#include <cassert>
-#include "SkData.h"
-#include "SkStream.h"
 #include "SkTypeface.h"
-#include "hb.h"
-#include "hb_util.hh"
 #include "interop.hh"
 
-extern "C" JNIEXPORT jlongArray JNICALL Java_org_jetbrains_skija_Typeface_nMakeFromFile(JNIEnv* env, jclass jclass, jstring path, jint index) {
-    // data
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Typeface_nMakeFromFile(JNIEnv* env, jclass jclass, jstring path, jint index) {
     const char* chars = env->GetStringUTFChars(path, nullptr);
-    auto data = SkData::MakeFromFileName(chars);
+    SkTypeface* ptr = SkTypeface::MakeFromFile(chars, index).release();
     env->ReleaseStringUTFChars(path, chars);
-    assert(data);
-    if (!data) { return nullptr; }
+    return reinterpret_cast<jlong>(ptr);
+}
 
-    // skTypeface
-    SkTypeface* skTypeface = SkTypeface::MakeFromData(data, index).release();
-
-    // blob
-    auto destroy = [](void *d) { static_cast<SkData*>(d)->unref(); };
-    const char* dataData = (const char*) data->data();
-    unsigned int dataSize = (unsigned int) data->size();
-    void * dataPtr = data.release();
-    hb_blob_t* blob = hb_blob_create(dataData,
-                                     dataSize,
-                                     HB_MEMORY_MODE_READONLY,
-                                     dataPtr,
-                                     destroy);
-    assert(blob);
-    if (!blob || hb_blob_get_length(blob) == 0) return nullptr;
-    hb_blob_make_immutable(blob);
-
-    // hbFace
-    hb_face_t* hbFace = hb_face_create(blob, (unsigned) index);
-    hb_blob_destroy(blob);
-
-    assert(hbFace);
-    if (!hbFace) {
-        skTypeface->unref();
-        return nullptr;
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Typeface_nMakeClone(JNIEnv* env, jclass jclass, jlong typefacePtr, jobjectArray variations) {
+    SkTypeface* typeface = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(typefacePtr));
+    int variationCount = env->GetArrayLength(variations);
+    SkFontArguments::VariationPosition::Coordinate coordinates[variationCount];
+    for (int i=0; i < variationCount; ++i) {
+        jobject jvar = env->GetObjectArrayElement(variations, i);
+        coordinates[i] = {
+            static_cast<SkFourByteTag>(env->GetIntField(jvar, skija::FontVariation::tag)),
+            env->GetFloatField(jvar, skija::FontVariation::value)
+        };
+        env->DeleteLocalRef(jvar);
     }
-    // hb_face_set_index(hbFace, (unsigned)index);
-    // hb_face_set_upem(hbFace, fSkiaTypeface->getUnitsPerEm());
-
-    return javaLongArray(env, {reinterpret_cast<jlong>(skTypeface), reinterpret_cast<jlong>(hbFace)});
+    SkFontArguments arg = SkFontArguments().setVariationDesignPosition({coordinates, variationCount});
+    SkTypeface* clone = typeface->makeClone(arg).release();
+    return reinterpret_cast<jlong>(clone);
 }
