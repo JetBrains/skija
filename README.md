@@ -25,7 +25,7 @@ ImageFilters         ▓▓▓▓▓▓▓▓▓▓
 MaskFilter           ▓▓▓▓▓▓▓▓▓▓
 Matrix               ▓▓▓░░░░░░░
 Paint                ▓▓▓▓▓▓▓▓░░
-Paragraph            ▓▓▓▓▓▓▓▓░░
+Paragraph            ▓▓▓▓▓▓▓▓▓▓
 ParagraphBuilder     ▓▓▓▓▓▓▓▓░░
 Path                 ▓▓▓▓▓▓▓▓▓▓
 PathEffects          ▓▓▓▓▓▓▓▓▓▓

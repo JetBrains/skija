@@ -360,6 +360,7 @@ std::unique_ptr<SkMatrix> arrayToMatrix(JNIEnv* env, jfloatArray matrixArray) {
 }
 
 SkString skString(JNIEnv* env, jstring s) {
+    // TODO fix UTF-8
     jsize       len   = env->GetStringUTFLength(s);
     const char* chars = env->GetStringUTFChars(s, nullptr);
     SkString res(chars, len);

@@ -3,38 +3,6 @@ package org.jetbrains.skija;
 import java.util.Objects;
 
 public class Paragraph extends Managed {
-    public float getMaxWidth() {
-        Native.onNativeCall();
-        return nGetMaxWidth(nativeInstance);
-    }
-
-    public float getHeight() {
-        Native.onNativeCall();
-        return nGetHeight(nativeInstance);
-    }
-
-    public float getMinIntrinsicWidth() {
-        Native.onNativeCall();
-        return nGetMinIntrinsicWidth(nativeInstance);
-    }
-
-    public float getMaxIntrinsicWidth() {
-        Native.onNativeCall();
-        return nGetMaxIntrinsicWidth(nativeInstance);
-    }
-
-    public Paragraph layout(float width) {
-        Native.onNativeCall();
-        nLayout(nativeInstance, width);
-        return this;
-    }
-
-    public Paragraph paint(Canvas canvas, float x, float y) {
-        Native.onNativeCall();
-        nPaint(nativeInstance, Native.pointer(canvas), x, y);
-        return this;
-    }
-
     public enum Affinity {
         UPSTREAM,
         DOWNSTREAM
@@ -154,6 +122,67 @@ public class Paragraph extends Managed {
         }
     }
 
+    public enum TextAlign {
+        LEFT,
+        RIGHT,
+        CENTER,
+        JUSTIFY,
+        START,
+        END,
+    }
+
+    public float getMaxWidth() {
+        Native.onNativeCall();
+        return nGetMaxWidth(nativeInstance);
+    }
+
+    public float getHeight() {
+        Native.onNativeCall();
+        return nGetHeight(nativeInstance);
+    }
+
+    public float getMinIntrinsicWidth() {
+        Native.onNativeCall();
+        return nGetMinIntrinsicWidth(nativeInstance);
+    }
+
+    public float getMaxIntrinsicWidth() {
+        Native.onNativeCall();
+        return nGetMaxIntrinsicWidth(nativeInstance);
+    }
+
+    public float getAlphabeticBaseline() {
+        Native.onNativeCall();
+        return nGetAlphabeticBaseline(nativeInstance);
+    }
+
+    public float getIdeographicBaseline() {
+        Native.onNativeCall();
+        return nGetIdeographicBaseline(nativeInstance);
+    }
+
+    public float getLongestLine() {
+        Native.onNativeCall();
+        return nGetLongestLine(nativeInstance);
+    }
+
+    public boolean didExceedMaxLines() {
+        Native.onNativeCall();
+        return nDidExceedMaxLines(nativeInstance);
+    }
+
+    public Paragraph layout(float width) {
+        Native.onNativeCall();
+        nLayout(nativeInstance, width);
+        return this;
+    }
+
+    public Paragraph paint(Canvas canvas, float x, float y) {
+        Native.onNativeCall();
+        nPaint(nativeInstance, Native.pointer(canvas), x, y);
+        return this;
+    }
+
     /**
      * Returns a vector of bounding boxes that enclose all text between
      * start and end glyph indexes, including start and excluding end.
@@ -193,6 +222,47 @@ public class Paragraph extends Managed {
         return nLineNumber(nativeInstance);
     }
 
+    public Paragraph markDirty() {
+        Native.onNativeCall();
+        nMarkDirty(nativeInstance);
+        return this;
+    }
+
+    public int unresolvedGlyphs() {
+        Native.onNativeCall();
+        return nUnresolvedGlyphs(nativeInstance);
+    }
+
+    public Paragraph updateTextAlign(TextAlign align) {
+        Native.onNativeCall();
+        nUpdateTextAlign(nativeInstance, align.ordinal());
+        return this;
+    }
+
+    public Paragraph updateText(int from, String text) {
+        Native.onNativeCall();
+        nUpdateText(nativeInstance, from, text);
+        return this;
+    }
+
+    public Paragraph updateFontSize(int from, int to, float size) {
+        Native.onNativeCall();
+        nUpdateFontSize(nativeInstance, from, to, size);
+        return this;
+    }
+
+    public Paragraph updateForegroundPaint(int from, int to, Paint paint) {
+        Native.onNativeCall();
+        nUpdateForegroundPaint(nativeInstance, from, to, Native.pointer(paint));
+        return this;
+    }
+
+    public Paragraph updateBackgroundPaint(int from, int to, Paint paint) {
+        Native.onNativeCall();
+        nUpdateBackgroundPaint(nativeInstance, from, to, Native.pointer(paint));
+        return this;
+    }
+
     protected Paragraph(long ptr) { super(ptr, nativeFinalizer); Native.onNativeCall(); }
     private static final  long          nativeFinalizer = nGetNativeFinalizer();
     private static native long          nGetNativeFinalizer();
@@ -200,6 +270,10 @@ public class Paragraph extends Managed {
     private static native float         nGetHeight(long ptr);
     private static native float         nGetMinIntrinsicWidth(long ptr);
     private static native float         nGetMaxIntrinsicWidth(long ptr);
+    private static native float         nGetAlphabeticBaseline(long ptr);
+    private static native float         nGetIdeographicBaseline(long ptr);
+    private static native float         nGetLongestLine(long ptr);
+    private static native boolean       nDidExceedMaxLines(long ptr);
     private static native void          nLayout(long ptr, float width);
     private static native long          nPaint(long ptr, long canvasPtr, float x, float y);
     private static native TextBox[]     nGetRectsForRange(long ptr, int start, int end, int rectHeightStyle, int rectWidthStyle);
@@ -208,4 +282,11 @@ public class Paragraph extends Managed {
     private static native long          nGetWordBoundary(long ptr, int offset);
     private static native LineMetrics[] nGetLineMetrics(long ptr);
     private static native long          nLineNumber(long ptr);
+    private static native void          nMarkDirty(long ptr);
+    private static native int           nUnresolvedGlyphs(long ptr);
+    private static native void          nUpdateTextAlign(long ptr, int textAlign);
+    private static native void          nUpdateText(long ptr, int from, String text);
+    private static native void          nUpdateFontSize(long ptr, int from, int to, float size);
+    private static native void          nUpdateForegroundPaint(long ptr, int from, int to, long paintPtr);
+    private static native void          nUpdateBackgroundPaint(long ptr, int from, int to, long paintPtr);
 }
