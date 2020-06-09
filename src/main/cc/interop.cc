@@ -104,6 +104,23 @@ namespace skija {
         }
     }
 
+    namespace Paragraph {
+        namespace TextBox {
+            jclass cls;
+            jmethodID ctor;
+
+            void onLoad(JNIEnv* env) {
+                jclass local = env->FindClass("org/jetbrains/skija/Paragraph$TextBox");
+                cls  = static_cast<jclass>(env->NewGlobalRef(local));
+                ctor = env->GetMethodID(cls, "<init>", "(FFFFI)V");
+            }
+
+            void onUnload(JNIEnv* env) {
+                env->DeleteGlobalRef(cls);
+            }
+        }
+    }
+
     namespace Path {
         namespace Segment {
             jclass cls;
@@ -305,6 +322,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::FontVariation::onLoad(env);
     skija::IRect::onLoad(env);
     skija::LineMetrics::onLoad(env);
+    skija::Paragraph::TextBox::onLoad(env);
     skija::Path::Segment::onLoad(env);
     skija::Point::onLoad(env);
     skija::Rect::onLoad(env);
@@ -322,6 +340,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::FontVariation::onUnload(env);
     skija::IRect::onUnload(env);
     skija::LineMetrics::onUnload(env);
+    skija::Paragraph::TextBox::onUnload(env);
     skija::Path::Segment::onUnload(env);
     skija::Point::onUnload(env);
     skija::Rect::onUnload(env);

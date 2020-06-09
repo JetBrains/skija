@@ -42,6 +42,13 @@ namespace skija {
         extern jmethodID ctor;
     }
 
+    namespace Paragraph {
+        namespace TextBox {
+            extern jclass cls;
+            extern jmethodID ctor;
+        }
+    }
+
     namespace Path {
         namespace Segment {
             extern jclass cls;

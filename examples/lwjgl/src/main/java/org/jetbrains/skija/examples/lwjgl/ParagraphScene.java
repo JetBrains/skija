@@ -24,7 +24,7 @@ public class ParagraphScene implements Scene {
         canvas.translate(30, 30);
         drawSonnet(canvas);
         canvas.translate(0, 300);
-        drawMetrics(canvas);
+        drawMetrics(canvas, xpos - 30f, ypos - 330f);
     }
 
     public void drawSonnet(Canvas canvas) {
@@ -151,10 +151,11 @@ public class ParagraphScene implements Scene {
         canvas.restore();
     }
 
-    public void drawMetrics(Canvas canvas) {
+    public void drawMetrics(Canvas canvas, float dx, float dy) {
         canvas.save();
          try (TextStyle defaultTs = new TextStyle().setFontSize(24).setColor(0xFF000000);
               TextStyle largeTs   = new TextStyle().setFontSize(36).setColor(0xFF000000);
+              TextStyle smallTs   = new TextStyle().setFontSize(12).setColor(0xFF000000);
               ParagraphStyle ps   = new ParagraphStyle();
               ParagraphBuilder pb = new ParagraphBuilder(ps, fc);
               Paint boundaries    = new Paint().setColor(0xFFFAA6B2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);)
@@ -176,17 +177,46 @@ public class ParagraphScene implements Scene {
             pb.addText(" is false\n");
             pb.popStyle();
 
-            pb.addText("— Vicious circularity, \n  or infinite regress");
+            pb.addText("— Vicious circularity, \n");
+            pb.pushStyle(smallTs);
+            pb.addText("  or infinite regress");
+            pb.popStyle();
 
             try (Paragraph p = pb.build();) {
                 p.layout(Float.POSITIVE_INFINITY);
-                p.paint(canvas, 0, 0);
+
+                // getLineMetrics
                 for (LineMetrics lm: p.getLineMetrics()) {
                     canvas.drawRect(Rect.makeXYWH((float) lm.getLeft(), (float) (lm.getBaseline() - lm.getAscent()), (float) lm.getWidth(), (float) (lm.getAscent() + lm.getDescent())), boundaries);
                     canvas.drawLine((float) lm.getLeft(), (float) lm.getBaseline(), (float) (lm.getLeft() + lm.getWidth()), (float) lm.getBaseline(), boundaries);
                 }
-            }
 
+                // getGlyphPositionAtCoordinate
+                int glyphIdx = p.getGlyphPositionAtCoordinate(dx, dy).position;
+                try (var typeface = fc.defaultFallback();
+                     var font = new SkFont(typeface, 16);
+                     var blob = font.shape("idx: " + glyphIdx, Float.POSITIVE_INFINITY);
+                     var paint = new Paint().setColor(0xFFcc3333)) {
+                    canvas.drawTextBlob(blob, 0, p.getHeight(), font, paint);
+                }
+
+                try (var blue   = new Paint().setColor(0x80b3d7ff);
+                     var orange = new Paint().setColor(0x80ffd7b3);) {
+                    
+                    // getRectsForRange    
+                    for (Paragraph.TextBox box: p.getRectsForRange(0, glyphIdx, Paragraph.RectHeightStyle.TIGHT, Paragraph.RectWidthStyle.TIGHT)) {
+                        canvas.drawRect(box.rect, blue);
+                    }
+
+                    // getWordBoundary
+                    IRange word = p.getWordBoundary(glyphIdx);
+                    for (Paragraph.TextBox box: p.getRectsForRange(word.getStart(), word.getEnd(), Paragraph.RectHeightStyle.TIGHT, Paragraph.RectWidthStyle.TIGHT)) {
+                        canvas.drawRect(box.rect, orange);
+                    }
+                }
+
+                p.paint(canvas, 0, 0);
+            }
         }       
         canvas.restore();
     }
