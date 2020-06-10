@@ -1,9 +1,7 @@
 package org.jetbrains.skija.examples.lwjgl;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.HashMap;
 import org.jetbrains.skija.*;
+import org.jetbrains.skija.paragraph.*;
 
 public class ParagraphScene implements Scene {
     FontCollection fc = new FontCollection();

@@ -1,18 +1,18 @@
 #include <iostream>
 #include <jni.h>
-#include "interop.hh"
+#include "../interop.hh"
 #include "TypefaceFontProvider.h"
 #include "SkTypeface.h"
 
 using namespace skia::textlayout;
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_TypefaceFontProvider_nInit
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_paragraph_TypefaceFontProvider_nInit
   (JNIEnv* env, jclass jclass) {
     TypefaceFontProvider* instance = new TypefaceFontProvider();
     return reinterpret_cast<jlong>(instance);
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_TypefaceFontProvider_nRegisterTypeface
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_TypefaceFontProvider_nRegisterTypeface
   (JNIEnv* env, jclass jclass, jlong ptr, jlong typefacePtr, jstring aliasStr) {
     TypefaceFontProvider* instance = reinterpret_cast<TypefaceFontProvider*>(static_cast<uintptr_t>(ptr));
     SkTypeface* typeface = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(typefacePtr));

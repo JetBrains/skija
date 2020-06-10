@@ -20,7 +20,7 @@ public class Typeface extends RefCounted {
         return new Typeface(nMakeClone(nativeInstance, variations));
     }
 
-    protected Typeface(long nativeInstance) { super(nativeInstance); }
+    public Typeface(long nativeInstance) { super(nativeInstance); }
     private static native long nMakeFromFile(String path, int index);
     private static native long nMakeClone(long ptr, FontVariation[] variations);
 }

@@ -1,4 +1,6 @@
-package org.jetbrains.skija;
+package org.jetbrains.skija.paragraph;
+
+import org.jetbrains.skija.*;
 
 public class FontCollection extends RefCounted {
     public FontCollection() {
@@ -39,9 +41,34 @@ public class FontCollection extends RefCounted {
         return this;
     }
 
+    private static final java.util.function.LongFunction<Typeface> typefaceCtor;
+    private static final java.util.function.LongFunction<FontManager> fontManagerCtor; 
+    static {
+        try {
+            typefaceCtor = (ptr) -> {
+                try {
+                    return Typeface.class.getConstructor​(Long.TYPE).newInstance(ptr);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            };
+            fontManagerCtor = (ptr) -> {
+                try {
+                    return FontManager.class.getConstructor​(Long.TYPE).newInstance(ptr);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            };
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     public FontManager getFallbackManager() {
         Native.onNativeCall();
-        return new FontManager(nGetFallbackManager(nativeInstance));
+        long ptr = nGetFallbackManager(nativeInstance);
+        return fontManagerCtor.apply(ptr);
+        // return new FontManager(ptr);
     }
 
     public Typeface[] findTypefaces(String[] familyNames, FontStyle style) {
@@ -49,19 +76,19 @@ public class FontCollection extends RefCounted {
         long[] ptrs = nFindTypefaces(nativeInstance, familyNames, style.value);
         Typeface[] res = new Typeface[ptrs.length];
         for (int i = 0; i < ptrs.length; ++i) {
-            res[i] = new Typeface(ptrs[i]);
+            res[i] = typefaceCtor.apply(ptrs[i]);
         }
         return res;
     }
 
     public Typeface defaultFallback(int unicode, FontStyle style, String locale) {
         Native.onNativeCall();
-        return new Typeface(nDefaultFallbackChar(nativeInstance, unicode, style.value, locale));
+        return typefaceCtor.apply(nDefaultFallbackChar(nativeInstance, unicode, style.value, locale));
     }
 
     public Typeface defaultFallback() {
         Native.onNativeCall();
-        return new Typeface(nDefaultFallback(nativeInstance));
+        return typefaceCtor.apply(nDefaultFallback(nativeInstance));
     }
 
     public FontCollection setEnableFallback(boolean value) {

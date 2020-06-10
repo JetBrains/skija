@@ -1,4 +1,7 @@
-package org.jetbrains.skija;
+package org.jetbrains.skija.paragraph;
+
+import org.jetbrains.skija.Managed;
+import org.jetbrains.skija.Native;
 
 public class ParagraphStyle extends Managed {
     public ParagraphStyle() { super(nInit(), nativeFinalizer); Native.onNativeCall(); }

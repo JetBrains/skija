@@ -103,7 +103,7 @@ public class FontManager extends RefCounted {
      */
     public static FontManager getDefault() { return DefaultHolder.INSTANCE; }
 
-    protected FontManager(long nativeInstance) { super(nativeInstance); }
+    public FontManager(long nativeInstance) { super(nativeInstance); }
     protected FontManager(long nativeInstance, boolean allowClose) { super(nativeInstance, allowClose); }
 
     private static native int nCountFamilies(long ptr);

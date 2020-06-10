@@ -3,6 +3,7 @@
 #include <memory>
 #include <jni.h>
 #include "interop.hh"
+#include "paragraph/interop.hh"
 
 jintArray javaIntArray(JNIEnv* env, std::vector<int> ints) {
     jintArray res = env->NewIntArray(ints.size());
@@ -85,38 +86,6 @@ namespace skija {
                     env->GetIntField(obj, right), 
                     env->GetIntField(obj, bottom)
                 });
-            }
-        }
-    }
-
-    namespace LineMetrics {
-        jclass cls;
-        jmethodID ctor;
-
-        void onLoad(JNIEnv* env) {
-            jclass local = env->FindClass("org/jetbrains/skija/LineMetrics");
-            cls  = static_cast<jclass>(env->NewGlobalRef(local));
-            ctor = env->GetMethodID(cls, "<init>", "(JJJJZDDDDDDDJ)V");
-        }
-
-        void onUnload(JNIEnv* env) {
-            env->DeleteGlobalRef(cls);
-        }
-    }
-
-    namespace Paragraph {
-        namespace TextBox {
-            jclass cls;
-            jmethodID ctor;
-
-            void onLoad(JNIEnv* env) {
-                jclass local = env->FindClass("org/jetbrains/skija/Paragraph$TextBox");
-                cls  = static_cast<jclass>(env->NewGlobalRef(local));
-                ctor = env->GetMethodID(cls, "<init>", "(FFFFI)V");
-            }
-
-            void onUnload(JNIEnv* env) {
-                env->DeleteGlobalRef(cls);
             }
         }
     }
@@ -321,12 +290,13 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::FontAxisInfo::onLoad(env);
     skija::FontVariation::onLoad(env);
     skija::IRect::onLoad(env);
-    skija::LineMetrics::onLoad(env);
-    skija::Paragraph::TextBox::onLoad(env);
     skija::Path::Segment::onLoad(env);
     skija::Point::onLoad(env);
     skija::Rect::onLoad(env);
     skija::RoundedRect::onLoad(env);
+
+    skija::paragraph::LineMetrics::onLoad(env);
+    skija::paragraph::Paragraph::TextBox::onLoad(env);
     
     return JNI_VERSION_10;
 }
@@ -336,11 +306,12 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_10) != JNI_OK)
         return;
 
+    skija::paragraph::LineMetrics::onUnload(env);
+    skija::paragraph::Paragraph::TextBox::onUnload(env);
+
     skija::FontAxisInfo::onUnload(env);
     skija::FontVariation::onUnload(env);
     skija::IRect::onUnload(env);
-    skija::LineMetrics::onUnload(env);
-    skija::Paragraph::TextBox::onUnload(env);
     skija::Path::Segment::onUnload(env);
     skija::Point::onUnload(env);
     skija::Rect::onUnload(env);

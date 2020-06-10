@@ -1,6 +1,10 @@
-package org.jetbrains.skija;
+package org.jetbrains.skija.paragraph;
 
-public class TypefaceFontProvider extends FontManager { 
+import org.jetbrains.skija.FontManager;
+import org.jetbrains.skija.Native;
+import org.jetbrains.skija.Typeface;
+
+public class TypefaceFontProvider extends FontManager {
     public TypefaceFontProvider() {
         super(nInit());
         Native.onNativeCall();

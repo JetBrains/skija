@@ -1,4 +1,6 @@
-package org.jetbrains.skija;
+package org.jetbrains.skija.paragraph;
+
+import org.jetbrains.skija.*;
 
 import java.util.Objects;
 

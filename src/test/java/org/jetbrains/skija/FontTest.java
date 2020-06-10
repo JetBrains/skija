@@ -1,13 +1,12 @@
 package org.jetbrains.skija;
 
-import java.util.NoSuchElementException;
+import org.jetbrains.skija.paragraph.FontCollection;
+import org.jetbrains.skija.paragraph.TypefaceFontProvider;
 import org.jetbrains.skija.test.Executable;
 import org.jetbrains.skija.test.TestRunner;
 
 import static org.jetbrains.skija.test.TestRunner.assertArrayEquals;
 import static org.jetbrains.skija.test.TestRunner.assertEquals;
-import static org.jetbrains.skija.test.TestRunner.assertNotEquals;
-import static org.jetbrains.skija.test.TestRunner.assertThrows;
 
 public class FontTest implements Executable {
     @Override

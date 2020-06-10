@@ -6,9 +6,9 @@
 
 Active development. Pre-alpha. Everything will change without notice.
 
+Core progress:
+
 ```
-Class                Progress
--------------------------------
 Bitmap               ░░░░░░░░░░
 Canvas               ▓▓▓▓▓▓░░░░
 Color                ▓░░░░░░░░░
@@ -16,7 +16,6 @@ ColorFilter          ▓▓▓▓▓▓▓▓▓▓
 ColorSpace           ▓▓░░░░░░░░
 Data                 ▓▓▓▓▓▓▓▓▓░
 Font                 ▓▓░░░░░░░░
-FontCollection       ▓▓▓▓▓▓▓▓▓▓
 FontManager          ▓▓▓▓▓▓▓▓▓░ 
 FontStyle            ▓▓▓▓▓▓▓▓▓▓
 FontStyleSet         ▓▓▓▓▓▓▓▓▓▓
@@ -25,8 +24,6 @@ ImageFilters         ▓▓▓▓▓▓▓▓▓▓
 MaskFilter           ▓▓▓▓▓▓▓▓▓▓
 Matrix               ▓▓▓░░░░░░░
 Paint                ▓▓▓▓▓▓▓▓░░
-Paragraph            ▓▓▓▓▓▓▓▓▓▓
-ParagraphBuilder     ▓▓▓▓▓▓▓▓░░
 Path                 ▓▓▓▓▓▓▓▓▓▓
 PathEffects          ▓▓▓▓▓▓▓▓▓▓
 Picture              ░░░░░░░░░░
@@ -37,6 +34,18 @@ Stream               ░░░░░░░░░░
 Surface              ▓░░░░░░░░░
 TextBlob             ▓▓░░░░░░░░
 Typeface             ▓▓░░░░░░░░
+```
+
+Paragraph progress:
+
+```
+FontCollection       ▓▓▓▓▓▓▓▓▓░
+LineMetrics          ▓▓▓▓▓▓▓▓▓░
+Paragraph            ▓▓▓▓▓▓▓▓▓▓
+ParagraphCache       ░░░░░░░░░░
+ParagraphStyle       ▓░░░░░░░░░
+ParagraphBuilder     ▓▓▓▓▓▓▓▓░░
+TextStyle            ▓▓░░░░░░░░
 TypefaceFontProvider ▓▓▓▓▓▓▓▓▓▓
 ```
 
@@ -56,7 +65,7 @@ Maven:
   <dependency>
     <groupId>org.jetbrains.skija</groupId>
     <artifactId>skija</artifactId>
-    <version>0.1.0</version>
+    <version>0.0.0</version>
   </dependency>
 </dependencies>
 ```
@@ -71,7 +80,7 @@ repositories {
 }
 
 dependencies {
-  api "org.jetbrains.skija:skija:0.1.0"
+  api "org.jetbrains.skija:skija:0.0.0"
 }
 ```
 
@@ -145,14 +154,17 @@ Prerequisites:
 
 ## Running examples
 
-
 Examples require latest master build of Skija installed locally in `.m2` (see [Building](#building-skija)).
+
+```sh
+./script/install.sh
+```
+
 GLFW (via LWJGL), Java and Maven:
 
 ```sh
-cd examples/lwjgl
-./script/build.sh
-./script/run.sh
+cd examplpes/lwjgl
+./script/build.sh && ./script/run.sh
 ```
 
 ![](extras/tree.png)

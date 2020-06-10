@@ -1,4 +1,7 @@
-package org.jetbrains.skija;
+package org.jetbrains.skija.paragraph;
+
+import org.jetbrains.skija.Managed;
+import org.jetbrains.skija.Native;
 
 public class ParagraphBuilder extends Managed {
     public ParagraphBuilder(ParagraphStyle style, FontCollection fc) {

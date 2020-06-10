@@ -23,7 +23,7 @@ public class FontStyle {
     public static final int WIDTH_EXTRA_EXPANDED  = 8;
     public static final int WIDTH_ULTRA_EXPANDED  = 9;
 
-    protected final int value;
+    public final int value;
 
     public enum Slant {
         UPRIGHT,
