@@ -2,4 +2,4 @@
 
 cd "`dirname $0`/.."
 
-javadoc -d docs -sourcepath src/main/java -public org.jetbrains.skija
+javadoc -d docs/api -sourcepath src/main/java -public org.jetbrains.skija
