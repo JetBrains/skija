@@ -9,7 +9,13 @@ if [ ! -f target/build_timestamp ]; then
     touch -t 200912310000 target/build_timestamp
 fi
 
-find src -name "*.java" -newer target/build_timestamp | xargs javac --release 11 -cp target/classes:target/test-classes
+LOMBOK=~/.m2/repository/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar
+if [[ ! -f $LOMBOK ]]; then
+    # fetch missing dependencies
+    mvn compile
+fi
+
+find src -name "*.java" -newer target/build_timestamp | xargs javac --release 11 -cp target/classes:target/test-classes:$LOMBOK
 
 mkdir -p target/classes/org/jetbrains/skija
 find src/main/java -name '*.class' | xargs -I '{}' mv '{}' target/classes/org/jetbrains/skija

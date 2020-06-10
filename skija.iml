@@ -14,5 +14,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.18.12" level="project" />
+    <orderEntry type="library" name="lwjgl-3.2.3" level="project" />
+    <orderEntry type="library" name="lwjgl-glfw-3.2.3" level="project" />
+    <orderEntry type="library" name="lwjgl-opengl-3.2.3" level="project" />
   </component>
 </module>
