@@ -2,12 +2,13 @@ package org.jetbrains.skija.paragraph;
 
 import org.jetbrains.skija.FontManager;
 import org.jetbrains.skija.Native;
+import org.jetbrains.skija.Stats;
 import org.jetbrains.skija.Typeface;
 
 public class TypefaceFontProvider extends FontManager {
     public TypefaceFontProvider() {
         super(nInit());
-        Native.onNativeCall();
+        Stats.onNativeCall();
     }
 
     public TypefaceFontProvider registerTypeface(Typeface typeface) {
@@ -15,8 +16,8 @@ public class TypefaceFontProvider extends FontManager {
     }
 
     public TypefaceFontProvider registerTypeface(Typeface typeface, String alias) {
-        Native.onNativeCall();
-        nRegisterTypeface(nativeInstance, Native.pointer(typeface), alias);
+        Stats.onNativeCall();
+        nRegisterTypeface(_ptr, Native.getPtr(typeface), alias);
         return this;
     }
 

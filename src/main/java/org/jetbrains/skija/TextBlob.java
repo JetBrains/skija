@@ -6,7 +6,7 @@ public class TextBlob extends Managed {
     }
 
     public Rect getBounds() {
-        float[] bounds = nBounds(nativeInstance);
+        float[] bounds = nBounds(_ptr);
         return Rect.makeLTRB(bounds[0], bounds[1], bounds[2], bounds[3]);
     }
 

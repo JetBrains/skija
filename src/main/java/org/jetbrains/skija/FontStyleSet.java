@@ -1,35 +1,35 @@
 package org.jetbrains.skija;
 
-public class FontStyleSet extends RefCounted {
+public class FontStyleSet extends RefCnt {
     public static FontStyleSet createEmpty() {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new FontStyleSet(nCreateEmpty());
     }
 
     public int count() {
-        Native.onNativeCall();
-        return nCount(nativeInstance);
+        Stats.onNativeCall();
+        return nCount(_ptr);
     }
 
     public FontStyle getStyle(int index) {
-        Native.onNativeCall();
-        return new FontStyle(nGetStyle(nativeInstance, index));
+        Stats.onNativeCall();
+        return new FontStyle(nGetStyle(_ptr, index));
     }    
 
     public String getStyleName(int index) {
-        Native.onNativeCall();
-        return nGetStyleName(nativeInstance, index);
+        Stats.onNativeCall();
+        return nGetStyleName(_ptr, index);
     }        
 
     public Typeface createTypeface(int index) {
-        Native.onNativeCall();
-        long ptr = nCreateTypeface(nativeInstance, index);
+        Stats.onNativeCall();
+        long ptr = nCreateTypeface(_ptr, index);
         return ptr == 0 ? null : new Typeface(ptr);
     }    
 
     public Typeface matchStyle(FontStyle style) {
-        Native.onNativeCall();
-        long ptr = nMatchStyle(nativeInstance, style.value);
+        Stats.onNativeCall();
+        long ptr = nMatchStyle(_ptr, style.value);
         return ptr == 0 ? null : new Typeface(ptr);
     }    
 

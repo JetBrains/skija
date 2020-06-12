@@ -134,54 +134,54 @@ public class Paragraph extends Managed {
     }
 
     public float getMaxWidth() {
-        Native.onNativeCall();
-        return nGetMaxWidth(nativeInstance);
+        Stats.onNativeCall();
+        return nGetMaxWidth(_ptr);
     }
 
     public float getHeight() {
-        Native.onNativeCall();
-        return nGetHeight(nativeInstance);
+        Stats.onNativeCall();
+        return nGetHeight(_ptr);
     }
 
     public float getMinIntrinsicWidth() {
-        Native.onNativeCall();
-        return nGetMinIntrinsicWidth(nativeInstance);
+        Stats.onNativeCall();
+        return nGetMinIntrinsicWidth(_ptr);
     }
 
     public float getMaxIntrinsicWidth() {
-        Native.onNativeCall();
-        return nGetMaxIntrinsicWidth(nativeInstance);
+        Stats.onNativeCall();
+        return nGetMaxIntrinsicWidth(_ptr);
     }
 
     public float getAlphabeticBaseline() {
-        Native.onNativeCall();
-        return nGetAlphabeticBaseline(nativeInstance);
+        Stats.onNativeCall();
+        return nGetAlphabeticBaseline(_ptr);
     }
 
     public float getIdeographicBaseline() {
-        Native.onNativeCall();
-        return nGetIdeographicBaseline(nativeInstance);
+        Stats.onNativeCall();
+        return nGetIdeographicBaseline(_ptr);
     }
 
     public float getLongestLine() {
-        Native.onNativeCall();
-        return nGetLongestLine(nativeInstance);
+        Stats.onNativeCall();
+        return nGetLongestLine(_ptr);
     }
 
     public boolean didExceedMaxLines() {
-        Native.onNativeCall();
-        return nDidExceedMaxLines(nativeInstance);
+        Stats.onNativeCall();
+        return nDidExceedMaxLines(_ptr);
     }
 
     public Paragraph layout(float width) {
-        Native.onNativeCall();
-        nLayout(nativeInstance, width);
+        Stats.onNativeCall();
+        nLayout(_ptr, width);
         return this;
     }
 
     public Paragraph paint(Canvas canvas, float x, float y) {
-        Native.onNativeCall();
-        nPaint(nativeInstance, Native.pointer(canvas), x, y);
+        Stats.onNativeCall();
+        nPaint(_ptr, Native.getPtr(canvas), x, y);
         return this;
     }
 
@@ -190,18 +190,18 @@ public class Paragraph extends Managed {
      * start and end glyph indexes, including start and excluding end.
      */
     public TextBox[] getRectsForRange(int start, int end, RectHeightStyle rectHeightStyle, RectWidthStyle rectWidthStyle) {
-        Native.onNativeCall();
-        return nGetRectsForRange(nativeInstance, start, end, rectHeightStyle.ordinal(), rectWidthStyle.ordinal());
+        Stats.onNativeCall();
+        return nGetRectsForRange(_ptr, start, end, rectHeightStyle.ordinal(), rectWidthStyle.ordinal());
     }
 
     public TextBox[] getRectsForPlaceholders() {
-        Native.onNativeCall();
-        return nGetRectsForPlaceholders(nativeInstance);
+        Stats.onNativeCall();
+        return nGetRectsForPlaceholders(_ptr);
     }
 
     public PositionWithAffinity getGlyphPositionAtCoordinate(float dx, float dy) {
-        Native.onNativeCall();
-        int res = nGetGlyphPositionAtCoordinate(nativeInstance, dx, dy);
+        Stats.onNativeCall();
+        int res = nGetGlyphPositionAtCoordinate(_ptr, dx, dy);
         if (res >= 0)
             return new PositionWithAffinity(res, Affinity.DOWNSTREAM);
         else
@@ -209,63 +209,63 @@ public class Paragraph extends Managed {
     }
 
     public IRange getWordBoundary(int offset) {
-        Native.onNativeCall();
-        long l = nGetWordBoundary(nativeInstance, offset);
+        Stats.onNativeCall();
+        long l = nGetWordBoundary(_ptr, offset);
         return new IRange((int) (l >>> 32), (int) (l & 0xFFFFFFFF));
     }
 
     public LineMetrics[] getLineMetrics() {
-        Native.onNativeCall();
-        return nGetLineMetrics(nativeInstance);
+        Stats.onNativeCall();
+        return nGetLineMetrics(_ptr);
     }
 
     public long lineNumber() {
-        Native.onNativeCall();
-        return nLineNumber(nativeInstance);
+        Stats.onNativeCall();
+        return nLineNumber(_ptr);
     }
 
     public Paragraph markDirty() {
-        Native.onNativeCall();
-        nMarkDirty(nativeInstance);
+        Stats.onNativeCall();
+        nMarkDirty(_ptr);
         return this;
     }
 
     public int unresolvedGlyphs() {
-        Native.onNativeCall();
-        return nUnresolvedGlyphs(nativeInstance);
+        Stats.onNativeCall();
+        return nUnresolvedGlyphs(_ptr);
     }
 
     public Paragraph updateTextAlign(TextAlign align) {
-        Native.onNativeCall();
-        nUpdateTextAlign(nativeInstance, align.ordinal());
+        Stats.onNativeCall();
+        nUpdateTextAlign(_ptr, align.ordinal());
         return this;
     }
 
     public Paragraph updateText(int from, String text) {
-        Native.onNativeCall();
-        nUpdateText(nativeInstance, from, text);
+        Stats.onNativeCall();
+        nUpdateText(_ptr, from, text);
         return this;
     }
 
     public Paragraph updateFontSize(int from, int to, float size) {
-        Native.onNativeCall();
-        nUpdateFontSize(nativeInstance, from, to, size);
+        Stats.onNativeCall();
+        nUpdateFontSize(_ptr, from, to, size);
         return this;
     }
 
     public Paragraph updateForegroundPaint(int from, int to, Paint paint) {
-        Native.onNativeCall();
-        nUpdateForegroundPaint(nativeInstance, from, to, Native.pointer(paint));
+        Stats.onNativeCall();
+        nUpdateForegroundPaint(_ptr, from, to, Native.getPtr(paint));
         return this;
     }
 
     public Paragraph updateBackgroundPaint(int from, int to, Paint paint) {
-        Native.onNativeCall();
-        nUpdateBackgroundPaint(nativeInstance, from, to, Native.pointer(paint));
+        Stats.onNativeCall();
+        nUpdateBackgroundPaint(_ptr, from, to, Native.getPtr(paint));
         return this;
     }
 
-    protected Paragraph(long ptr) { super(ptr, nativeFinalizer); Native.onNativeCall(); }
+    protected Paragraph(long ptr) { super(ptr, nativeFinalizer); Stats.onNativeCall(); }
     private static final  long          nativeFinalizer = nGetNativeFinalizer();
     private static native long          nGetNativeFinalizer();
     private static native float         nGetMaxWidth(long ptr);

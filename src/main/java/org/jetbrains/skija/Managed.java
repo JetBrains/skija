@@ -1,59 +1,52 @@
 package org.jetbrains.skija;
 
 import java.lang.ref.Cleaner;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class Managed extends Native implements AutoCloseable {
-    protected final boolean allowClose;
+    public final boolean _allowClose;
+    public Cleaner.Cleanable _cleanable;
 
-    protected Cleaner.Cleanable finalizer;
-    public static boolean stats = false;
-
-    protected Managed(long nativePtr, long nativeFinalizer) {
-        this(nativePtr, nativeFinalizer, true);
+    public Managed(long ptr, long finalizerPtr) {
+        this(ptr, finalizerPtr, true);
     }
 
-    protected Managed(long nativePtr, long nativeFinalizer, boolean allowClose) {
-        super(nativePtr);
-        String name = getClass().getSimpleName();
-        if (stats)
-            allocated.merge(name, 1, Integer::sum);
-        finalizer = cleaner.register(this, new CleanerThunk(name, nativePtr, nativeFinalizer));
-        this.allowClose = allowClose;
+    public Managed(long ptr, long finalizerPtr, boolean allowClose) {
+        super(ptr);
+        String className = getClass().getSimpleName();
+        Stats.onAllocated(className);
+        this._cleanable = _cleaner.register(this, new CleanerThunk(className, ptr, finalizerPtr));
+        this._allowClose = allowClose;
     }
 
     @Override
     public void close() {
-        if (allowClose) {
-            finalizer.clean();
-            finalizer = null;
-            nativeInstance = 0;
+        if (_allowClose) {
+            _cleanable.clean();
+            _cleanable = null;
+            _ptr = 0;
         } else
-            throw new RuntimeException("close() not allowed on " + this);
+            throw new RuntimeException("close() is not allowed on " + this);
     }
 
-    public static Map<String, Integer> allocated = new ConcurrentHashMap<>();
-    private static Cleaner cleaner = Cleaner.create();
+    public static Cleaner _cleaner = Cleaner.create();
 
-    private static class CleanerThunk implements Runnable {
-        private String name;
-        private long nativePtr;
-        private long nativeFinalizer;
+    public static class CleanerThunk implements Runnable {
+        public String _className;
+        public long _ptr;
+        public long _finalizer;
 
-        public CleanerThunk(String name, long nativePtr, long nativeFinalizer) {
-            this.name = name;
-            this.nativePtr = nativePtr;
-            this.nativeFinalizer = nativeFinalizer;
+        public CleanerThunk(String className, long ptr, long finalizer) {
+            this._className = className;
+            this._ptr = ptr;
+            this._finalizer = finalizer;
         }
 
         public void run() {
-            if (stats)
-                allocated.merge(name, -1, Integer::sum);
-            Native.onNativeCall(); 
-            applyNativeFinalizer(nativePtr, nativeFinalizer);
+            Stats.onDeallocated(_className);
+            Stats.onNativeCall();
+            _nInvokeFinalizer(_finalizer, _ptr);
         }
     }
 
-    public static native void applyNativeFinalizer(long nativePtr, long nativeFinalizer);
+    public static native void _nInvokeFinalizer(long finalizerPtr, long ptr);
 }

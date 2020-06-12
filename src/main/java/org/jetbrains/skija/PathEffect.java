@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-public class PathEffect extends RefCounted {
+public class PathEffect extends RefCnt {
     public enum Style {
         /** translate the shape to each position */
         TRANSLATE,
@@ -11,48 +11,48 @@ public class PathEffect extends RefCounted {
     }
 
     public PathEffect sum(PathEffect second) {
-        Native.onNativeCall();
-        return new PathEffect(nSum(nativeInstance, Native.pointer(second)));
+        Stats.onNativeCall();
+        return new PathEffect(nSum(_ptr, Native.getPtr(second)));
     }
     
     public PathEffect compose(PathEffect inner) {
-        Native.onNativeCall();
-        return new PathEffect(nCompose(nativeInstance, Native.pointer(inner)));
+        Stats.onNativeCall();
+        return new PathEffect(nCompose(_ptr, Native.getPtr(inner)));
     }
     
     public Rect computeFastBounds(Rect src) {
-        Native.onNativeCall();
-        return nComputeFastBounds(nativeInstance, src.left, src.top, src.right, src.bottom);
+        Stats.onNativeCall();
+        return nComputeFastBounds(_ptr, src.left, src.top, src.right, src.bottom);
     }
 
     public static PathEffect path1D(Path path, float advance, float phase, Style style) {
-        Native.onNativeCall();
-        return new PathEffect(nPath1D(Native.pointer(path), advance, phase, style.ordinal()));
+        Stats.onNativeCall();
+        return new PathEffect(nPath1D(Native.getPtr(path), advance, phase, style.ordinal()));
     }
 
     public static PathEffect path2D(float[] matrix, Path path) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new PathEffect(nPath2D(matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8],
-            Native.pointer(path)));
+            Native.getPtr(path)));
     }
 
     public static PathEffect line2D(float width, float[] matrix) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new PathEffect(nLine2D(width, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8]));
     }
 
     public static PathEffect corner(float radius) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new PathEffect(nCorner(radius));
     }
 
     public static PathEffect dash(float[] intervals, float phase) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new PathEffect(nDash(intervals, phase));
     }
 
     public static PathEffect discrete(float segLength, float dev, int seed) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new PathEffect(nDiscrete(segLength, dev, seed));
     }
 

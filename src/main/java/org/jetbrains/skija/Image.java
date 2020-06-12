@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-public class Image extends RefCounted {
+public class Image extends RefCnt {
     private int width = -1;
     private int height = -1;
 
@@ -9,7 +9,7 @@ public class Image extends RefCounted {
     }
 
     public static Image fromEncoded(byte[] bytes, IRect subset) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new Image(nFromEncoded(bytes, subset));
     }
 
@@ -24,8 +24,8 @@ public class Image extends RefCounted {
     }
 
     protected void dimensions() {
-        Native.onNativeCall();
-        long res = nDimensions(nativeInstance);
+        Stats.onNativeCall();
+        long res = nDimensions(_ptr);
         width = (int) (res & 0xFFFFFFFF);
         height = (int) (res >>> 32);
     }

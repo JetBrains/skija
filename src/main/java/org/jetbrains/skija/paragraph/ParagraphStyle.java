@@ -2,13 +2,14 @@ package org.jetbrains.skija.paragraph;
 
 import org.jetbrains.skija.Managed;
 import org.jetbrains.skija.Native;
+import org.jetbrains.skija.Stats;
 
 public class ParagraphStyle extends Managed {
-    public ParagraphStyle() { super(nInit(), nativeFinalizer); Native.onNativeCall(); }
+    public ParagraphStyle() { super(nInit(), nativeFinalizer); Stats.onNativeCall(); }
 
     public ParagraphStyle setTextStyle(TextStyle style) {
-        Native.onNativeCall();
-        nSetTextStyle(nativeInstance, Native.pointer(style));
+        Stats.onNativeCall();
+        nSetTextStyle(_ptr, Native.getPtr(style));
         return this;
     }
 

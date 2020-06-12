@@ -1,54 +1,54 @@
 package org.jetbrains.skija;
 
-public class ColorFilter extends RefCounted {
+public class ColorFilter extends RefCnt {
     public MaskFilter compose(MaskFilter inner) {
-        Native.onNativeCall();
-        return new MaskFilter(nCompose(nativeInstance, Native.pointer(inner)));
+        Stats.onNativeCall();
+        return new MaskFilter(nCompose(_ptr, Native.getPtr(inner)));
     }
 
     public ColorFilter composed(ColorFilter inner) {
-        Native.onNativeCall();
-        return new ColorFilter(nCompose(nativeInstance, Native.pointer(inner)));
+        Stats.onNativeCall();
+        return new ColorFilter(nCompose(_ptr, Native.getPtr(inner)));
     }
 
     public static ColorFilter compose(ColorFilter outer, ColorFilter inner) {
-        Native.onNativeCall();
-        return new ColorFilter(nCompose(Native.pointer(outer), Native.pointer(inner)));
+        Stats.onNativeCall();
+        return new ColorFilter(nCompose(Native.getPtr(outer), Native.getPtr(inner)));
     }
 
     public static ColorFilter blend(int color, BlendMode mode) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new ColorFilter(nBlend(color, mode.ordinal()));
     }
 
     public static ColorFilter matrix(float[] rowMajor) {
         assert rowMajor.length == 20 : "Expected 20 elements, got " + rowMajor.length;
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new ColorFilter(nMatrix(rowMajor));
     }
 
     public static ColorFilter hslaMatrix(float[] rowMajor) {
         assert rowMajor.length == 20 : "Expected 20 elements, got " + rowMajor.length;
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new ColorFilter(nHSLAMatrix(rowMajor));
     }
 
     private static class LinearToSRGBGammaHolder {
-        static { Native.onNativeCall(); }
+        static { Stats.onNativeCall(); }
         public static final ColorFilter INSTANCE = new ColorFilter(nLinearToSRGBGamma(), false);
     }
 
     public static ColorFilter getLinearToSRGBGamma() { return LinearToSRGBGammaHolder.INSTANCE; }
 
     private static class SRGBToLinearGammaHolder {
-        static { Native.onNativeCall(); }
+        static { Stats.onNativeCall(); }
         public static final ColorFilter INSTANCE = new ColorFilter(nSRGBToLinearGamma(), false);
     }
 
     public static ColorFilter getSRGBToLinearGamma() { return SRGBToLinearGammaHolder.INSTANCE; }
 
     public static ColorFilter lerp(float t, ColorFilter dst, ColorFilter src) {
-        return new ColorFilter(nLerp(t, Native.pointer(dst), Native.pointer(src)));
+        return new ColorFilter(nLerp(t, Native.getPtr(dst), Native.getPtr(src)));
     }
 
     public static ColorFilter lighting(int colorMul, int colorAdd) {
@@ -80,7 +80,7 @@ public class ColorFilter extends RefCounted {
     }
 
     private static class LumaHolder {
-        static { Native.onNativeCall(); }
+        static { Stats.onNativeCall(); }
         public static final ColorFilter INSTANCE = new ColorFilter(nLuma(), false);
     }
 

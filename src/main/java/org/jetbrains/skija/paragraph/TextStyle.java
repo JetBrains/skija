@@ -1,26 +1,26 @@
 package org.jetbrains.skija.paragraph;
 
 import org.jetbrains.skija.Managed;
-import org.jetbrains.skija.Native;
+import org.jetbrains.skija.Stats;
 
 public class TextStyle extends Managed {
-    public TextStyle() { super(nInit(), nativeFinalizer); Native.onNativeCall(); }
+    public TextStyle() { super(nInit(), nativeFinalizer); Stats.onNativeCall(); }
 
     public TextStyle setColor(int color) {
-        Native.onNativeCall();
-        nSetColor(nativeInstance, color);
+        Stats.onNativeCall();
+        nSetColor(_ptr, color);
         return this;
     }
 
     public TextStyle setFontSize(float size) {
-        Native.onNativeCall();
-        nSetFontSize(nativeInstance, size);
+        Stats.onNativeCall();
+        nSetFontSize(_ptr, size);
         return this;
     }
 
     public TextStyle setFontFamilies(String[] families) {
-        Native.onNativeCall();
-        nSetFontFamilies(nativeInstance, families);
+        Stats.onNativeCall();
+        nSetFontFamilies(_ptr, families);
         return this;
     }
 

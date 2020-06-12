@@ -2,32 +2,32 @@ package org.jetbrains.skija.paragraph;
 
 import org.jetbrains.skija.*;
 
-public class FontCollection extends RefCounted {
+public class FontCollection extends RefCnt {
     public FontCollection() {
         this(nInit());
-        Native.onNativeCall();
+        Stats.onNativeCall();
     }
 
     public long getFontManagersCount() {
-        Native.onNativeCall();
-        return nGetFontManagersCount(nativeInstance);
+        Stats.onNativeCall();
+        return nGetFontManagersCount(_ptr);
     }
     
     public FontCollection setAssetFontManager(FontManager fontManager) {
-        Native.onNativeCall();
-        nSetAssetFontManager(nativeInstance, Native.pointer(fontManager));
+        Stats.onNativeCall();
+        nSetAssetFontManager(_ptr, Native.getPtr(fontManager));
         return this;
     }
 
     public FontCollection setDynamicFontManager(FontManager fontManager) {
-        Native.onNativeCall();
-        nSetDynamicFontManager(nativeInstance, Native.pointer(fontManager));
+        Stats.onNativeCall();
+        nSetDynamicFontManager(_ptr, Native.getPtr(fontManager));
         return this;
     }
 
     public FontCollection setTestFontManager(FontManager fontManager) {
-        Native.onNativeCall();
-        nSetTestFontManager(nativeInstance, Native.pointer(fontManager));
+        Stats.onNativeCall();
+        nSetTestFontManager(_ptr, Native.getPtr(fontManager));
         return this;
     }
 
@@ -36,8 +36,8 @@ public class FontCollection extends RefCounted {
     }
 
     public FontCollection setDefaultFontManager(FontManager fontManager, String defaultFamilyName) {
-        Native.onNativeCall();
-        nSetDefaultFontManager(nativeInstance, Native.pointer(fontManager), defaultFamilyName);
+        Stats.onNativeCall();
+        nSetDefaultFontManager(_ptr, Native.getPtr(fontManager), defaultFamilyName);
         return this;
     }
 
@@ -65,15 +65,15 @@ public class FontCollection extends RefCounted {
     }
     
     public FontManager getFallbackManager() {
-        Native.onNativeCall();
-        long ptr = nGetFallbackManager(nativeInstance);
+        Stats.onNativeCall();
+        long ptr = nGetFallbackManager(_ptr);
         return fontManagerCtor.apply(ptr);
         // return new FontManager(ptr);
     }
 
     public Typeface[] findTypefaces(String[] familyNames, FontStyle style) {
-        Native.onNativeCall();
-        long[] ptrs = nFindTypefaces(nativeInstance, familyNames, style.value);
+        Stats.onNativeCall();
+        long[] ptrs = nFindTypefaces(_ptr, familyNames, style.value);
         Typeface[] res = new Typeface[ptrs.length];
         for (int i = 0; i < ptrs.length; ++i) {
             res[i] = typefaceCtor.apply(ptrs[i]);
@@ -82,18 +82,18 @@ public class FontCollection extends RefCounted {
     }
 
     public Typeface defaultFallback(int unicode, FontStyle style, String locale) {
-        Native.onNativeCall();
-        return typefaceCtor.apply(nDefaultFallbackChar(nativeInstance, unicode, style.value, locale));
+        Stats.onNativeCall();
+        return typefaceCtor.apply(nDefaultFallbackChar(_ptr, unicode, style.value, locale));
     }
 
     public Typeface defaultFallback() {
-        Native.onNativeCall();
-        return typefaceCtor.apply(nDefaultFallback(nativeInstance));
+        Stats.onNativeCall();
+        return typefaceCtor.apply(nDefaultFallback(_ptr));
     }
 
     public FontCollection setEnableFallback(boolean value) {
-        Native.onNativeCall();
-        nSetEnableFallback(nativeInstance, value);
+        Stats.onNativeCall();
+        nSetEnableFallback(_ptr, value);
         return this;
     }
 

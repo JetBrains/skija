@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-public class Surface extends RefCounted {
+public class Surface extends RefCnt {
     public enum Origin { TOP_LEFT, BOTTOM_LEFT }
 
     public enum ColorType {
@@ -33,14 +33,14 @@ public class Surface extends RefCounted {
     public BackendRenderTarget renderTarget;
 
     public static Surface makeFromBackendRenderTarget(Context context, BackendRenderTarget rt, Origin origin, ColorType colorType, ColorSpace colorSpace) {
-        Native.onNativeCall(); 
-        long nativeInstance = nMakeFromBackendRenderTarget(context.nativeInstance, rt.nativeInstance, origin.ordinal(), colorType.ordinal(), Native.pointer(colorSpace));
+        Stats.onNativeCall();
+        long nativeInstance = nMakeFromBackendRenderTarget(context._ptr, rt._ptr, origin.ordinal(), colorType.ordinal(), Native.getPtr(colorSpace));
         return new Surface(nativeInstance, context, rt);
     }
 
     public Canvas getCanvas() {
-        Native.onNativeCall(); 
-        return new Canvas(nGetCanvas(nativeInstance), this);
+        Stats.onNativeCall();
+        return new Canvas(nGetCanvas(_ptr), this);
     }
 
     protected Surface(long nativeInstance, Context context, BackendRenderTarget rt) {

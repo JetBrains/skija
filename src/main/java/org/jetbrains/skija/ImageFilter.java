@@ -2,7 +2,7 @@ package org.jetbrains.skija;
 
 import java.util.Arrays;
 
-public class ImageFilter extends RefCounted {
+public class ImageFilter extends RefCnt {
     public enum FilterQuality {
         /** fastest but lowest quality, typically nearest-neighbor */
         NONE,
@@ -17,13 +17,13 @@ public class ImageFilter extends RefCounted {
     public enum ColorChannel { R, G, B, A }
 
     public static ImageFilter alphaThreshold(Region r, float innerMin, float outerMax, ImageFilter input, IRect crop) {
-        Native.onNativeCall(); 
-        return new ImageFilter(nAlphaThreshold(Native.pointer(r), innerMin, outerMax, Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nAlphaThreshold(Native.getPtr(r), innerMin, outerMax, Native.getPtr(input), crop));
     }
 
     public static ImageFilter arithmetic(float k1, float k2, float k3, float k4, boolean enforcePMColor, ImageFilter bg, ImageFilter fg, IRect crop) {
-        Native.onNativeCall(); 
-        return new ImageFilter(nArithmetic(k1, k2, k3, k4, enforcePMColor, Native.pointer(bg), Native.pointer(fg), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nArithmetic(k1, k2, k3, k4, enforcePMColor, Native.getPtr(bg), Native.getPtr(fg), crop));
     }
 
     public static ImageFilter blur(float sigmaX, float sigmaY, TileMode mode) {
@@ -31,23 +31,23 @@ public class ImageFilter extends RefCounted {
     }
 
     public static ImageFilter blur(float sigmaX, float sigmaY, TileMode mode, ImageFilter input, IRect crop) {
-        Native.onNativeCall(); 
-        return new ImageFilter(nBlur(sigmaX, sigmaY, mode.ordinal(), Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nBlur(sigmaX, sigmaY, mode.ordinal(), Native.getPtr(input), crop));
     }
 
     public static ImageFilter colorFilter(ColorFilter f, ImageFilter input, IRect crop) {
-        Native.onNativeCall(); 
-        return new ImageFilter(nColorFilter(Native.pointer(f), Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nColorFilter(Native.getPtr(f), Native.getPtr(input), crop));
     }
 
     public static ImageFilter compose(ImageFilter outer, ImageFilter inner) {
-        Native.onNativeCall(); 
-        return new ImageFilter(nCompose(Native.pointer(outer), Native.pointer(inner)));
+        Stats.onNativeCall();
+        return new ImageFilter(nCompose(Native.getPtr(outer), Native.getPtr(inner)));
     }
 
     public static ImageFilter displacementMap(ColorChannel x, ColorChannel y, float scale, ImageFilter displacement, ImageFilter color, IRect crop) {
-        Native.onNativeCall(); 
-        return new ImageFilter(nDisplacementMap(x.ordinal(), y.ordinal(), scale, Native.pointer(displacement), Native.pointer(color), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nDisplacementMap(x.ordinal(), y.ordinal(), scale, Native.getPtr(displacement), Native.getPtr(color), crop));
     }
 
     public static ImageFilter dropShadow(float dx, float dy, float sigmaX, float sigmaY, int color) {
@@ -55,8 +55,8 @@ public class ImageFilter extends RefCounted {
     }
 
     public static ImageFilter dropShadow(float dx, float dy, float sigmaX, float sigmaY, int color, ImageFilter input, IRect crop) {
-        Native.onNativeCall(); 
-        return new ImageFilter(nDropShadow(dx, dy, sigmaX, sigmaY, color, Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nDropShadow(dx, dy, sigmaX, sigmaY, color, Native.getPtr(input), crop));
     }
 
     public static ImageFilter dropShadowOnly(float dx, float dy, float sigmaX, float sigmaY, int color) {
@@ -64,8 +64,8 @@ public class ImageFilter extends RefCounted {
     }
 
     public static ImageFilter dropShadowOnly(float dx, float dy, float sigmaX, float sigmaY, int color, ImageFilter input, IRect crop) {
-        Native.onNativeCall(); 
-        return new ImageFilter(nDropShadowOnly(dx, dy, sigmaX, sigmaY, color, Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nDropShadowOnly(dx, dy, sigmaX, sigmaY, color, Native.getPtr(input), crop));
     }
 
     public static ImageFilter image(Image image) {
@@ -74,40 +74,40 @@ public class ImageFilter extends RefCounted {
     }
 
     public static ImageFilter image(Image image, Rect src, Rect dst, FilterQuality q) {
-        Native.onNativeCall(); 
-        return new ImageFilter(nImage(Native.pointer(image), src.left, src.top, src.right, src.bottom, dst.left, dst.top, dst.right, dst.bottom, q.ordinal()));
+        Stats.onNativeCall();
+        return new ImageFilter(nImage(Native.getPtr(image), src.left, src.top, src.right, src.bottom, dst.left, dst.top, dst.right, dst.bottom, q.ordinal()));
     }
 
     public static ImageFilter magnifier(Rect r, float inset, ImageFilter input, IRect crop) {
-        Native.onNativeCall();
-        return new ImageFilter(nMagnifier(r.left, r.top, r.right, r.bottom, inset, Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nMagnifier(r.left, r.top, r.right, r.bottom, inset, Native.getPtr(input), crop));
     }
 
     public static ImageFilter matrixConvolution(int kernelW, int kernelH, float[] kernel, float gain, float bias, int offsetX, int offsetY, TileMode tileMode, boolean convolveAlpha, ImageFilter input, IRect crop) {
-        Native.onNativeCall();
-        return new ImageFilter(nMatrixConvolution(kernelW, kernelH, kernel, gain, bias, offsetX, offsetY, tileMode.ordinal(), convolveAlpha, Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nMatrixConvolution(kernelW, kernelH, kernel, gain, bias, offsetX, offsetY, tileMode.ordinal(), convolveAlpha, Native.getPtr(input), crop));
     }
 
     public static ImageFilter matrixTransform(float[] matrix, FilterQuality q, ImageFilter input) {
-        Native.onNativeCall();
-        return new ImageFilter(nMatrixTransform(matrix, q.ordinal(), Native.pointer(input)));
+        Stats.onNativeCall();
+        return new ImageFilter(nMatrixTransform(matrix, q.ordinal(), Native.getPtr(input)));
     }
 
     public static ImageFilter merge(ImageFilter[] filters, IRect crop) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         long[] filterPtrs = new long[filters.length];
-        Arrays.setAll(filterPtrs, i -> Native.pointer(filters[i]));
+        Arrays.setAll(filterPtrs, i -> Native.getPtr(filters[i]));
         return new ImageFilter(nMerge(filterPtrs, crop));
     }
 
     public static ImageFilter offset(float dx, float dy, ImageFilter input, IRect crop) {
-        Native.onNativeCall();
-        return new ImageFilter(nOffset(dx, dy, Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nOffset(dx, dy, Native.getPtr(input), crop));
     }
 
     public static ImageFilter paint(Paint paint, IRect crop) {
-        Native.onNativeCall();
-        return new ImageFilter(nPaint(Native.pointer(paint), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nPaint(Native.getPtr(paint), crop));
     }
 
     // public static ImageFilter picture(Picture picture, Rect target) {
@@ -116,53 +116,53 @@ public class ImageFilter extends RefCounted {
     // }
 
     public static ImageFilter tile(Rect src, Rect dst, ImageFilter input) {
-        Native.onNativeCall();
-        return new ImageFilter(nTile(src.left, src.top, src.right, src.bottom, dst.left, dst.top, dst.right, dst.bottom, Native.pointer(input)));
+        Stats.onNativeCall();
+        return new ImageFilter(nTile(src.left, src.top, src.right, src.bottom, dst.left, dst.top, dst.right, dst.bottom, Native.getPtr(input)));
     }
 
     public static ImageFilter xfermode(BlendMode blendMode, ImageFilter bg, ImageFilter fg, IRect crop) {
-        Native.onNativeCall();
-        return new ImageFilter(nXfermode(blendMode.ordinal(), Native.pointer(bg), Native.pointer(fg), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nXfermode(blendMode.ordinal(), Native.getPtr(bg), Native.getPtr(fg), crop));
     }
 
     public static ImageFilter dilate(float rx, float ry, ImageFilter input, IRect crop) {
-        Native.onNativeCall();
-        return new ImageFilter(nDilate(rx, ry, Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nDilate(rx, ry, Native.getPtr(input), crop));
     }
 
     public static ImageFilter erode(float rx, float ry, ImageFilter input, IRect crop) {
-        Native.onNativeCall();
-        return new ImageFilter(nErode(rx, ry, Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nErode(rx, ry, Native.getPtr(input), crop));
     }
 
     public static ImageFilter distantLitDiffuse(float x, float y, float z, int lightColor, float surfaceScale, float kd, ImageFilter input, IRect crop) {
-        Native.onNativeCall();
-        return new ImageFilter(nDistantLitDiffuse(x, y, z, lightColor, surfaceScale, kd, Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nDistantLitDiffuse(x, y, z, lightColor, surfaceScale, kd, Native.getPtr(input), crop));
     }
 
     public static ImageFilter pointLitDiffuse(float x, float y, float z, int lightColor, float surfaceScale, float kd, ImageFilter input, IRect crop) {
-        Native.onNativeCall();
-        return new ImageFilter(nPointLitDiffuse(x, y, z, lightColor, surfaceScale, kd, Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nPointLitDiffuse(x, y, z, lightColor, surfaceScale, kd, Native.getPtr(input), crop));
     }
 
     public static ImageFilter spotLitDiffuse(float x0, float y0, float z0, float x1, float y1, float z1, float falloffExponent, float cutoffAngle, int lightColor, float surfaceScale, float kd, ImageFilter input, IRect crop) {
-        Native.onNativeCall();
-        return new ImageFilter(nSpotLitDiffuse(x0, y0, z0, x1, y1, z1, falloffExponent, cutoffAngle, lightColor, surfaceScale, kd, Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nSpotLitDiffuse(x0, y0, z0, x1, y1, z1, falloffExponent, cutoffAngle, lightColor, surfaceScale, kd, Native.getPtr(input), crop));
     }
 
     public static ImageFilter distantLitSpecular(float x, float y, float z, int lightColor, float surfaceScale, float ks, float shininess, ImageFilter input, IRect crop) {
-        Native.onNativeCall();
-        return new ImageFilter(nDistantLitSpecular(x, y, z, lightColor, surfaceScale, ks, shininess, Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nDistantLitSpecular(x, y, z, lightColor, surfaceScale, ks, shininess, Native.getPtr(input), crop));
     }
 
     public static ImageFilter pointLitSpecular(float x, float y, float z, int lightColor, float surfaceScale, float ks, float shininess, ImageFilter input, IRect crop) {
-        Native.onNativeCall();
-        return new ImageFilter(nPointLitSpecular(x, y, z, lightColor, surfaceScale, ks, shininess, Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nPointLitSpecular(x, y, z, lightColor, surfaceScale, ks, shininess, Native.getPtr(input), crop));
     }
 
     public static ImageFilter spotLitSpecular(float x0, float y0, float z0, float x1, float y1, float z1, float falloffExponent, float cutoffAngle, int lightColor, float surfaceScale, float ks, float shininess, ImageFilter input, IRect crop) {
-        Native.onNativeCall();
-        return new ImageFilter(nSpotLitSpecular(x0, y0, z0, x1, y1, z1, falloffExponent, cutoffAngle, lightColor, surfaceScale, ks, shininess, Native.pointer(input), crop));
+        Stats.onNativeCall();
+        return new ImageFilter(nSpotLitSpecular(x0, y0, z0, x1, y1, z1, falloffExponent, cutoffAngle, lightColor, surfaceScale, ks, shininess, Native.getPtr(input), crop));
     }
 
     protected ImageFilter(long nativeInstance) { super(nativeInstance); }

@@ -2,34 +2,35 @@ package org.jetbrains.skija.paragraph;
 
 import org.jetbrains.skija.Managed;
 import org.jetbrains.skija.Native;
+import org.jetbrains.skija.Stats;
 
 public class ParagraphBuilder extends Managed {
     public ParagraphBuilder(ParagraphStyle style, FontCollection fc) {
-        super(nInit(Native.pointer(style), Native.pointer(fc)), nativeFinalizer);
-        Native.onNativeCall();
+        super(nInit(Native.getPtr(style), Native.getPtr(fc)), nativeFinalizer);
+        Stats.onNativeCall();
     }
 
     public ParagraphBuilder pushStyle(TextStyle style) {
-        Native.onNativeCall();
-        nPushStyle(nativeInstance, Native.pointer(style));
+        Stats.onNativeCall();
+        nPushStyle(_ptr, Native.getPtr(style));
         return this;
     }
 
     public ParagraphBuilder popStyle() {
-        Native.onNativeCall();
-        nPopStyle(nativeInstance);
+        Stats.onNativeCall();
+        nPopStyle(_ptr);
         return this;
     }
 
     public ParagraphBuilder addText(String text) {
-        Native.onNativeCall();
-        nAddText(nativeInstance, text);
+        Stats.onNativeCall();
+        nAddText(_ptr, text);
         return this;
     }
 
     public Paragraph build() {
-        Native.onNativeCall();
-        return new Paragraph(nBuild(nativeInstance));
+        Stats.onNativeCall();
+        return new Paragraph(nBuild(_ptr));
     }
 
     private static final long nativeFinalizer = nGetNativeFinalizer();

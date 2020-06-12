@@ -131,7 +131,7 @@ class Window {
     private void initSkia() {
         System.out.println("Buffer " + width + "x" + height + "@" + dpi);
 
-        Managed.stats = true;
+        Stats.enabled = true;
 
         canvas = null;
         if (surface != null) { surface.close(); surface = null; }
@@ -170,9 +170,9 @@ class Window {
     }
 
     public void drawStats() {
-        long nativeCalls = Native.nativeCalls;
-        Native.nativeCalls = 0;
-        int allocated = Managed.allocated.values().stream().reduce(0, Integer::sum);
+        long nativeCalls = Stats.nativeCalls;
+        Stats.nativeCalls = 0;
+        int allocated = Stats.allocated.values().stream().reduce(0, Integer::sum);
 
         Paint bg = new Paint().setColor(0x90000000);
         Paint fg = new Paint().setColor(0xFFFFFFFF);
@@ -284,7 +284,7 @@ class Window {
                         glfwSwapInterval(vsync ? 1 : 0);
                         break;
                     case GLFW_KEY_G:
-                        System.out.println("Before GC " + Managed.allocated);
+                        System.out.println("Before GC " + Stats.allocated);
                         System.gc();
                         break;
                 }

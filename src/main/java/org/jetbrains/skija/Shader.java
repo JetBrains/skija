@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-public class Shader extends RefCounted {
+public class Shader extends RefCnt {
     public static final class GradientOptions {
         public static final int INTERPOLATE_PREMUL = 1;
         public static GradientOptions DEFAULT = new GradientOptions(TileMode.CLAMP, GradientOptions.INTERPOLATE_PREMUL, null);
@@ -33,7 +33,7 @@ public class Shader extends RefCounted {
     }
 
     public Shader withColorFilter(ColorFilter f) {
-        return new Shader(nWithColorFilter(nativeInstance, Native.pointer(f)));
+        return new Shader(nWithColorFilter(_ptr, Native.getPtr(f)));
     }
 
     public static Shader linearGradient(float x0, float y0, float x1, float y1, int[] colors) {
@@ -46,14 +46,14 @@ public class Shader extends RefCounted {
 
     public static Shader linearGradient(float x0, float y0, float x1, float y1, int[] colors, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new Shader(nLinearGradient(x0, y0, x1, y1, colors, positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
     public static Shader linearGradient(float x0, float y0, float x1, float y1, Color4f[] colors, ColorSpace cs, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
-        Native.onNativeCall();
-        return new Shader(nLinearGradientCS(x0, y0, x1, y1, Color4f.flattenArray(colors), Native.pointer(cs), positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
+        Stats.onNativeCall();
+        return new Shader(nLinearGradientCS(x0, y0, x1, y1, Color4f.flattenArray(colors), Native.getPtr(cs), positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
     public static Shader radialGradient(float x, float y, float r, int[] colors) {
@@ -66,14 +66,14 @@ public class Shader extends RefCounted {
 
     public static Shader radialGradient(float x, float y, float r, int[] colors, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new Shader(nRadialGradient(x, y, r, colors, positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
     public static Shader radialGradient(float x, float y, float r, Color4f[] colors, ColorSpace cs, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
-        Native.onNativeCall();
-        return new Shader(nRadialGradientCS(x, y, r, Color4f.flattenArray(colors), Native.pointer(cs), positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
+        Stats.onNativeCall();
+        return new Shader(nRadialGradientCS(x, y, r, Color4f.flattenArray(colors), Native.getPtr(cs), positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
     public static Shader twoPointConicalGradient(float x0, float y0, float r0, float x1, float y1, float r1, int[] colors) {
@@ -86,14 +86,14 @@ public class Shader extends RefCounted {
 
     public static Shader twoPointConicalGradient(float x0, float y0, float r0, float x1, float y1, float r1, int[] colors, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new Shader(nTwoPointConicalGradient(x0, y0, r0, x1, y1, r1, colors, positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
     public static Shader twoPointConicalGradient(float x0, float y0, float r0, float x1, float y1, float r1, Color4f[] colors, ColorSpace cs, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
-        Native.onNativeCall();
-        return new Shader(nTwoPointConicalGradientCS(x0, y0, r0, x1, y1, r1, Color4f.flattenArray(colors), Native.pointer(cs), positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
+        Stats.onNativeCall();
+        return new Shader(nTwoPointConicalGradientCS(x0, y0, r0, x1, y1, r1, Color4f.flattenArray(colors), Native.getPtr(cs), positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
     public static Shader sweepGradient(float x, float y, int[] colors) {
@@ -110,32 +110,32 @@ public class Shader extends RefCounted {
 
     public static Shader sweepGradient(float x, float y, float startAngle, float endAngle, int[] colors, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new Shader(nSweepGradient(x, y, startAngle, endAngle, colors, positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
     public static Shader sweepGradient(float x, float y, float startAngle, float endAngle, Color4f[] colors, ColorSpace cs, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
-        Native.onNativeCall();
-        return new Shader(nSweepGradientCS(x, y, startAngle, endAngle, Color4f.flattenArray(colors), Native.pointer(cs), positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
+        Stats.onNativeCall();
+        return new Shader(nSweepGradientCS(x, y, startAngle, endAngle, Color4f.flattenArray(colors), Native.getPtr(cs), positions, opts.tileMode.ordinal(), opts.flags, opts.localMatrix));
     }
 
-    public static Shader empty() { Native.onNativeCall(); return new Shader(nEmpty()); }
-    public static Shader color(int color) { Native.onNativeCall(); return new Shader(nColor(color)); }
+    public static Shader empty() { Stats.onNativeCall(); return new Shader(nEmpty()); }
+    public static Shader color(int color) { Stats.onNativeCall(); return new Shader(nColor(color)); }
 
     public static Shader color(Color4f color, ColorSpace space) {
-        Native.onNativeCall();
-        return new Shader(nColorCS(color.r, color.g, color.b, color.a, Native.pointer(space)));
+        Stats.onNativeCall();
+        return new Shader(nColorCS(color.r, color.g, color.b, color.a, Native.getPtr(space)));
     }
 
     public static Shader blend(BlendMode mode, Shader dst, Shader src) {
-        Native.onNativeCall();
-        return new Shader(nBlend(mode.ordinal(), Native.pointer(dst), Native.pointer(src)));
+        Stats.onNativeCall();
+        return new Shader(nBlend(mode.ordinal(), Native.getPtr(dst), Native.getPtr(src)));
     }
 
     public static Shader lerp(float t, Shader dst, Shader src) {
-        Native.onNativeCall();
-        return new Shader(nLerp(t, Native.pointer(dst), Native.pointer(src)));
+        Stats.onNativeCall();
+        return new Shader(nLerp(t, Native.getPtr(dst), Native.getPtr(src)));
     }
 
     protected Shader(long nativeInstance) { super(nativeInstance); }

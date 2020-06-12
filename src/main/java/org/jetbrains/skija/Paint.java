@@ -5,62 +5,62 @@ public class Paint extends Managed {
     public enum Cap { BUTT, ROUND, SQUARE }
     public enum Join { MITER, ROUND, BEVEL }
 
-    public Paint() { super(nInit(), nativeFinalizer); Native.onNativeCall(); }
+    public Paint() { super(nInit(), nativeFinalizer); Stats.onNativeCall(); }
 
-    public boolean isAntiAlias() { Native.onNativeCall(); return nIsAntiAlias(nativeInstance); }
-    public Paint setAntiAlias(boolean value) { Native.onNativeCall(); nSetAntiAlias(nativeInstance, value); return this; }
+    public boolean isAntiAlias() { Stats.onNativeCall(); return nIsAntiAlias(_ptr); }
+    public Paint setAntiAlias(boolean value) { Stats.onNativeCall(); nSetAntiAlias(_ptr, value); return this; }
 
-    public int getColor() { Native.onNativeCall(); return nGetColor(nativeInstance); }
-    public Paint setColor(int color) { Native.onNativeCall(); nSetColor(nativeInstance, color); return this; }
+    public int getColor() { Stats.onNativeCall(); return nGetColor(_ptr); }
+    public Paint setColor(int color) { Stats.onNativeCall(); nSetColor(_ptr, color); return this; }
 
-    public Style getStyle() { Native.onNativeCall(); return Style.values()[nGetStyle(nativeInstance)]; }
-    public Paint setStyle(Style style) { Native.onNativeCall(); nSetStyle(nativeInstance, style.ordinal()); return this; }
+    public Style getStyle() { Stats.onNativeCall(); return Style.values()[nGetStyle(_ptr)]; }
+    public Paint setStyle(Style style) { Stats.onNativeCall(); nSetStyle(_ptr, style.ordinal()); return this; }
 
-    public float getStrokeWidth() { Native.onNativeCall(); return nGetStrokeWidth(nativeInstance); }
-    public Paint setStrokeWidth(float width) { Native.onNativeCall(); nSetStrokeWidth(nativeInstance, width); return this; }
+    public float getStrokeWidth() { Stats.onNativeCall(); return nGetStrokeWidth(_ptr); }
+    public Paint setStrokeWidth(float width) { Stats.onNativeCall(); nSetStrokeWidth(_ptr, width); return this; }
 
-    public long getStrokeMiter() { Native.onNativeCall(); return nGetStrokeMiter(nativeInstance); }
-    public Paint setStrokeMiter(float limit) { Native.onNativeCall(); nSetStrokeMiter(nativeInstance, limit); return this; }
+    public long getStrokeMiter() { Stats.onNativeCall(); return nGetStrokeMiter(_ptr); }
+    public Paint setStrokeMiter(float limit) { Stats.onNativeCall(); nSetStrokeMiter(_ptr, limit); return this; }
 
-    public Cap getStrokeCap() { Native.onNativeCall(); return Cap.values()[nGetStrokeJoin(nativeInstance)]; }
-    public Paint setStrokeCap(Cap cap) { Native.onNativeCall(); nSetStrokeCap(nativeInstance, cap.ordinal()); return this; }
+    public Cap getStrokeCap() { Stats.onNativeCall(); return Cap.values()[nGetStrokeJoin(_ptr)]; }
+    public Paint setStrokeCap(Cap cap) { Stats.onNativeCall(); nSetStrokeCap(_ptr, cap.ordinal()); return this; }
 
-    public Join getStrokeJoin() { Native.onNativeCall(); return Join.values()[nGetStrokeJoin(nativeInstance)]; }
-    public Paint setStrokeJoin(Join join) { Native.onNativeCall(); nSetStrokeJoin(nativeInstance, join.ordinal()); return this; }
+    public Join getStrokeJoin() { Stats.onNativeCall(); return Join.values()[nGetStrokeJoin(_ptr)]; }
+    public Paint setStrokeJoin(Join join) { Stats.onNativeCall(); nSetStrokeJoin(_ptr, join.ordinal()); return this; }
 
     public Path getFillPath(Path src) { return getFillPath(src, null, 1); }
     
     public Path getFillPath(Path src, Rect cull, float resScale) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         if (cull == null)
-            return new Path(nGetFillPath(nativeInstance, Native.pointer(src), resScale));
+            return new Path(nGetFillPath(_ptr, Native.getPtr(src), resScale));
         else
-            return new Path(nGetFillPathCull(nativeInstance, Native.pointer(src), cull.left, cull.top, cull.right, cull.bottom, resScale));
+            return new Path(nGetFillPathCull(_ptr, Native.getPtr(src), cull.left, cull.top, cull.right, cull.bottom, resScale));
     }
 
     protected MaskFilter maskFilter;
     public MaskFilter getMaskFilter() { return maskFilter; }
-    public Paint setMaskFilter(MaskFilter f) { this.maskFilter = f; Native.onNativeCall(); nSetMaskFilter(nativeInstance, Native.pointer(f)); return this; }
+    public Paint setMaskFilter(MaskFilter f) { this.maskFilter = f; Stats.onNativeCall(); nSetMaskFilter(_ptr, Native.getPtr(f)); return this; }
 
     protected ImageFilter imageFilter;
     public ImageFilter getImageFilter() { return imageFilter; }
-    public Paint setImageFilter(ImageFilter f) { this.imageFilter = f; Native.onNativeCall(); nSetImageFilter(nativeInstance, Native.pointer(f)); return this; }
+    public Paint setImageFilter(ImageFilter f) { this.imageFilter = f; Stats.onNativeCall(); nSetImageFilter(_ptr, Native.getPtr(f)); return this; }
 
     protected BlendMode blendMode = BlendMode.SRC_OVER;
     public BlendMode getBlendMode() { return blendMode; }
-    public Paint setBlendMode(BlendMode mode) { this.blendMode = mode; Native.onNativeCall(); nSetBlendMode(nativeInstance, mode.ordinal()); return this; }
+    public Paint setBlendMode(BlendMode mode) { this.blendMode = mode; Stats.onNativeCall(); nSetBlendMode(_ptr, mode.ordinal()); return this; }
 
     protected PathEffect pathEffect;
     public PathEffect getPathEffect() { return pathEffect; }
-    public Paint setPathEffect(PathEffect p) { this.pathEffect = p; Native.onNativeCall(); nSetPathEffect(nativeInstance, Native.pointer(p)); return this; }
+    public Paint setPathEffect(PathEffect p) { this.pathEffect = p; Stats.onNativeCall(); nSetPathEffect(_ptr, Native.getPtr(p)); return this; }
 
     protected Shader shader;
     public Shader getShader() { return shader; }
-    public Paint setShader(Shader shader) { this.shader = shader; Native.onNativeCall(); nSetShader(nativeInstance, Native.pointer(shader)); return this; }
+    public Paint setShader(Shader shader) { this.shader = shader; Stats.onNativeCall(); nSetShader(_ptr, Native.getPtr(shader)); return this; }
 
     protected ColorFilter colorFilter;
     public ColorFilter getColorFilter() { return colorFilter; }
-    public Paint setColorFilter(ColorFilter colorFilter) { this.colorFilter = colorFilter; Native.onNativeCall(); nSetColorFilter(nativeInstance, Native.pointer(colorFilter)); return this; }
+    public Paint setColorFilter(ColorFilter colorFilter) { this.colorFilter = colorFilter; Stats.onNativeCall(); nSetColorFilter(_ptr, Native.getPtr(colorFilter)); return this; }
 
     private static final long nativeFinalizer = nGetNativeFinalizer();
     private static native long nInit();

@@ -136,9 +136,9 @@ public class Path extends Managed implements Iterable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Path op = (Path) o;
-        if (nativeInstance == op.nativeInstance) return true;
-        Native.onNativeCall();
-        return nEquals(nativeInstance, op.nativeInstance);
+        if (_ptr == op._ptr) return true;
+        Stats.onNativeCall();
+        return nEquals(_ptr, op._ptr);
     }
 
     /**
@@ -155,8 +155,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_isInterpolatable">https://fiddle.skia.org/c/@Path_isInterpolatable</a>
      */
     public boolean isInterpolatable(Path compare) {
-        Native.onNativeCall();
-        return nIsInterpolatable(nativeInstance, Native.pointer(compare));
+        Stats.onNativeCall();
+        return nIsInterpolatable(_ptr, Native.getPtr(compare));
     }
 
     /** 
@@ -182,8 +182,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_interpolate">https://fiddle.skia.org/c/@Path_interpolate</a>
      */
     public Path interpolate(Path ending, float weight) {
-        Native.onNativeCall();
-        long ptr = nInterpolate(nativeInstance, Native.pointer(ending), weight);   
+        Stats.onNativeCall();
+        long ptr = nInterpolate(_ptr, Native.getPtr(ending), weight);
         if (ptr == 0)
             throw new IllegalArgumentException("Point array is not the same size as ending Point array");
         return new Path(ptr);
@@ -197,8 +197,8 @@ public class Path extends Managed implements Iterable {
 
     public Path setFillType(FillType fillType) {
         this.fillType = fillType;
-        Native.onNativeCall();
-        nSetFillType(nativeInstance, fillType.ordinal());
+        Stats.onNativeCall();
+        nSetFillType(_ptr, fillType.ordinal());
         return this;
     }
 
@@ -208,8 +208,8 @@ public class Path extends Managed implements Iterable {
      * @return  path's convexity type ({@link ConvexityType#CONVEX} or {@link ConvexityType#CONCAVE})
      */
     public ConvexityType getConvexityType() {
-        Native.onNativeCall();
-        return ConvexityType.values()[nGetConvexityType(nativeInstance)];
+        Stats.onNativeCall();
+        return ConvexityType.values()[nGetConvexityType(_ptr)];
     }
 
     /**
@@ -220,8 +220,8 @@ public class Path extends Managed implements Iterable {
      * @return  known convexity, or {@link ConvexityType#UNKNOWN}
      */
     public ConvexityType getConvexityTypeOrUnknown() {
-        Native.onNativeCall();
-        return ConvexityType.values()[nGetConvexityTypeOrUnknown(nativeInstance)];
+        Stats.onNativeCall();
+        return ConvexityType.values()[nGetConvexityTypeOrUnknown(_ptr)];
     }
 
     /**
@@ -237,8 +237,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_setConvexity">https://fiddle.skia.org/c/@Path_setConvexity</a>
      */
     public Path setConvexityType(ConvexityType convexity) {
-        Native.onNativeCall();
-        nSetConvexityType(nativeInstance, convexity.ordinal());
+        Stats.onNativeCall();
+        nSetConvexityType(_ptr, convexity.ordinal());
         return this;
     }
 
@@ -259,8 +259,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_isOval">https://fiddle.skia.org/c/@Path_isOval</a>
      */
     public Rect isOval() {
-        Native.onNativeCall();
-        return nIsOval(nativeInstance);
+        Stats.onNativeCall();
+        return nIsOval(_ptr);
     }
 
     /**
@@ -271,8 +271,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_isRRect">https://fiddle.skia.org/c/@Path_isRRect</a>
      */
     public RoundedRect isRoundedRect() {
-        Native.onNativeCall();
-        return nIsRoundedRect(nativeInstance);
+        Stats.onNativeCall();
+        return nIsRoundedRect(_ptr);
     }
 
     /**
@@ -286,8 +286,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_reset">https://fiddle.skia.org/c/@Path_reset</a>
      */
     public Path reset() {
-        Native.onNativeCall();
-        nReset(nativeInstance);
+        Stats.onNativeCall();
+        nReset(_ptr);
         return this;
     }
 
@@ -304,8 +304,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_rewind">https://fiddle.skia.org/c/@Path_rewind</a>
      */
     public Path rewind() {
-        Native.onNativeCall();
-        nRewind(nativeInstance);
+        Stats.onNativeCall();
+        nRewind(_ptr);
         return this;
     }
 
@@ -318,8 +318,8 @@ public class Path extends Managed implements Iterable {
      * @return  true if the path contains no Verb array
      */
     public boolean isEmpty() {
-        Native.onNativeCall();
-        return nIsEmpty(nativeInstance);
+        Stats.onNativeCall();
+        return nIsEmpty(_ptr);
     }
 
     /**
@@ -333,8 +333,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_isLastContourClosed">https://fiddle.skia.org/c/@Path_isLastContourClosed</a>
      */
     public boolean isLastContourClosed() {
-        Native.onNativeCall();
-        return nIsLastContourClosed(nativeInstance);
+        Stats.onNativeCall();
+        return nIsLastContourClosed(_ptr);
     }
 
     /**
@@ -345,8 +345,8 @@ public class Path extends Managed implements Iterable {
      * @return  true if all Point values are finite
      */
     public boolean isFinite() {
-        Native.onNativeCall();
-        return nIsFinite(nativeInstance);
+        Stats.onNativeCall();
+        return nIsFinite(_ptr);
     }
 
     protected boolean isVolatile = false;
@@ -382,8 +382,8 @@ public class Path extends Managed implements Iterable {
      */
     public Path setVolatile(boolean isVolatile) {
         this.isVolatile = isVolatile;
-        Native.onNativeCall();
-        nSetIsVolatile(nativeInstance, isVolatile);
+        Stats.onNativeCall();
+        nSetIsVolatile(_ptr, isVolatile);
         return this;
     }
 
@@ -404,7 +404,7 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_IsLineDegenerate">https://fiddle.skia.org/c/@Path_IsLineDegenerate</a>
      */
     public static boolean isLineDegenerate(Point p1, Point p2, boolean exact) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return nIsLineDegenerate(p1.x, p1.y, p2.x, p2.y, exact);
     }
 
@@ -422,7 +422,7 @@ public class Path extends Managed implements Iterable {
      * @return       true if quad is degenerate; its length is effectively zero
      */
     public static boolean isQuadDegenerate(Point p1, Point p2, Point p3, boolean exact) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return nIsQuadDegenerate(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, exact);
     }
 
@@ -441,7 +441,7 @@ public class Path extends Managed implements Iterable {
      * @return       true if cubic is degenerate; its length is effectively zero
      */
     public static boolean isCubicDegenerate(Point p1, Point p2, Point p3, Point p4, boolean exact) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return nIsCubicDegenerate(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, exact);
     }
 
@@ -455,8 +455,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_isLine">https://fiddle.skia.org/c/@Path_isLine</a>
      */
     public Point[] isLine() {
-        Native.onNativeCall();
-        return nIsLine(nativeInstance);
+        Stats.onNativeCall();
+        return nIsLine(_ptr);
     }
 
     /**
@@ -468,8 +468,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_countPoints">https://fiddle.skia.org/c/@Path_countPoints</a>
      */
     public int countPoints() {
-        Native.onNativeCall();
-        return nCountPoints(nativeInstance);
+        Stats.onNativeCall();
+        return nCountPoints(_ptr);
     }
 
     /**
@@ -484,8 +484,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_getPoint">https://fiddle.skia.org/c/@Path_getPoint</a>
      */
     public Point getPoint(int index) {
-        Native.onNativeCall();
-        return nGetPoint(nativeInstance, index);
+        Stats.onNativeCall();
+        return nGetPoint(_ptr, index);
     }
 
     /**
@@ -502,8 +502,8 @@ public class Path extends Managed implements Iterable {
      */
     public int getPoints(Point[] points, int max) {
         assert points == null ? max == 0 : true;
-        Native.onNativeCall();
-        return nGetPoints(nativeInstance, points, max);
+        Stats.onNativeCall();
+        return nGetPoints(_ptr, points, max);
     }
 
     /**
@@ -515,8 +515,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_countVerbs">https://fiddle.skia.org/c/@Path_countVerbs</a>
      */
     public int countVerbs() {
-        Native.onNativeCall();
-        return nCountVerbs(nativeInstance);
+        Stats.onNativeCall();
+        return nCountVerbs(_ptr);
     }
 
     /**
@@ -530,9 +530,9 @@ public class Path extends Managed implements Iterable {
      */
     public int getVerbs(Verb[] verbs, int max) {
         assert verbs == null ? max == 0 : true;
-        Native.onNativeCall();
+        Stats.onNativeCall();
         byte[] out = verbs == null ? null : new byte[max];
-        int count = nGetVerbs(nativeInstance, out, max);
+        int count = nGetVerbs(_ptr, out, max);
         if (verbs != null)
             for (int i = 0; i < Math.min(count, max); ++i)
                 verbs[i] = Verb.values()[out[i]];
@@ -545,8 +545,8 @@ public class Path extends Managed implements Iterable {
      * @return  approximate size
      */
     public long approximateBytesUsed() {
-        Native.onNativeCall();
-        return nApproximateBytesUsed(nativeInstance);
+        Stats.onNativeCall();
+        return nApproximateBytesUsed(_ptr);
     }
 
     /**
@@ -560,8 +560,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_swap">https://fiddle.skia.org/c/@Path_swap</a>
      */
     public Path swap(Path other) {
-        Native.onNativeCall();
-        nSwap(nativeInstance, Native.pointer(other));
+        Stats.onNativeCall();
+        nSwap(_ptr, Native.getPtr(other));
         return this;
     }
 
@@ -577,8 +577,8 @@ public class Path extends Managed implements Iterable {
      * @return  bounds of all Point in Point array
      */
     public Rect getBounds() {
-        Native.onNativeCall();
-        return nGetBounds(nativeInstance);
+        Stats.onNativeCall();
+        return nGetBounds(_ptr);
     }
 
     /**
@@ -593,8 +593,8 @@ public class Path extends Managed implements Iterable {
      * @return  this
      */
     public Path updateBoundsCache() {
-        Native.onNativeCall();
-        nUpdateBoundsCache(nativeInstance);
+        Stats.onNativeCall();
+        nUpdateBoundsCache(_ptr);
         return this;
     }
 
@@ -617,8 +617,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_computeTightBounds">https://fiddle.skia.org/c/@Path_computeTightBounds</a>
      */
     public Rect computeTightBounds() {
-        Native.onNativeCall();
-        return nComputeTightBounds(nativeInstance);
+        Stats.onNativeCall();
+        return nComputeTightBounds(_ptr);
     }
 
     /**
@@ -636,8 +636,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_conservativelyContainsRect">https://fiddle.skia.org/c/@Path_conservativelyContainsRect</a>
      */
     public boolean conservativelyContainsRect(Rect rect) {
-        Native.onNativeCall();
-        return nConservativelyContainsRect(nativeInstance, rect.left, rect.top, rect.right, rect.bottom);
+        Stats.onNativeCall();
+        return nConservativelyContainsRect(_ptr, rect.left, rect.top, rect.right, rect.bottom);
     }
 
     /**
@@ -651,8 +651,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_incReserve">https://fiddle.skia.org/c/@Path_incReserve</a>
      */
     public Path incReserve(int extraPtCount) {
-        Native.onNativeCall();
-        nIncReserve(nativeInstance, extraPtCount);
+        Stats.onNativeCall();
+        nIncReserve(_ptr, extraPtCount);
         return this;
     }
 
@@ -663,8 +663,8 @@ public class Path extends Managed implements Iterable {
      * @return  this
      */
     public Path shrinkToFit() {
-        Native.onNativeCall();
-        nShrinkToFit(nativeInstance);
+        Stats.onNativeCall();
+        nShrinkToFit(_ptr);
         return this;
     }
 
@@ -678,8 +678,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_moveTo">https://fiddle.skia.org/c/@Path_moveTo</a>
      */
     public Path moveTo(float x, float y) {
-        Native.onNativeCall();
-        nMoveTo(nativeInstance, x, y);
+        Stats.onNativeCall();
+        nMoveTo(_ptr, x, y);
         return this;
     }
 
@@ -707,8 +707,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_rMoveTo">https://fiddle.skia.org/c/@Path_rMoveTo</a>
      */
     public Path rMoveTo(float dx, float dy) {
-        Native.onNativeCall();
-        nRMoveTo(nativeInstance, dx, dy);
+        Stats.onNativeCall();
+        nRMoveTo(_ptr, dx, dy);
         return this;
     }
 
@@ -726,8 +726,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_lineTo">https://fiddle.skia.org/c/@Path_lineTo</a>
      */
     public Path lineTo(float x, float y) {
-        Native.onNativeCall();
-        nLineTo(nativeInstance, x, y);
+        Stats.onNativeCall();
+        nLineTo(_ptr, x, y);
         return this;
     }
 
@@ -765,8 +765,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Quad_b">https://fiddle.skia.org/c/@Quad_b</a>
      */
     public Path rLineTo(float dx, float dy) {
-        Native.onNativeCall();
-        nRLineTo(nativeInstance, dx, dy);
+        Stats.onNativeCall();
+        nRLineTo(_ptr, dx, dy);
         return this;
     }
 
@@ -788,8 +788,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_quadTo">https://fiddle.skia.org/c/@Path_quadTo</a>
      */
     public Path quadTo(float x1, float y1, float x2, float y2) {
-        Native.onNativeCall();
-        nQuadTo(nativeInstance, x1, y1, x2, y2);
+        Stats.onNativeCall();
+        nQuadTo(_ptr, x1, y1, x2, y2);
         return this;
     }
 
@@ -838,8 +838,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_rQuadTo">https://fiddle.skia.org/c/@Path_rQuadTo</a>
      */
     public Path rQuadTo(float dx1, float dy1, float dx2, float dy2) {
-        Native.onNativeCall();
-        nRQuadTo(nativeInstance, dx1, dy1, dx2, dy2);
+        Stats.onNativeCall();
+        nRQuadTo(_ptr, dx1, dy1, dx2, dy2);
         return this;
     }
 
@@ -868,8 +868,8 @@ public class Path extends Managed implements Iterable {
      * @return    reference to Path
      */
     public Path conicTo(float x1, float y1, float x2, float y2, float w) {
-        Native.onNativeCall();
-        nConicTo(nativeInstance, x1, y1, x2, y2, w);
+        Stats.onNativeCall();
+        nConicTo(_ptr, x1, y1, x2, y2, w);
         return this;
     }
 
@@ -926,8 +926,8 @@ public class Path extends Managed implements Iterable {
      * @return     reference to Path
      */
     public Path rConicTo(float dx1, float dy1, float dx2, float dy2, float w) {
-        Native.onNativeCall();
-        nRConicTo(nativeInstance, dx1, dy1, dx2, dy2, w);
+        Stats.onNativeCall();
+        nRConicTo(_ptr, dx1, dy1, dx2, dy2, w);
         return this;
     }
 
@@ -949,8 +949,8 @@ public class Path extends Managed implements Iterable {
      * @return    reference to Path
      */
     public Path cubicTo(float x1, float y1, float x2, float y2, float x3, float y3) {
-        Native.onNativeCall();
-        nCubicTo(nativeInstance, x1, y1, x2, y2, x3, y3);
+        Stats.onNativeCall();
+        nCubicTo(_ptr, x1, y1, x2, y2, x3, y3);
         return this;
     }
 
@@ -997,8 +997,8 @@ public class Path extends Managed implements Iterable {
      * @return    reference to Path
      */
     public Path rCubicTo(float dx1, float dy1, float dx2, float dy2, float dx3, float dy3) {
-        Native.onNativeCall();
-        nRCubicTo(nativeInstance, dx1, dy1, dx2, dy2, dx3, dy3);
+        Stats.onNativeCall();
+        nRCubicTo(_ptr, dx1, dy1, dx2, dy2, dx3, dy3);
         return this;
     }
 
@@ -1021,8 +1021,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_arcTo">https://fiddle.skia.org/c/@Path_arcTo</a>
      */
     public Path arcTo(Rect oval, float startAngle, float sweepAngle, boolean forceMoveTo) {
-        Native.onNativeCall(); 
-        nArcTo(nativeInstance, oval.left, oval.top, oval.right, oval.bottom, startAngle, sweepAngle, forceMoveTo);
+        Stats.onNativeCall();
+        nArcTo(_ptr, oval.left, oval.top, oval.right, oval.bottom, startAngle, sweepAngle, forceMoveTo);
         return this;
     }
 
@@ -1054,8 +1054,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_arcTo_2_c">https://fiddle.skia.org/c/@Path_arcTo_2_c</a>
      */
     public Path tangentArcTo(float x1, float y1, float x2, float y2, float radius) {
-        Native.onNativeCall();
-        nTangentArcTo(nativeInstance, x1, y1, x2, y2, radius);
+        Stats.onNativeCall();
+        nTangentArcTo(_ptr, x1, y1, x2, y2, radius);
         return this;
     }
         
@@ -1110,8 +1110,8 @@ public class Path extends Managed implements Iterable {
      * @return             reference to Path
      */
     public Path ellipticalArcTo(float rx, float ry, float xAxisRotate, ArcSize size, Direction direction, float x, float y) {
-        Native.onNativeCall(); 
-        nEllipticalArcTo(nativeInstance, rx, ry, xAxisRotate, size.ordinal(), direction.ordinal(), x, y);
+        Stats.onNativeCall();
+        nEllipticalArcTo(_ptr, rx, ry, xAxisRotate, size.ordinal(), direction.ordinal(), x, y);
         return this;
     }
 
@@ -1172,8 +1172,8 @@ public class Path extends Managed implements Iterable {
      * @return             reference to Path
      */
     public Path rEllipticalArcTo(float rx, float ry, float xAxisRotate, ArcSize size, Direction direction, float dx, float dy) {
-        Native.onNativeCall(); 
-        nREllipticalArcTo(nativeInstance, rx, ry, xAxisRotate, size.ordinal(), direction.ordinal(), dx, dy);
+        Stats.onNativeCall();
+        nREllipticalArcTo(_ptr, rx, ry, xAxisRotate, size.ordinal(), direction.ordinal(), dx, dy);
         return this;
     }
 
@@ -1191,8 +1191,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_close">https://fiddle.skia.org/c/@Path_close</a>
      */
     public Path closePath() {
-        Native.onNativeCall();
-        nClosePath(nativeInstance);
+        Stats.onNativeCall();
+        nClosePath(_ptr);
         return this;
     }
 
@@ -1226,7 +1226,7 @@ public class Path extends Managed implements Iterable {
      * @return      number of quad curves written to pts
      */
     public static Point[] convertConicToQuads(Point p0, Point p1, Point p2, float w, int pow2) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return nConvertConicToQuads(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, w, pow2);
     }
 
@@ -1241,8 +1241,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_isRect">https://fiddle.skia.org/c/@Path_isRect</a>
      */
     public Rect isRect() {
-        Native.onNativeCall();
-        return nIsRect(nativeInstance);
+        Stats.onNativeCall();
+        return nIsRect(_ptr);
     }
 
     /**
@@ -1289,8 +1289,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_addRect_2">https://fiddle.skia.org/c/@Path_addRect_2</a>
      */
     public Path addRect(Rect rect, Direction dir, int start) {
-        Native.onNativeCall();
-        nAddRect(nativeInstance, rect.left, rect.top, rect.right, rect.bottom, dir.ordinal(), start);
+        Stats.onNativeCall();
+        nAddRect(_ptr, rect.left, rect.top, rect.right, rect.bottom, dir.ordinal(), start);
         return this;
     }
 
@@ -1342,8 +1342,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_addOval_2">https://fiddle.skia.org/c/@Path_addOval_2</a>
      */
     public Path addOval(Rect oval, Direction dir, int start) {
-        Native.onNativeCall();
-        nAddOval(nativeInstance, oval.left, oval.top, oval.right, oval.bottom, dir.ordinal(), start);
+        Stats.onNativeCall();
+        nAddOval(_ptr, oval.left, oval.top, oval.right, oval.bottom, dir.ordinal(), start);
         return this;
     }
 
@@ -1376,8 +1376,8 @@ public class Path extends Managed implements Iterable {
      * @return        reference to Path
      */
     public Path addCircle(float x, float y, float radius, Direction dir) {
-        Native.onNativeCall();
-        nAddCircle(nativeInstance, x, y, radius, dir.ordinal());
+        Stats.onNativeCall();
+        nAddCircle(_ptr, x, y, radius, dir.ordinal());
         return this;
     }
 
@@ -1399,8 +1399,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_addArc">https://fiddle.skia.org/c/@Path_addArc</a>
      */
     public Path addArc(Rect oval, float startAngle, float sweepAngle) {
-        Native.onNativeCall();
-        nAddArc(nativeInstance, oval.left, oval.top, oval.right, oval.bottom, startAngle, sweepAngle);
+        Stats.onNativeCall();
+        nAddArc(_ptr, oval.left, oval.top, oval.right, oval.bottom, startAngle, sweepAngle);
         return this;
     }
 
@@ -1451,8 +1451,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_addRRect_2">https://fiddle.skia.org/c/@Path_addRRect_2</a>
      */
     public Path addRoundedRect(RoundedRect rrect, Direction dir, int start) {
-        Native.onNativeCall();
-        nAddRoundedRect(nativeInstance, rrect.left, rrect.top, rrect.right, rrect.bottom, rrect.radii, dir.ordinal(), start);
+        Stats.onNativeCall();
+        nAddRoundedRect(_ptr, rrect.left, rrect.top, rrect.right, rrect.bottom, rrect.radii, dir.ordinal(), start);
         return this;
     }
 
@@ -1495,8 +1495,8 @@ public class Path extends Managed implements Iterable {
      */
     public Path addPoly(float[] pts, boolean close) {
         assert pts.length % 2 == 0 : "Expected even amount of pts, got " + pts.length;
-        Native.onNativeCall();
-        nAddPoly(nativeInstance, pts, close);
+        Stats.onNativeCall();
+        nAddPoly(_ptr, pts, close);
         return this;
     }
 
@@ -1525,8 +1525,8 @@ public class Path extends Managed implements Iterable {
      * @return        reference to Path
      */
     public Path addPath(Path src, boolean extend) {
-        Native.onNativeCall();
-        nAddPath(nativeInstance, Native.pointer(src), extend);
+        Stats.onNativeCall();
+        nAddPath(_ptr, Native.getPtr(src), extend);
         return this;
     }
 
@@ -1559,8 +1559,8 @@ public class Path extends Managed implements Iterable {
      * @return        reference to Path
      */
     public Path addPath(Path src, float dx, float dy, boolean extend) {
-        Native.onNativeCall();
-        nAddPathOffset(nativeInstance, Native.pointer(src), dx, dy, extend);
+        Stats.onNativeCall();
+        nAddPathOffset(_ptr, Native.getPtr(src), dx, dy, extend);
         return this;
     }
 
@@ -1593,8 +1593,8 @@ public class Path extends Managed implements Iterable {
      * @return        reference to Path
      */
     public Path addPath(Path src, float[] matrix, boolean extend) {
-        Native.onNativeCall();
-        nAddPathTransform(nativeInstance, Native.pointer(src), matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8], extend);
+        Stats.onNativeCall();
+        nAddPathTransform(_ptr, Native.getPtr(src), matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8], extend);
         return this;
     }
 
@@ -1608,8 +1608,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_reverseAddPath">https://fiddle.skia.org/c/@Path_reverseAddPath</a>
      */
     public Path reverseAddPath(Path src) {
-        Native.onNativeCall();
-        nReverseAddPath(nativeInstance, Native.pointer(src));
+        Stats.onNativeCall();
+        nReverseAddPath(_ptr, Native.getPtr(src));
         return this;
     }
 
@@ -1636,8 +1636,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_offset">https://fiddle.skia.org/c/@Path_offset</a>
      */
     public Path offset(float dx, float dy, Path dst) {
-        Native.onNativeCall();
-        nOffset(nativeInstance, dx, dy, Native.pointer(dst));
+        Stats.onNativeCall();
+        nOffset(_ptr, dx, dy, Native.getPtr(dst));
         return this;
     }
 
@@ -1697,8 +1697,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_transform">https://fiddle.skia.org/c/@Path_transform</a>
      */
     public Path transform(float[] matrix, Path dst, boolean applyPerspectiveClip) {
-        Native.onNativeCall();
-        nTransform(nativeInstance, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8], Native.pointer(dst), applyPerspectiveClip);
+        Stats.onNativeCall();
+        nTransform(_ptr, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8], Native.getPtr(dst), applyPerspectiveClip);
         return this;
     }
 
@@ -1711,8 +1711,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_getLastPt">https://fiddle.skia.org/c/@Path_getLastPt</a>
      */
     public Point getLastPt() {
-        Native.onNativeCall();
-        return nGetLastPt(nativeInstance);
+        Stats.onNativeCall();
+        return nGetLastPt(_ptr);
     }
 
     /**
@@ -1726,8 +1726,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_setLastPt">https://fiddle.skia.org/c/@Path_setLastPt</a>
      */
     public Path setLastPt(float x, float y) {
-        Native.onNativeCall();
-        nSetLastPt(nativeInstance, x, y);
+        Stats.onNativeCall();
+        nSetLastPt(_ptr, x, y);
         return this;
     }
 
@@ -1763,8 +1763,8 @@ public class Path extends Managed implements Iterable {
      * @see {@link SEGMENT_MASK_CUBIC}
      */
     public int getSegmentMasks() {
-        Native.onNativeCall();
-        return nGetSegmentMasks(nativeInstance);
+        Stats.onNativeCall();
+        return nGetSegmentMasks(_ptr);
     }
 
     public static class Segment {
@@ -1840,7 +1840,7 @@ public class Path extends Managed implements Iterable {
             if (nextSegment.verb == Verb.DONE)
                 throw new NoSuchElementException();
             Segment res = nextSegment;
-            nextSegment = nNext(nativeInstance);
+            nextSegment = nNext(_ptr);
             return res;
         }
 
@@ -1852,11 +1852,11 @@ public class Path extends Managed implements Iterable {
         protected Iter(Path path, long ptr) {
             super(ptr, nGetNativeFinalizer());
             this.path = path;
-            Native.onNativeCall();
+            Stats.onNativeCall();
         }
 
         public static Iter make(Path path, boolean forceClose) {
-            long ptr = nInit(Native.pointer(path), forceClose);
+            long ptr = nInit(Native.getPtr(path), forceClose);
             Iter i = new Iter(path, ptr);
             i.nextSegment = nNext(ptr);
             return i;
@@ -1888,8 +1888,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_contains">https://fiddle.skia.org/c/@Path_contains</a>
      */
     public boolean contains(float x, float y) {
-        Native.onNativeCall();
-        return nContains(nativeInstance, x, y);
+        Stats.onNativeCall();
+        return nContains(_ptr, x, y);
     }
 
     /**
@@ -1916,8 +1916,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_dump_2">https://fiddle.skia.org/c/@Path_dump_2</a>
      */
     public Path dump() {
-        Native.onNativeCall();
-        nDump(nativeInstance);
+        Stats.onNativeCall();
+        nDump(_ptr);
         return this;
     }
 
@@ -1934,8 +1934,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_dumpHex">https://fiddle.skia.org/c/@Path_dumpHex</a>
      */
     public Path dumpHex() {
-        Native.onNativeCall();
-        nDumpHex(nativeInstance);
+        Stats.onNativeCall();
+        nDumpHex(_ptr);
         return this;
     }
 
@@ -1953,8 +1953,8 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_writeToMemory">https://fiddle.skia.org/c/@Path_writeToMemory</a>
      */
     public byte[] writeToMemory() {
-        Native.onNativeCall();
-        return nWriteToMemory(nativeInstance);
+        Stats.onNativeCall();
+        return nWriteToMemory(_ptr);
     }
 
     /**
@@ -1973,7 +1973,7 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_readFromMemory">https://fiddle.skia.org/c/@Path_readFromMemory</a>
      */
     public static Path readFromMemory(byte[] data) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new Path(nReadFromMemory(data));
     }
 
@@ -1992,8 +1992,8 @@ public class Path extends Managed implements Iterable {
      * @see Skia bug 1762
      */
     public int nGetGenerationID() {
-        Native.onNativeCall();
-        return nGetGenerationID(nativeInstance);
+        Stats.onNativeCall();
+        return nGetGenerationID(_ptr);
     }    
 
     /**
@@ -2004,11 +2004,11 @@ public class Path extends Managed implements Iterable {
      * @return  true if Path data is consistent
      */
     public boolean isValid() {
-        Native.onNativeCall();
-        return nIsValid(nativeInstance);
+        Stats.onNativeCall();
+        return nIsValid(_ptr);
     }
 
-    protected Path(long ptr) { super(ptr, nativeFinalizer); Native.onNativeCall(); }
+    protected Path(long ptr) { super(ptr, nativeFinalizer); Stats.onNativeCall(); }
     private static final  long    nativeFinalizer = nGetNativeFinalizer();
     private static native long    nInit();
     private static native long    nGetNativeFinalizer();

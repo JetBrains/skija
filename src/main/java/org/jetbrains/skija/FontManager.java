@@ -1,19 +1,19 @@
 package org.jetbrains.skija;
 
-public class FontManager extends RefCounted {
+public class FontManager extends RefCnt {
     public int countFamilies() {
-        Native.onNativeCall();
-        return nCountFamilies(nativeInstance);
+        Stats.onNativeCall();
+        return nCountFamilies(_ptr);
     }
 
     public String getFamilyName(int index) {
-        Native.onNativeCall();
-        return nGetFamilyName(nativeInstance, index);
+        Stats.onNativeCall();
+        return nGetFamilyName(_ptr, index);
     }
 
     public FontStyleSet createStyleSet(int index) {
-        Native.onNativeCall();
-        long ptr = nCreateStyleSet(nativeInstance, index);
+        Stats.onNativeCall();
+        long ptr = nCreateStyleSet(_ptr, index);
         return ptr == 0 ? null : new FontStyleSet(ptr);
     }
 
@@ -29,8 +29,8 @@ public class FontManager extends RefCounted {
      * {@link #createStyleSet(int)} due to hidden or auto-activated fonts.
      */
     public FontStyleSet matchFamily(String familyName) {
-        Native.onNativeCall();
-        return new FontStyleSet(nMatchFamily(nativeInstance, familyName));
+        Stats.onNativeCall();
+        return new FontStyleSet(nMatchFamily(_ptr, familyName));
     }
 
     /**
@@ -46,8 +46,8 @@ public class FontManager extends RefCounted {
      * auto-activated fonts.
      */
     public Typeface matchFamilyStyle(String familyName, FontStyle style) {
-        Native.onNativeCall();
-        long ptr = nMatchFamilyStyle(nativeInstance, familyName, style.value);
+        Stats.onNativeCall();
+        long ptr = nMatchFamilyStyle(_ptr, familyName, style.value);
         return ptr == 0 ? null : new Typeface(ptr);
     }
 
@@ -67,14 +67,14 @@ public class FontManager extends RefCounted {
      * requested character will be matched.
      */
     public Typeface matchFamilyStyleCharacter(String familyName, FontStyle style, String[] bcp47, int character) {
-        Native.onNativeCall();
-        long ptr = nMatchFamilyStyleCharacter(nativeInstance, familyName, style.value, bcp47, character);
+        Stats.onNativeCall();
+        long ptr = nMatchFamilyStyleCharacter(_ptr, familyName, style.value, bcp47, character);
         return ptr == 0 ? null : new Typeface(ptr);
     }
 
     public Typeface matchFaceStyle(Typeface typeface, FontStyle style) {
-        Native.onNativeCall();
-        long ptr = nMatchFaceStyle(nativeInstance, Native.pointer(typeface), style.value);
+        Stats.onNativeCall();
+        long ptr = nMatchFaceStyle(_ptr, Native.getPtr(typeface), style.value);
         return ptr == 0 ? null : new Typeface(ptr);
     }
 
@@ -88,13 +88,13 @@ public class FontManager extends RefCounted {
     }
 
     public Typeface makeFromData(Data data, int ttcIndex) {
-        Native.onNativeCall();
-        long ptr = nMakeFromData(nativeInstance, Native.pointer(data), ttcIndex);
+        Stats.onNativeCall();
+        long ptr = nMakeFromData(_ptr, Native.getPtr(data), ttcIndex);
         return ptr == 0 ? null : new Typeface(ptr);
     }
 
     private static class DefaultHolder {
-        static { Native.onNativeCall(); }
+        static { Stats.onNativeCall(); }
         public static final FontManager INSTANCE = new FontManager(nDefault(), false);
     }
 

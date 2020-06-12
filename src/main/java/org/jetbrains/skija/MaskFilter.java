@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-public class MaskFilter extends RefCounted {
+public class MaskFilter extends RefCnt {
     public enum BlurStyle {
         /** fuzzy inside and outside */
         NORMAL,
@@ -17,27 +17,27 @@ public class MaskFilter extends RefCounted {
     }
 
     public static MaskFilter blur(BlurStyle style, float sigma, boolean respectCTM) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new MaskFilter(nBlur(style.ordinal(), sigma, respectCTM));
     }
 
     public static MaskFilter shader(Shader s) {
-        Native.onNativeCall();
-        return new MaskFilter(nShader(Native.pointer(s)));
+        Stats.onNativeCall();
+        return new MaskFilter(nShader(Native.getPtr(s)));
     }
 
     public static MaskFilter table(byte[] table) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new MaskFilter(nTable(table));
     }
 
     public static MaskFilter gamma(float gamma) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new MaskFilter(nGamma(gamma));
     }
 
     public static MaskFilter clip(int min, int max) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new MaskFilter(nClip((byte) min, (byte) max));
     }
 

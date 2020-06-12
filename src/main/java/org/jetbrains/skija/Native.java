@@ -1,30 +1,21 @@
 package org.jetbrains.skija;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public abstract class Native {
-    protected long nativeInstance;
-    public static long nativeCalls = 0;
+    public long _ptr;
 
-    public static void onNativeCall() { nativeCalls++; }
-    public static long pointer(Native n) { return n == null ? 0 : n.nativeInstance; }
+    public static long getPtr(Native n) { return n == null ? 0 : n._ptr; }
 
-    protected Native(long nativeInstance) {
-        if (nativeInstance == 0)
-            throw new RuntimeException("nativeInstance returned nullptr");
-        this.nativeInstance = nativeInstance;
-    }
-
-    public long getNativeInstance() {
-        return nativeInstance;
+    public Native(long ptr) {
+        if (ptr == 0)
+            throw new RuntimeException("Can't wrap nullptr");
+        this._ptr = ptr;
     }
 
     @Override
-    public boolean equals(Object object) {
-        return this == object || (object != null && getClass() == object.getClass() && nativeInstance == ((Managed) object).nativeInstance);
+    public String toString() {
+        return getClass().getSimpleName() + "(_ptr=0x" + Long.toString(_ptr, 16) + ")";
     }
-
-    @Override
-    public int hashCode() { return Long.hashCode(nativeInstance); }
-
-    @Override
-    public String toString() { return "[" + getClass().getSimpleName() + " 0x" + Long.toString(nativeInstance, 16) + "]"; }
 }

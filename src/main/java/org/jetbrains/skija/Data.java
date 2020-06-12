@@ -6,8 +6,8 @@ package org.jetbrains.skija;
 public class Data extends Managed {
 
     public long size() {
-        Native.onNativeCall();
-        return nSize(nativeInstance);
+        Stats.onNativeCall();
+        return nSize(_ptr);
     }
 
     public byte[] bytes() {
@@ -15,8 +15,8 @@ public class Data extends Managed {
     }
 
     public byte[] bytes(long offset, long length) {
-        Native.onNativeCall();
-        return nBytes(nativeInstance, offset, length);
+        Stats.onNativeCall();
+        return nBytes(_ptr, offset, length);
     }
 
     /**
@@ -28,9 +28,9 @@ public class Data extends Managed {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Data od = (Data) o;
-        if (nativeInstance == od.nativeInstance) return true;
-        Native.onNativeCall();
-        return nEquals(nativeInstance, od.nativeInstance);
+        if (_ptr == od._ptr) return true;
+        Stats.onNativeCall();
+        return nEquals(_ptr, od._ptr);
     }
 
     public static Data makeFromBytes(byte[] bytes) {
@@ -38,7 +38,7 @@ public class Data extends Managed {
     }
 
     public static Data makeFromBytes(byte[] bytes, long offset, long length) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new Data(nMakeFromBytes(bytes, offset, length));
     }
 
@@ -47,7 +47,7 @@ public class Data extends Managed {
      *  If the file cannot be opened, this returns null.
      */
     public static Data makeFromFileName(String path) {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new Data(nMakeFromFileName(path));
     }
 
@@ -56,13 +56,13 @@ public class Data extends Managed {
      *  src dataref.
      */
     public Data makeSubset(long offset, long length) {
-        Native.onNativeCall();
-        return new Data(nMakeSubset(nativeInstance, offset, length));
+        Stats.onNativeCall();
+        return new Data(nMakeSubset(_ptr, offset, length));
     }
 
     public Data makeCopy() {
-        Native.onNativeCall();
-        return new Data(nMakeSubset(nativeInstance, 0, size()));
+        Stats.onNativeCall();
+        return new Data(nMakeSubset(_ptr, 0, size()));
     }
 
     /**
@@ -70,13 +70,13 @@ public class Data extends Managed {
      *  New or shared, the caller must see that {@link close()} is eventually called.
      */
     public static Data makeEmpty() {
-        Native.onNativeCall();
+        Stats.onNativeCall();
         return new Data(nMakeEmpty());
     }
 
     protected Data(long ptr) {
         super(ptr, nativeFinalizer);
-        Native.onNativeCall();
+        Stats.onNativeCall();
     }
 
     private static final  long    nativeFinalizer = nGetNativeFinalizer();

@@ -1,12 +1,12 @@
 package org.jetbrains.skija;
 
-public class Typeface extends RefCounted {
+public class Typeface extends RefCnt {
     public static Typeface makeFromFile(String path) {
         return makeFromFile(path, 0);
     }
 
     public static Typeface makeFromFile(String path, int index) {
-        Native.onNativeCall(); 
+        Stats.onNativeCall();
         long ptr = nMakeFromFile(path, index);
         if (ptr == 0)
             throw new RuntimeException("Failed to create Typeface from path=\"" + path + "\" index=" + index);
@@ -16,8 +16,8 @@ public class Typeface extends RefCounted {
     public Typeface makeClone(FontVariation[] variations) {
         if (variations.length == 0)
             return this;
-        Native.onNativeCall(); 
-        return new Typeface(nMakeClone(nativeInstance, variations));
+        Stats.onNativeCall();
+        return new Typeface(nMakeClone(_ptr, variations));
     }
 
     public Typeface(long nativeInstance) { super(nativeInstance); }
