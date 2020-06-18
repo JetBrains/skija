@@ -380,16 +380,12 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nAddPathOffset
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nAddPathTransform
-  (JNIEnv* env, jclass jclass, jlong ptr, jlong srcPtr,
-   jfloat scaleX, jfloat skewX,  jfloat transX,
-   jfloat skewY,  jfloat scaleY, jfloat transY,
-   jfloat persp0, jfloat persp1, jfloat persp2,
-   jboolean extend) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong srcPtr, jfloatArray matrixArr, jboolean extend) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
     SkPath* src = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(srcPtr));
-    SkMatrix matrix = SkMatrix::MakeAll(scaleX, skewX, transX, skewY, scaleY, transY, persp0, persp1, persp2);
+    std::unique_ptr<SkMatrix> matrix = skMatrix(env, matrixArr);
     SkPath::AddPathMode mode = extend ? SkPath::AddPathMode::kExtend_AddPathMode : SkPath::AddPathMode::kAppend_AddPathMode;
-    instance->addPath(*src, matrix, mode);
+    instance->addPath(*src, *matrix, mode);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nReverseAddPath
@@ -407,16 +403,12 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nOffset
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nTransform
-  (JNIEnv* env, jclass jclass, jlong ptr,
-   jfloat scaleX, jfloat skewX,  jfloat transX,
-   jfloat skewY,  jfloat scaleY, jfloat transY,
-   jfloat persp0, jfloat persp1, jfloat persp2,
-   jlong dstPtr, jboolean pcBool) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloatArray matrixArr, jlong dstPtr, jboolean pcBool) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
     SkPath* dst = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(dstPtr));
-    SkMatrix matrix = SkMatrix::MakeAll(scaleX, skewX, transX, skewY, scaleY, transY, persp0, persp1, persp2);
+    std::unique_ptr<SkMatrix> matrix = skMatrix(env, matrixArr);
     SkApplyPerspectiveClip pc = pcBool ? SkApplyPerspectiveClip::kYes : SkApplyPerspectiveClip::kNo;
-    instance->transform(matrix, dst, pc);
+    instance->transform(*matrix, dst, pc);
 }
 
 extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Path__1nGetLastPt

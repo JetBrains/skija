@@ -225,25 +225,20 @@ public class Canvas extends Native {
     }
 
     public Canvas translate(float dx, float dy) {
-        Stats.onNativeCall();
-        _nConcat(_ptr, 1, 0, dx, 0, 1, dy, 0, 0, 1);
-        return this;
+        return concat(Matrix33.makeTranslate(dx, dy));
     }
 
     public Canvas scale(float sx, float sy) {
-        Stats.onNativeCall();
-        _nConcat(_ptr, sx, 0, 0, 0, sy, 0, 0, 0, 1);
-        return this;
+        return concat(Matrix33.makeScale(sx, sy));
     }
 
     public Canvas rotate(float deg) {
-        return concat(Matrix.makeRotate(deg));
+        return concat(Matrix33.makeRotate(deg));
     }
 
-    public Canvas concat(float[] matrix) {
-        assert matrix.length == 9 : "Expected 9 elements in matrix, got " + matrix == null ? null : matrix.length;
+    public Canvas concat(Matrix33 matrix) {
         Stats.onNativeCall();
-        _nConcat(_ptr, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8]);
+        _nConcat(_ptr, matrix.getMat());
         return this;
     }
 
@@ -289,10 +284,7 @@ public class Canvas extends Native {
     public static native void _nClipRRect(long ptr, float left, float top, float right, float bottom, float[] radii, int op, boolean antiAlias);
     public static native void _nClipPath(long ptr, long nativePath, int op, boolean antiAlias);
     public static native void _nClipRegion(long ptr, long nativeRegion, int op);
-    public static native void _nConcat(long ptr,
-                                       float scaleX, float skewX, float transX,
-                                       float skewY, float scaleY, float transY,
-                                       float persp0, float persp1, float persp2);
+    public static native void _nConcat(long ptr, float[] matrix);
     public static native int  _nSave(long ptr);
     public static native int  _nGetSaveCount(long ptr);
     public static native void _nRestore(long ptr);

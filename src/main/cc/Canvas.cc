@@ -172,13 +172,11 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nClipRegion
     canvas->clipRegion(*region, static_cast<SkClipOp>(op));
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nConcat(JNIEnv* env, jclass jclass, jlong ptr,
-        jfloat scaleX, jfloat skewX,  jfloat transX,
-        jfloat skewY,  jfloat scaleY, jfloat transY,
-        jfloat persp0, jfloat persp1, jfloat persp2) {
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nConcat
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloatArray matrixArr) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(ptr));
-    SkMatrix m = SkMatrix::MakeAll(scaleX, skewX, transX, skewY, scaleY, transY, persp0, persp1, persp2);
-    canvas->concat(m);
+    std::unique_ptr<SkMatrix> m = skMatrix(env, matrixArr);
+    canvas->concat(*m);
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Canvas__1nSave(JNIEnv* env, jclass jclass, jlong ptr) {

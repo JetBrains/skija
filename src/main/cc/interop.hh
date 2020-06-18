@@ -88,7 +88,7 @@ namespace skija {
     }
 }
 
-std::unique_ptr<SkMatrix> arrayToMatrix(JNIEnv* env, jfloatArray arr);
+std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray arr);
 SkString skString(JNIEnv* env, jstring str);
 jstring javaString(JNIEnv* env, const SkString& str);
 SkFontStyle skFontStyle(jint style);

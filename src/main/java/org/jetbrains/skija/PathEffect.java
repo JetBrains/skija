@@ -35,15 +35,14 @@ public class PathEffect extends RefCnt {
         return new PathEffect(_nMakePath1D(Native.getPtr(path), advance, phase, style.ordinal()));
     }
 
-    public static PathEffect makePath2D(float[] matrix, Path path) {
+    public static PathEffect makePath2D(Matrix33 matrix, Path path) {
         Stats.onNativeCall();
-        return new PathEffect(_nMakePath2D(matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8],
-            Native.getPtr(path)));
+        return new PathEffect(_nMakePath2D(matrix.getMat(), Native.getPtr(path)));
     }
 
-    public static PathEffect makeLine2D(float width, float[] matrix) {
+    public static PathEffect makeLine2D(float width, Matrix33 matrix) {
         Stats.onNativeCall();
-        return new PathEffect(_nMakeLine2D(width, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8]));
+        return new PathEffect(_nMakeLine2D(width, matrix.getMat()));
     }
 
     public static PathEffect makeCorner(float radius) {
@@ -70,15 +69,8 @@ public class PathEffect extends RefCnt {
     public static native long _nMakeCompose(long outerPtr, long innerPtr);
     public static native Rect _nComputeFastBounds(long ptr, float l, float t, float r, float b);
     public static native long _nMakePath1D(long pathPtr, float advance, float phase, int style);
-    public static native long _nMakePath2D(
-        float scaleX, float skewX,  float transX,
-        float skewY,  float scaleY, float transY,
-        float persp0, float persp1, float persp2,
-        long pathPtr);
-    public static native long _nMakeLine2D(float width,
-                                           float scaleX, float skewX, float transX,
-                                           float skewY, float scaleY, float transY,
-                                           float persp0, float persp1, float persp2);
+    public static native long _nMakePath2D(float[] matrix, long pathPtr);
+    public static native long _nMakeLine2D(float width, float[] matrix);
     public static native long _nMakeCorner(float radius);
     public static native long _nMakeDash(float[] intervals, float phase);
     public static native long _nMakeDiscrete(float segLength, float dev, int seed);

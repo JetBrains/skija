@@ -54,7 +54,7 @@ public class ShadersScene implements Scene {
             Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.withTileMode(TileMode.MIRROR)),
             Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.withTileMode(TileMode.DECAL)),
             Shader.makeLinearGradient( 0,  0,  0, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
-            Shader.makeLinearGradient( 0,  0,  0, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.withLocalMatrix(Matrix.makeRotate(45))),
+            Shader.makeLinearGradient( 0,  0,  0, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.withLocalMatrix(Matrix33.makeRotate(45))),
             Shader.makeLinearGradient( 0,  0, 60, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
             Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0x00000000 }),
             Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0xFFff1654, 0xFF70c1b3, 0xFFf3ffbd, 0xFFb2dbbf }),

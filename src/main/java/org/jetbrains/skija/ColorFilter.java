@@ -16,16 +16,14 @@ public class ColorFilter extends RefCnt {
         return new ColorFilter(_nMakeBlend(color, mode.ordinal()));
     }
 
-    public static ColorFilter makeMatrix(float[] rowMajor) {
-        assert rowMajor.length == 20 : "Expected 20 elements, got " + rowMajor.length;
+    public static ColorFilter makeMatrix(ColorMatrix matrix) {
         Stats.onNativeCall();
-        return new ColorFilter(_nMakeMatrix(rowMajor));
+        return new ColorFilter(_nMakeMatrix(matrix.getMat()));
     }
 
-    public static ColorFilter makeHSLAMatrix(float[] rowMajor) {
-        assert rowMajor.length == 20 : "Expected 20 elements, got " + rowMajor.length;
+    public static ColorFilter makeHSLAMatrix(ColorMatrix matrix) {
         Stats.onNativeCall();
-        return new ColorFilter(_nMakeHSLAMatrix(rowMajor));
+        return new ColorFilter(_nMakeHSLAMatrix(matrix.getMat()));
     }
 
     public static class _LinearToSRGBGammaHolder {

@@ -98,9 +98,9 @@ public class ImageFilter extends RefCnt {
         return new ImageFilter(_nMakeMatrixConvolution(kernelW, kernelH, kernel, gain, bias, offsetX, offsetY, tileMode.ordinal(), convolveAlpha, Native.getPtr(input), crop));
     }
 
-    public static ImageFilter makeMatrixTransform(float[] matrix, FilterQuality q, ImageFilter input) {
+    public static ImageFilter makeMatrixTransform(Matrix33 matrix, FilterQuality q, ImageFilter input) {
         Stats.onNativeCall();
-        return new ImageFilter(_nMakeMatrixTransform(matrix, q.ordinal(), Native.getPtr(input)));
+        return new ImageFilter(_nMakeMatrixTransform(matrix.getMat(), q.ordinal(), Native.getPtr(input)));
     }
 
     public static ImageFilter makeMerge(ImageFilter[] filters, IRect crop) {

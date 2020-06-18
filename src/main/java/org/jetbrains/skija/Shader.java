@@ -17,10 +17,10 @@ public class Shader extends RefCnt {
         public final TileMode _tileMode;
         public final int      _flags;
         @Getter @With
-        public final float[]  _localMatrix;
+        public final Matrix33 _localMatrix;
 
         @Internal
-        public GradientOptions(TileMode t, int f, float[] m) {
+        public GradientOptions(TileMode t, int f, Matrix33 m) {
             _tileMode = t;
             _flags = f;
             _localMatrix = m;
@@ -50,13 +50,13 @@ public class Shader extends RefCnt {
     public static Shader makeLinearGradient(float x0, float y0, float x1, float y1, int[] colors, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
         Stats.onNativeCall();
-        return new Shader(_nMakeLinearGradient(x0, y0, x1, y1, colors, positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix));
+        return new Shader(_nMakeLinearGradient(x0, y0, x1, y1, colors, positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix == null ? null : opts._localMatrix.getMat()));
     }
 
     public static Shader makeLinearGradient(float x0, float y0, float x1, float y1, Color4f[] colors, ColorSpace cs, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
         Stats.onNativeCall();
-        return new Shader(_nMakeLinearGradientCS(x0, y0, x1, y1, Color4f.flattenArray(colors), Native.getPtr(cs), positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix));
+        return new Shader(_nMakeLinearGradientCS(x0, y0, x1, y1, Color4f.flattenArray(colors), Native.getPtr(cs), positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix == null ? null : opts._localMatrix.getMat()));
     }
 
     public static Shader makeRadialGradient(float x, float y, float r, int[] colors) {
@@ -70,13 +70,13 @@ public class Shader extends RefCnt {
     public static Shader makeRadialGradient(float x, float y, float r, int[] colors, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
         Stats.onNativeCall();
-        return new Shader(_nMakeRadialGradient(x, y, r, colors, positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix));
+        return new Shader(_nMakeRadialGradient(x, y, r, colors, positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix == null ? null : opts._localMatrix.getMat()));
     }
 
     public static Shader makeRadialGradient(float x, float y, float r, Color4f[] colors, ColorSpace cs, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
         Stats.onNativeCall();
-        return new Shader(_nMakeRadialGradientCS(x, y, r, Color4f.flattenArray(colors), Native.getPtr(cs), positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix));
+        return new Shader(_nMakeRadialGradientCS(x, y, r, Color4f.flattenArray(colors), Native.getPtr(cs), positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix == null ? null : opts._localMatrix.getMat()));
     }
 
     public static Shader makeTwoPointConicalGradient(float x0, float y0, float r0, float x1, float y1, float r1, int[] colors) {
@@ -90,13 +90,13 @@ public class Shader extends RefCnt {
     public static Shader makeTwoPointConicalGradient(float x0, float y0, float r0, float x1, float y1, float r1, int[] colors, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
         Stats.onNativeCall();
-        return new Shader(_nMakeTwoPointConicalGradient(x0, y0, r0, x1, y1, r1, colors, positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix));
+        return new Shader(_nMakeTwoPointConicalGradient(x0, y0, r0, x1, y1, r1, colors, positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix == null ? null : opts._localMatrix.getMat()));
     }
 
     public static Shader makeTwoPointConicalGradient(float x0, float y0, float r0, float x1, float y1, float r1, Color4f[] colors, ColorSpace cs, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
         Stats.onNativeCall();
-        return new Shader(_nMakeTwoPointConicalGradientCS(x0, y0, r0, x1, y1, r1, Color4f.flattenArray(colors), Native.getPtr(cs), positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix));
+        return new Shader(_nMakeTwoPointConicalGradientCS(x0, y0, r0, x1, y1, r1, Color4f.flattenArray(colors), Native.getPtr(cs), positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix == null ? null : opts._localMatrix.getMat()));
     }
 
     public static Shader makeSweepGradient(float x, float y, int[] colors) {
@@ -114,13 +114,13 @@ public class Shader extends RefCnt {
     public static Shader makeSweepGradient(float x, float y, float startAngle, float endAngle, int[] colors, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
         Stats.onNativeCall();
-        return new Shader(_nMakeSweepGradient(x, y, startAngle, endAngle, colors, positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix));
+        return new Shader(_nMakeSweepGradient(x, y, startAngle, endAngle, colors, positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix == null ? null : opts._localMatrix.getMat()));
     }
 
     public static Shader makeSweepGradient(float x, float y, float startAngle, float endAngle, Color4f[] colors, ColorSpace cs, float[] positions, GradientOptions opts) {
         assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
         Stats.onNativeCall();
-        return new Shader(_nMakeSweepGradientCS(x, y, startAngle, endAngle, Color4f.flattenArray(colors), Native.getPtr(cs), positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix));
+        return new Shader(_nMakeSweepGradientCS(x, y, startAngle, endAngle, Color4f.flattenArray(colors), Native.getPtr(cs), positions, opts._tileMode.ordinal(), opts._flags, opts._localMatrix == null ? null : opts._localMatrix.getMat()));
     }
 
     public static Shader makeEmpty() {

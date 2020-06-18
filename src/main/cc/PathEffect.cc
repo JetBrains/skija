@@ -41,22 +41,17 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_PathEffect__1nMakePa
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_PathEffect__1nMakePath2D
-  (JNIEnv* env, jclass jclass, jfloat scaleX, jfloat skewX, jfloat transX,
-        jfloat skewY,  jfloat scaleY, jfloat transY,
-        jfloat persp0, jfloat persp1, jfloat persp2,
-        jlong pathPtr) {
-    SkMatrix m = SkMatrix::MakeAll(scaleX, skewX, transX, skewY, scaleY, transY, persp0, persp1, persp2);
+  (JNIEnv* env, jclass jclass, jfloatArray matrixArr, jlong pathPtr) {
+    std::unique_ptr<SkMatrix> m = skMatrix(env, matrixArr);
     SkPath* path = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(pathPtr));
-    SkPathEffect* ptr = SkPath2DPathEffect::Make(m, *path).release();
+    SkPathEffect* ptr = SkPath2DPathEffect::Make(*m, *path).release();
     return reinterpret_cast<jlong>(ptr);
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_PathEffect__1nMakeLine2D
-  (JNIEnv* env, jclass jclass, jfloat width, jfloat scaleX, jfloat skewX, jfloat transX,
-        jfloat skewY,  jfloat scaleY, jfloat transY,
-        jfloat persp0, jfloat persp1, jfloat persp2) {
-    SkMatrix m = SkMatrix::MakeAll(scaleX, skewX, transX, skewY, scaleY, transY, persp0, persp1, persp2);
-    SkPathEffect* ptr = SkLine2DPathEffect::Make(width, m).release();
+  (JNIEnv* env, jclass jclass, jfloat width, jfloatArray matrixArr) {
+    std::unique_ptr<SkMatrix> m = skMatrix(env, matrixArr);
+    SkPathEffect* ptr = SkLine2DPathEffect::Make(width, *m).release();
     return reinterpret_cast<jlong>(ptr);
 }
 

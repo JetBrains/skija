@@ -41,18 +41,18 @@ public class ColorFiltersScene implements Scene {
                     ColorFilter.makeBlend(0x80CC3333, BlendMode.SRC_OVER),
                     ColorFilter.makeBlend(0x803333CC, BlendMode.SRC_OVER)
                 ),
-                ColorFilter.makeMatrix(new float[] {
+                ColorFilter.makeMatrix(new ColorMatrix(
                     0.21f, 0.72f, 0.07f, 0, 0,
                     0.21f, 0.72f, 0.07f, 0, 0,
                     0.21f, 0.72f, 0.07f, 0, 0,
                     0,     0,     0,     1, 0
-                }),
-                ColorFilter.makeHSLAMatrix(new float[] {
+                )),
+                ColorFilter.makeHSLAMatrix(new ColorMatrix(
                     0, 0, 0, 0, ratio,
                     0, 1, 0, 0, 0,
                     0, 0, 1, 0, 0,
                     0, 0, 0, 1, 0
-                }),
+                )),
                 ColorFilter.makeLerp(ColorFilter.makeBlend(0x80CC3333, BlendMode.SRC_OVER), ColorFilter.makeBlend(0x803333CC, BlendMode.SRC_OVER), ratio),
                 ColorFilter.makeLighting(0x80CC3333, 0x803333CC),
             },

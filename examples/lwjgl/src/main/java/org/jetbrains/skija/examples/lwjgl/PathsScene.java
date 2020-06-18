@@ -221,7 +221,7 @@ public class PathsScene implements Scene {
                 canvas.drawPath(path, paint);
                 canvas.translate(50, 0);
 
-                path.reset().addRect(Rect.makeLTRB(0, 0, 40, 40)).addPath(subpath, Matrix.makeRotate(-15), true);
+                path.reset().addRect(Rect.makeLTRB(0, 0, 40, 40)).addPath(subpath, Matrix33.makeRotate(-15), true);
                 canvas.drawPath(path, paint);
                 canvas.translate(50, 0);
 
@@ -257,13 +257,13 @@ public class PathsScene implements Scene {
             // transform
             path.reset().addRRect(RRect.makeLTRB(0, 0, 20, 20, 5));
             canvas.drawPath(path, secondaryPaint);
-            path.transform(Matrix.makeRotate(-15));
+            path.transform(Matrix33.makeRotate(-15));
             canvas.drawPath(path, paint);
             canvas.translate(50, 0);
 
             try (Path subpath = new Path().addRRect(RRect.makeLTRB(0, 0, 20, 20, 5))) {
                 canvas.drawPath(subpath, secondaryPaint);
-                subpath.transform(Matrix.makeRotate(-15), path);
+                subpath.transform(Matrix33.makeRotate(-15), path);
                 canvas.drawPath(path, paint);
                 canvas.translate(50, 0);
             }

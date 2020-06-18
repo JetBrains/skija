@@ -107,7 +107,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ImageFilter__1nMakeM
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ImageFilter__1nMakeMatrixTransform
   (JNIEnv* env, jclass jclass, jfloatArray matrixArray, jint filterQualityInt, jlong inputPtr) {
-    std::unique_ptr<SkMatrix> matrix = arrayToMatrix(env, matrixArray);
+    std::unique_ptr<SkMatrix> matrix = skMatrix(env, matrixArray);
     SkFilterQuality filterQuality = static_cast<SkFilterQuality>(filterQualityInt);
     SkImageFilter* input = reinterpret_cast<SkImageFilter*>(static_cast<uintptr_t>(inputPtr));
     SkImageFilter* ptr = SkImageFilters::MatrixTransform(*matrix, filterQuality, sk_ref_sp(input)).release();

@@ -1594,7 +1594,7 @@ public class Path extends Managed implements Iterable {
      * @param matrix  transform applied to src
      * @return        reference to Path
      */
-    public Path addPath(Path src, float[] matrix) {
+    public Path addPath(Path src, Matrix33 matrix) {
         return addPath(src, matrix, false);
     }
 
@@ -1611,9 +1611,9 @@ public class Path extends Managed implements Iterable {
      * @param extend  if should add a line before appending verbs
      * @return        reference to Path
      */
-    public Path addPath(Path src, float[] matrix, boolean extend) {
+    public Path addPath(Path src, Matrix33 matrix, boolean extend) {
         Stats.onNativeCall();
-        _nAddPathTransform(_ptr, Native.getPtr(src), matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8], extend);
+        _nAddPathTransform(_ptr, Native.getPtr(src), matrix.getMat(), extend);
         return this;
     }
 
@@ -1665,11 +1665,10 @@ public class Path extends Managed implements Iterable {
      * transform may change verbs and increase their number.
      * Path is replaced by transformed data.
      *
+     * @param matrix  matrix to apply to Path
      * @return  this
-     *
-     * @param matrix  float[9] to apply to Path
      */
-    public Path transform(float[] matrix) {
+    public Path transform(Matrix33 matrix) {
         return transform(matrix, null, true);
     }
 
@@ -1678,11 +1677,11 @@ public class Path extends Managed implements Iterable {
      * transform may change verbs and increase their number.
      * Path is replaced by transformed data.
      *
-     * @param matrix                float[9] to apply to Path
+     * @param matrix                matrix to apply to Path
      * @param applyPerspectiveClip  whether to apply perspective clipping
      * @return                      this
      */
-    public Path transform(float[] matrix, boolean applyPerspectiveClip) {
+    public Path transform(Matrix33 matrix, boolean applyPerspectiveClip) {
         return transform(matrix, null, applyPerspectiveClip);
     }
 
@@ -1692,13 +1691,13 @@ public class Path extends Managed implements Iterable {
      * Transformed Path replaces dst; if dst is null, original data
      * is replaced.
      *
-     * @param matrix  float[9] to apply to Path
+     * @param matrix  matrix to apply to Path
      * @param dst     overwritten, transformed copy of Path; may be null
      * @return        this
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_transform">https://fiddle.skia.org/c/@Path_transform</a>
      */
-    public Path transform(float[] matrix, Path dst) {
+    public Path transform(Matrix33 matrix, Path dst) {
         return transform(matrix, dst, true);
     }
 
@@ -1708,16 +1707,16 @@ public class Path extends Managed implements Iterable {
      * Transformed Path replaces dst; if dst is null, original data
      * is replaced.
      *
-     * @param matrix                float[9] to apply to Path
+     * @param matrix                matrix to apply to Path
      * @param dst                   overwritten, transformed copy of Path; may be null
      * @param applyPerspectiveClip  whether to apply perspective clipping
      * @return                      this
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_transform">https://fiddle.skia.org/c/@Path_transform</a>
      */
-    public Path transform(float[] matrix, Path dst, boolean applyPerspectiveClip) {
+    public Path transform(Matrix33 matrix, Path dst, boolean applyPerspectiveClip) {
         Stats.onNativeCall();
-        _nTransform(_ptr, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8], Native.getPtr(dst), applyPerspectiveClip);
+        _nTransform(_ptr, matrix.getMat(), Native.getPtr(dst), applyPerspectiveClip);
         return this;
     }
 
@@ -2119,18 +2118,10 @@ public class Path extends Managed implements Iterable {
     public static native void    _nAddPoly(long ptr, float[] coords, boolean close);
     public static native void    _nAddPath(long ptr, long srcPtr, boolean extend);
     public static native void    _nAddPathOffset(long ptr, long srcPtr, float dx, float dy, boolean extend);
-    public static native void    _nAddPathTransform(long ptr, long srcPtr,
-        float scaleX, float skewX,  float transX,
-        float skewY,  float scaleY, float transY,
-        float persp0, float persp1, float persp2,
-        boolean extend);
+    public static native void    _nAddPathTransform(long ptr, long srcPtr, float[] matrix, boolean extend);
     public static native void    _nReverseAddPath(long ptr, long srcPtr);
     public static native void    _nOffset(long ptr, float dx, float dy, long dst);
-    public static native void    _nTransform(long ptr,
-        float scaleX, float skewX,  float transX,
-        float skewY,  float scaleY, float transY,
-        float persp0, float persp1, float persp2,
-        long dst, boolean applyPerspectiveClip);
+    public static native void    _nTransform(long ptr, float[] matrix, long dst, boolean applyPerspectiveClip);
     public static native Point   _nGetLastPt(long ptr);
     public static native void    _nSetLastPt(long ptr, float x, float y);
     public static native int     _nGetSegmentMasks(long ptr);

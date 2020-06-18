@@ -314,7 +314,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::RRect::onUnload(env);
 }
 
-std::unique_ptr<SkMatrix> arrayToMatrix(JNIEnv* env, jfloatArray matrixArray) {
+std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray matrixArray) {
     if (matrixArray == nullptr)
         return std::unique_ptr<SkMatrix>(nullptr);
     else {
