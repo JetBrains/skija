@@ -1,19 +1,21 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.skija.impl.Managed;
+import org.jetbrains.skija.impl.Native;
+import org.jetbrains.skija.impl.Stats;
+
 public class Font extends Managed {
-    public final Typeface typeface;
     public Font(Typeface typeface, float size) {
-        super(nInit(typeface._ptr, size), nativeFinalizer);
+        super(_nMake(Native.getPtr(typeface), size), _finalizerPtr);
         Stats.onNativeCall();
-        this.typeface = typeface;
     }
 
     public TextBlob shape(String str, float width) {
-        return new TextBlob(nShape(_ptr, str, width));
+        return new TextBlob(_nShape(_ptr, str, width));
     }
 
-    private static final long nativeFinalizer = nGetNativeFinalizer();
-    private static native long nInit(long typefacePtr, float size);
-    private static native long nGetNativeFinalizer();
-    private static native long nShape(long ptr, String str, float width);
+    public static final long _finalizerPtr = _nGetFinalizer();
+    public static native long _nMake(long typefacePtr, float size);
+    public static native long _nGetFinalizer();
+    public static native long _nShape(long ptr, String str, float width);
 }

@@ -1,6 +1,5 @@
 package org.jetbrains.skija.examples.lwjgl;
 
-import java.util.Iterator;
 import org.jetbrains.skija.*;
 
 public class PathsScene implements Scene {
@@ -200,9 +199,9 @@ public class PathsScene implements Scene {
             canvas.drawPath(path, paint);
             canvas.translate(50, 0);
 
-            // addRoundedRect
+            // addRRect
             for (int i = 0; i < 8; ++i) {
-                path.reset().addRoundedRect(RoundedRect.makeLTRB(10, 10, 30, 30, 5), Path.Direction.CLOCKWISE, i).lineTo(20, 20);
+                path.reset().addRRect(RRect.makeLTRB(10, 10, 30, 30, 5), Path.Direction.CLOCKWISE, i).lineTo(20, 20);
                 canvas.drawPath(path, paint);
                 canvas.translate(50, 0);            
             }
@@ -222,7 +221,7 @@ public class PathsScene implements Scene {
                 canvas.drawPath(path, paint);
                 canvas.translate(50, 0);
 
-                path.reset().addRect(Rect.makeLTRB(0, 0, 40, 40)).addPath(subpath, Matrix.rotate(-15), true);
+                path.reset().addRect(Rect.makeLTRB(0, 0, 40, 40)).addPath(subpath, Matrix.makeRotate(-15), true);
                 canvas.drawPath(path, paint);
                 canvas.translate(50, 0);
 
@@ -242,13 +241,13 @@ public class PathsScene implements Scene {
              var secondaryPaint = new Paint().setColor(0xFFFAA6B2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);) {
 
             // offsets
-            path.reset().addRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 5));
+            path.reset().addRRect(RRect.makeLTRB(0, 0, 20, 20, 5));
             canvas.drawPath(path, secondaryPaint);
             path.offset(5, 5);
             canvas.drawPath(path, paint);
             canvas.translate(50, 0);
 
-            try (Path subpath = new Path().addRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 5))) {
+            try (Path subpath = new Path().addRRect(RRect.makeLTRB(0, 0, 20, 20, 5))) {
                 canvas.drawPath(subpath, secondaryPaint);
                 subpath.offset(5, 5, path);
                 canvas.drawPath(path, paint);
@@ -256,15 +255,15 @@ public class PathsScene implements Scene {
             }
 
             // transform
-            path.reset().addRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 5));
+            path.reset().addRRect(RRect.makeLTRB(0, 0, 20, 20, 5));
             canvas.drawPath(path, secondaryPaint);
-            path.transform(Matrix.rotate(-15));
+            path.transform(Matrix.makeRotate(-15));
             canvas.drawPath(path, paint);
             canvas.translate(50, 0);
 
-            try (Path subpath = new Path().addRoundedRect(RoundedRect.makeLTRB(0, 0, 20, 20, 5))) {
+            try (Path subpath = new Path().addRRect(RRect.makeLTRB(0, 0, 20, 20, 5))) {
                 canvas.drawPath(subpath, secondaryPaint);
-                subpath.transform(Matrix.rotate(-15), path);
+                subpath.transform(Matrix.makeRotate(-15), path);
                 canvas.drawPath(path, paint);
                 canvas.translate(50, 0);
             }
@@ -339,10 +338,10 @@ public class PathsScene implements Scene {
              Path p2 = new Path().moveTo(0, 20).lineTo(14, 20).lineTo(14, 0).lineTo(26, 0).lineTo(26, 20).lineTo(40, 20).lineTo(20, 40).lineTo(0, 20).closePath();
              Path p3 = new Path().moveTo(0, 20).lineTo(20, 0).lineTo(20, 14).lineTo(40, 14).lineTo(40, 26).lineTo(20, 26).lineTo(20, 40).lineTo(0, 20).closePath();
              Path p4 = new Path().moveTo(0, 20).lineTo(20, 0).lineTo(40, 20).lineTo(26, 20).lineTo(26, 40).lineTo(14, 40).lineTo(14, 20).lineTo(0, 20).closePath();
-             Path target = pair == 0 ? p1.interpolate(p2, weight)
-                         : pair == 1 ? p2.interpolate(p3, weight)
-                         : pair == 2 ? p3.interpolate(p4, weight)
-                         : p4.interpolate(p1, weight);
+             Path target = pair == 0 ? p1.makeLerp(p2, weight)
+                         : pair == 1 ? p2.makeLerp(p3, weight)
+                         : pair == 2 ? p3.makeLerp(p4, weight)
+                         : p4.makeLerp(p1, weight);
              Paint stroke = new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1);)
         {
             target.setVolatile(true);
@@ -355,8 +354,8 @@ public class PathsScene implements Scene {
             canvas.translate(50, 0);
 
             for (long i = 0; i < 31; ++i) {
-                try (var shader = Shader.lerp(i / 30f, Shader.color(0xFF437AA0), Shader.color(0xFFFAA6B2));
-                     var interpolated = p1.interpolate(p3, i / 30f);)
+                try (var shader = Shader.makeLerp(i / 30f, Shader.makeColor(0xFF437AA0), Shader.makeColor(0xFFFAA6B2));
+                     var interpolated = p1.makeLerp(p3, i / 30f);)
                 {
                     stroke.setShader(shader);
                     canvas.drawPath(interpolated, stroke);

@@ -1,8 +1,12 @@
 package org.jetbrains.skija.paragraph;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.jetbrains.skija.*;
-
-import java.util.Objects;
+import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.skija.impl.Managed;
+import org.jetbrains.skija.impl.Native;
+import org.jetbrains.skija.impl.Stats;
 
 public class Paragraph extends Managed {
     public enum Affinity {
@@ -55,72 +59,20 @@ public class Paragraph extends Managed {
         LTR
     }
 
+    @Data
     public static class PositionWithAffinity {
-        public final int position;
-        public final Affinity affinity;
-
-        public PositionWithAffinity(int position, Affinity affinity) {
-            this.position = position;
-            this.affinity = affinity;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            PositionWithAffinity that = (PositionWithAffinity) o;
-            return position == that.position &&
-                    affinity.equals(that.affinity);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(position, affinity);
-        }
-
-        @Override
-        public String toString() {
-            return "PositionWithAffinity{" +
-                    "position=" + position +
-                    ", affinity=" + affinity +
-                    '}';
-        }
+        public final int _position;
+        public final Affinity _affinity;
     }
 
+    @AllArgsConstructor
+    @Data
     public static class TextBox {
-        public final Rect rect;
-        public final TextDirection direction;
-
-        public TextBox(Rect rect, TextDirection direction) {
-            this.rect = rect;
-            this.direction = direction;
-        }
+        public final Rect _rect;
+        public final TextDirection _direction;
 
         public TextBox(float l, float t, float r, float b, int direction) {
-            this.rect = Rect.makeLTRB(l, t, r, b);
-            this.direction = TextDirection.values()[direction];
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            TextBox textBox = (TextBox) o;
-            return rect.equals(textBox.rect) &&
-                    direction == textBox.direction;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(rect, direction);
-        }
-
-        @Override
-        public String toString() {
-            return "TextBox{" +
-                    "rect=" + rect +
-                    ", direction=" + direction +
-                    '}';
+            this(Rect.makeLTRB(l, t, r, b), TextDirection.values()[direction]);
         }
     }
 
@@ -135,53 +87,53 @@ public class Paragraph extends Managed {
 
     public float getMaxWidth() {
         Stats.onNativeCall();
-        return nGetMaxWidth(_ptr);
+        return _nGetMaxWidth(_ptr);
     }
 
     public float getHeight() {
         Stats.onNativeCall();
-        return nGetHeight(_ptr);
+        return _nGetHeight(_ptr);
     }
 
     public float getMinIntrinsicWidth() {
         Stats.onNativeCall();
-        return nGetMinIntrinsicWidth(_ptr);
+        return _nGetMinIntrinsicWidth(_ptr);
     }
 
     public float getMaxIntrinsicWidth() {
         Stats.onNativeCall();
-        return nGetMaxIntrinsicWidth(_ptr);
+        return _nGetMaxIntrinsicWidth(_ptr);
     }
 
     public float getAlphabeticBaseline() {
         Stats.onNativeCall();
-        return nGetAlphabeticBaseline(_ptr);
+        return _nGetAlphabeticBaseline(_ptr);
     }
 
     public float getIdeographicBaseline() {
         Stats.onNativeCall();
-        return nGetIdeographicBaseline(_ptr);
+        return _nGetIdeographicBaseline(_ptr);
     }
 
     public float getLongestLine() {
         Stats.onNativeCall();
-        return nGetLongestLine(_ptr);
+        return _nGetLongestLine(_ptr);
     }
 
     public boolean didExceedMaxLines() {
         Stats.onNativeCall();
-        return nDidExceedMaxLines(_ptr);
+        return _nDidExceedMaxLines(_ptr);
     }
 
     public Paragraph layout(float width) {
         Stats.onNativeCall();
-        nLayout(_ptr, width);
+        _nLayout(_ptr, width);
         return this;
     }
 
     public Paragraph paint(Canvas canvas, float x, float y) {
         Stats.onNativeCall();
-        nPaint(_ptr, Native.getPtr(canvas), x, y);
+        _nPaint(_ptr, Native.getPtr(canvas), x, y);
         return this;
     }
 
@@ -191,17 +143,17 @@ public class Paragraph extends Managed {
      */
     public TextBox[] getRectsForRange(int start, int end, RectHeightStyle rectHeightStyle, RectWidthStyle rectWidthStyle) {
         Stats.onNativeCall();
-        return nGetRectsForRange(_ptr, start, end, rectHeightStyle.ordinal(), rectWidthStyle.ordinal());
+        return _nGetRectsForRange(_ptr, start, end, rectHeightStyle.ordinal(), rectWidthStyle.ordinal());
     }
 
     public TextBox[] getRectsForPlaceholders() {
         Stats.onNativeCall();
-        return nGetRectsForPlaceholders(_ptr);
+        return _nGetRectsForPlaceholders(_ptr);
     }
 
     public PositionWithAffinity getGlyphPositionAtCoordinate(float dx, float dy) {
         Stats.onNativeCall();
-        int res = nGetGlyphPositionAtCoordinate(_ptr, dx, dy);
+        int res = _nGetGlyphPositionAtCoordinate(_ptr, dx, dy);
         if (res >= 0)
             return new PositionWithAffinity(res, Affinity.DOWNSTREAM);
         else
@@ -210,85 +162,89 @@ public class Paragraph extends Managed {
 
     public IRange getWordBoundary(int offset) {
         Stats.onNativeCall();
-        long l = nGetWordBoundary(_ptr, offset);
+        long l = _nGetWordBoundary(_ptr, offset);
         return new IRange((int) (l >>> 32), (int) (l & 0xFFFFFFFF));
     }
 
     public LineMetrics[] getLineMetrics() {
         Stats.onNativeCall();
-        return nGetLineMetrics(_ptr);
+        return _nGetLineMetrics(_ptr);
     }
 
-    public long lineNumber() {
+    public long getLineNumber() {
         Stats.onNativeCall();
-        return nLineNumber(_ptr);
+        return _nGetLineNumber(_ptr);
     }
 
     public Paragraph markDirty() {
         Stats.onNativeCall();
-        nMarkDirty(_ptr);
+        _nMarkDirty(_ptr);
         return this;
     }
 
-    public int unresolvedGlyphs() {
+    public int getUnresolvedGlyphsCount() {
         Stats.onNativeCall();
-        return nUnresolvedGlyphs(_ptr);
+        return _nGetUnresolvedGlyphsCount(_ptr);
     }
 
     public Paragraph updateTextAlign(TextAlign align) {
         Stats.onNativeCall();
-        nUpdateTextAlign(_ptr, align.ordinal());
+        _nUpdateTextAlign(_ptr, align.ordinal());
         return this;
     }
 
     public Paragraph updateText(int from, String text) {
         Stats.onNativeCall();
-        nUpdateText(_ptr, from, text);
+        _nUpdateText(_ptr, from, text);
         return this;
     }
 
     public Paragraph updateFontSize(int from, int to, float size) {
         Stats.onNativeCall();
-        nUpdateFontSize(_ptr, from, to, size);
+        _nUpdateFontSize(_ptr, from, to, size);
         return this;
     }
 
     public Paragraph updateForegroundPaint(int from, int to, Paint paint) {
         Stats.onNativeCall();
-        nUpdateForegroundPaint(_ptr, from, to, Native.getPtr(paint));
+        _nUpdateForegroundPaint(_ptr, from, to, Native.getPtr(paint));
         return this;
     }
 
     public Paragraph updateBackgroundPaint(int from, int to, Paint paint) {
         Stats.onNativeCall();
-        nUpdateBackgroundPaint(_ptr, from, to, Native.getPtr(paint));
+        _nUpdateBackgroundPaint(_ptr, from, to, Native.getPtr(paint));
         return this;
     }
 
-    protected Paragraph(long ptr) { super(ptr, nativeFinalizer); Stats.onNativeCall(); }
-    private static final  long          nativeFinalizer = nGetNativeFinalizer();
-    private static native long          nGetNativeFinalizer();
-    private static native float         nGetMaxWidth(long ptr);
-    private static native float         nGetHeight(long ptr);
-    private static native float         nGetMinIntrinsicWidth(long ptr);
-    private static native float         nGetMaxIntrinsicWidth(long ptr);
-    private static native float         nGetAlphabeticBaseline(long ptr);
-    private static native float         nGetIdeographicBaseline(long ptr);
-    private static native float         nGetLongestLine(long ptr);
-    private static native boolean       nDidExceedMaxLines(long ptr);
-    private static native void          nLayout(long ptr, float width);
-    private static native long          nPaint(long ptr, long canvasPtr, float x, float y);
-    private static native TextBox[]     nGetRectsForRange(long ptr, int start, int end, int rectHeightStyle, int rectWidthStyle);
-    private static native TextBox[]     nGetRectsForPlaceholders(long ptr);
-    private static native int           nGetGlyphPositionAtCoordinate(long ptr, float dx, float dy);
-    private static native long          nGetWordBoundary(long ptr, int offset);
-    private static native LineMetrics[] nGetLineMetrics(long ptr);
-    private static native long          nLineNumber(long ptr);
-    private static native void          nMarkDirty(long ptr);
-    private static native int           nUnresolvedGlyphs(long ptr);
-    private static native void          nUpdateTextAlign(long ptr, int textAlign);
-    private static native void          nUpdateText(long ptr, int from, String text);
-    private static native void          nUpdateFontSize(long ptr, int from, int to, float size);
-    private static native void          nUpdateForegroundPaint(long ptr, int from, int to, long paintPtr);
-    private static native void          nUpdateBackgroundPaint(long ptr, int from, int to, long paintPtr);
+    @Internal
+    public Paragraph(long ptr) {
+        super(ptr, _finalizerPtr); Stats.onNativeCall();
+    }
+
+    public static final  long  _finalizerPtr = _nGetFinalizer();
+    public static native long  _nGetFinalizer();
+    public static native float _nGetMaxWidth(long ptr);
+    public static native float _nGetHeight(long ptr);
+    public static native float _nGetMinIntrinsicWidth(long ptr);
+    public static native float _nGetMaxIntrinsicWidth(long ptr);
+    public static native float _nGetAlphabeticBaseline(long ptr);
+    public static native float _nGetIdeographicBaseline(long ptr);
+    public static native float _nGetLongestLine(long ptr);
+    public static native boolean _nDidExceedMaxLines(long ptr);
+    public static native void  _nLayout(long ptr, float width);
+    public static native long  _nPaint(long ptr, long canvasPtr, float x, float y);
+    public static native TextBox[] _nGetRectsForRange(long ptr, int start, int end, int rectHeightStyle, int rectWidthStyle);
+    public static native TextBox[] _nGetRectsForPlaceholders(long ptr);
+    public static native int   _nGetGlyphPositionAtCoordinate(long ptr, float dx, float dy);
+    public static native long  _nGetWordBoundary(long ptr, int offset);
+    public static native LineMetrics[] _nGetLineMetrics(long ptr);
+    public static native long  _nGetLineNumber(long ptr);
+    public static native void  _nMarkDirty(long ptr);
+    public static native int _nGetUnresolvedGlyphsCount(long ptr);
+    public static native void  _nUpdateTextAlign(long ptr, int textAlign);
+    public static native void  _nUpdateText(long ptr, int from, String text);
+    public static native void  _nUpdateFontSize(long ptr, int from, int to, float size);
+    public static native void  _nUpdateForegroundPaint(long ptr, int from, int to, long paintPtr);
+    public static native void  _nUpdateBackgroundPaint(long ptr, int from, int to, long paintPtr);
 }

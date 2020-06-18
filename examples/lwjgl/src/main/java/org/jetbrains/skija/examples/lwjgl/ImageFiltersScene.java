@@ -2,7 +2,7 @@ package org.jetbrains.skija.examples.lwjgl;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.stream.IntStream;
+
 import org.jetbrains.skija.*;
 
 public class ImageFiltersScene implements Scene {
@@ -10,7 +10,7 @@ public class ImageFiltersScene implements Scene {
 
     public ImageFiltersScene() {
         try {
-            image = Image.fromEncoded(Files.readAllBytes(java.nio.file.Path.of("images", "circus.jpg")));
+            image = Image.makeFromEncoded(Files.readAllBytes(java.nio.file.Path.of("images", "circus.jpg")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -34,16 +34,16 @@ public class ImageFiltersScene implements Scene {
             path.moveTo(10, 5).lineTo(55, 10).lineTo(50, 55).lineTo(5, 50).closePath();
 
             ImageFilter[] filters = new ImageFilter[] {
-                ImageFilter.dropShadow(0, 0, 10, 10, 0xFF000000),
-                ImageFilter.dropShadow(2, 2, 0, 0, 0xFF000000),
-                ImageFilter.dropShadow(0, 0, 10, 10, 0xFFF42372),
-                ImageFilter.dropShadowOnly(0, 0, 2, 2, 0xFFCC3333),
-                ImageFilter.dropShadow(0, 0, 2, 2, 0xFFCC3333, null, IRect.makeXYWH(30, 30, 30, 30)),
-                ImageFilter.dropShadow(2, 2, 2, 2, 0xFF3333CC, ImageFilter.dropShadow(-2, -2, 2, 2, 0xFFCC3333), null),
-                ImageFilter.blur(2, 2, TileMode.CLAMP),
-                ImageFilter.blur(2, 2, TileMode.REPEAT),
-                ImageFilter.blur(2, 2, TileMode.MIRROR),
-                ImageFilter.blur(2, 2, TileMode.DECAL),
+                ImageFilter.makeDropShadow(0, 0, 10, 10, 0xFF000000),
+                ImageFilter.makeDropShadow(2, 2, 0, 0, 0xFF000000),
+                ImageFilter.makeDropShadow(0, 0, 10, 10, 0xFFF42372),
+                ImageFilter.makeDropShadowOnly(0, 0, 2, 2, 0xFFCC3333),
+                ImageFilter.makeDropShadow(0, 0, 2, 2, 0xFFCC3333, null, IRect.makeXYWH(30, 30, 30, 30)),
+                ImageFilter.makeDropShadow(2, 2, 2, 2, 0xFF3333CC, ImageFilter.makeDropShadow(-2, -2, 2, 2, 0xFFCC3333), null),
+                ImageFilter.makeBlur(2, 2, TileMode.CLAMP),
+                ImageFilter.makeBlur(2, 2, TileMode.REPEAT),
+                ImageFilter.makeBlur(2, 2, TileMode.MIRROR),
+                ImageFilter.makeBlur(2, 2, TileMode.DECAL),
             };
 
             for (var filter: filters) {
@@ -67,20 +67,20 @@ public class ImageFiltersScene implements Scene {
 
             IRect bb = IRect.makeXYWH(0, 0, 60, 60);
             ImageFilter[] filters = new ImageFilter[] {
-                ImageFilter.offset(0, 0, null, bb),
-                ImageFilter.magnifier(Rect.makeXYWH(0 * dpi, 0 * dpi, 60 * dpi, 60 * dpi), 5f, null, bb),
-                ImageFilter.magnifier(Rect.makeXYWH(0 * dpi, 0 * dpi, 60 * dpi, 60 * dpi), 10f, null, bb),
-                ImageFilter.magnifier(Rect.makeXYWH(0 * dpi, 0 * dpi, 60 * dpi, 60 * dpi), 20f, null, bb),
-                ImageFilter.offset(10, 10, null, bb),
-                ImageFilter.paint(fill, bb),
-                ImageFilter.tile(Rect.makeXYWH(10, 10, 40, 40), Rect.makeXYWH(0, 0, 60, 60), null),
-                ImageFilter.dilate(2, 2, null, bb),
-                ImageFilter.erode(2, 2, null, bb),
-                ImageFilter.colorFilter(
-                    ColorFilter.blend(0x800000FF, BlendMode.SRC_OVER),
-                    ImageFilter.dropShadow(0, 0, 10, 10, 0xFF000000),
+                ImageFilter.makeOffset(0, 0, null, bb),
+                ImageFilter.makeMagnifier(Rect.makeXYWH(0 * dpi, 0 * dpi, 60 * dpi, 60 * dpi), 5f, null, bb),
+                ImageFilter.makeMagnifier(Rect.makeXYWH(0 * dpi, 0 * dpi, 60 * dpi, 60 * dpi), 10f, null, bb),
+                ImageFilter.makeMagnifier(Rect.makeXYWH(0 * dpi, 0 * dpi, 60 * dpi, 60 * dpi), 20f, null, bb),
+                ImageFilter.makeOffset(10, 10, null, bb),
+                ImageFilter.makePaint(fill, bb),
+                ImageFilter.makeTile(Rect.makeXYWH(10, 10, 40, 40), Rect.makeXYWH(0, 0, 60, 60), null),
+                ImageFilter.makeDilate(2, 2, null, bb),
+                ImageFilter.makeErode(2, 2, null, bb),
+                ImageFilter.makeColorFilter(
+                    ColorFilter.makeBlend(0x800000FF, BlendMode.SRC_OVER),
+                    ImageFilter.makeDropShadow(0, 0, 10, 10, 0xFF000000),
                     bb),
-                ImageFilter.image(image, Rect.makeXYWH(200, 200, 200, 200), Rect.makeXYWH(10, 10, 40, 40), ImageFilter.FilterQuality.LOW),
+                ImageFilter.makeImage(image, Rect.makeXYWH(200, 200, 200, 200), Rect.makeXYWH(10, 10, 40, 40), ImageFilter.FilterQuality.LOW),
             };
 
             for (var filter: filters) {
@@ -104,16 +104,16 @@ public class ImageFiltersScene implements Scene {
 
             IRect bb = IRect.makeXYWH(0, 0, 60, 60);
             ImageFilter[] filters = new ImageFilter[] {
-                ImageFilter.distantLitDiffuse( 0,  1, 1, 0xFFFF9F1B, 1, 0.5f, null, bb),
-                ImageFilter.distantLitDiffuse( 0, -1, 1, 0xFFFF9F1B, 1, 0.5f, null, bb),
-                ImageFilter.distantLitDiffuse( 1,  0, 1, 0xFFFF9F1B, 1, 0.5f, null, bb),
-                ImageFilter.distantLitDiffuse(-1,  0, 1, 0xFFFF9F1B, 1, 0.5f, null, bb),
-                ImageFilter.distantLitDiffuse(-1, -1, 1, 0xFFFF9F1B, 1, 0.5f, null, bb),
-                ImageFilter.pointLitDiffuse(0, 0, 30, 0xFFFF9F1B, 1, 0.5f, null, bb),
-                ImageFilter.spotLitDiffuse(0, 0, 30, 30, 30, 0, 1f, 30, 0xFFFF9F1B, 1, 0.5f, null, bb),
-                ImageFilter.distantLitSpecular(-1, -1, 1, 0xFFFF9F1B, 1, 1.1f, 1.1f, null, bb),
-                ImageFilter.pointLitSpecular(0, 0, 30, 0xFFFF9F1B, 1, 1.1f, 1.1f, null, bb),
-                ImageFilter.spotLitSpecular(0, 0, 30, 30, 30, 0, 1f, 30, 0xFFFF9F1B, 1, 1.1f, 1.1f, null, bb),
+                ImageFilter.makeDistantLitDiffuse( 0,  1, 1, 0xFFFF9F1B, 1, 0.5f, null, bb),
+                ImageFilter.makeDistantLitDiffuse( 0, -1, 1, 0xFFFF9F1B, 1, 0.5f, null, bb),
+                ImageFilter.makeDistantLitDiffuse( 1,  0, 1, 0xFFFF9F1B, 1, 0.5f, null, bb),
+                ImageFilter.makeDistantLitDiffuse(-1,  0, 1, 0xFFFF9F1B, 1, 0.5f, null, bb),
+                ImageFilter.makeDistantLitDiffuse(-1, -1, 1, 0xFFFF9F1B, 1, 0.5f, null, bb),
+                ImageFilter.makePointLitDiffuse(0, 0, 30, 0xFFFF9F1B, 1, 0.5f, null, bb),
+                ImageFilter.makeSpotLitDiffuse(0, 0, 30, 30, 30, 0, 1f, 30, 0xFFFF9F1B, 1, 0.5f, null, bb),
+                ImageFilter.makeDistantLitSpecular(-1, -1, 1, 0xFFFF9F1B, 1, 1.1f, 1.1f, null, bb),
+                ImageFilter.makePointLitSpecular(0, 0, 30, 0xFFFF9F1B, 1, 1.1f, 1.1f, null, bb),
+                ImageFilter.makeSpotLitSpecular(0, 0, 30, 30, 30, 0, 1f, 30, 0xFFFF9F1B, 1, 1.1f, 1.1f, null, bb),
             };
 
             for (var filter: filters) {

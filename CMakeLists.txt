@@ -8,8 +8,9 @@ set(CMAKE_BUILD_TYPE Release)
 
 # Sources
 file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/*.cc)
+file(GLOB IMPL_SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/impl/*.cc)
 file(GLOB PARAGRAPH_SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/paragraph/*.cc)
-add_library(skija SHARED ${SOURCES} ${PARAGRAPH_SOURCES})
+add_library(skija SHARED ${SOURCES} ${IMPL_SOURCES} ${PARAGRAPH_SOURCES})
 
 # JNI
 if(APPLE)

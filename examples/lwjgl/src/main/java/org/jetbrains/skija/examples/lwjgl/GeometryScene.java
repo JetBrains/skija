@@ -167,25 +167,25 @@ public class GeometryScene implements Scene {
         canvas.drawCircle(20, 20, 20, paint);
         canvas.translate(50, 0);
 
-        canvas.drawRoundedRect(RoundedRect.makeXYWH(0, 0, 65, 40, 10), paint);
+        canvas.drawRRect(RRect.makeXYWH(0, 0, 65, 40, 10), paint);
         canvas.translate(75, 0);
 
-        canvas.drawRoundedRect(RoundedRect.makeXYWH(0, 0, 65, 40, 10, 20), paint);
+        canvas.drawRRect(RRect.makeXYWH(0, 0, 65, 40, 10, 20), paint);
         canvas.translate(75, 0);
 
-        canvas.drawRoundedRect(RoundedRect.makeXYWH(0, 0, 65, 40, 4, 8, 12, 16), paint);
+        canvas.drawRRect(RRect.makeXYWH(0, 0, 65, 40, 4, 8, 12, 16), paint);
         canvas.translate(75, 0);
 
-        canvas.drawRoundedRect(RoundedRect.makeNinePatchXYWH(0, 0, 65, 40, 4, 8, 12, 16), paint);
+        canvas.drawRRect(RRect.makeNinePatchXYWH(0, 0, 65, 40, 4, 8, 12, 16), paint);
         canvas.translate(75, 0);
 
-        canvas.drawRoundedRect(RoundedRect.makeComplexXYWH(0, 0, 65, 40, new float[] {2, 4, 6, 8, 10, 12, 14, 16}), paint);
+        canvas.drawRRect(RRect.makeComplexXYWH(0, 0, 65, 40, new float[] {2, 4, 6, 8, 10, 12, 14, 16}), paint);
         canvas.translate(75, 0);
 
-        canvas.drawDoubleRoundedRect(RoundedRect.makeXYWH(0, 0, 65, 40, 0), RoundedRect.makeXYWH(10, 10, 45, 20, 20, 10), paint);
+        canvas.drawDRRect(RRect.makeXYWH(0, 0, 65, 40, 0), RRect.makeXYWH(10, 10, 45, 20, 20, 10), paint);
         canvas.translate(75, 0);
 
-        canvas.drawDoubleRoundedRect(RoundedRect.makeXYWH(0, 0, 65, 40, 10), RoundedRect.makeXYWH(5, 5, 55, 30, 5, 5), paint);
+        canvas.drawDRRect(RRect.makeXYWH(0, 0, 65, 40, 10), RRect.makeXYWH(5, 5, 55, 30, 5, 5), paint);
         canvas.translate(75, 0);
 
         canvas.restore();
@@ -234,8 +234,8 @@ public class GeometryScene implements Scene {
         canvas.translate(50, 0);
 
         canvas.save();
-        canvas.clipRoundedRect(RoundedRect.makeXYWH(0, 0, 40, 40, 10), false);
-        canvas.clipRoundedRect(RoundedRect.makePillXYWH(10, 10, 30, 20), Canvas.ClipOp.DIFFERENCE, true);
+        canvas.clipRRect(RRect.makeXYWH(0, 0, 40, 40, 10), false);
+        canvas.clipRRect(RRect.makePillXYWH(10, 10, 30, 20), Canvas.ClipOp.DIFFERENCE, true);
         canvas.drawPaint(new Paint().setColor(0xFFFF928A));
         canvas.restore();
         canvas.translate(50, 0);
@@ -267,7 +267,7 @@ public class GeometryScene implements Scene {
 
         // setRect
         Region r = new Region();
-        r.setRect((int) (xOffset * dpi), (int) (yOffset * dpi), (int) ((xOffset + 40) * dpi), (int) ((yOffset + 40) * dpi));
+        r.setRect(IRect.makeLTRB((int) (xOffset * dpi), (int) (yOffset * dpi), (int) ((xOffset + 40) * dpi), (int) ((yOffset + 40) * dpi)));
         canvas.save();
         canvas.clipRegion(r);
         canvas.drawPaint(bgPaint);
@@ -276,9 +276,9 @@ public class GeometryScene implements Scene {
         xOffset += 50;
 
         // setRects
-        r.setRects(new int[] { (int) ((xOffset + 0) * dpi), (int) ((yOffset + 0) * dpi), (int) ((xOffset + 10) * dpi), (int) ((yOffset + 40) * dpi),
-                               (int) ((xOffset + 30) * dpi), (int) ((yOffset + 0) * dpi), (int) ((xOffset + 40) * dpi), (int) ((yOffset + 40) * dpi),
-                               (int) ((xOffset + 5) * dpi), (int) ((yOffset + 15) * dpi), (int) ((xOffset + 35) * dpi), (int) ((yOffset + 25) * dpi) });
+        r.setRects(new IRect[] { IRect.makeLTRB((int) ((xOffset + 0) * dpi), (int) ((yOffset + 0) * dpi), (int) ((xOffset + 10) * dpi), (int) ((yOffset + 40) * dpi)),
+                                 IRect.makeLTRB((int) ((xOffset + 30) * dpi), (int) ((yOffset + 0) * dpi), (int) ((xOffset + 40) * dpi), (int) ((yOffset + 40) * dpi)),
+                                 IRect.makeLTRB((int) ((xOffset + 5) * dpi), (int) ((yOffset + 15) * dpi), (int) ((xOffset + 35) * dpi), (int) ((yOffset + 25) * dpi)) });
         canvas.save();
         canvas.clipRegion(r);
         canvas.drawPaint(bgPaint);
@@ -290,7 +290,7 @@ public class GeometryScene implements Scene {
         Path path = new Path().setFillType(Path.FillType.EVEN_ODD).moveTo(xOffset * dpi, yOffset * dpi)
             .rMoveTo(20 * dpi, 1.6f * dpi).rLineTo(11.7f * dpi, 36.2f * dpi).rLineTo(-30.8f * dpi, -22.4f * dpi).rLineTo(38.1f * dpi, 0f * dpi).rLineTo(-30.8f * dpi, 22.4f * dpi).closePath();
         Region r2 = new Region();
-        r2.setRect((int) ((xOffset + 7) * dpi), (int) ((yOffset + 7) * dpi), (int) ((xOffset + 33) * dpi), (int) ((yOffset + 33) * dpi));
+        r2.setRect(IRect.makeLTRB((int) ((xOffset + 7) * dpi), (int) ((yOffset + 7) * dpi), (int) ((xOffset + 33) * dpi), (int) ((yOffset + 33) * dpi)));
         r.setEmpty();
         r.setPath(path, r2);
         canvas.save();
@@ -302,21 +302,21 @@ public class GeometryScene implements Scene {
 
         // op(IRect), getBounds, getBoundaryPath
         for (var op : Region.Op.values()) {
-            r.setRect((int) (xOffset * dpi), (int) (yOffset * dpi), (int) ((xOffset + 30) * dpi), (int) ((yOffset + 40) * dpi));
-            r.op((int) ((xOffset + 10) * dpi), (int) ((yOffset + 10) * dpi), (int) ((xOffset + 40) * dpi), (int) ((yOffset + 30) * dpi), op);
+            r.setRect(IRect.makeLTRB((int) (xOffset * dpi), (int) (yOffset * dpi), (int) ((xOffset + 30) * dpi), (int) ((yOffset + 40) * dpi)));
+            r.op(IRect.makeLTRB((int) ((xOffset + 10) * dpi), (int) ((yOffset + 10) * dpi), (int) ((xOffset + 40) * dpi), (int) ((yOffset + 30) * dpi)), op);
 
             canvas.save();
             canvas.clipRegion(r);
             canvas.drawPaint(bgPaint);
             canvas.restore();
 
-            int[] bounds = r.getBounds();
+            IRect bounds = r.getBounds();
             Path boundaryPath = new Path();
             r.getBoundaryPath(boundaryPath);
             canvas.save();
             canvas.translate(-xOffset, -yOffset);
             canvas.scale(1f/dpi, 1f/dpi);
-            canvas.drawRect(Rect.makeLTRB(bounds[0], bounds[1], bounds[2], bounds[3]), stroke1);
+            canvas.drawRect(Rect.makeLTRB(bounds.getLeft(), bounds.getTop(), bounds.getRight(), bounds.getBottom()), stroke1);
             canvas.drawPath(boundaryPath, stroke2);
             canvas.restore();
 
@@ -336,9 +336,9 @@ public class GeometryScene implements Scene {
         // op(Region, Region), getBounds, getBoundaryPath
         for (var op : Region.Op.values()) {
             Region rA = new Region();
-            rA.setRect((int) (xOffset * dpi), (int) (yOffset * dpi), (int) ((xOffset + 30) * dpi), (int) ((yOffset + 40) * dpi));
+            rA.setRect(IRect.makeLTRB((int) (xOffset * dpi), (int) (yOffset * dpi), (int) ((xOffset + 30) * dpi), (int) ((yOffset + 40) * dpi)));
             Region rB = new Region();
-            rB.setRect((int) ((xOffset + 10) * dpi), (int) ((yOffset + 10) * dpi), (int) ((xOffset + 40) * dpi), (int) ((yOffset + 30) * dpi));
+            rB.setRect(IRect.makeLTRB((int) ((xOffset + 10) * dpi), (int) ((yOffset + 10) * dpi), (int) ((xOffset + 40) * dpi), (int) ((yOffset + 30) * dpi)));
             r.op(rA, rB, op);
 
             canvas.save();
@@ -346,13 +346,13 @@ public class GeometryScene implements Scene {
             canvas.drawPaint(bgPaint);
             canvas.restore();
 
-            int[] bounds = r.getBounds();
+            IRect bounds = r.getBounds();
             Path boundaryPath = new Path();
             r.getBoundaryPath(boundaryPath);
             canvas.save();
             canvas.translate(-xOffset, -yOffset);
             canvas.scale(1f/dpi, 1f/dpi);
-            canvas.drawRect(Rect.makeLTRB(bounds[0], bounds[1], bounds[2], bounds[3]), stroke1);
+            canvas.drawRect(Rect.makeLTRB(bounds.getLeft(), bounds.getTop(), bounds.getRight(), bounds.getBottom()), stroke1);
             canvas.drawPath(boundaryPath, stroke2);
             canvas.restore();
 

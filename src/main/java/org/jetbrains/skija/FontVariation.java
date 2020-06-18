@@ -1,39 +1,27 @@
 package org.jetbrains.skija;
 
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
+@AllArgsConstructor
+@EqualsAndHashCode
 public class FontVariation {
     public static final FontVariation[] EMPTY = new FontVariation[0];
 
-    public final int tag;
-    public final float value;
-
-    public FontVariation(int tag, float value) {
-        this.tag = tag;
-        this.value = value;
-    }
+    public final int _tag;
+    @Getter
+    public final float _value;
 
     public FontVariation(String feature, float value) {
         this(FontFeature.tag(feature), value);
     }
 
-    public String getTagName() { return FontFeature.untag(tag); }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FontVariation that = (FontVariation) o;
-        return tag == that.tag &&
-                Float.compare(that.value, value) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(tag, value);
+    public String getTag() {
+        return FontFeature.untag(_tag);
     }
 
     public String toString() {
-        return getTagName() + "=" + value;
+        return getTag() + "=" + _value;
     }
 }

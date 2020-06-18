@@ -1,6 +1,5 @@
 package org.jetbrains.skija.examples.lwjgl;
 
-import java.util.stream.IntStream;
 import org.jetbrains.skija.*;
 
 public class ShadersScene implements Scene {
@@ -20,16 +19,16 @@ public class ShadersScene implements Scene {
         percent = Math.round(Math.max(0f, Math.min(100f, percent)));
 
         Shader[] shaders = new Shader[] {
-            Shader.empty(),
-            Shader.color(0xFF247ba0),
-            Shader.color(new Color4f(0.5f, 0.5f, 0.5f), ColorSpace.getSRGBLinear()),
-            Shader.lerp(percent / 100f, Shader.color(0xFFFF0000), Shader.color(0xFF00FF00)),
-            Shader.blend(BlendMode.SRC_OVER, Shader.color(0xFFFF0000), Shader.color(0x9000FF00)),
-            Shader.blend(BlendMode.SCREEN, Shader.color(0xFFFF0000), Shader.color(0x9000FF00)),
-            Shader.blend(BlendMode.OVERLAY, Shader.color(0xFFFF0000), Shader.color(0x9000FF00)),
-            Shader.blend(BlendMode.DARKEN, Shader.color(0xFFFF0000), Shader.color(0x9000FF00)),
-            Shader.blend(BlendMode.LIGHTEN, Shader.color(0xFFFF0000), Shader.color(0x9000FF00)),
-            Shader.linearGradient(0, 0, 60, 0, new int[] { 0xFF247ba0, 0xFFf3ffbd }).withColorFilter(ColorFilter.blend(0xFFCC3333, BlendMode.SCREEN)),
+            Shader.makeEmpty(),
+            Shader.makeColor(0xFF247ba0),
+            Shader.makeColor(new Color4f(0.5f, 0.5f, 0.5f), ColorSpace.getSRGBLinear()),
+            Shader.makeLerp(percent / 100f, Shader.makeColor(0xFFFF0000), Shader.makeColor(0xFF00FF00)),
+            Shader.makeBlend(BlendMode.SRC_OVER, Shader.makeColor(0xFFFF0000), Shader.makeColor(0x9000FF00)),
+            Shader.makeBlend(BlendMode.SCREEN, Shader.makeColor(0xFFFF0000), Shader.makeColor(0x9000FF00)),
+            Shader.makeBlend(BlendMode.OVERLAY, Shader.makeColor(0xFFFF0000), Shader.makeColor(0x9000FF00)),
+            Shader.makeBlend(BlendMode.DARKEN, Shader.makeColor(0xFFFF0000), Shader.makeColor(0x9000FF00)),
+            Shader.makeBlend(BlendMode.LIGHTEN, Shader.makeColor(0xFFFF0000), Shader.makeColor(0x9000FF00)),
+            Shader.makeLinearGradient(0, 0, 60, 0, new int[] { 0xFF247ba0, 0xFFf3ffbd }).makeWithColorFilter(ColorFilter.makeBlend(0xFFCC3333, BlendMode.SCREEN)),
         };
 
         try (Paint fill = new Paint()) {
@@ -49,26 +48,26 @@ public class ShadersScene implements Scene {
         canvas.save();
 
         Shader[] shaders = new Shader[] {
-            Shader.linearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
-            Shader.linearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
-            Shader.linearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.with(TileMode.REPEAT)),
-            Shader.linearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.with(TileMode.MIRROR)),
-            Shader.linearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.with(TileMode.DECAL)),
-            Shader.linearGradient( 0,  0,  0, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
-            Shader.linearGradient( 0,  0,  0, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.with(Matrix.rotate(45))),
-            Shader.linearGradient( 0,  0, 60, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
-            Shader.linearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0x00000000 }),
-            Shader.linearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0xFFff1654, 0xFF70c1b3, 0xFFf3ffbd, 0xFFb2dbbf }),
-            Shader.linearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0xFFff1654, 0xFF70c1b3, 0xFFf3ffbd, 0xFFb2dbbf }, new float[] {0f, 0.1f, 0.2f, 0.9f, 1f}),
+            Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+            Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+            Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.withTileMode(TileMode.REPEAT)),
+            Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.withTileMode(TileMode.MIRROR)),
+            Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.withTileMode(TileMode.DECAL)),
+            Shader.makeLinearGradient( 0,  0,  0, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+            Shader.makeLinearGradient( 0,  0,  0, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.withLocalMatrix(Matrix.makeRotate(45))),
+            Shader.makeLinearGradient( 0,  0, 60, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+            Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0x00000000 }),
+            Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0xFFff1654, 0xFF70c1b3, 0xFFf3ffbd, 0xFFb2dbbf }),
+            Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0xFFff1654, 0xFF70c1b3, 0xFFf3ffbd, 0xFFb2dbbf }, new float[] {0f, 0.1f, 0.2f, 0.9f, 1f}),
 
-            Shader.radialGradient(30, 30, 30, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
-            Shader.radialGradient(30, 30, 10, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
-            Shader.radialGradient(30, 30, 10, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.with(TileMode.REPEAT)),
+            Shader.makeRadialGradient(30, 30, 30, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+            Shader.makeRadialGradient(30, 30, 10, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+            Shader.makeRadialGradient(30, 30, 10, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.withTileMode(TileMode.REPEAT)),
 
-            Shader.twoPointConicalGradient(20, 20, 10, 40, 40, 40, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+            Shader.makeTwoPointConicalGradient(20, 20, 10, 40, 40, 40, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
 
-            Shader.sweepGradient(30, 30, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
-            Shader.sweepGradient(30, 30, 45, 315, new int[] { 0xFF247ba0, 0xFFff1654, 0xFF70c1b3, 0xFFf3ffbd, 0xFFb2dbbf }, null, Shader.GradientOptions.DEFAULT.with(TileMode.DECAL)),
+            Shader.makeSweepGradient(30, 30, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
+            Shader.makeSweepGradient(30, 30, 45, 315, new int[] { 0xFF247ba0, 0xFFff1654, 0xFF70c1b3, 0xFFf3ffbd, 0xFFb2dbbf }, null, Shader.GradientOptions.DEFAULT.withTileMode(TileMode.DECAL)),
         };
             
         try (Paint fill = new Paint()) {
@@ -80,7 +79,7 @@ public class ShadersScene implements Scene {
             }
         }
 
-        try (var sh = Shader.sweepGradient(30, 30, new int[] { 0xFFFF00FF, 0xFF00FFFF, 0xFFFFFF00, 0xFFFF00FF });
+        try (var sh = Shader.makeSweepGradient(30, 30, new int[] { 0xFFFF00FF, 0xFF00FFFF, 0xFFFFFF00, 0xFFFF00FF });
              var stroke = new Paint().setShader(sh).setStyle(Paint.Style.STROKE).setStrokeWidth(10))
         {
             canvas.drawCircle(30, 30, 30, stroke);
@@ -88,19 +87,19 @@ public class ShadersScene implements Scene {
         }
 
         try (Path p1 = new Path().lineTo(30.1f, 0).lineTo(0, 32.5f).closePath();
-             Shader s1 = Shader.linearGradient(0, 32.5f, 30.1f, 0, 
+             Shader s1 = Shader.makeLinearGradient(0, 32.5f, 30.1f, 0, 
                 new int[] {0xFF0095D5, 0xFF3C83DC, 0xFF6D74E1, 0xFF806EE3},
                 new float[] {0.1183f, 0.4178f, 0.6962f, 0.8333f});
              Paint f1 = new Paint().setShader(s1);
 
              Path p2 = new Path().moveTo(30.1f, 0).lineTo(0, 31.7f).lineTo(0, 60).lineTo(30.1f, 29.9f).lineTo(60, 0).closePath();
-             Shader s2 = Shader.linearGradient(0, 60, 60, 0,
+             Shader s2 = Shader.makeLinearGradient(0, 60, 60, 0,
                 new int[] {0xFFC757BC, 0xFFD0609A, 0xFFE1725C, 0xFFEE7E2F, 0xFFF58613, 0xFFF88909},
                 new float[] {0.1075f, 0.2138f, 0.4254f, 0.6048f, 0.743f, 0.8232f});
              Paint f2 = new Paint().setShader(s2);
 
              Path p3 = new Path().moveTo(0, 60).lineTo(30.1f, 29.9f).lineTo(60, 60).closePath();
-             Shader s3 = Shader.linearGradient(0, 60, 30.1f, 29.9f,
+             Shader s3 = Shader.makeLinearGradient(0, 60, 30.1f, 29.9f,
                 new int[] { 0xFF0095D5, 0xFF238AD9, 0xFF557BDE, 0xFF7472E2, 0xFF806EE3 },
                 new float[] {0f, 0.3f, 0.62f, 0.8643f, 1f});
              Paint f3 = new Paint().setShader(s3);)
@@ -122,12 +121,9 @@ public class ShadersScene implements Scene {
         float[] pos = new float[steps + 1];
         for (int i = 0; i < steps + 1; ++i) {
             pos[i] = (float) i / steps;
-            colors[i] = new Color4f(from.r * (1 - pos[i]) + to.r * pos[i],
-                                    from.g * (1 - pos[i]) + to.g * pos[i],
-                                    from.b * (1 - pos[i]) + to.b * pos[i],
-                                    from.a * (1 - pos[i]) + to.a * pos[i]);
+            colors[i] = from.makeLerp(to, pos[i]);
         }
-        return Shader.linearGradient(x0, y0, x1, y1, colors, cs, pos, Shader.GradientOptions.DEFAULT);
+        return Shader.makeLinearGradient(x0, y0, x1, y1, colors, cs, pos, Shader.GradientOptions.DEFAULT);
     } 
 
     private void drawLinearCS(Canvas canvas) {
@@ -175,10 +171,10 @@ public class ShadersScene implements Scene {
         int transparentBlack = 0x00000000;
 
         try (Paint fill = new Paint();
-             Shader gr1 = Shader.linearGradient(0, 0, 0, 100, new int[] {pink, purple});
-             Shader gr2 = Shader.linearGradient(0, 0, 400, 0, new int[] {orange, transparentBlack});
-             Shader gr3 = Shader.linearGradient(0, 0, 400, 0, new int[] {orange, transparentBlack}, null, Shader.GradientOptions.DEFAULT.unpremul());
-             Shader gr4 = Shader.blend(BlendMode.SRC_OVER, gr1, gr2);)
+             Shader gr1 = Shader.makeLinearGradient(0, 0, 0, 100, new int[] {pink, purple});
+             Shader gr2 = Shader.makeLinearGradient(0, 0, 400, 0, new int[] {orange, transparentBlack});
+             Shader gr3 = Shader.makeLinearGradient(0, 0, 400, 0, new int[] {orange, transparentBlack}, null, Shader.GradientOptions.DEFAULT.withPremul(false));
+             Shader gr4 = Shader.makeBlend(BlendMode.SRC_OVER, gr1, gr2);)
         {
             canvas.save();
             canvas.drawRect(Rect.makeXYWH(0, 0, 80, 80), fill.setColor(pink));

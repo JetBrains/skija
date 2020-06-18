@@ -1,112 +1,94 @@
 package org.jetbrains.skija.paragraph;
 
 import org.jetbrains.skija.*;
+import org.jetbrains.skija.impl.*;
 
 public class FontCollection extends RefCnt {
     public FontCollection() {
-        this(nInit());
+        this(_nMake());
         Stats.onNativeCall();
     }
 
     public long getFontManagersCount() {
         Stats.onNativeCall();
-        return nGetFontManagersCount(_ptr);
+        return _nGetFontManagersCount(_ptr);
     }
     
-    public FontCollection setAssetFontManager(FontManager fontManager) {
+    public FontCollection setAssetFontManager(FontMgr fontMgr) {
         Stats.onNativeCall();
-        nSetAssetFontManager(_ptr, Native.getPtr(fontManager));
+        _nSetAssetFontManager(_ptr, Native.getPtr(fontMgr));
         return this;
     }
 
-    public FontCollection setDynamicFontManager(FontManager fontManager) {
+    public FontCollection setDynamicFontManager(FontMgr fontMgr) {
         Stats.onNativeCall();
-        nSetDynamicFontManager(_ptr, Native.getPtr(fontManager));
+        _nSetDynamicFontManager(_ptr, Native.getPtr(fontMgr));
         return this;
     }
 
-    public FontCollection setTestFontManager(FontManager fontManager) {
+    public FontCollection setTestFontManager(FontMgr fontMgr) {
         Stats.onNativeCall();
-        nSetTestFontManager(_ptr, Native.getPtr(fontManager));
+        _nSetTestFontManager(_ptr, Native.getPtr(fontMgr));
         return this;
     }
 
-    public FontCollection setDefaultFontManager(FontManager fontManager) {
-        return setDefaultFontManager(fontManager, null);
+    public FontCollection setDefaultFontManager(FontMgr fontMgr) {
+        return setDefaultFontManager(fontMgr, null);
     }
 
-    public FontCollection setDefaultFontManager(FontManager fontManager, String defaultFamilyName) {
+    public FontCollection setDefaultFontManager(FontMgr fontMgr, String defaultFamilyName) {
         Stats.onNativeCall();
-        nSetDefaultFontManager(_ptr, Native.getPtr(fontManager), defaultFamilyName);
+        _nSetDefaultFontManager(_ptr, Native.getPtr(fontMgr), defaultFamilyName);
         return this;
-    }
-
-    private static final java.util.function.LongFunction<Typeface> typefaceCtor;
-    private static final java.util.function.LongFunction<FontManager> fontManagerCtor; 
-    static {
-        try {
-            typefaceCtor = (ptr) -> {
-                try {
-                    return Typeface.class.getConstructor​(Long.TYPE).newInstance(ptr);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            };
-            fontManagerCtor = (ptr) -> {
-                try {
-                    return FontManager.class.getConstructor​(Long.TYPE).newInstance(ptr);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            };
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
     
-    public FontManager getFallbackManager() {
+    public FontMgr getFallbackManager() {
         Stats.onNativeCall();
-        long ptr = nGetFallbackManager(_ptr);
-        return fontManagerCtor.apply(ptr);
-        // return new FontManager(ptr);
+        long ptr = _nGetFallbackManager(_ptr);
+        return ptr == 0 ? null : new FontMgr(ptr);
     }
 
     public Typeface[] findTypefaces(String[] familyNames, FontStyle style) {
         Stats.onNativeCall();
-        long[] ptrs = nFindTypefaces(_ptr, familyNames, style.value);
+        long[] ptrs = _nFindTypefaces(_ptr, familyNames, style._value);
         Typeface[] res = new Typeface[ptrs.length];
-        for (int i = 0; i < ptrs.length; ++i) {
-            res[i] = typefaceCtor.apply(ptrs[i]);
-        }
+        for (int i = 0; i < ptrs.length; ++i)
+            res[i] = new Typeface(ptrs[i]);
         return res;
     }
 
     public Typeface defaultFallback(int unicode, FontStyle style, String locale) {
         Stats.onNativeCall();
-        return typefaceCtor.apply(nDefaultFallbackChar(_ptr, unicode, style.value, locale));
+        long ptr = _nDefaultFallbackChar(_ptr, unicode, style._value, locale);
+        return ptr == 0 ? null : new Typeface(ptr);
     }
 
     public Typeface defaultFallback() {
         Stats.onNativeCall();
-        return typefaceCtor.apply(nDefaultFallback(_ptr));
+        long ptr = _nDefaultFallback(_ptr);
+        return ptr == 0 ? null : new Typeface(ptr);
     }
 
     public FontCollection setEnableFallback(boolean value) {
         Stats.onNativeCall();
-        nSetEnableFallback(_ptr, value);
+        _nSetEnableFallback(_ptr, value);
         return this;
     }
 
-    protected FontCollection(long nativeInstance) { super(nativeInstance); }
-    private static native long   nInit();
-    private static native long   nGetFontManagersCount(long ptr);
-    private static native long   nSetAssetFontManager(long ptr, long fontManagerPtr);
-    private static native long   nSetDynamicFontManager(long ptr, long fontManagerPtr);
-    private static native long   nSetTestFontManager(long ptr, long fontManagerPtr);
-    private static native long   nSetDefaultFontManager(long ptr, long fontManagerPtr, String defaultFamilyName);
-    private static native long   nGetFallbackManager(long ptr);
-    private static native long[] nFindTypefaces(long ptr, String[] familyNames, int fontStyle);
-    private static native long   nDefaultFallbackChar(long ptr, int unicode, int fontStyle, String locale);
-    private static native long   nDefaultFallback(long ptr);
-    private static native long   nSetEnableFallback(long ptr, boolean value);
+    @Internal
+    public FontCollection(long ptr) {
+        super(ptr);
+    }
+
+    public static native long   _nMake();
+    public static native long   _nGetFontManagersCount(long ptr);
+    public static native long   _nSetAssetFontManager(long ptr, long fontManagerPtr);
+    public static native long   _nSetDynamicFontManager(long ptr, long fontManagerPtr);
+    public static native long   _nSetTestFontManager(long ptr, long fontManagerPtr);
+    public static native long   _nSetDefaultFontManager(long ptr, long fontManagerPtr, String defaultFamilyName);
+    public static native long   _nGetFallbackManager(long ptr);
+    public static native long[] _nFindTypefaces(long ptr, String[] familyNames, int fontStyle);
+    public static native long   _nDefaultFallbackChar(long ptr, int unicode, int fontStyle, String locale);
+    public static native long   _nDefaultFallback(long ptr);
+    public static native long   _nSetEnableFallback(long ptr, boolean value);
 }

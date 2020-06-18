@@ -1,5 +1,9 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.skija.impl.RefCnt;
+import org.jetbrains.skija.impl.Stats;
+
 public class Typeface extends RefCnt {
     public static Typeface makeFromFile(String path) {
         return makeFromFile(path, 0);
@@ -7,7 +11,7 @@ public class Typeface extends RefCnt {
 
     public static Typeface makeFromFile(String path, int index) {
         Stats.onNativeCall();
-        long ptr = nMakeFromFile(path, index);
+        long ptr = _nMakeFromFile(path, index);
         if (ptr == 0)
             throw new RuntimeException("Failed to create Typeface from path=\"" + path + "\" index=" + index);
         return new Typeface(ptr);
@@ -17,10 +21,14 @@ public class Typeface extends RefCnt {
         if (variations.length == 0)
             return this;
         Stats.onNativeCall();
-        return new Typeface(nMakeClone(_ptr, variations));
+        return new Typeface(_nMakeClone(_ptr, variations));
     }
 
-    public Typeface(long nativeInstance) { super(nativeInstance); }
-    private static native long nMakeFromFile(String path, int index);
-    private static native long nMakeClone(long ptr, FontVariation[] variations);
+    @Internal
+    public Typeface(long ptr) {
+        super(ptr);
+    }
+
+    public static native long _nMakeFromFile(String path, int index);
+    public static native long _nMakeClone(long ptr, FontVariation[] variations);
 }

@@ -2,7 +2,7 @@ package org.jetbrains.skija.examples.lwjgl;
 
 import org.jetbrains.skija.Canvas;
 import org.jetbrains.skija.Paint;
-import org.jetbrains.skija.RoundedRect;
+import org.jetbrains.skija.RRect;
 import org.jetbrains.skija.Shader;
 
 public class SquaresScene implements Scene {
@@ -12,7 +12,7 @@ public class SquaresScene implements Scene {
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         final int squareWidth = 45;
         final int margin = 14;
-        try (var shader = Shader.linearGradient(0, -squareWidth / 2f, 0, squareWidth / 2f, new int[] { 0xFFFFA500, 0x00000000 } );
+        try (var shader = Shader.makeLinearGradient(0, -squareWidth / 2f, 0, squareWidth / 2f, new int[] { 0xFFFFA500, 0x00000000 } );
              var gradient = new Paint().setStyle(Paint.Style.FILL).setShader(shader);)
         {
             int currentX = margin;
@@ -34,8 +34,8 @@ public class SquaresScene implements Scene {
                     canvas.save();
                     canvas.translate(currentX + squareWidth / 2.0f, currentY + squareWidth / 2.0f);
                     canvas.rotate(rotation);
-                    canvas.drawRoundedRect(RoundedRect.makeXYWH(-squareWidth / 2.0f, -squareWidth / 2.0f, squareWidth, squareWidth, radius), solid);
-                    canvas.drawRoundedRect(RoundedRect.makeXYWH(-squareWidth / 2.0f, -squareWidth / 2.0f, squareWidth, squareWidth, radius), gradient);
+                    canvas.drawRRect(RRect.makeXYWH(-squareWidth / 2.0f, -squareWidth / 2.0f, squareWidth, squareWidth, radius), solid);
+                    canvas.drawRRect(RRect.makeXYWH(-squareWidth / 2.0f, -squareWidth / 2.0f, squareWidth, squareWidth, radius), gradient);
                     canvas.restore();
 
                     currentX += (squareWidth + margin);

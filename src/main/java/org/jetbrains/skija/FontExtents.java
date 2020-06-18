@@ -1,36 +1,18 @@
 package org.jetbrains.skija;
 
+import lombok.Data;
+
+@Data
 public class FontExtents {
-    public final float ascender;
-    public final float descender;
-    public final float lineGap;
+    public final float _ascender;
+    public final float _descender;
+    public final float _lineGap;
 
-    public FontExtents(float ascender, float descender, float lineGap) {
-        this.ascender = ascender;
-        this.descender = descender;
-        this.lineGap = lineGap;
+    public float getAscenderAbs() {
+        return Math.abs(_ascender);
     }
 
-    public float getAscenderAbs() { return Math.abs(ascender); }
-    public float getLineHeight() { return -ascender + descender + lineGap; }
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || FontExtents.class != object.getClass()) return false;
-        FontExtents that = (FontExtents) object;
-        return java.lang.Float.compare(that.ascender, ascender) == 0 &&
-                java.lang.Float.compare(that.descender, descender) == 0 &&
-                java.lang.Float.compare(that.lineGap, lineGap) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return java.util.Objects.hash(ascender, descender, lineGap);
-    }
-
-    @Override
-    public java.lang.String toString() {
-        return "FontExtents{ascender=" + ascender + ", descender=" + descender + ", lineGap=" + lineGap + '}';
+    public float getLineHeight() {
+        return -_ascender + _descender + _lineGap;
     }
 }

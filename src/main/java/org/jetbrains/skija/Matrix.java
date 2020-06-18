@@ -1,11 +1,11 @@
 package org.jetbrains.skija;
 
 public class Matrix {
-    public static float[] translate(float dx, float dy) { return new float[] {1, 0, dx, 0, 1, dy, 0, 0, 1}; }
-    public static float[] scale(float s) { return scale(s, s); }
-    public static float[] scale(float sx, float sy) { return new float[] {sx, 0, 0, 0, sy, 0, 0, 0, 1}; }
+    public static float[] makeTranslate(float dx, float dy) { return new float[] {1, 0, dx, 0, 1, dy, 0, 0, 1}; }
+    public static float[] makeScale(float s) { return makeScale(s, s); }
+    public static float[] makeScale(float sx, float sy) { return new float[] {sx, 0, 0, 0, sy, 0, 0, 0, 1}; }
 
-    public static float[] scale(float[] matrix, float sx, float sy) {
+    public static float[] makeScale(float[] matrix, float sx, float sy) {
         return new float[] {
             matrix[0] * sx, matrix[1] * sy, matrix[2],
             matrix[3] * sx, matrix[4] * sy, matrix[5],
@@ -13,7 +13,7 @@ public class Matrix {
         };
     }
 
-    public static float[] rotate(float deg) {
+    public static float[] makeRotate(float deg) {
         double rad = Math.toRadians(deg);
         double sin = Math.sin(rad);
         double cos = Math.cos(rad);

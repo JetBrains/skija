@@ -1,19 +1,24 @@
 package org.jetbrains.skija;
 
-public class FontManager extends RefCnt {
-    public int countFamilies() {
+import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.skija.impl.Native;
+import org.jetbrains.skija.impl.RefCnt;
+import org.jetbrains.skija.impl.Stats;
+
+public class FontMgr extends RefCnt {
+    public int getFamiliesCount() {
         Stats.onNativeCall();
-        return nCountFamilies(_ptr);
+        return _nGetFamiliesCount(_ptr);
     }
 
     public String getFamilyName(int index) {
         Stats.onNativeCall();
-        return nGetFamilyName(_ptr, index);
+        return _nGetFamilyName(_ptr, index);
     }
 
-    public FontStyleSet createStyleSet(int index) {
+    public FontStyleSet makeStyleSet(int index) {
         Stats.onNativeCall();
-        long ptr = nCreateStyleSet(_ptr, index);
+        long ptr = _nMakeStyleSet(_ptr, index);
         return ptr == 0 ? null : new FontStyleSet(ptr);
     }
 
@@ -26,11 +31,11 @@ public class FontManager extends RefCnt {
      * result in the empty set.
      *
      * It is possible that this will return a style set not accessible from
-     * {@link #createStyleSet(int)} due to hidden or auto-activated fonts.
+     * {@link #makeStyleSet(int)} due to hidden or auto-activated fonts.
      */
     public FontStyleSet matchFamily(String familyName) {
         Stats.onNativeCall();
-        return new FontStyleSet(nMatchFamily(_ptr, familyName));
+        return new FontStyleSet(_nMatchFamily(_ptr, familyName));
     }
 
     /**
@@ -42,12 +47,12 @@ public class FontManager extends RefCnt {
      * default system font.
      *
      * It is possible that this will return a style set not accessible from
-     * {@link #createStyleSet(int)} or {@link #matchFamily(String)} due to hidden or
+     * {@link #makeStyleSet(int)} or {@link #matchFamily(String)} due to hidden or
      * auto-activated fonts.
      */
     public Typeface matchFamilyStyle(String familyName, FontStyle style) {
         Stats.onNativeCall();
-        long ptr = nMatchFamilyStyle(_ptr, familyName, style.value);
+        long ptr = _nMatchFamilyStyle(_ptr, familyName, style._value);
         return ptr == 0 ? null : new Typeface(ptr);
     }
 
@@ -68,13 +73,13 @@ public class FontManager extends RefCnt {
      */
     public Typeface matchFamilyStyleCharacter(String familyName, FontStyle style, String[] bcp47, int character) {
         Stats.onNativeCall();
-        long ptr = nMatchFamilyStyleCharacter(_ptr, familyName, style.value, bcp47, character);
+        long ptr = _nMatchFamilyStyleCharacter(_ptr, familyName, style._value, bcp47, character);
         return ptr == 0 ? null : new Typeface(ptr);
     }
 
     public Typeface matchFaceStyle(Typeface typeface, FontStyle style) {
         Stats.onNativeCall();
-        long ptr = nMatchFaceStyle(_ptr, Native.getPtr(typeface), style.value);
+        long ptr = _nMatchFaceStyle(_ptr, Native.getPtr(typeface), style._value);
         return ptr == 0 ? null : new Typeface(ptr);
     }
 
@@ -89,30 +94,39 @@ public class FontManager extends RefCnt {
 
     public Typeface makeFromData(Data data, int ttcIndex) {
         Stats.onNativeCall();
-        long ptr = nMakeFromData(_ptr, Native.getPtr(data), ttcIndex);
+        long ptr = _nMakeFromData(_ptr, Native.getPtr(data), ttcIndex);
         return ptr == 0 ? null : new Typeface(ptr);
     }
 
-    private static class DefaultHolder {
+    public static class _DefaultHolder {
         static { Stats.onNativeCall(); }
-        public static final FontManager INSTANCE = new FontManager(nDefault(), false);
+        public static final FontMgr INSTANCE = new FontMgr(_nDefault(), false);
     }
 
     /**
      * Return the default fontmgr.
      */
-    public static FontManager getDefault() { return DefaultHolder.INSTANCE; }
+    public static FontMgr getDefault() {
+        return _DefaultHolder.INSTANCE;
+    }
 
-    public FontManager(long nativeInstance) { super(nativeInstance); }
-    protected FontManager(long nativeInstance, boolean allowClose) { super(nativeInstance, allowClose); }
+    @Internal
+    public FontMgr(long ptr) {
+        super(ptr);
+    }
 
-    private static native int nCountFamilies(long ptr);
-    private static native String nGetFamilyName(long ptr, int index);
-    private static native long nCreateStyleSet(long ptr, int index);
-    private static native long nMatchFamily(long ptr, String familyName);
-    private static native long nMatchFamilyStyle(long ptr, String familyName, int fontStyle);
-    private static native long nMatchFamilyStyleCharacter(long ptr, String familyName, int fontStyle, String[] bcp47, int character);
-    private static native long nMatchFaceStyle(long ptr, long typefacePtr, int fontStyle);
-    private static native long nMakeFromData(long ptr, long dataPtr, int ttcIndex);
-    private static native long nDefault();
+    @Internal
+    public FontMgr(long ptr, boolean allowClose) {
+        super(ptr, allowClose);
+    }
+
+    public static native int _nGetFamiliesCount(long ptr);
+    public static native String _nGetFamilyName(long ptr, int index);
+    public static native long _nMakeStyleSet(long ptr, int index);
+    public static native long _nMatchFamily(long ptr, String familyName);
+    public static native long _nMatchFamilyStyle(long ptr, String familyName, int fontStyle);
+    public static native long _nMatchFamilyStyleCharacter(long ptr, String familyName, int fontStyle, String[] bcp47, int character);
+    public static native long _nMatchFaceStyle(long ptr, long typefacePtr, int fontStyle);
+    public static native long _nMakeFromData(long ptr, long dataPtr, int ttcIndex);
+    public static native long _nDefault();
 }

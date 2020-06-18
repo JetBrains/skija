@@ -8,17 +8,17 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
-public class JNI {
-    public static boolean loaded = false;
+public class Library {
+    public static boolean _loaded = false;
 
     // https://github.com/adamheinrich/native-utils/blob/e6a39489662846a77504634b6fafa4995ede3b1d/src/main/java/cz/adamh/utils/NativeUtils.java
-    public static void loadLibrary(String resourcePath, String name) {
-        if (loaded) return;
+    public static void load(String resourcePath, String name) {
+        if (_loaded) return;
         try {
             File file;
-            String fileName = "lib" + name + "." + libraryExtension();
+            String fileName = "lib" + name + "." + _getExtension();
 
-            URL url = JNI.class.getResource(resourcePath + fileName);
+            URL url = Library.class.getResource(resourcePath + fileName);
             if (url == null)
                 throw new IllegalArgumentException("Library " + fileName + " is not found in " + resourcePath);
             else if (url.getProtocol() == "file")
@@ -40,13 +40,13 @@ public class JNI {
                 }
 
             System.load(file.getAbsolutePath());
-            loaded = true;
+            _loaded = true;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static String libraryExtension() {
+    public static String _getExtension() {
         String os = System.getProperty("os.name");
         if (os == null) throw new RuntimeException("Unknown operation system");
         String lowerCaseOs = os.toLowerCase();

@@ -1,75 +1,51 @@
 package org.jetbrains.skija;
 
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@AllArgsConstructor
+@Data
 public class Color4f {
-    public final float r;
-    public final float g;
-    public final float b;
-    public final float a;
+    public final float _r;
+    public final float _g;
+    public final float _b;
+    public final float _a;
 
     public Color4f(float r, float g, float b) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = 1f;
-    }
-
-    public Color4f(float r, float g, float b, float a) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
+        this(r, g, b, 1f);
     }
 
     public Color4f(float[] rgba) {
-        this.r = rgba[0];
-        this.g = rgba[1];
-        this.b = rgba[2];
-        this.a = rgba[3];
+        this(rgba[0], rgba[1], rgba[2], rgba[3]);
     }
 
     public Color4f(int c) {
-        this.a = (c >> 24 & 0xFF) / 256f;
-        this.r = (c >> 16 & 0xFF) / 256f;
-        this.g = (c >> 8 & 0xFF) / 256f;
-        this.b = (c & 0xFF) / 256f;
+        this((c >> 16 & 0xFF) / 256f,
+             (c >> 8 & 0xFF) / 256f,
+             (c & 0xFF) / 256f,
+             (c >> 24 & 0xFF) / 256f);
     }
 
     public float[] flatten() {
-        return new float[] {r, g, b, a};
+        return new float[] {_r, _g, _b, _a};
     }
 
     public static float[] flattenArray(Color4f[] colors) {
         float[] arr = new float[colors.length * 4];
         for (int i = 0; i < colors.length; ++i) {
-            arr[i * 4]     = colors[i].r;
-            arr[i * 4 + 1] = colors[i].g;
-            arr[i * 4 + 2] = colors[i].b;
-            arr[i * 4 + 3] = colors[i].a;
+            arr[i * 4]     = colors[i]._r;
+            arr[i * 4 + 1] = colors[i]._g;
+            arr[i * 4 + 2] = colors[i]._b;
+            arr[i * 4 + 3] = colors[i]._a;
         }
         return arr;
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Color4f color4f = (Color4f) o;
-        return Float.compare(color4f.r, r) == 0 &&
-                Float.compare(color4f.g, g) == 0 &&
-                Float.compare(color4f.b, b) == 0 &&
-                Float.compare(color4f.a, a) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(r, g, b, a);
-    }
-
-    @Override
-    public String toString() {
-        return "Color4f{r=" + r + ", g=" + g + ", b=" + b + ", a=" + a + '}';
+    // TODO premultiply alpha
+    public Color4f makeLerp(Color4f other, float weight) {
+        return new Color4f(_r + (other._r - _r) * weight,
+                           _g + (other._g - _g) * weight,
+                           _b + (other._b - _b) * weight,
+                           _a + (other._a - _a) * weight);
     }
 }

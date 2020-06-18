@@ -25,15 +25,15 @@ public class FontTest implements Executable {
         Typeface inter = Typeface.makeFromFile("src/test/resources/FontTest/Inter-Regular.ttf", 0);
         fm.registerTypeface(inter, "Interface");
 
-        assertEquals(2, fm.countFamilies());
+        assertEquals(2, fm.getFamiliesCount());
         assertEquals("JetBrains Mono", fm.getFamilyName(0));
         assertEquals("Interface", fm.getFamilyName(1));
 
-        try (var ss = fm.createStyleSet(0)) {
+        try (var ss = fm.makeStyleSet(0)) {
             assertEquals(0, ss.count()); // ?
         }
 
-        try (var ss = fm.createStyleSet(1)) {
+        try (var ss = fm.makeStyleSet(1)) {
             assertEquals(0, ss.count()); // ?
         }
 
@@ -47,14 +47,14 @@ public class FontTest implements Executable {
             assertEquals("JetBrains Mono", ss.getStyleName(1));
 
             assertEquals(2, jbMono.getRefCount());
-            try (var face = ss.createTypeface(0)) {
+            try (var face = ss.getTypeface(0)) {
                 assertEquals(3, jbMono.getRefCount());
                 assertEquals(jbMono, face);
             }
             assertEquals(2, jbMono.getRefCount());
 
             assertEquals(2, jbMonoBold.getRefCount());
-            try (var face = ss.createTypeface(1)) {
+            try (var face = ss.getTypeface(1)) {
                 assertEquals(3, jbMonoBold.getRefCount());
                 assertEquals(jbMonoBold, face);
             }
@@ -89,7 +89,7 @@ public class FontTest implements Executable {
              var face = fm.makeFromData(data);
              var ss = fm.matchFamily("JetBrains Mono"); )
         {
-            assertEquals(2, fm.countFamilies());
+            assertEquals(2, fm.getFamiliesCount());
             assertEquals(2, ss.count()); // ?
         }
 
@@ -130,7 +130,7 @@ public class FontTest implements Executable {
         assertArrayEquals(new Typeface[] { jbMono, inter }, fc.findTypefaces(new String[] { "JetBrains Mono", "Interface" }, FontStyle.NORMAL));
 
         // default fm
-        var defaultFM = FontManager.getDefault();
+        var defaultFM = FontMgr.getDefault();
         fc.setDefaultFontManager(defaultFM);
 
         assertEquals(2L, fc.getFontManagersCount());

@@ -1,12 +1,23 @@
 package org.jetbrains.skija;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.experimental.Tolerate;
+
 import java.util.Objects;
 
+@AllArgsConstructor
+@EqualsAndHashCode
 public class FontFeature {
-    public final int tag;
-    public final int value;
-    public final int start;
-    public final int end;
+    public final int _tag;
+    @Getter
+    public final int _value;
+    @Getter
+    public final int _start;
+    @Getter
+    public final int _end;
 
     public static final int GLOBAL_START = 0;
     public static final int GLOBAL_END = Integer.MAX_VALUE;
@@ -27,13 +38,6 @@ public class FontFeature {
                                        (byte) (tag & 0xFF) });
     }
 
-    public FontFeature(int tag, int value, int start, int end) {
-        this.tag = tag;
-        this.value = value;
-        this.start = start;
-        this.end = end;
-    }
-
     public FontFeature(String feature, int value, int start, int end) {
         this(tag(feature), value, start, end);
     }
@@ -50,38 +54,24 @@ public class FontFeature {
         this(tag(feature), 1, GLOBAL_START, GLOBAL_END);
     }
 
-    public String getTagName() { return untag(tag); }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FontFeature that = (FontFeature) o;
-        return tag == that.tag &&
-                value == that.value &&
-                start == that.start &&
-                end == that.end;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(tag, value, start, end);
+    public String getTag() {
+        return untag(_tag);
     }
 
     @Override
     public String toString() {
         String range = "";
-        if (start > 0 || end < Integer.MAX_VALUE) {
-            range = "[" + (start > 0 ? start : "") + ":" + (end < Integer.MAX_VALUE ? end : "") + "]";
+        if (_start > 0 || _end < Integer.MAX_VALUE) {
+            range = "[" + (_start > 0 ? _start : "") + ":" + (_end < Integer.MAX_VALUE ? _end : "") + "]";
         }
         String valuePrefix = "";
         String valueSuffix = "";
-        if (value == 0)
+        if (_value == 0)
             valuePrefix = "-";
-        else if (value == 1)
+        else if (_value == 1)
             valuePrefix = "+";
         else
-            valueSuffix = "=" + value;
-        return valuePrefix + getTagName() + range + valueSuffix;
+            valueSuffix = "=" + _value;
+        return "FontFeature(" + valuePrefix + getTag() + range + valueSuffix + ")";
     }
 }

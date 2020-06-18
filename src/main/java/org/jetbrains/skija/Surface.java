@@ -1,7 +1,15 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.skija.impl.Native;
+import org.jetbrains.skija.impl.RefCnt;
+import org.jetbrains.skija.impl.Stats;
+
 public class Surface extends RefCnt {
-    public enum Origin { TOP_LEFT, BOTTOM_LEFT }
+    public enum Origin {
+        TOP_LEFT,
+        BOTTOM_LEFT
+    }
 
     public enum ColorType {
         UNKNOWN,      //!< uninitialized
@@ -29,26 +37,22 @@ public class Surface extends RefCnt {
         R16G16B16A16_UNORM//<! pixel with a little endian uint16_t for red, green, blue, and alpha
     }
 
-    public Context context;
-    public BackendRenderTarget renderTarget;
-
     public static Surface makeFromBackendRenderTarget(Context context, BackendRenderTarget rt, Origin origin, ColorType colorType, ColorSpace colorSpace) {
         Stats.onNativeCall();
-        long nativeInstance = nMakeFromBackendRenderTarget(context._ptr, rt._ptr, origin.ordinal(), colorType.ordinal(), Native.getPtr(colorSpace));
-        return new Surface(nativeInstance, context, rt);
+        long ptr = _nMakeFromBackendRenderTarget(Native.getPtr(context), Native.getPtr(rt), origin.ordinal(), colorType.ordinal(), Native.getPtr(colorSpace));
+        return new Surface(ptr, context, rt);
     }
 
     public Canvas getCanvas() {
         Stats.onNativeCall();
-        return new Canvas(nGetCanvas(_ptr), this);
+        return new Canvas(_nGetCanvas(_ptr));
     }
 
-    protected Surface(long nativeInstance, Context context, BackendRenderTarget rt) {
-        super(nativeInstance);
-        this.context = context;
-        renderTarget = rt;
+    @Internal
+    public Surface(long ptr, Context context, BackendRenderTarget rt) {
+        super(ptr);
     }
 
-    private static native long nMakeFromBackendRenderTarget(long pContext, long pBackendRenderTarget, int surfaceOrigin, int colorType, long colorSpacePtr);
-    private static native long nGetCanvas(long nativeInstance);
+    public static native long _nMakeFromBackendRenderTarget(long pContext, long pBackendRenderTarget, int surfaceOrigin, int colorType, long colorSpacePtr);
+    public static native long _nGetCanvas(long ptr);
 }

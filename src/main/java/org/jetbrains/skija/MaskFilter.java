@@ -1,5 +1,10 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.skija.impl.Native;
+import org.jetbrains.skija.impl.RefCnt;
+import org.jetbrains.skija.impl.Stats;
+
 public class MaskFilter extends RefCnt {
     public enum BlurStyle {
         /** fuzzy inside and outside */
@@ -12,45 +17,49 @@ public class MaskFilter extends RefCnt {
         INNER
     }
 
-    public static MaskFilter blur(BlurStyle style, float sigma) {
-        return blur(style, sigma, true);
+    public static MaskFilter makeBlur(BlurStyle style, float sigma) {
+        return makeBlur(style, sigma, true);
     }
 
-    public static MaskFilter blur(BlurStyle style, float sigma, boolean respectCTM) {
+    public static MaskFilter makeBlur(BlurStyle style, float sigma, boolean respectCTM) {
         Stats.onNativeCall();
-        return new MaskFilter(nBlur(style.ordinal(), sigma, respectCTM));
+        return new MaskFilter(_nMakeBlur(style.ordinal(), sigma, respectCTM));
     }
 
-    public static MaskFilter shader(Shader s) {
+    public static MaskFilter makeShader(Shader s) {
         Stats.onNativeCall();
-        return new MaskFilter(nShader(Native.getPtr(s)));
+        return new MaskFilter(_nMakeShader(Native.getPtr(s)));
     }
 
-    public static MaskFilter table(byte[] table) {
+    public static MaskFilter makeTable(byte[] table) {
         Stats.onNativeCall();
-        return new MaskFilter(nTable(table));
+        return new MaskFilter(_nMakeTable(table));
     }
 
-    public static MaskFilter gamma(float gamma) {
+    public static MaskFilter makeGamma(float gamma) {
         Stats.onNativeCall();
-        return new MaskFilter(nGamma(gamma));
+        return new MaskFilter(_nMakeGamma(gamma));
     }
 
-    public static MaskFilter clip(int min, int max) {
+    public static MaskFilter makeClip(int min, int max) {
         Stats.onNativeCall();
-        return new MaskFilter(nClip((byte) min, (byte) max));
+        return new MaskFilter(_nMakeClip((byte) min, (byte) max));
     }
 
-    // public MaskFilter emboss(float blurSigma, float lightDirectionX, float lightDirectionY, float lightDirectionZ, int lightPad, int lightAmbient, int lightSpecular) {
+    // public MaskFilter makeEmboss(float blurSigma, float lightDirectionX, float lightDirectionY, float lightDirectionZ, int lightPad, int lightAmbient, int lightSpecular) {
     //     Native.onNativeCall();
-    //     return new MaskFilter(nEmboss(blurSigma, lightDirectionX, lightDirectionY, lightDirectionZ, lightPad, lightAmbient, lightSpecular));
+    //     return new MaskFilter(_nMakeEmboss(blurSigma, lightDirectionX, lightDirectionY, lightDirectionZ, lightPad, lightAmbient, lightSpecular));
     // }
 
-    protected MaskFilter(long nativeInstance) { super(nativeInstance); }
-    private static native long nBlur(int style, float sigma, boolean respectCTM);
-    private static native long nShader(long shaderPtr);
-    // private static native long nEmboss(float sigma, float x, float y, float z, int pad, int ambient, int specular);
-    private static native long nTable(byte[] table);
-    private static native long nGamma(float gamma);
-    private static native long nClip(byte min, byte max);
+    @Internal
+    public MaskFilter(long ptr) {
+        super(ptr);
+    }
+    
+    public static native long _nMakeBlur(int style, float sigma, boolean respectCTM);
+    public static native long _nMakeShader(long shaderPtr);
+    // public static native long _nMakeEmboss(float sigma, float x, float y, float z, int pad, int ambient, int specular);
+    public static native long _nMakeTable(byte[] table);
+    public static native long _nMakeGamma(float gamma);
+    public static native long _nMakeClip(byte min, byte max);
 }

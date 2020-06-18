@@ -9,17 +9,17 @@ static void deleteFont(SkFont* font) {
     delete font;
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Font_nInit(JNIEnv* env, jclass jclass, jlong typefacePtr, jfloat size) {
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Font__1nMake(JNIEnv* env, jclass jclass, jlong typefacePtr, jfloat size) {
     SkTypeface* typeface = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(typefacePtr));
     SkFont* obj = new SkFont(sk_sp<SkTypeface>(SkRef(typeface)), size);
     return reinterpret_cast<jlong>(obj);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Font_nGetNativeFinalizer(JNIEnv* env, jclass jclass) {
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Font__1nGetFinalizer(JNIEnv* env, jclass jclass) {
     return static_cast<jlong>(reinterpret_cast<uintptr_t>(&deleteFont));
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Font_nShape(JNIEnv* env, jclass jclass, jlong ptr, jstring text, jfloat width) {
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Font__1nShape(JNIEnv* env, jclass jclass, jlong ptr, jstring text, jfloat width) {
     SkFont* font = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(ptr));
 
     std::unique_ptr<SkShaper> shaper = SkShaper::Make();

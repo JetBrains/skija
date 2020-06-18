@@ -7,12 +7,12 @@ static void deleteBackendRenderTarget(GrBackendRenderTarget* rt) {
     delete rt;
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_BackendRenderTarget_nGetNativeFinalizer
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_BackendRenderTarget__1nGetFinalizer
   (JNIEnv* env, jclass jclass) {
     return static_cast<jlong>(reinterpret_cast<uintptr_t>(&deleteBackendRenderTarget));
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_BackendRenderTarget_nNewGL
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_BackendRenderTarget__1nMakeGL
   (JNIEnv* env, jclass jclass, jint width, jint height, jint sampleCnt, jint stencilBits, jint fbId, jint fbFormat) {
     GrGLFramebufferInfo glInfo = { static_cast<unsigned int>(fbId), static_cast<unsigned int>(fbFormat) };
     GrBackendRenderTarget* obj = new GrBackendRenderTarget(width, height, sampleCnt, stencilBits, glInfo);

@@ -1,70 +1,189 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.skija.impl.Managed;
+import org.jetbrains.skija.impl.Native;
+import org.jetbrains.skija.impl.Stats;
+
 public class Region extends Managed {
-    public enum Op { DIFFERENCE, INTERSECT, UNION, XOR, REVERSE_DIFFERENCE, REPLACE }
-
-    public Region() { super(nInit(), nativeFinalizer); Stats.onNativeCall(); }
-
-    public boolean set(Region r) { Stats.onNativeCall(); return nSet(_ptr, r._ptr); }
-    public boolean isEmpty() { Stats.onNativeCall(); return nIsEmpty(_ptr); }
-    public boolean isRect() { Stats.onNativeCall(); return nIsRect(_ptr); }
-    public boolean isComplex() { Stats.onNativeCall(); return nIsComplex(_ptr); }
-    public int[]   getBounds() { Stats.onNativeCall(); return nGetBounds(_ptr); }
-    public int     computeRegionComplexity() { Stats.onNativeCall(); return nComputeRegionComplexity(_ptr); }
-    public boolean getBoundaryPath(Path p) { Stats.onNativeCall(); return nGetBoundaryPath(_ptr, p._ptr); }
-    public boolean setEmpty() { Stats.onNativeCall(); return nSetEmpty(_ptr); }
-    public boolean setRect(int left, int top, int right, int bottom) { Stats.onNativeCall(); return nSetRect(_ptr, left, top, right, bottom); }
-    public boolean setRects(int[] rects) {
-        assert rects.length > 0 && rects.length % 4 == 0 : "Expected array length divisible by 4, got " + rects.length;
-        Stats.onNativeCall();
-        return nSetRects(_ptr, rects);
+    public enum Op {
+        DIFFERENCE,
+        INTERSECT,
+        UNION,
+        XOR,
+        REVERSE_DIFFERENCE,
+        REPLACE
     }
-    public boolean setRegion(Region r) { Stats.onNativeCall(); return nSetRegion(_ptr, r._ptr); }
-    public boolean setPath(Path path, Region clip) { Stats.onNativeCall(); return nSetPath(_ptr, path._ptr, clip._ptr); }
-    public boolean intersects(int left, int top, int right, int bottom) { Stats.onNativeCall(); return nIntersectsIRect(_ptr, left, top, right, bottom); }
-    public boolean intersects(Region r) { Stats.onNativeCall(); return nIntersectsRegion(_ptr, r._ptr); }
-    public boolean contains(int x, int y) { Stats.onNativeCall(); return nContainsIPoint(_ptr, x, y); }
-    public boolean contains(int left, int top, int right, int bottom) { Stats.onNativeCall(); return nContainsIRect(_ptr, left, top, right, bottom); }
-    public boolean contains(Region r) { Stats.onNativeCall(); return nContainsRegion(_ptr, r._ptr); }
-    public boolean quickContains(int left, int top, int right, int bottom) { Stats.onNativeCall(); return nQuickContains(_ptr, left, top, right, bottom); }
-    public boolean quickReject(int left, int top, int right, int bottom) { Stats.onNativeCall(); return nQuickRejectIRect(_ptr, left, top, right, bottom); }
-    public boolean quickReject(Region r) { Stats.onNativeCall(); return nQuickRejectRegion(_ptr, r._ptr); }
-    public void    translate(int dx, int dy) { Stats.onNativeCall(); nTranslate(_ptr, dx, dy); }
-    public boolean op(int left, int top, int right, int bottom, Op op) { Stats.onNativeCall(); return nOpIRect(_ptr, left, top, right, bottom, op.ordinal()); }
-    public boolean op(Region r, Op op) { Stats.onNativeCall(); return nOpRegion(_ptr, r._ptr, op.ordinal()); }
-    public boolean op(int left, int top, int right, int bottom, Region r, Op op) { Stats.onNativeCall(); return nOpIRectRegion(_ptr, left, top, right, bottom, r._ptr, op.ordinal()); }
-    public boolean op(Region r, int left, int top, int right, int bottom, Op op) { Stats.onNativeCall(); return nOpRegionIRect(_ptr, r._ptr, left, top, right, bottom, op.ordinal()); }
-    public boolean op(Region a, Region b, Op op) { Stats.onNativeCall(); return nOpRegionRegion(_ptr, a._ptr, b._ptr, op.ordinal()); }
 
-    private static final long nativeFinalizer = nGetNativeFinalizer();
-    private static native long nInit();
-    private static native long nGetNativeFinalizer();
+    public Region() {
+        super(_nMake(), _finalizerPtr);
+        Stats.onNativeCall();
+    }
 
-    private static native boolean nSet(long ptr, long regoinPtr);
-    private static native boolean nIsEmpty(long ptr);
-    private static native boolean nIsRect(long ptr);
-    private static native boolean nIsComplex(long ptr);
-    private static native int[]   nGetBounds(long ptr);
-    private static native int     nComputeRegionComplexity(long ptr);
-    private static native boolean nGetBoundaryPath(long ptr, long pathPtr);
-    private static native boolean nSetEmpty(long ptr);
-    private static native boolean nSetRect(long ptr, int left, int top, int right, int bottom);
-    private static native boolean nSetRects(long ptr, int[] rects);
-    private static native boolean nSetRegion(long ptr, long regionPtr);
-    private static native boolean nSetPath(long ptr, long pathPtr, long regionPtr);
+    public boolean set(Region r) {
+        Stats.onNativeCall();
+        return _nSet(_ptr, Native.getPtr(r));
+    }
 
-    private static native boolean nIntersectsIRect(long ptr, int left, int top, int right, int bottom);
-    private static native boolean nIntersectsRegion(long ptr, long regionPtr);
-    private static native boolean nContainsIPoint(long ptr, int x, int y);
-    private static native boolean nContainsIRect(long ptr, int left, int top, int right, int bottom);
-    private static native boolean nContainsRegion(long ptr, long regionPtr);
-    private static native boolean nQuickContains(long ptr, int left, int top, int right, int bottom);
-    private static native boolean nQuickRejectIRect(long ptr, int left, int top, int right, int bottom);
-    private static native boolean nQuickRejectRegion(long ptr, long regionPtr);
-    private static native void    nTranslate(long ptr, int dx, int dy);
-    private static native boolean nOpIRect(long ptr, int left, int top, int right, int bottom, int op);
-    private static native boolean nOpRegion(long ptr, long regionPtr, int op);
-    private static native boolean nOpIRectRegion(long ptr, int left, int top, int right, int bottom, long regionPtr, int op);
-    private static native boolean nOpRegionIRect(long ptr, long regionPtr, int left, int top, int right, int bottom, int op);
-    private static native boolean nOpRegionRegion(long ptr, long regionPtrA, long regionPtrB, int op);
+    public boolean isEmpty() {
+        Stats.onNativeCall();
+        return _nIsEmpty(_ptr);
+    }
+
+    public boolean isRect() {
+        Stats.onNativeCall();
+        return _nIsRect(_ptr);
+    }
+
+    public boolean isComplex() {
+        Stats.onNativeCall();
+        return _nIsComplex(_ptr);
+    }
+
+    public IRect getBounds() {
+        Stats.onNativeCall();
+        return _nGetBounds(_ptr);
+    }
+
+    public int computeRegionComplexity() {
+        Stats.onNativeCall();
+        return _nComputeRegionComplexity(_ptr);
+    }
+
+    public boolean getBoundaryPath(Path p) {
+        Stats.onNativeCall();
+        return _nGetBoundaryPath(_ptr, Native.getPtr(p));
+    }
+
+    public boolean setEmpty() {
+        Stats.onNativeCall();
+        return _nSetEmpty(_ptr);
+    }
+
+    public boolean setRect(IRect rect) {
+        Stats.onNativeCall();
+        return _nSetRect(_ptr, rect._left, rect._top, rect._right, rect._bottom);
+    }
+
+    public boolean setRects(IRect[] rects) {
+        int[] arr = new int[rects.length * 4];
+        for (int i = 0; i < rects.length; ++i) {
+            arr[i * 4]     = rects[i]._left;
+            arr[i * 4 + 1] = rects[i]._top;
+            arr[i * 4 + 2] = rects[i]._right;
+            arr[i * 4 + 3] = rects[i]._bottom;
+        }
+        Stats.onNativeCall();
+        return _nSetRects(_ptr, arr);
+    }
+
+    public boolean setRegion(Region r) {
+        Stats.onNativeCall();
+        return _nSetRegion(_ptr, Native.getPtr(r));
+    }
+
+    public boolean setPath(Path path, Region clip) {
+        Stats.onNativeCall();
+        return _nSetPath(_ptr, Native.getPtr(path), Native.getPtr(clip));
+    }
+
+    public boolean intersects(IRect rect) {
+        Stats.onNativeCall();
+        return _nIntersectsIRect(_ptr, rect._left, rect._top, rect._right, rect._bottom);
+    }
+
+    public boolean intersects(Region r) {
+        Stats.onNativeCall();
+        return _nIntersectsRegion(_ptr, Native.getPtr(r));
+    }
+
+    public boolean contains(int x, int y) {
+        Stats.onNativeCall();
+        return _nContainsIPoint(_ptr, x, y);
+    }
+
+    public boolean contains(IRect rect) {
+        Stats.onNativeCall();
+        return _nContainsIRect(_ptr, rect._left, rect._top, rect._right, rect._bottom);
+    }
+
+    public boolean contains(Region r) {
+        Stats.onNativeCall();
+        return _nContainsRegion(_ptr, Native.getPtr(r));
+    }
+
+    public boolean quickContains(IRect rect) {
+        Stats.onNativeCall();
+        return _nQuickContains(_ptr, rect._left, rect._top, rect._right, rect._bottom);
+    }
+
+    public boolean quickReject(IRect rect) {
+        Stats.onNativeCall();
+        return _nQuickRejectIRect(_ptr, rect._left, rect._top, rect._right, rect._bottom);
+    }
+
+    public boolean quickReject(Region r) {
+        Stats.onNativeCall();
+        return _nQuickRejectRegion(_ptr, Native.getPtr(r));
+    }
+
+    public void translate(int dx, int dy) {
+        Stats.onNativeCall();
+        _nTranslate(_ptr, dx, dy);
+    }
+
+    public boolean op(IRect rect, Op op) {
+        Stats.onNativeCall();
+        return _nOpIRect(_ptr, rect._left, rect._top, rect._right, rect._bottom, op.ordinal());
+    }
+
+    public boolean op(Region r, Op op) {
+        Stats.onNativeCall();
+        return _nOpRegion(_ptr, Native.getPtr(r), op.ordinal());
+    }
+
+    public boolean op(IRect rect, Region r, Op op) {
+        Stats.onNativeCall();
+        return _nOpIRectRegion(_ptr, rect._left, rect._top, rect._right, rect._bottom, Native.getPtr(r), op.ordinal());
+    }
+
+    public boolean op(Region r, IRect rect, Op op) {
+        Stats.onNativeCall();
+        return _nOpRegionIRect(_ptr, Native.getPtr(r), rect._left, rect._top, rect._right, rect._bottom, op.ordinal());
+    }
+
+    public boolean op(Region a, Region b, Op op) {
+        Stats.onNativeCall();
+        return _nOpRegionRegion(_ptr, Native.getPtr(a), Native.getPtr(b), op.ordinal());
+    }
+
+    public static final  long    _finalizerPtr = _nGetFinalizer();
+    public static native long    _nMake();
+    public static native long    _nGetFinalizer();
+    public static native boolean _nSet(long ptr, long regoinPtr);
+    public static native boolean _nIsEmpty(long ptr);
+    public static native boolean _nIsRect(long ptr);
+    public static native boolean _nIsComplex(long ptr);
+    public static native IRect   _nGetBounds(long ptr);
+    public static native int     _nComputeRegionComplexity(long ptr);
+    public static native boolean _nGetBoundaryPath(long ptr, long pathPtr);
+    public static native boolean _nSetEmpty(long ptr);
+    public static native boolean _nSetRect(long ptr, int left, int top, int right, int bottom);
+    public static native boolean _nSetRects(long ptr, int[] rects);
+    public static native boolean _nSetRegion(long ptr, long regionPtr);
+    public static native boolean _nSetPath(long ptr, long pathPtr, long regionPtr);
+    public static native boolean _nIntersectsIRect(long ptr, int left, int top, int right, int bottom);
+    public static native boolean _nIntersectsRegion(long ptr, long regionPtr);
+    public static native boolean _nContainsIPoint(long ptr, int x, int y);
+    public static native boolean _nContainsIRect(long ptr, int left, int top, int right, int bottom);
+    public static native boolean _nContainsRegion(long ptr, long regionPtr);
+    public static native boolean _nQuickContains(long ptr, int left, int top, int right, int bottom);
+    public static native boolean _nQuickRejectIRect(long ptr, int left, int top, int right, int bottom);
+    public static native boolean _nQuickRejectRegion(long ptr, long regionPtr);
+    public static native void    _nTranslate(long ptr, int dx, int dy);
+    public static native boolean _nOpIRect(long ptr, int left, int top, int right, int bottom, int op);
+    public static native boolean _nOpRegion(long ptr, long regionPtr, int op);
+    public static native boolean _nOpIRectRegion(long ptr, int left, int top, int right, int bottom, long regionPtr, int op);
+    public static native boolean _nOpRegionIRect(long ptr, long regionPtr, int left, int top, int right, int bottom, int op);
+    public static native boolean _nOpRegionRegion(long ptr, long regionPtrA, long regionPtrB, int op);
 }

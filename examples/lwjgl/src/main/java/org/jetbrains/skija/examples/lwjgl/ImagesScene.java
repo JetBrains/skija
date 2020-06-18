@@ -14,16 +14,16 @@ public class ImagesScene implements Scene {
 
     public ImagesScene() {
         try {
-            circus = Image.fromEncoded(Files.readAllBytes(Path.of("images", "circus.jpg")));
-            circusCropped = Image.fromEncoded(Files.readAllBytes(Path.of("images", "circus.jpg")), IRect.makeXYWH(160, 160, 320, 320));
-            cloud = Image.fromEncoded(Files.readAllBytes(Path.of("images", "cloud.png")));
-            ducks = Image.fromEncoded(Files.readAllBytes(Path.of("images", "ducks.jpg")));
+            circus = Image.makeFromEncoded(Files.readAllBytes(Path.of("images", "circus.jpg")));
+            circusCropped = Image.makeFromEncoded(Files.readAllBytes(Path.of("images", "circus.jpg")), IRect.makeXYWH(160, 160, 320, 320));
+            cloud = Image.makeFromEncoded(Files.readAllBytes(Path.of("images", "cloud.png")));
+            ducks = Image.makeFromEncoded(Files.readAllBytes(Path.of("images", "ducks.jpg")));
             tests = new Image[] {
-                Image.fromEncoded(Files.readAllBytes(Path.of("images", "icc-v2-gbr.jpg"))),
-                Image.fromEncoded(Files.readAllBytes(Path.of("images", "purple-displayprofile.png"))),
-                Image.fromEncoded(Files.readAllBytes(Path.of("images", "wide-gamut.png"))),
-                Image.fromEncoded(Files.readAllBytes(Path.of("images", "wide_gamut_yellow_224_224_64.jpeg"))),
-                Image.fromEncoded(Files.readAllBytes(Path.of("images", "webkit_logo_p3.png"))),
+                Image.makeFromEncoded(Files.readAllBytes(Path.of("images", "icc-v2-gbr.jpg"))),
+                Image.makeFromEncoded(Files.readAllBytes(Path.of("images", "purple-displayprofile.png"))),
+                Image.makeFromEncoded(Files.readAllBytes(Path.of("images", "wide-gamut.png"))),
+                Image.makeFromEncoded(Files.readAllBytes(Path.of("images", "wide_gamut_yellow_224_224_64.jpeg"))),
+                Image.makeFromEncoded(Files.readAllBytes(Path.of("images", "webkit_logo_p3.png"))),
             };
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -62,7 +62,7 @@ public class ImagesScene implements Scene {
             canvas.drawImageRect(circus, Rect.makeXYWH(0, 0, 160, 160), paint);
         }
         canvas.translate(170, 0);
-        try (ImageFilter blur = ImageFilter.blur(5, 5, TileMode.DECAL);
+        try (ImageFilter blur = ImageFilter.makeBlur(5, 5, TileMode.DECAL);
              Paint paint = new Paint().setImageFilter(blur)) {
             canvas.drawImageRect(circus, Rect.makeXYWH(0, 0, 160, 160), paint);
         }

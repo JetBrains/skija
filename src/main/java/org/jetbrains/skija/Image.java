@@ -1,36 +1,44 @@
 package org.jetbrains.skija;
 
-public class Image extends RefCnt {
-    private int width = -1;
-    private int height = -1;
+import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.skija.impl.RefCnt;
+import org.jetbrains.skija.impl.Stats;
 
-    public static Image fromEncoded(byte[] bytes) {
-        return fromEncoded(bytes, null);
+public class Image extends RefCnt {
+    public int _width = -1;
+    public int _height = -1;
+
+    public static Image makeFromEncoded(byte[] bytes) {
+        return makeFromEncoded(bytes, null);
     }
 
-    public static Image fromEncoded(byte[] bytes, IRect subset) {
+    public static Image makeFromEncoded(byte[] bytes, IRect subset) {
         Stats.onNativeCall();
-        return new Image(nFromEncoded(bytes, subset));
+        return new Image(_nMakeFromEncoded(bytes, subset));
     }
 
     public int getWidth() {
-        if (width == -1) dimensions();
-        return width;
+        if (_width == -1) _getDimensions();
+        return _width;
     }
 
     public int getHeight() {
-        if (height == -1) dimensions();
-        return height;
+        if (_height == -1) _getDimensions();
+        return _height;
     }
 
-    protected void dimensions() {
+    public void _getDimensions() {
         Stats.onNativeCall();
-        long res = nDimensions(_ptr);
-        width = (int) (res & 0xFFFFFFFF);
-        height = (int) (res >>> 32);
+        long res = _nGetDimensions(_ptr);
+        _width = (int) (res & 0xFFFFFFFF);
+        _height = (int) (res >>> 32);
     }
 
-    protected Image(long nativeInstance) { super(nativeInstance); }
-    private static native long nFromEncoded(byte[] bytes, IRect subset);
-    private static native long nDimensions(long nativeInstance);
+    @Internal
+    public Image(long ptr) {
+        super(ptr);
+    }
+
+    public static native long _nMakeFromEncoded(byte[] bytes, IRect subset);
+    public static native long _nGetDimensions(long ptr);
 }

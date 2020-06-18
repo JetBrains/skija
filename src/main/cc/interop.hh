@@ -29,35 +29,31 @@ namespace skija {
 
     namespace IRect {
         extern jclass cls;
+        extern jmethodID makeLTRB;
         extern jfieldID left;
         extern jfieldID top;
         extern jfieldID right;
         extern jfieldID bottom;
 
+        jobject fromSkIRect(JNIEnv* env, const SkIRect& rect);
         std::unique_ptr<SkIRect> toSkIRect(JNIEnv* env, jobject obj);
     }
 
     namespace Path {
         namespace Segment {
             extern jclass cls;
-            extern jmethodID ctor;
-            extern jfieldID verb;
-            extern jfieldID p0;
-            extern jfieldID p1;
-            extern jfieldID p2;
-            extern jfieldID p3;
-            extern jfieldID conicWeight;
-            extern jfieldID isCloseLine;
-            extern jfieldID isClosedContour;
+            extern jmethodID ctorDone;
+            extern jmethodID ctorMoveClose;
+            extern jmethodID ctorLine;
+            extern jmethodID ctorQuad;
+            extern jmethodID ctorConic;
+            extern jmethodID ctorCubic;
         }
     }
 
     namespace Point {
         extern jclass cls;
         extern jmethodID ctor;
-        extern jfieldID x;
-        extern jfieldID y;
-
         jobject make(JNIEnv* env, float x, float y);
         jobject fromSkPoint(JNIEnv* env, const SkPoint& p);
     }
@@ -74,7 +70,7 @@ namespace skija {
         jobject fromSkRect(JNIEnv* env, const SkRect& rect);
     }
 
-    namespace RoundedRect {
+    namespace RRect {
         extern jclass cls;
         extern jmethodID makeLTRB1;
         extern jmethodID makeLTRB2;

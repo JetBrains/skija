@@ -31,7 +31,7 @@ namespace skija {
         void onLoad(JNIEnv* env) {
             jclass local = env->FindClass("org/jetbrains/skija/FontAxisInfo");
             cls  = static_cast<jclass>(env->NewGlobalRef(local));
-            ctor = env->GetMethodID(cls, "<init>", "(II[BIFFF)V");
+            ctor = env->GetMethodID(cls, "<init>", "(IILjava/lang/String;IFFF)V");
         }
 
         void onUnload(JNIEnv* env) {
@@ -47,8 +47,8 @@ namespace skija {
         void onLoad(JNIEnv* env) {
             jclass local = env->FindClass("org/jetbrains/skija/FontVariation");    
             cls   = static_cast<jclass>(env->NewGlobalRef(local));
-            tag   = env->GetFieldID(cls, "tag", "I");
-            value = env->GetFieldID(cls, "value", "F");
+            tag   = env->GetFieldID(cls, "_tag", "I");
+            value = env->GetFieldID(cls, "_value", "F");
         }
 
         void onUnload(JNIEnv* env) {
@@ -58,6 +58,7 @@ namespace skija {
 
     namespace IRect {
         jclass cls;
+        jmethodID makeLTRB;
         jfieldID left;
         jfieldID top;
         jfieldID right;
@@ -65,15 +66,20 @@ namespace skija {
 
         void onLoad(JNIEnv* env) {
             jclass local = env->FindClass("org/jetbrains/skija/IRect");
-            cls    = static_cast<jclass>(env->NewGlobalRef(local));
-            left   = env->GetFieldID(cls, "left",   "I");
-            top    = env->GetFieldID(cls, "top",    "I");
-            right  = env->GetFieldID(cls, "right",  "I");
-            bottom = env->GetFieldID(cls, "bottom", "I");
+            cls      = static_cast<jclass>(env->NewGlobalRef(local));
+            makeLTRB = env->GetStaticMethodID(cls, "makeLTRB", "(IIII)Lorg/jetbrains/skija/IRect;");
+            left     = env->GetFieldID(cls, "_left",   "I");
+            top      = env->GetFieldID(cls, "_top",    "I");
+            right    = env->GetFieldID(cls, "_right",  "I");
+            bottom   = env->GetFieldID(cls, "_bottom", "I");
         }
 
         void onUnload(JNIEnv* env) {
             env->DeleteGlobalRef(cls);
+        }
+
+        jobject fromSkIRect(JNIEnv* env, const SkIRect& rect) {
+            return env->CallStaticObjectMethod(cls, makeLTRB, rect.fLeft, rect.fTop, rect.fRight, rect.fBottom);
         }
 
         std::unique_ptr<SkIRect> toSkIRect(JNIEnv* env, jobject obj) {
@@ -93,28 +99,22 @@ namespace skija {
     namespace Path {
         namespace Segment {
             jclass cls;
-            jmethodID ctor;
-            jfieldID verb;
-            jfieldID p0;
-            jfieldID p1;
-            jfieldID p2;
-            jfieldID p3;
-            jfieldID conicWeight;
-            jfieldID isCloseLine;
-            jfieldID isClosedContour;
+            jmethodID ctorDone;
+            jmethodID ctorMoveClose;
+            jmethodID ctorLine;
+            jmethodID ctorQuad;
+            jmethodID ctorConic;
+            jmethodID ctorCubic;
 
             void onLoad(JNIEnv* env) {
-                jclass local = env->FindClass("org/jetbrains/skija/Path$Segment");
-                cls  = static_cast<jclass>(env->NewGlobalRef(local));
-                ctor = env->GetMethodID(cls, "<init>", "(I)V");
-                verb = env->GetFieldID(cls, "verb", "Lorg/jetbrains/skija/Path$Verb;");
-                p0   = env->GetFieldID(cls, "p0", "Lorg/jetbrains/skija/Point;");
-                p1   = env->GetFieldID(cls, "p1", "Lorg/jetbrains/skija/Point;");
-                p2   = env->GetFieldID(cls, "p2", "Lorg/jetbrains/skija/Point;");
-                p3   = env->GetFieldID(cls, "p3", "Lorg/jetbrains/skija/Point;");
-                conicWeight     = env->GetFieldID(cls, "conicWeight", "F");
-                isCloseLine     = env->GetFieldID(cls, "isCloseLine", "Z");
-                isClosedContour = env->GetFieldID(cls, "isClosedContour", "Z");
+                jclass local  = env->FindClass("org/jetbrains/skija/Path$Segment");
+                cls           = static_cast<jclass>(env->NewGlobalRef(local));
+                ctorDone      = env->GetMethodID(cls, "<init>", "()V");
+                ctorMoveClose = env->GetMethodID(cls, "<init>", "(IFFZ)V");
+                ctorLine      = env->GetMethodID(cls, "<init>", "(FFFFZZ)V");
+                ctorQuad      = env->GetMethodID(cls, "<init>", "(FFFFFFZ)V");
+                ctorConic     = env->GetMethodID(cls, "<init>", "(FFFFFFFZ)V");
+                ctorCubic     = env->GetMethodID(cls, "<init>", "(FFFFFFFFZ)V");
             }
 
             void onUnload(JNIEnv* env) {
@@ -126,15 +126,11 @@ namespace skija {
     namespace Point {
         jclass    cls;
         jmethodID ctor;
-        jfieldID  x;
-        jfieldID  y;
 
         void onLoad(JNIEnv* env) {
             jclass local = env->FindClass("org/jetbrains/skija/Point");
             cls  = static_cast<jclass>(env->NewGlobalRef(local));
             ctor = env->GetMethodID(cls, "<init>", "(FF)V");
-            x    = env->GetFieldID(cls, "x", "F");
-            y    = env->GetFieldID(cls, "y", "F");
         }
 
         void onUnload(JNIEnv* env) {
@@ -162,10 +158,10 @@ namespace skija {
             jclass local = env->FindClass("org/jetbrains/skija/Rect");
             cls      = static_cast<jclass>(env->NewGlobalRef(local));
             makeLTRB = env->GetStaticMethodID(cls, "makeLTRB", "(FFFF)Lorg/jetbrains/skija/Rect;");
-            left     = env->GetFieldID(cls, "left",   "F");
-            top      = env->GetFieldID(cls, "top",    "F");
-            right    = env->GetFieldID(cls, "right",  "F");
-            bottom   = env->GetFieldID(cls, "bottom", "F");
+            left     = env->GetFieldID(cls, "_left",   "F");
+            top      = env->GetFieldID(cls, "_top",    "F");
+            right    = env->GetFieldID(cls, "_right",  "F");
+            bottom   = env->GetFieldID(cls, "_bottom", "F");
         }
 
         void onUnload(JNIEnv* env) {
@@ -181,7 +177,7 @@ namespace skija {
         }
     }
 
-    namespace RoundedRect {
+    namespace RRect {
         jclass cls;
         jmethodID makeLTRB1;
         jmethodID makeLTRB2;
@@ -195,18 +191,18 @@ namespace skija {
         jfieldID radii;
 
         void onLoad(JNIEnv* env) {
-            jclass local = env->FindClass("org/jetbrains/skija/RoundedRect");
+            jclass local = env->FindClass("org/jetbrains/skija/RRect");
             cls      = static_cast<jclass>(env->NewGlobalRef(local));
-            makeLTRB1 = env->GetStaticMethodID(cls, "makeLTRB", "(FFFFF)Lorg/jetbrains/skija/RoundedRect;");
-            makeLTRB2 = env->GetStaticMethodID(cls, "makeLTRB", "(FFFFFF)Lorg/jetbrains/skija/RoundedRect;");
-            makeLTRB4 = env->GetStaticMethodID(cls, "makeLTRB", "(FFFFFFFF)Lorg/jetbrains/skija/RoundedRect;");
-            makeNinePatchLTRB = env->GetStaticMethodID(cls, "makeNinePatchLTRB", "(FFFFFFFF)Lorg/jetbrains/skija/RoundedRect;");
-            makeComplexLTRB = env->GetStaticMethodID(cls, "makeComplexLTRB", "(FFFF[F)Lorg/jetbrains/skija/RoundedRect;");
-            left     = env->GetFieldID(cls, "left",   "F");
-            top      = env->GetFieldID(cls, "top",    "F");
-            right    = env->GetFieldID(cls, "right",  "F");
-            bottom   = env->GetFieldID(cls, "bottom", "F");
-            radii    = env->GetFieldID(cls, "radii",  "[F");
+            makeLTRB1 = env->GetStaticMethodID(cls, "makeLTRB", "(FFFFF)Lorg/jetbrains/skija/RRect;");
+            makeLTRB2 = env->GetStaticMethodID(cls, "makeLTRB", "(FFFFFF)Lorg/jetbrains/skija/RRect;");
+            makeLTRB4 = env->GetStaticMethodID(cls, "makeLTRB", "(FFFFFFFF)Lorg/jetbrains/skija/RRect;");
+            makeNinePatchLTRB = env->GetStaticMethodID(cls, "makeNinePatchLTRB", "(FFFFFFFF)Lorg/jetbrains/skija/RRect;");
+            makeComplexLTRB = env->GetStaticMethodID(cls, "makeComplexLTRB", "(FFFF[F)Lorg/jetbrains/skija/RRect;");
+            left     = env->GetFieldID(cls, "_left",   "F");
+            top      = env->GetFieldID(cls, "_top",    "F");
+            right    = env->GetFieldID(cls, "_right",  "F");
+            bottom   = env->GetFieldID(cls, "_bottom", "F");
+            radii    = env->GetFieldID(cls, "_radii",  "[F");
         }
 
         void onUnload(JNIEnv* env) {
@@ -293,7 +289,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::Path::Segment::onLoad(env);
     skija::Point::onLoad(env);
     skija::Rect::onLoad(env);
-    skija::RoundedRect::onLoad(env);
+    skija::RRect::onLoad(env);
 
     skija::paragraph::LineMetrics::onLoad(env);
     skija::paragraph::Paragraph::TextBox::onLoad(env);
@@ -315,7 +311,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::Path::Segment::onUnload(env);
     skija::Point::onUnload(env);
     skija::Rect::onUnload(env);
-    skija::RoundedRect::onUnload(env);
+    skija::RRect::onUnload(env);
 }
 
 std::unique_ptr<SkMatrix> arrayToMatrix(JNIEnv* env, jfloatArray matrixArray) {

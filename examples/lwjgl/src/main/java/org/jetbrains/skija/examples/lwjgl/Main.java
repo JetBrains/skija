@@ -3,6 +3,7 @@ package org.jetbrains.skija.examples.lwjgl;
 import java.nio.IntBuffer;
 import java.util.*;
 
+import org.jetbrains.skija.impl.Stats;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.MemoryStack;
@@ -138,7 +139,7 @@ class Window {
         if (renderTarget != null) { renderTarget.close(); renderTarget = null; }
 
         int fbId = GL11.glGetInteger(0x8CA6); // GL_FRAMEBUFFER_BINDING
-        renderTarget = BackendRenderTarget.newGL((int) (width * dpi), (int) (height * dpi), /*samples*/0, /*stencil*/8, fbId, BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8);
+        renderTarget = BackendRenderTarget.makeGL((int) (width * dpi), (int) (height * dpi), /*samples*/0, /*stencil*/8, fbId, BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8);
 
         surface = Surface.makeFromBackendRenderTarget(context, renderTarget, Surface.Origin.BOTTOM_LEFT, Surface.ColorType.RGBA_8888, ColorSpace.getDisplayP3()); // TODO load monitor profile
 
@@ -182,15 +183,15 @@ class Window {
         Font font = interRegular13tnum;
         // FontExtents extents = font.hbFont.getHorizontalExtents();
         FontExtents extents = new FontExtents(10, 3, 0); // FIXME
-        float baseline = (20 - (extents.descender + extents.getAscenderAbs())) / 2 + extents.getAscenderAbs();
+        float baseline = (20 - (extents._descender + extents.getAscenderAbs())) / 2 + extents.getAscenderAbs();
 
         // Background
         canvas.translate(width - 230, height - 160);
-        canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 225, 155, 7), bg);
+        canvas.drawRRect(RRect.makeLTRB(0, 0, 225, 155, 7), bg);
         canvas.translate(5, 5);
 
         // Scene
-        canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, 30, 20, 2), bg);
+        canvas.drawRRect(RRect.makeLTRB(0, 0, 30, 20, 2), bg);
         // canvas.drawTextBuffer(buffer, (30 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
         canvas.drawString("←→", 0, baseline, font, fg); // FIXME center align
         int sceneIdx = 1;
@@ -202,14 +203,14 @@ class Window {
         canvas.translate(0, 25);
 
         // VSync
-        canvas.drawRoundedRect(RoundedRect.makeXYWH(5, 0, 20, 20, 2), bg);
+        canvas.drawRRect(RRect.makeXYWH(5, 0, 20, 20, 2), bg);
         // canvas.drawTextBuffer(buffer, 5 + (20 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
         canvas.drawString("V", 5, baseline, font, fg); // FIXME center align
         canvas.drawString("VSync: " + (vsync ? "ON" : "OFF"), 35, baseline, font, fg);
         canvas.translate(0, 25);
 
         // GC
-        canvas.drawRoundedRect(RoundedRect.makeXYWH(5, 0, 20, 20, 2), bg);
+        canvas.drawRRect(RRect.makeXYWH(5, 0, 20, 20, 2), bg);
         // canvas.drawTextBuffer(buffer, 5 + (20 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
         canvas.drawString("G", 5, baseline, font, fg); // FIXME center align
         canvas.drawString("GC objects: " + allocated, 35, baseline, font, fg);
@@ -220,7 +221,7 @@ class Window {
         canvas.translate(0, 25);
 
         // fps
-        canvas.drawRoundedRect(RoundedRect.makeLTRB(0, 0, times.length, 45, 2), bg);
+        canvas.drawRRect(RRect.makeLTRB(0, 0, times.length, 45, 2), bg);
         for (int i = 0; i < times.length; ++i) {
             canvas.drawLine(i, 45, i, 45 - (float) times[i], i > timesIdx ? graphPast : graph);
         }
@@ -244,7 +245,7 @@ class Window {
 
     private void loop() {
         GL.createCapabilities();
-        JNI.loadLibrary("/", "skija");
+        Library.load("/", "skija");
         context = Context.makeGL();
 
         GLFW.glfwSetWindowSizeCallback(window, (window, width, height) -> {
@@ -296,7 +297,7 @@ class Window {
         scenes = new TreeMap<>();
         scenes.put("Blends",        new BlendsScene());
         scenes.put("Color Filters", new ColorFiltersScene());
-        scenes.put("Empty",         new EmptyScene());
+        // scenes.put("Empty",         new EmptyScene());
         scenes.put("Geometry",      new GeometryScene());
         scenes.put("Images",        new ImagesScene());
         scenes.put("Image Filters", new ImageFiltersScene());
@@ -309,8 +310,8 @@ class Window {
         scenes.put("Squares",       new SquaresScene());
         scenes.put("Text",          new TextScene());
         scenes.put("Text Blob",     new TextBlobScene());
-        scenes.put("Wall Cached",   new WallOfTextScene(true));
-        scenes.put("Wall of Text",  new WallOfTextScene(false));
+        // scenes.put("Wall Cached",   new WallOfTextScene(true));
+        // scenes.put("Wall of Text",  new WallOfTextScene(false));
         scenes.put("Watches",       new WatchesScene());
         currentScene = "Paragraph";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");

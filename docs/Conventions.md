@@ -18,20 +18,23 @@
 
 Some common dictionary:
 
-- ptr (paintPtr, canvasPtr, ...).
-- finalizer.
+- ptr (paintPtr, canvasPtr, ...)
+- finalizer
+- lerp
+- count (instead of size/length/...)
 
 # Things we fix in Skia APIs
 
 - Remove prefixes/suffixes. SkCanvas.h -> Canvas.java, kLine_SkPathSegmentMask -> LINE.
 - Getter methods ALWAYS start with `get...` / `is...` (`lineNumber` -> `getLineNumber()`, `accessible` -> `isAccessible()`).
-- Static constructors ALWAYS start with `make...`.
+- Constructors/static builders ALWAYS start with `make...`.
 - Setters/updaters that normally return `void` in Skia must return `this` in Skija.
 
 # Visibility
 
 - All fields/methods `public`.
-- Fields/methods not for public consumption: also `public`, but prefixed with `_` (`startIndex` -> `_startIndex`).
+- Fields/methods/inner classes not for public consumption: also `public`, but prefixed with `_` (`startIndex` -> `_startIndex`).
+- Constructors not for public consumption: @Internal
 
 Why public?
 
@@ -44,7 +47,7 @@ Why public?
 # Data classes
 
 - public final fields prefixed with `_`.
-- public getters/setters following javaBeans convention (get/is/set).
+- public getters/setters following javaBeans convention (get/is/set/with).
 - setters return this.
 
 Why getters/setters?
@@ -84,12 +87,13 @@ public class LineMetrics {
 - Enum values are passed as ints (for this to work, enums must have same elements in the same order).
 - Avoid arrays and objects when possible.
   - Unroll objects and small fixed-size arrays when possible (SkRect -> jfloat, jfloat, jfloat, jfloat, int[2] -> jint, jint).
+  - But return data objects, e.g. IRect instead of int[].
 - Pointers are passed as longs.
 - Two-integers are returned as single long.
 - Strings are passed as Strings (converted to UTF-8/UTF-16 on C++ side).
 - When a managed object is returned, its ref count should be bumped (normally Skia follows that as well, no extra action needed).
 - size_t -> jlong
-- Prefer `Native.ptr(obj)` to `obj.ptr` because some Skia APIs are fine with accepting `nullptr` as some arguments, so obj might be nullable.
+- Prefer `Native.ptr(obj)` to `obj._ptr` because some Skia APIs are fine with accepting `nullptr` as some arguments, so obj might be null.
 - Assert known constraint on Java side (e.g. `assert matrix.length == 9`).
 
 # Example

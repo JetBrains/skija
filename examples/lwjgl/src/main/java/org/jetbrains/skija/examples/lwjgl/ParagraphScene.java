@@ -7,7 +7,7 @@ public class ParagraphScene implements Scene {
     FontCollection fc = new FontCollection();
     
     public ParagraphScene() {
-        fc.setDefaultFontManager(FontManager.getDefault());
+        fc.setDefaultFontManager(FontMgr.getDefault());
         
         TypefaceFontProvider fm = new TypefaceFontProvider();
         Typeface jbMono = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf", 0);
@@ -190,7 +190,7 @@ public class ParagraphScene implements Scene {
                 }
 
                 // getGlyphPositionAtCoordinate
-                int glyphIdx = p.getGlyphPositionAtCoordinate(dx, dy).position;
+                int glyphIdx = p.getGlyphPositionAtCoordinate(dx, dy).getPosition();
                 try (var typeface = fc.defaultFallback();
                      var font = new Font(typeface, 16);
                      var blob = font.shape("idx: " + glyphIdx, Float.POSITIVE_INFINITY);
@@ -203,13 +203,13 @@ public class ParagraphScene implements Scene {
                     
                     // getRectsForRange    
                     for (Paragraph.TextBox box: p.getRectsForRange(0, glyphIdx, Paragraph.RectHeightStyle.TIGHT, Paragraph.RectWidthStyle.TIGHT)) {
-                        canvas.drawRect(box.rect, blue);
+                        canvas.drawRect(box.getRect(), blue);
                     }
 
                     // getWordBoundary
                     IRange word = p.getWordBoundary(glyphIdx);
                     for (Paragraph.TextBox box: p.getRectsForRange(word.getStart(), word.getEnd(), Paragraph.RectHeightStyle.TIGHT, Paragraph.RectWidthStyle.TIGHT)) {
-                        canvas.drawRect(box.rect, orange);
+                        canvas.drawRect(box.getRect(), orange);
                     }
                 }
 

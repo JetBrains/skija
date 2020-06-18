@@ -1,91 +1,274 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.skija.impl.Managed;
+import org.jetbrains.skija.impl.Native;
+import org.jetbrains.skija.impl.Stats;
+
 public class Paint extends Managed {
-    public enum Style { FILL, STROKE, STROKE_AND_FILL }
-    public enum Cap { BUTT, ROUND, SQUARE }
-    public enum Join { MITER, ROUND, BEVEL }
+    public enum Style {
+        FILL,
+        STROKE,
+        STROKE_AND_FILL
+    }
 
-    public Paint() { super(nInit(), nativeFinalizer); Stats.onNativeCall(); }
+    public enum Cap {
+        BUTT,
+        ROUND,
+        SQUARE
+    }
 
-    public boolean isAntiAlias() { Stats.onNativeCall(); return nIsAntiAlias(_ptr); }
-    public Paint setAntiAlias(boolean value) { Stats.onNativeCall(); nSetAntiAlias(_ptr, value); return this; }
+    public enum Join {
+        MITER,
+        ROUND,
+        BEVEL
+    }
 
-    public int getColor() { Stats.onNativeCall(); return nGetColor(_ptr); }
-    public Paint setColor(int color) { Stats.onNativeCall(); nSetColor(_ptr, color); return this; }
+    public Paint() {
+        super(_nMake(), _finalizerPtr);
+        Stats.onNativeCall();
+    }
 
-    public Style getStyle() { Stats.onNativeCall(); return Style.values()[nGetStyle(_ptr)]; }
-    public Paint setStyle(Style style) { Stats.onNativeCall(); nSetStyle(_ptr, style.ordinal()); return this; }
+    public boolean isAntiAlias() {
+        Stats.onNativeCall();
+        return _nIsAntiAlias(_ptr);
+    }
 
-    public float getStrokeWidth() { Stats.onNativeCall(); return nGetStrokeWidth(_ptr); }
-    public Paint setStrokeWidth(float width) { Stats.onNativeCall(); nSetStrokeWidth(_ptr, width); return this; }
+    public Paint setAntiAlias(boolean value) {
+        Stats.onNativeCall();
+        _nSetAntiAlias(_ptr, value);
+        return this;
+    }
 
-    public long getStrokeMiter() { Stats.onNativeCall(); return nGetStrokeMiter(_ptr); }
-    public Paint setStrokeMiter(float limit) { Stats.onNativeCall(); nSetStrokeMiter(_ptr, limit); return this; }
+    public Style getStyle() {
+        Stats.onNativeCall();
+        return Style.values()[_nGetStyle(_ptr)];
+    }
 
-    public Cap getStrokeCap() { Stats.onNativeCall(); return Cap.values()[nGetStrokeJoin(_ptr)]; }
-    public Paint setStrokeCap(Cap cap) { Stats.onNativeCall(); nSetStrokeCap(_ptr, cap.ordinal()); return this; }
+    public Paint setStyle(Style style) {
+        Stats.onNativeCall();
+        _nSetStyle(_ptr, style.ordinal());
+        return this;
+    }
 
-    public Join getStrokeJoin() { Stats.onNativeCall(); return Join.values()[nGetStrokeJoin(_ptr)]; }
-    public Paint setStrokeJoin(Join join) { Stats.onNativeCall(); nSetStrokeJoin(_ptr, join.ordinal()); return this; }
+    public int getColor() {
+        Stats.onNativeCall();
+        return _nGetColor(_ptr);
+    }
 
-    public Path getFillPath(Path src) { return getFillPath(src, null, 1); }
-    
+    public Paint setColor(int color) {
+        Stats.onNativeCall();
+        _nSetColor(_ptr, color);
+        return this;
+    }
+
+    public float getStrokeWidth() {
+        Stats.onNativeCall();
+        return _nGetStrokeWidth(_ptr);
+    }
+
+    public Paint setStrokeWidth(float width) {
+        Stats.onNativeCall();
+        _nSetStrokeWidth(_ptr, width);
+        return this;
+    }
+
+    public long getStrokeMiter() {
+        Stats.onNativeCall();
+        return _nGetStrokeMiter(_ptr);
+    }
+
+    public Paint setStrokeMiter(float limit) {
+        Stats.onNativeCall();
+        _nSetStrokeMiter(_ptr, limit);
+        return this;
+    }
+
+    public Cap getStrokeCap() {
+        Stats.onNativeCall();
+        return Cap.values()[_nGetStrokeCap(_ptr)];
+    }
+
+    public Paint setStrokeCap(Cap cap) {
+        Stats.onNativeCall();
+        _nSetStrokeCap(_ptr, cap.ordinal());
+        return this;
+    }
+
+    public Join getStrokeJoin() {
+        Stats.onNativeCall();
+        return Join.values()[_nGetStrokeJoin(_ptr)];
+    }
+
+    public Paint setStrokeJoin(Join join) {
+        Stats.onNativeCall();
+        _nSetStrokeJoin(_ptr, join.ordinal());
+        return this;
+    }
+
+    public Path getFillPath(Path src) {
+        return getFillPath(src, null, 1);
+    }
+
     public Path getFillPath(Path src, Rect cull, float resScale) {
         Stats.onNativeCall();
         if (cull == null)
-            return new Path(nGetFillPath(_ptr, Native.getPtr(src), resScale));
+            return new Path(_nGetFillPath(_ptr, Native.getPtr(src), resScale));
         else
-            return new Path(nGetFillPathCull(_ptr, Native.getPtr(src), cull.left, cull.top, cull.right, cull.bottom, resScale));
+            return new Path(_nGetFillPathCull(_ptr, Native.getPtr(src), cull._left, cull._top, cull._right, cull._bottom, resScale));
     }
 
-    protected MaskFilter maskFilter;
-    public MaskFilter getMaskFilter() { return maskFilter; }
-    public Paint setMaskFilter(MaskFilter f) { this.maskFilter = f; Stats.onNativeCall(); nSetMaskFilter(_ptr, Native.getPtr(f)); return this; }
+    /**
+     * @return  {@link Shader} or null
+     * @see     <a href="https://fiddle.skia.org/c/@Paint_refShader">https://fiddle.skia.org/c/@Paint_refShader</a>
+     */
+    public Shader getShader() {
+        Stats.onNativeCall();
+        long shaderPtr = _nGetShader(_ptr);
+        return shaderPtr == 0 ? null : new Shader(shaderPtr);
+    }
 
-    protected ImageFilter imageFilter;
-    public ImageFilter getImageFilter() { return imageFilter; }
-    public Paint setImageFilter(ImageFilter f) { this.imageFilter = f; Stats.onNativeCall(); nSetImageFilter(_ptr, Native.getPtr(f)); return this; }
+    /**
+     * @param shader  how geometry is filled with color; if null, color is used instead
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Color_Filter_Methods">https://fiddle.skia.org/c/@Color_Filter_Methods</a>
+     * @see <a href="https://fiddle.skia.org/c/@Paint_setShader">https://fiddle.skia.org/c/@Paint_setShader</a>
+     */
+    public Paint setShader(Shader shader) {
+        Stats.onNativeCall();
+        _nSetShader(_ptr, Native.getPtr(shader));
+        return this;
+    }
 
-    protected BlendMode blendMode = BlendMode.SRC_OVER;
-    public BlendMode getBlendMode() { return blendMode; }
-    public Paint setBlendMode(BlendMode mode) { this.blendMode = mode; Stats.onNativeCall(); nSetBlendMode(_ptr, mode.ordinal()); return this; }
+    /**
+     * @return  {@link ColorFilter} or null
+     * @see     <a href="https://fiddle.skia.org/c/@Paint_refColorFilter">https://fiddle.skia.org/c/@Paint_refColorFilter</a>
+     */
+    public ColorFilter getColorFilter() {
+        Stats.onNativeCall();
+        long colorFilterPtr = _nGetColorFilter(_ptr);
+        return colorFilterPtr == 0 ? null : new ColorFilter(colorFilterPtr);
+    }
 
-    protected PathEffect pathEffect;
-    public PathEffect getPathEffect() { return pathEffect; }
-    public Paint setPathEffect(PathEffect p) { this.pathEffect = p; Stats.onNativeCall(); nSetPathEffect(_ptr, Native.getPtr(p)); return this; }
+    /**
+     * @param colorFilter {@link ColorFilter} to apply to subsequent draw
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Blend_Mode_Methods">https://fiddle.skia.org/c/@Blend_Mode_Methods</a>
+     * @see <a href="https://fiddle.skia.org/c/@Paint_setColorFilter">https://fiddle.skia.org/c/@Paint_setColorFilter</a>
+     */
+    public Paint setColorFilter(ColorFilter colorFilter) {
+        Stats.onNativeCall();
+        _nSetColorFilter(_ptr, Native.getPtr(colorFilter));
+        return this;
+    }
 
-    protected Shader shader;
-    public Shader getShader() { return shader; }
-    public Paint setShader(Shader shader) { this.shader = shader; Stats.onNativeCall(); nSetShader(_ptr, Native.getPtr(shader)); return this; }
+    public BlendMode getBlendMode() {
+        Stats.onNativeCall();
+        return BlendMode.values()[_nGetBlendMode(_ptr)];
+    }
 
-    protected ColorFilter colorFilter;
-    public ColorFilter getColorFilter() { return colorFilter; }
-    public Paint setColorFilter(ColorFilter colorFilter) { this.colorFilter = colorFilter; Stats.onNativeCall(); nSetColorFilter(_ptr, Native.getPtr(colorFilter)); return this; }
+    public Paint setBlendMode(BlendMode mode) {
+        Stats.onNativeCall();
+        _nSetBlendMode(_ptr, mode.ordinal());
+        return this;
+    }
 
-    private static final long nativeFinalizer = nGetNativeFinalizer();
-    private static native long nInit();
-    private static native long nGetNativeFinalizer();
-    private static native boolean nIsAntiAlias(long nativeInstance);
-    private static native void nSetAntiAlias(long nativeInstance, boolean value);
-    private static native int nGetColor(long nativeInstance);
-    private static native void nSetColor(long nativeInstance, int argb);
-    private static native int  nGetStyle(long nativeInstance);
-    private static native void nSetStyle(long nativeInstance, int value);
-    private static native long nGetStrokeWidth(long nativeInstance);
-    private static native void nSetStrokeWidth(long nativeInstance, float value);
-    private static native long nGetStrokeMiter(long nativeInstance);
-    private static native void nSetStrokeMiter(long nativeInstance, float value);
-    private static native int  nGetStrokeCap(long nativeInstance);
-    private static native void nSetStrokeCap(long nativeInstance, int value);
-    private static native int  nGetStrokeJoin(long nativeInstance);
-    private static native void nSetStrokeJoin(long nativeInstance, int value);
-    private static native long nGetFillPath(long nativeInstance, long path, float resScale);
-    private static native long nGetFillPathCull(long nativeInstance, long path, float left, float top, float right, float bottom, float resScale);
-    private static native void nSetMaskFilter(long nativeInstance, long ptr);
-    private static native void nSetImageFilter(long nativeInstance, long ptr);
-    private static native void nSetBlendMode(long nativeInstance, int mode);
-    private static native void nSetPathEffect(long nativeInstance, long pathEffectPtr);
-    private static native void nSetShader(long nativeInstance, long shaderPtr);
-    private static native void nSetColorFilter(long nativeInstance, long colorFilterPtr);
+    /**
+     * @return  {@link PathEffect} or null
+     * @see     <a href="https://fiddle.skia.org/c/@Paint_refPathEffect">https://fiddle.skia.org/c/@Paint_refPathEffect</a>
+     */
+    public PathEffect getPathEffect() {
+        Stats.onNativeCall();
+        long pathEffectPtr = _nGetPathEffect(_ptr);
+        return pathEffectPtr == 0 ? null : new PathEffect(pathEffectPtr);
+    }
+
+    /**
+     * @param pathEffect  replace {@link Path} with a modification when drawn
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Mask_Filter_Methods">https://fiddle.skia.org/c/@Mask_Filter_Methods</a>
+     * @see <a href="https://fiddle.skia.org/c/@Paint_setPathEffect">https://fiddle.skia.org/c/@Paint_setPathEffect</a>
+     */
+    public Paint setPathEffect(PathEffect p) {
+        Stats.onNativeCall();
+        _nSetPathEffect(_ptr, Native.getPtr(p));
+        return this;
+    }
+
+    /**
+     * @return  {@link MaskFilter} if previously set, null otherwise
+     * @see     <a href="https://fiddle.skia.org/c/@Paint_refMaskFilter">https://fiddle.skia.org/c/@Paint_refMaskFilter</a>
+     */
+    public MaskFilter getMaskFilter() {
+        Stats.onNativeCall();
+        long maskFilterPtr = _nGetMaskFilter(_ptr);
+        return maskFilterPtr == 0 ? null : new MaskFilter(maskFilterPtr);
+    }
+
+    /**
+     * @param maskFilter  modifies clipping mask generated from drawn geometry
+     * @return            this
+     *
+     * @see  <a href="https://fiddle.skia.org/c/@Paint_setMaskFilter">https://fiddle.skia.org/c/@Paint_setMaskFilter</a>
+     * @see  <a href="https://fiddle.skia.org/c/@Typeface_Methods">https://fiddle.skia.org/c/@Typeface_Methods</a>
+     */
+    public Paint setMaskFilter(MaskFilter maskFilter) {
+        Stats.onNativeCall();
+        _nSetMaskFilter(_ptr, Native.getPtr(maskFilter));
+        return this;
+    }
+
+    /**
+     * @return  {@link ImageFilter} or null
+     * @see     <a href="https://fiddle.skia.org/c/@Paint_refImageFilter">https://fiddle.skia.org/c/@Paint_refImageFilter</a>
+     */
+    public ImageFilter getImageFilter() {
+        Stats.onNativeCall();
+        long imageFilterPtr = _nGetImageFilter(_ptr);
+        return imageFilterPtr == 0 ? null : new ImageFilter(imageFilterPtr);
+    }
+
+    /**
+     * @param imageFilter  how SkImage is sampled when transformed
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Draw_Looper_Methods">https://fiddle.skia.org/c/@Draw_Looper_Methods</a>
+     * @see <a href="https://fiddle.skia.org/c/@Paint_setImageFilter">https://fiddle.skia.org/c/@Paint_setImageFilter</a>
+     */
+    public Paint setImageFilter(ImageFilter imageFilter) {
+        Stats.onNativeCall();
+        _nSetImageFilter(_ptr, Native.getPtr(imageFilter));
+        return this;
+    }
+
+    public static final  long _finalizerPtr = _nGetFinalizer();
+    public static native long _nMake();
+    public static native long _nGetFinalizer();
+    public static native boolean _nIsAntiAlias(long ptr);
+    public static native void _nSetAntiAlias(long ptr, boolean value);
+    public static native int  _nGetStyle(long ptr);
+    public static native void _nSetStyle(long ptr, int value);
+    public static native int  _nGetColor(long ptr);
+    public static native void _nSetColor(long ptr, int argb);
+    public static native long _nGetStrokeWidth(long ptr);
+    public static native void _nSetStrokeWidth(long ptr, float value);
+    public static native long _nGetStrokeMiter(long ptr);
+    public static native void _nSetStrokeMiter(long ptr, float value);
+    public static native int  _nGetStrokeCap(long ptr);
+    public static native void _nSetStrokeCap(long ptr, int value);
+    public static native int  _nGetStrokeJoin(long ptr);
+    public static native void _nSetStrokeJoin(long ptr, int value);
+    public static native long _nGetFillPath(long ptr, long path, float resScale);
+    public static native long _nGetFillPathCull(long ptr, long path, float left, float top, float right, float bottom, float resScale);
+    public static native long _nGetShader(long ptr);
+    public static native void _nSetShader(long ptr, long shaderPtr);
+    public static native long _nGetColorFilter(long ptr);
+    public static native void _nSetColorFilter(long ptr, long colorFilterPtr);
+    public static native int  _nGetBlendMode(long ptr);
+    public static native void _nSetBlendMode(long ptr, int mode);
+    public static native long _nGetPathEffect(long ptr);
+    public static native void _nSetPathEffect(long ptr, long pathEffectPtr);
+    public static native long _nGetMaskFilter(long ptr);
+    public static native void _nSetMaskFilter(long ptr, long filterPtr);
+    public static native long _nGetImageFilter(long ptr);
+    public static native void _nSetImageFilter(long ptr, long filterPtr);
 }
 

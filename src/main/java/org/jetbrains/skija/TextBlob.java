@@ -1,17 +1,22 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.skija.impl.Managed;
+import org.jetbrains.skija.impl.Stats;
+
 public class TextBlob extends Managed {
-    protected TextBlob(long nativeInstance) {
-        super(nativeInstance, nativeFinalizer);
+    @Internal
+    public TextBlob(long ptr) {
+        super(ptr, _finalizerPtr);
     }
 
     public Rect getBounds() {
-        float[] bounds = nBounds(_ptr);
-        return Rect.makeLTRB(bounds[0], bounds[1], bounds[2], bounds[3]);
+        Stats.onNativeCall();
+        return _nBounds(_ptr);
     }
 
-    private static final long nativeFinalizer = nGetNativeFinalizer();
-    private static native long nMake();
-    private static native long nGetNativeFinalizer();
-    private static native float[] nBounds(long ptr);
+    public static final long _finalizerPtr = _nGetFinalizer();
+    public static native long _nMake();
+    public static native long _nGetFinalizer();
+    public static native Rect _nBounds(long ptr);
 }

@@ -1,5 +1,9 @@
 package org.jetbrains.skija;
 
+import lombok.EqualsAndHashCode;
+import org.jetbrains.skija.impl.Internal;
+
+@EqualsAndHashCode
 public class FontStyle {
     public static final int WEIGHT_INVISIBLE   = 0;
     public static final int WEIGHT_THIN        = 100;
@@ -23,7 +27,7 @@ public class FontStyle {
     public static final int WIDTH_EXTRA_EXPANDED  = 8;
     public static final int WIDTH_ULTRA_EXPANDED  = 9;
 
-    public final int value;
+    public final int _value;
 
     public enum Slant {
         UPRIGHT,
@@ -37,15 +41,16 @@ public class FontStyle {
     public static final FontStyle BOLD_ITALIC = new FontStyle(WEIGHT_BOLD, WIDTH_NORMAL, Slant.ITALIC);
 
     public FontStyle(int weight, int width, Slant slant) {
-        value = (weight & 0xFFFF) | ((width & 0xFF) << 16) | (slant.ordinal() << 24);
+        _value = (weight & 0xFFFF) | ((width & 0xFF) << 16) | (slant.ordinal() << 24);
     }
 
-    protected FontStyle(int value) {
-        this.value = value;
+    @Internal
+    public FontStyle(int value) {
+        this._value = value;
     }
 
     public int getWeight() {
-        return value & 0xFFFF;
+        return _value & 0xFFFF;
     }
 
     public FontStyle withWeight(int weight) {
@@ -53,7 +58,7 @@ public class FontStyle {
     }
 
     public int getWidth() {
-        return (value >> 16) & 0xFF;
+        return (_value >> 16) & 0xFF;
     }
 
     public FontStyle withWidth(int width) {
@@ -61,7 +66,7 @@ public class FontStyle {
     }
 
     public Slant getSlant() {
-        return Slant.values()[(value >> 24) & 0xFF];
+        return Slant.values()[(_value >> 24) & 0xFF];
     }
 
     public FontStyle withSlant(Slant slant) {
@@ -69,23 +74,10 @@ public class FontStyle {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FontStyle that = (FontStyle) o;
-        return value == that.value;
-    }
-
-    @Override
-    public int hashCode() {
-        return Integer.hashCode(value);
-    }
-
-    @Override
     public String toString() {
-        return "FontStyle{" +
+        return "FontStyle(" +
                 "weight=" + getWeight() +
                 ", width=" + getWidth() +
-                ", slant='" + getSlant() + '}';
+                ", slant='" + getSlant() + ')';
     }
 }

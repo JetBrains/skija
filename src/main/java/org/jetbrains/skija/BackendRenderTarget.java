@@ -1,5 +1,9 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.skija.impl.Managed;
+import org.jetbrains.skija.impl.Stats;
+
 public class BackendRenderTarget extends Managed {
     public static class FramebufferFormat {
         public static int GR_GL_STENCIL_INDEX                = 0x1901;
@@ -117,14 +121,17 @@ public class BackendRenderTarget extends Managed {
         public static int GR_GL_BGRA8                        = 0x93A1;
     }
 
-    public static BackendRenderTarget newGL(int width, int height, int sampleCnt, int stencilBits, int fbId, int fbFormat) {
+    public static BackendRenderTarget makeGL(int width, int height, int sampleCnt, int stencilBits, int fbId, int fbFormat) {
         Stats.onNativeCall();
-        return new BackendRenderTarget(nNewGL(width, height, sampleCnt, stencilBits, fbId, fbFormat));
+        return new BackendRenderTarget(_nMakeGL(width, height, sampleCnt, stencilBits, fbId, fbFormat));
     }
 
-    BackendRenderTarget(long nativeInstance) { super(nativeInstance, nativeFinalizer); }
+    @Internal
+    public BackendRenderTarget(long ptr) {
+        super(ptr, _finalizerPtr);
+    }
 
-    private static final long nativeFinalizer = nGetNativeFinalizer();
-    private static native long nGetNativeFinalizer();
-    private static native long nNewGL(int width, int height, int sampleCnt, int stencilBits, int fbId, int fbFormat);
+    public static final long _finalizerPtr = _nGetFinalizer();
+    public static native long _nGetFinalizer();
+    public static native long _nMakeGL(int width, int height, int sampleCnt, int stencilBits, int fbId, int fbFormat);
 }

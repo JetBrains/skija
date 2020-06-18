@@ -10,7 +10,7 @@ public class ColorFiltersScene implements Scene {
 
     public ColorFiltersScene() {
         try {
-            image = Image.fromEncoded(Files.readAllBytes(Path.of("images", "circus.jpg")));
+            image = Image.makeFromEncoded(Files.readAllBytes(Path.of("images", "circus.jpg")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -34,41 +34,38 @@ public class ColorFiltersScene implements Scene {
 
         ColorFilter[][] filters = new ColorFilter[][] {
             new ColorFilter[] {
-                ColorFilter.blend(0x80CC3333, BlendMode.SRC_OVER),
-                ColorFilter.blend(0xFFCC3333, BlendMode.SCREEN),
-                ColorFilter.blend(0xFFCC3333, BlendMode.OVERLAY),
-                ColorFilter.compose(
-                    ColorFilter.blend(0x80CC3333, BlendMode.SRC_OVER),
-                    ColorFilter.blend(0x803333CC, BlendMode.SRC_OVER)
+                ColorFilter.makeBlend(0x80CC3333, BlendMode.SRC_OVER),
+                ColorFilter.makeBlend(0xFFCC3333, BlendMode.SCREEN),
+                ColorFilter.makeBlend(0xFFCC3333, BlendMode.OVERLAY),
+                ColorFilter.makeComposed(
+                    ColorFilter.makeBlend(0x80CC3333, BlendMode.SRC_OVER),
+                    ColorFilter.makeBlend(0x803333CC, BlendMode.SRC_OVER)
                 ),
-                ColorFilter.matrix(new float[] {
+                ColorFilter.makeMatrix(new float[] {
                     0.21f, 0.72f, 0.07f, 0, 0,
                     0.21f, 0.72f, 0.07f, 0, 0,
                     0.21f, 0.72f, 0.07f, 0, 0,
                     0,     0,     0,     1, 0
                 }),
-                ColorFilter.hslaMatrix(new float[] {
+                ColorFilter.makeHSLAMatrix(new float[] {
                     0, 0, 0, 0, ratio,
                     0, 1, 0, 0, 0,
                     0, 0, 1, 0, 0,
                     0, 0, 0, 1, 0
                 }),
-                ColorFilter.lerp(ratio,
-                    ColorFilter.blend(0x80CC3333, BlendMode.SRC_OVER),
-                    ColorFilter.blend(0x803333CC, BlendMode.SRC_OVER)
-                ),
-                ColorFilter.lighting(0x80CC3333, 0x803333CC),
+                ColorFilter.makeLerp(ColorFilter.makeBlend(0x80CC3333, BlendMode.SRC_OVER), ColorFilter.makeBlend(0x803333CC, BlendMode.SRC_OVER), ratio),
+                ColorFilter.makeLighting(0x80CC3333, 0x803333CC),
             },
 
             new ColorFilter[] {
-                ColorFilter.highContrast(true, ColorFilter.InvertStyle.NO, 0),
-                ColorFilter.highContrast(false, ColorFilter.InvertStyle.NO, 0.5f),
-                ColorFilter.highContrast(false, ColorFilter.InvertStyle.NO, -0.5f),
-                ColorFilter.highContrast(false, ColorFilter.InvertStyle.BRIGHTNESS, 0),
-                ColorFilter.highContrast(false, ColorFilter.InvertStyle.LIGHTNESS, 0),
-                ColorFilter.highContrast(true, ColorFilter.InvertStyle.LIGHTNESS, 1),
-                ColorFilter.table(tablePosterize),
-                ColorFilter.tableARGB(null, tableInv, null, null),
+                ColorFilter.makeHighContrast(true, ColorFilter.InvertStyle.NO, 0),
+                ColorFilter.makeHighContrast(false, ColorFilter.InvertStyle.NO, 0.5f),
+                ColorFilter.makeHighContrast(false, ColorFilter.InvertStyle.NO, -0.5f),
+                ColorFilter.makeHighContrast(false, ColorFilter.InvertStyle.BRIGHTNESS, 0),
+                ColorFilter.makeHighContrast(false, ColorFilter.InvertStyle.LIGHTNESS, 0),
+                ColorFilter.makeHighContrast(true, ColorFilter.InvertStyle.LIGHTNESS, 1),
+                ColorFilter.makeTable(tablePosterize),
+                ColorFilter.makeTableARGB(null, tableInv, null, null),
             },
 
             new ColorFilter[] {

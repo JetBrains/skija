@@ -1,12 +1,12 @@
-package org.jetbrains.skija;
+package org.jetbrains.skija.impl;
 
 public abstract class RefCnt extends Managed {
     protected RefCnt(long ptr) {
-        super(ptr, _finalizerPtr);
+        super(ptr, _finalizerPtrPtr);
     }
 
     protected RefCnt(long ptr, boolean allowClose) {
-        super(ptr, _finalizerPtr, allowClose);
+        super(ptr, _finalizerPtrPtr, allowClose);
     }
 
     public int getRefCount() {
@@ -20,7 +20,7 @@ public abstract class RefCnt extends Managed {
         return s.substring(0, s.length() - 1) + ", refCount=" + getRefCount() + ")";
     }
 
-    public static long _finalizerPtr = _nGetFinalizer();
+    public static long _finalizerPtrPtr = _nGetFinalizer();
     public static native long _nGetFinalizer();
     public static native int  _nGetRefCount(long ptr);
 }

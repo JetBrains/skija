@@ -1,5 +1,10 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.skija.impl.Native;
+import org.jetbrains.skija.impl.RefCnt;
+import org.jetbrains.skija.impl.Stats;
+
 public class PathEffect extends RefCnt {
     public enum Style {
         /** translate the shape to each position */
@@ -10,67 +15,71 @@ public class PathEffect extends RefCnt {
         MORPH
     }
 
-    public PathEffect sum(PathEffect second) {
+    public PathEffect makeSum(PathEffect second) {
         Stats.onNativeCall();
-        return new PathEffect(nSum(_ptr, Native.getPtr(second)));
+        return new PathEffect(_nMakeSum(_ptr, Native.getPtr(second)));
     }
     
-    public PathEffect compose(PathEffect inner) {
+    public PathEffect makeCompose(PathEffect inner) {
         Stats.onNativeCall();
-        return new PathEffect(nCompose(_ptr, Native.getPtr(inner)));
+        return new PathEffect(_nMakeCompose(_ptr, Native.getPtr(inner)));
     }
     
     public Rect computeFastBounds(Rect src) {
         Stats.onNativeCall();
-        return nComputeFastBounds(_ptr, src.left, src.top, src.right, src.bottom);
+        return _nComputeFastBounds(_ptr, src._left, src._top, src._right, src._bottom);
     }
 
-    public static PathEffect path1D(Path path, float advance, float phase, Style style) {
+    public static PathEffect makePath1D(Path path, float advance, float phase, Style style) {
         Stats.onNativeCall();
-        return new PathEffect(nPath1D(Native.getPtr(path), advance, phase, style.ordinal()));
+        return new PathEffect(_nMakePath1D(Native.getPtr(path), advance, phase, style.ordinal()));
     }
 
-    public static PathEffect path2D(float[] matrix, Path path) {
+    public static PathEffect makePath2D(float[] matrix, Path path) {
         Stats.onNativeCall();
-        return new PathEffect(nPath2D(matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8],
+        return new PathEffect(_nMakePath2D(matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8],
             Native.getPtr(path)));
     }
 
-    public static PathEffect line2D(float width, float[] matrix) {
+    public static PathEffect makeLine2D(float width, float[] matrix) {
         Stats.onNativeCall();
-        return new PathEffect(nLine2D(width, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8]));
+        return new PathEffect(_nMakeLine2D(width, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8]));
     }
 
-    public static PathEffect corner(float radius) {
+    public static PathEffect makeCorner(float radius) {
         Stats.onNativeCall();
-        return new PathEffect(nCorner(radius));
+        return new PathEffect(_nMakeCorner(radius));
     }
 
-    public static PathEffect dash(float[] intervals, float phase) {
+    public static PathEffect makeDash(float[] intervals, float phase) {
         Stats.onNativeCall();
-        return new PathEffect(nDash(intervals, phase));
+        return new PathEffect(_nMakeDash(intervals, phase));
     }
 
-    public static PathEffect discrete(float segLength, float dev, int seed) {
+    public static PathEffect makeDiscrete(float segLength, float dev, int seed) {
         Stats.onNativeCall();
-        return new PathEffect(nDiscrete(segLength, dev, seed));
+        return new PathEffect(_nMakeDiscrete(segLength, dev, seed));
     }
 
-    protected PathEffect(long nativeInstance) { super(nativeInstance); }
-    private static native long nSum(long firstPtr, long secondPtr);
-    private static native long nCompose(long outerPtr, long innerPtr);
-    private static native Rect nComputeFastBounds(long ptr, float l, float t, float r, float b);
-    private static native long nPath1D(long pathPtr, float advance, float phase, int style);
-    private static native long nPath2D(
+    @Internal
+    public PathEffect(long ptr) {
+        super(ptr);
+    }
+
+    public static native long _nMakeSum(long firstPtr, long secondPtr);
+    public static native long _nMakeCompose(long outerPtr, long innerPtr);
+    public static native Rect _nComputeFastBounds(long ptr, float l, float t, float r, float b);
+    public static native long _nMakePath1D(long pathPtr, float advance, float phase, int style);
+    public static native long _nMakePath2D(
         float scaleX, float skewX,  float transX,
         float skewY,  float scaleY, float transY,
         float persp0, float persp1, float persp2,
         long pathPtr);
-    private static native long nLine2D(float width,
-        float scaleX, float skewX,  float transX,
-        float skewY,  float scaleY, float transY,
-        float persp0, float persp1, float persp2);
-    private static native long nCorner(float radius);
-    private static native long nDash(float[] intervals, float phase);
-    private static native long nDiscrete(float segLength, float dev, int seed);
+    public static native long _nMakeLine2D(float width,
+                                           float scaleX, float skewX, float transX,
+                                           float skewY, float scaleY, float transY,
+                                           float persp0, float persp1, float persp2);
+    public static native long _nMakeCorner(float radius);
+    public static native long _nMakeDash(float[] intervals, float phase);
+    public static native long _nMakeDiscrete(float segLength, float dev, int seed);
 }

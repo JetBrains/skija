@@ -3,7 +3,7 @@ package org.jetbrains.skija;
 public class Color {
     // TODO premultiply
     // TODO alpha
-    public static int lerp(float weight, int c1, int c2) {
+    public static int makeLerp(int c1, int c2, float weight) {
         int r1 = (c1 & 0xFF0000) >> 16;
         int r2 = (c2 & 0xFF0000) >> 16;
         int r = (int) (r1 * weight + r2 * (1 - weight));
@@ -18,5 +18,4 @@ public class Color {
 
         return 0xFF000000 | (r << 16) | (g << 8) | b;
     }
-
 }

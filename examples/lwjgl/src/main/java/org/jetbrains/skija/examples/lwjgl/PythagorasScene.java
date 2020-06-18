@@ -1,6 +1,5 @@
 package org.jetbrains.skija.examples.lwjgl;
 
-import java.util.Iterator;
 import org.jetbrains.skija.*;
 
 public class PythagorasScene implements Scene {
@@ -36,7 +35,7 @@ public class PythagorasScene implements Scene {
 
         canvas.save();
         canvas.translate(0, (float) -height);
-        paint.setColor(Color.lerp((float) depth / maxDepth, color1, color2));
+        paint.setColor(Color.makeLerp(color1, color2, (float) depth / maxDepth));
         canvas.drawRect(Rect.makeXYWH(0, 0, (float) l01, (float) height), paint);
 
         var leftoverHeight = treeHeight - height;

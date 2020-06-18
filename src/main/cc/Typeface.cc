@@ -3,14 +3,14 @@
 #include "SkTypeface.h"
 #include "interop.hh"
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Typeface_nMakeFromFile(JNIEnv* env, jclass jclass, jstring path, jint index) {
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Typeface__1nMakeFromFile(JNIEnv* env, jclass jclass, jstring path, jint index) {
     const char* chars = env->GetStringUTFChars(path, nullptr);
     SkTypeface* ptr = SkTypeface::MakeFromFile(chars, index).release();
     env->ReleaseStringUTFChars(path, chars);
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Typeface_nMakeClone(JNIEnv* env, jclass jclass, jlong typefacePtr, jobjectArray variations) {
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Typeface__1nMakeClone(JNIEnv* env, jclass jclass, jlong typefacePtr, jobjectArray variations) {
     SkTypeface* typeface = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(typefacePtr));
     int variationCount = env->GetArrayLength(variations);
     SkFontArguments::VariationPosition::Coordinate coordinates[variationCount];

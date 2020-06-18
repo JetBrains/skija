@@ -1,5 +1,12 @@
 package org.jetbrains.skija;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.skija.impl.Managed;
+import org.jetbrains.skija.impl.Native;
+import org.jetbrains.skija.impl.Stats;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -34,7 +41,7 @@ public class Path extends Managed implements Iterable {
         /** Same as {@link #WINDING}, but draws outside of the path, rather than inside. */
         INVERSE_WINDING,
 
-        /** Same as {@link EVEN_ODD}, but draws outside of the path, rather than inside. */
+        /** Same as {@link #EVEN_ODD}, but draws outside of the path, rather than inside. */
         INVERSE_EVEN_ODD;
 
         /**
@@ -43,7 +50,9 @@ public class Path extends Managed implements Iterable {
          *
          * @return  true if FillType is {@link #INVERSE_WINDING} or {@link #INVERSE_EVEN_ODD}
          */
-        public boolean isInverse() { return this == INVERSE_WINDING || this == INVERSE_EVEN_ODD; }
+        public boolean isInverse() {
+            return this == INVERSE_WINDING || this == INVERSE_EVEN_ODD;
+        }
 
         /**
          * Returns the inverse fill type. The inverse of FillType describes the area
@@ -121,31 +130,26 @@ public class Path extends Managed implements Iterable {
      * FillType is set to {@link FillType#WINDING}.
      */
     public Path() {
-        this(nInit());
+        this(_nMake());
     }
 
     /**
      * Compares this path and o; Returns true if {@link FillType}, verb array, Point array, and weights
      * are equivalent.
      *
-     * @param o  Path to compare
+     * @param other  Path to compare
      * @return   true if this and Path are equivalent
     */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Path op = (Path) o;
-        if (_ptr == op._ptr) return true;
-        Stats.onNativeCall();
-        return nEquals(_ptr, op._ptr);
+    public boolean nativeEquals(Native other) {
+        return _nEquals(_ptr, Native.getPtr(other));
     }
 
     /**
      * <p>Returns true if Path contain equal verbs and equal weights.
      * If Path contain one or more conics, the weights must match.</p>
      *
-     * <p>{@link conicTo(float, float, float, float, float)} may add different verbs
+     * <p>{@link #conicTo(float, float, float, float, float)} may add different verbs
      * depending on conic weight, so it is not trivial to interpolate a pair of Path
      * containing conics with different conic weight values.</p>
      *
@@ -156,7 +160,7 @@ public class Path extends Managed implements Iterable {
      */
     public boolean isInterpolatable(Path compare) {
         Stats.onNativeCall();
-        return nIsInterpolatable(_ptr, Native.getPtr(compare));
+        return _nIsInterpolatable(_ptr, Native.getPtr(compare));
     }
 
     /** 
@@ -171,7 +175,7 @@ public class Path extends Managed implements Iterable {
      * range.</p>
      *
      * <p>interpolate() returns null if Point array is not
-     * the same size as ending Point array. Call {@link isInterpolatable(Path)} to check Path
+     * the same size as ending Point array. Call {@link #isInterpolatable(Path)} to check Path
      * compatibility prior to calling interpolate().</p>
      *
      * @param ending  Point array averaged with this Point array
@@ -181,24 +185,22 @@ public class Path extends Managed implements Iterable {
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_interpolate">https://fiddle.skia.org/c/@Path_interpolate</a>
      */
-    public Path interpolate(Path ending, float weight) {
+    public Path makeLerp(Path ending, float weight) {
         Stats.onNativeCall();
-        long ptr = nInterpolate(_ptr, Native.getPtr(ending), weight);
+        long ptr = _nMakeLerp(_ptr, Native.getPtr(ending), weight);
         if (ptr == 0)
             throw new IllegalArgumentException("Point array is not the same size as ending Point array");
         return new Path(ptr);
     }
 
-    protected FillType fillType = FillType.WINDING;
-
     public FillType getFillType() {
-        return fillType;
+        Stats.onNativeCall();
+        return FillType.values()[_nGetFillType(_ptr)];
     }
 
     public Path setFillType(FillType fillType) {
-        this.fillType = fillType;
         Stats.onNativeCall();
-        nSetFillType(_ptr, fillType.ordinal());
+        _nSetFillType(_ptr, fillType.ordinal());
         return this;
     }
 
@@ -209,27 +211,27 @@ public class Path extends Managed implements Iterable {
      */
     public ConvexityType getConvexityType() {
         Stats.onNativeCall();
-        return ConvexityType.values()[nGetConvexityType(_ptr)];
+        return ConvexityType.values()[_nGetConvexityType(_ptr)];
     }
 
     /**
      * If the path's convexity is already known, return it, else return {@link ConvexityType#UNKNOWN}.
      * If you always want to know the convexity, even if that means having to compute it,
-     * call {@link getConvexityType()}.
+     * call {@link #getConvexityType()}.
      *
      * @return  known convexity, or {@link ConvexityType#UNKNOWN}
      */
     public ConvexityType getConvexityTypeOrUnknown() {
         Stats.onNativeCall();
-        return ConvexityType.values()[nGetConvexityTypeOrUnknown(_ptr)];
+        return ConvexityType.values()[_nGetConvexityTypeOrUnknown(_ptr)];
     }
 
     /**
      * <p>Stores a convexity type for this path.</p>
      *
      * <p>This is what will be returned if
-     * {@link getConvexityTypeOrUnknown()} is called. If you pass {@link ConvexityType#UNKNOWN},
-     * then if {@link getConvexityType()} is called, the real convexity will be computed.</p>
+     * {@link #getConvexityTypeOrUnknown()} is called. If you pass {@link ConvexityType#UNKNOWN},
+     * then if {@link #getConvexityType()} is called, the real convexity will be computed.</p>
      *
      * @param   convexity value to set
      * @return  this
@@ -238,7 +240,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path setConvexityType(ConvexityType convexity) {
         Stats.onNativeCall();
-        nSetConvexityType(_ptr, convexity.ordinal());
+        _nSetConvexityType(_ptr, convexity.ordinal());
         return this;
     }
 
@@ -260,19 +262,19 @@ public class Path extends Managed implements Iterable {
      */
     public Rect isOval() {
         Stats.onNativeCall();
-        return nIsOval(_ptr);
+        return _nIsOval(_ptr);
     }
 
     /**
-     * Returns {@link RoundedRect} if this path is recognized as an oval, circle or RoundedRect.
+     * Returns {@link RRect} if this path is recognized as an oval, circle or RRect.
      * 
-     * @return  bounds is recognized as an oval, circle or RoundedRect, null otherwise
+     * @return  bounds is recognized as an oval, circle or RRect, null otherwise
      * 
      * @see <a href="https://fiddle.skia.org/c/@Path_isRRect">https://fiddle.skia.org/c/@Path_isRRect</a>
      */
-    public RoundedRect isRoundedRect() {
+    public RRect isRRect() {
         Stats.onNativeCall();
-        return nIsRoundedRect(_ptr);
+        return _nIsRRect(_ptr);
     }
 
     /**
@@ -287,7 +289,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path reset() {
         Stats.onNativeCall();
-        nReset(_ptr);
+        _nReset(_ptr);
         return this;
     }
 
@@ -296,7 +298,7 @@ public class Path extends Managed implements Iterable {
      * Removes verb array, Point array, and weights, and sets FillType to kWinding.
      * Internal storage associated with Path is retained.</p>
      *
-     * <p>Use {@link rewind()} instead of {@link reset()} if Path storage will be reused and performance
+     * <p>Use {@link #rewind()} instead of {@link #reset()} if Path storage will be reused and performance
      * is critical.</p>
      *
      * @return  this
@@ -305,7 +307,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path rewind() {
         Stats.onNativeCall();
-        nRewind(_ptr);
+        _nRewind(_ptr);
         return this;
     }
 
@@ -313,19 +315,19 @@ public class Path extends Managed implements Iterable {
      * <p>Returns if Path is empty.</p>
      * 
      * <p>Empty Path may have FillType but has no {@link Point}, {@link Verb}, or conic weight.
-     * {@link Path()} constructs empty Path; {@link reset()} and {@link rewind()} make Path empty.</p>
+     * {@link Path()} constructs empty Path; {@link #reset()} and {@link #rewind()} make Path empty.</p>
      *
      * @return  true if the path contains no Verb array
      */
     public boolean isEmpty() {
         Stats.onNativeCall();
-        return nIsEmpty(_ptr);
+        return _nIsEmpty(_ptr);
     }
 
     /**
      * <p>Returns if contour is closed.</p>
      * 
-     * <p>Contour is closed if Path Verb array was last modified by {@link closePath()}. When stroked,
+     * <p>Contour is closed if Path Verb array was last modified by {@link #closePath()}. When stroked,
      * closed contour draws {@link Paint.Join} instead of {@link Paint.Cap} at first and last Point.</p>
      *
      * @return  true if the last contour ends with a {@link Verb#CLOSE}
@@ -334,7 +336,7 @@ public class Path extends Managed implements Iterable {
      */
     public boolean isLastContourClosed() {
         Stats.onNativeCall();
-        return nIsLastContourClosed(_ptr);
+        return _nIsLastContourClosed(_ptr);
     }
 
     /**
@@ -346,10 +348,8 @@ public class Path extends Managed implements Iterable {
      */
     public boolean isFinite() {
         Stats.onNativeCall();
-        return nIsFinite(_ptr);
+        return _nIsFinite(_ptr);
     }
-
-    protected boolean isVolatile = false;
 
     /**
      * Returns true if the path is volatile; it will not be altered or discarded
@@ -360,7 +360,8 @@ public class Path extends Managed implements Iterable {
      * @return  true if caller will alter Path after drawing
      */
     public boolean isVolatile() {
-        return isVolatile;
+        Stats.onNativeCall();
+        return _nIsVolatile(_ptr);
     }
 
     /**
@@ -381,9 +382,8 @@ public class Path extends Managed implements Iterable {
      * @return            this
      */
     public Path setVolatile(boolean isVolatile) {
-        this.isVolatile = isVolatile;
         Stats.onNativeCall();
-        nSetIsVolatile(_ptr, isVolatile);
+        _nSetVolatile(_ptr, isVolatile);
         return this;
     }
 
@@ -405,7 +405,7 @@ public class Path extends Managed implements Iterable {
      */
     public static boolean isLineDegenerate(Point p1, Point p2, boolean exact) {
         Stats.onNativeCall();
-        return nIsLineDegenerate(p1.x, p1.y, p2.x, p2.y, exact);
+        return _nIsLineDegenerate(p1._x, p1._y, p2._x, p2._y, exact);
     }
 
     /**
@@ -423,7 +423,7 @@ public class Path extends Managed implements Iterable {
      */
     public static boolean isQuadDegenerate(Point p1, Point p2, Point p3, boolean exact) {
         Stats.onNativeCall();
-        return nIsQuadDegenerate(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, exact);
+        return _nIsQuadDegenerate(p1._x, p1._y, p2._x, p2._y, p3._x, p3._y, exact);
     }
 
     /**
@@ -442,7 +442,7 @@ public class Path extends Managed implements Iterable {
      */
     public static boolean isCubicDegenerate(Point p1, Point p2, Point p3, Point p4, boolean exact) {
         Stats.onNativeCall();
-        return nIsCubicDegenerate(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, exact);
+        return _nIsCubicDegenerate(p1._x, p1._y, p2._x, p2._y, p3._x, p3._y, p4._x, p4._y, exact);
     }
 
     /**
@@ -454,9 +454,9 @@ public class Path extends Managed implements Iterable {
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_isLine">https://fiddle.skia.org/c/@Path_isLine</a>
      */
-    public Point[] isLine() {
+    public Point[] getAsLine() {
         Stats.onNativeCall();
-        return nIsLine(_ptr);
+        return _nMaybeGetAsLine(_ptr);
     }
 
     /**
@@ -467,9 +467,9 @@ public class Path extends Managed implements Iterable {
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_countPoints">https://fiddle.skia.org/c/@Path_countPoints</a>
      */
-    public int countPoints() {
+    public int getPointsCount() {
         Stats.onNativeCall();
-        return nCountPoints(_ptr);
+        return _nGetPointsCount(_ptr);
     }
 
     /**
@@ -485,7 +485,20 @@ public class Path extends Managed implements Iterable {
      */
     public Point getPoint(int index) {
         Stats.onNativeCall();
-        return nGetPoint(_ptr, index);
+        return _nGetPoint(_ptr, index);
+    }
+
+    /**
+     * <p>Returns all points in Path.</p>
+     *
+     * @return        Path Point array length
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Path_getPoints">https://fiddle.skia.org/c/@Path_getPoints</a>
+     */
+    public Point[] getPoints() {
+        Point[] res = new Point[getPointsCount()];
+        getPoints(res, res.length);
+        return res;
     }
 
     /**
@@ -503,7 +516,7 @@ public class Path extends Managed implements Iterable {
     public int getPoints(Point[] points, int max) {
         assert points == null ? max == 0 : true;
         Stats.onNativeCall();
-        return nGetPoints(_ptr, points, max);
+        return _nGetPoints(_ptr, points, max);
     }
 
     /**
@@ -514,9 +527,15 @@ public class Path extends Managed implements Iterable {
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_countVerbs">https://fiddle.skia.org/c/@Path_countVerbs</a>
      */
-    public int countVerbs() {
+    public int getVerbsCount() {
         Stats.onNativeCall();
-        return nCountVerbs(_ptr);
+        return _nCountVerbs(_ptr);
+    }
+
+    public Verb[] getVerbs() {
+        Verb[] res = new Verb[getVerbsCount()];
+        getVerbs(res, res.length);
+        return res;
     }
 
     /**
@@ -532,7 +551,7 @@ public class Path extends Managed implements Iterable {
         assert verbs == null ? max == 0 : true;
         Stats.onNativeCall();
         byte[] out = verbs == null ? null : new byte[max];
-        int count = nGetVerbs(_ptr, out, max);
+        int count = _nGetVerbs(_ptr, out, max);
         if (verbs != null)
             for (int i = 0; i < Math.min(count, max); ++i)
                 verbs[i] = Verb.values()[out[i]];
@@ -544,9 +563,9 @@ public class Path extends Managed implements Iterable {
      *
      * @return  approximate size
      */
-    public long approximateBytesUsed() {
+    public long getApproximateBytesUsed() {
         Stats.onNativeCall();
-        return nApproximateBytesUsed(_ptr);
+        return _nApproximateBytesUsed(_ptr);
     }
 
     /**
@@ -561,7 +580,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path swap(Path other) {
         Stats.onNativeCall();
-        nSwap(_ptr, Native.getPtr(other));
+        _nSwap(_ptr, Native.getPtr(other));
         return this;
     }
 
@@ -578,14 +597,14 @@ public class Path extends Managed implements Iterable {
      */
     public Rect getBounds() {
         Stats.onNativeCall();
-        return nGetBounds(_ptr);
+        return _nGetBounds(_ptr);
     }
 
     /**
-     * <p>Updates internal bounds so that subsequent calls to {@link getBounds()} are instantaneous.
-     * Unaltered copies of Path may also access cached bounds through {@link getBounds()}.</p>
+     * <p>Updates internal bounds so that subsequent calls to {@link #getBounds()} are instantaneous.
+     * Unaltered copies of Path may also access cached bounds through {@link #getBounds()}.</p>
      *
-     * <p>For now, identical to calling {@link getBounds()} and ignoring the returned value.</p>
+     * <p>For now, identical to calling {@link #getBounds()} and ignoring the returned value.</p>
      *
      * <p>Call to prepare Path subsequently drawn from multiple threads,
      * to avoid a race condition where each draw separately computes the bounds.</p>
@@ -594,7 +613,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path updateBoundsCache() {
         Stats.onNativeCall();
-        nUpdateBoundsCache(_ptr);
+        _nUpdateBoundsCache(_ptr);
         return this;
     }
 
@@ -607,10 +626,10 @@ public class Path extends Managed implements Iterable {
      * <p>Includes Point associated with {@link Verb#MOVE} that define empty
      * contours.</p>
      *
-     * Behaves identically to {@link getBounds()} when Path contains
+     * Behaves identically to {@link #getBounds()} when Path contains
      * only lines. If Path contains curves, computed bounds includes
-     * the maximum extent of the quad, conic, or cubic; is slower than {@link getBounds()};
-     * and unlike {@link getBounds()}, does not cache the result.
+     * the maximum extent of the quad, conic, or cubic; is slower than {@link #getBounds()};
+     * and unlike {@link #getBounds()}, does not cache the result.
      *
      * @return  tight bounds of curves in Path
      *
@@ -618,7 +637,7 @@ public class Path extends Managed implements Iterable {
      */
     public Rect computeTightBounds() {
         Stats.onNativeCall();
-        return nComputeTightBounds(_ptr);
+        return _nComputeTightBounds(_ptr);
     }
 
     /**
@@ -637,7 +656,7 @@ public class Path extends Managed implements Iterable {
      */
     public boolean conservativelyContainsRect(Rect rect) {
         Stats.onNativeCall();
-        return nConservativelyContainsRect(_ptr, rect.left, rect.top, rect.right, rect.bottom);
+        return _nConservativelyContainsRect(_ptr, rect._left, rect._top, rect._right, rect._bottom);
     }
 
     /**
@@ -652,7 +671,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path incReserve(int extraPtCount) {
         Stats.onNativeCall();
-        nIncReserve(_ptr, extraPtCount);
+        _nIncReserve(_ptr, extraPtCount);
         return this;
     }
 
@@ -664,7 +683,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path shrinkToFit() {
         Stats.onNativeCall();
-        nShrinkToFit(_ptr);
+        _nShrinkToFit(_ptr);
         return this;
     }
 
@@ -679,7 +698,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path moveTo(float x, float y) {
         Stats.onNativeCall();
-        nMoveTo(_ptr, x, y);
+        _nMoveTo(_ptr, x, y);
         return this;
     }
 
@@ -690,7 +709,7 @@ public class Path extends Managed implements Iterable {
      * @return   this
      */
     public Path moveTo(Point p) {
-        return moveTo(p.x, p.y);
+        return moveTo(p._x, p._y);
     }
 
     /**
@@ -708,7 +727,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path rMoveTo(float dx, float dy) {
         Stats.onNativeCall();
-        nRMoveTo(_ptr, dx, dy);
+        _nRMoveTo(_ptr, dx, dy);
         return this;
     }
 
@@ -727,7 +746,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path lineTo(float x, float y) {
         Stats.onNativeCall();
-        nLineTo(_ptr, x, y);
+        _nLineTo(_ptr, x, y);
         return this;
     }
 
@@ -742,7 +761,7 @@ public class Path extends Managed implements Iterable {
      * @return   reference to Path
      */
     public Path lineTo(Point p) {
-        return lineTo(p.x, p.y);
+        return lineTo(p._x, p._y);
     }
 
     /**
@@ -766,7 +785,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path rLineTo(float dx, float dy) {
         Stats.onNativeCall();
-        nRLineTo(_ptr, dx, dy);
+        _nRLineTo(_ptr, dx, dy);
         return this;
     }
 
@@ -789,7 +808,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path quadTo(float x1, float y1, float x2, float y2) {
         Stats.onNativeCall();
-        nQuadTo(_ptr, x1, y1, x2, y2);
+        _nQuadTo(_ptr, x1, y1, x2, y2);
         return this;
     }
 
@@ -808,7 +827,7 @@ public class Path extends Managed implements Iterable {
      * @return    reference to Path
      */
     public Path quadTo(Point p1, Point p2) {
-        return quadTo(p1.x, p1.y, p2.x, p2.y);
+        return quadTo(p1._x, p1._y, p2._x, p2._y);
     }
 
     /**
@@ -839,7 +858,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path rQuadTo(float dx1, float dy1, float dx2, float dy2) {
         Stats.onNativeCall();
-        nRQuadTo(_ptr, dx1, dy1, dx2, dy2);
+        _nRQuadTo(_ptr, dx1, dy1, dx2, dy2);
         return this;
     }
 
@@ -869,7 +888,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path conicTo(float x1, float y1, float x2, float y2, float w) {
         Stats.onNativeCall();
-        nConicTo(_ptr, x1, y1, x2, y2, w);
+        _nConicTo(_ptr, x1, y1, x2, y2, w);
         return this;
     }
 
@@ -896,7 +915,7 @@ public class Path extends Managed implements Iterable {
      * @return    reference to Path
      */
     public Path conicTo(Point p1, Point p2, float w) {
-        return conicTo(p1.x, p1.y, p2.x, p2.y, w);
+        return conicTo(p1._x, p1._y, p2._x, p2._y, w);
     }
 
     /**
@@ -927,7 +946,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path rConicTo(float dx1, float dy1, float dx2, float dy2, float w) {
         Stats.onNativeCall();
-        nRConicTo(_ptr, dx1, dy1, dx2, dy2, w);
+        _nRConicTo(_ptr, dx1, dy1, dx2, dy2, w);
         return this;
     }
 
@@ -950,7 +969,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path cubicTo(float x1, float y1, float x2, float y2, float x3, float y3) {
         Stats.onNativeCall();
-        nCubicTo(_ptr, x1, y1, x2, y2, x3, y3);
+        _nCubicTo(_ptr, x1, y1, x2, y2, x3, y3);
         return this;
     }
 
@@ -969,7 +988,7 @@ public class Path extends Managed implements Iterable {
      * @return    reference to Path
      */
     public Path cubicTo(Point p1, Point p2, Point p3) {
-        return cubicTo(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+        return cubicTo(p1._x, p1._y, p2._x, p2._y, p3._x, p3._y);
     }
 
     /**
@@ -998,7 +1017,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path rCubicTo(float dx1, float dy1, float dx2, float dy2, float dx3, float dy3) {
         Stats.onNativeCall();
-        nRCubicTo(_ptr, dx1, dy1, dx2, dy2, dx3, dy3);
+        _nRCubicTo(_ptr, dx1, dy1, dx2, dy2, dx3, dy3);
         return this;
     }
 
@@ -1022,7 +1041,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path arcTo(Rect oval, float startAngle, float sweepAngle, boolean forceMoveTo) {
         Stats.onNativeCall();
-        nArcTo(_ptr, oval.left, oval.top, oval.right, oval.bottom, startAngle, sweepAngle, forceMoveTo);
+        _nArcTo(_ptr, oval._left, oval._top, oval._right, oval._bottom, startAngle, sweepAngle, forceMoveTo);
         return this;
     }
 
@@ -1055,7 +1074,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path tangentArcTo(float x1, float y1, float x2, float y2, float radius) {
         Stats.onNativeCall();
-        nTangentArcTo(_ptr, x1, y1, x2, y2, radius);
+        _nTangentArcTo(_ptr, x1, y1, x2, y2, radius);
         return this;
     }
         
@@ -1081,7 +1100,7 @@ public class Path extends Managed implements Iterable {
      * @return        reference to Path
      */
     public Path tangentArcTo(Point p1, Point p2, float radius) {
-        return tangentArcTo(p1.x, p1.y, p2.x, p2.y, radius);
+        return tangentArcTo(p1._x, p1._y, p2._x, p2._y, radius);
     }
 
     /** <p>Appends arc to Path. Arc is implemented by one or more conics weighted to
@@ -1111,7 +1130,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path ellipticalArcTo(float rx, float ry, float xAxisRotate, ArcSize size, Direction direction, float x, float y) {
         Stats.onNativeCall();
-        nEllipticalArcTo(_ptr, rx, ry, xAxisRotate, size.ordinal(), direction.ordinal(), x, y);
+        _nEllipticalArcTo(_ptr, rx, ry, xAxisRotate, size.ordinal(), direction.ordinal(), x, y);
         return this;
     }
 
@@ -1140,7 +1159,7 @@ public class Path extends Managed implements Iterable {
      * @return             reference to Path
      */
     public Path ellipticalArcTo(Point r, float xAxisRotate, ArcSize size, Direction direction, Point xy) {
-        return ellipticalArcTo(r.x, r.y, xAxisRotate, size, direction, xy.x, xy.y);
+        return ellipticalArcTo(r._x, r._y, xAxisRotate, size, direction, xy._x, xy._y);
     }
 
     /**
@@ -1173,7 +1192,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path rEllipticalArcTo(float rx, float ry, float xAxisRotate, ArcSize size, Direction direction, float dx, float dy) {
         Stats.onNativeCall();
-        nREllipticalArcTo(_ptr, rx, ry, xAxisRotate, size.ordinal(), direction.ordinal(), dx, dy);
+        _nREllipticalArcTo(_ptr, rx, ry, xAxisRotate, size.ordinal(), direction.ordinal(), dx, dy);
         return this;
     }
 
@@ -1192,7 +1211,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path closePath() {
         Stats.onNativeCall();
-        nClosePath(_ptr);
+        _nClosePath(_ptr);
         return this;
     }
 
@@ -1227,7 +1246,7 @@ public class Path extends Managed implements Iterable {
      */
     public static Point[] convertConicToQuads(Point p0, Point p1, Point p2, float w, int pow2) {
         Stats.onNativeCall();
-        return nConvertConicToQuads(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, w, pow2);
+        return _nConvertConicToQuads(p0._x, p0._y, p1._x, p1._y, p2._x, p2._y, w, pow2);
     }
 
     /**
@@ -1242,7 +1261,7 @@ public class Path extends Managed implements Iterable {
      */
     public Rect isRect() {
         Stats.onNativeCall();
-        return nIsRect(_ptr);
+        return _nIsRect(_ptr);
     }
 
     /**
@@ -1290,7 +1309,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path addRect(Rect rect, Direction dir, int start) {
         Stats.onNativeCall();
-        nAddRect(_ptr, rect.left, rect.top, rect.right, rect.bottom, dir.ordinal(), start);
+        _nAddRect(_ptr, rect._left, rect._top, rect._right, rect._bottom, dir.ordinal(), start);
         return this;
     }
 
@@ -1343,7 +1362,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path addOval(Rect oval, Direction dir, int start) {
         Stats.onNativeCall();
-        nAddOval(_ptr, oval.left, oval.top, oval.right, oval.bottom, dir.ordinal(), start);
+        _nAddOval(_ptr, oval._left, oval._top, oval._right, oval._bottom, dir.ordinal(), start);
         return this;
     }
 
@@ -1377,7 +1396,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path addCircle(float x, float y, float radius, Direction dir) {
         Stats.onNativeCall();
-        nAddCircle(_ptr, x, y, radius, dir.ordinal());
+        _nAddCircle(_ptr, x, y, radius, dir.ordinal());
         return this;
     }
 
@@ -1400,7 +1419,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path addArc(Rect oval, float startAngle, float sweepAngle) {
         Stats.onNativeCall();
-        nAddArc(_ptr, oval.left, oval.top, oval.right, oval.bottom, startAngle, sweepAngle);
+        _nAddArc(_ptr, oval._left, oval._top, oval._right, oval._bottom, startAngle, sweepAngle);
         return this;
     }
 
@@ -1408,15 +1427,15 @@ public class Path extends Managed implements Iterable {
      * <p>Adds rrect to Path, creating a new closed contour. RRect starts at top-left of the lower-left corner and
      * winds clockwise.</p>
      *
-     * <p>After appending, Path may be empty, or may contain: Rect, Oval, or RoundedRect.</p>
+     * <p>After appending, Path may be empty, or may contain: Rect, Oval, or RRect.</p>
      *
      * @param rrect  bounds and radii of rounded rectangle
      * @return       reference to Path
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_addRRect">https://fiddle.skia.org/c/@Path_addRRect</a>
      */
-    public Path addRoundedRect(RoundedRect rrect) {
-        return addRoundedRect(rrect, Direction.CLOCKWISE, 6);
+    public Path addRRect(RRect rrect) {
+        return addRRect(rrect, Direction.CLOCKWISE, 6);
     }
 
     /**
@@ -1425,16 +1444,16 @@ public class Path extends Managed implements Iterable {
      * winds clockwise. If dir is {@link Direction#COUNTER_CLOCKWISE}, rrect starts at the bottom-left
      * of the upper-left corner and winds counterclockwise.</p>
      *
-     * <p>After appending, Path may be empty, or may contain: Rect, Oval, or RoundedRect.</p>
+     * <p>After appending, Path may be empty, or may contain: Rect, Oval, or RRect.</p>
      *
      * @param rrect  bounds and radii of rounded rectangle
-     * @param dir    Direction to wind RoundedRect
+     * @param dir    Direction to wind RRect
      * @return       reference to Path
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_addRRect">https://fiddle.skia.org/c/@Path_addRRect</a>
      */
-    public Path addRoundedRect(RoundedRect rrect, Direction dir) {
-        return addRoundedRect(rrect, dir, dir == Direction.CLOCKWISE ? 6 : 7);
+    public Path addRRect(RRect rrect, Direction dir) {
+        return addRRect(rrect, dir, dir == Direction.CLOCKWISE ? 6 : 7);
     }
 
     /**
@@ -1443,16 +1462,16 @@ public class Path extends Managed implements Iterable {
      * start determines the first point of rrect to add.</p>
      *
      * @param rrect  bounds and radii of rounded rectangle
-     * @param dir    Direction to wind RoundedRect
-     * @param start  index of initial point of RoundedRect. 0 for top-right end of the arc at top left,
+     * @param dir    Direction to wind RRect
+     * @param start  index of initial point of RRect. 0 for top-right end of the arc at top left,
      *               1 for top-left end of the arc at top right, 2 for bottom-right end of top right arc, etc.
      * @return       reference to Path
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_addRRect_2">https://fiddle.skia.org/c/@Path_addRRect_2</a>
      */
-    public Path addRoundedRect(RoundedRect rrect, Direction dir, int start) {
+    public Path addRRect(RRect rrect, Direction dir, int start) {
         Stats.onNativeCall();
-        nAddRoundedRect(_ptr, rrect.left, rrect.top, rrect.right, rrect.bottom, rrect.radii, dir.ordinal(), start);
+        _nAddRRect(_ptr, rrect._left, rrect._top, rrect._right, rrect._bottom, rrect._radii, dir.ordinal(), start);
         return this;
     }
 
@@ -1473,8 +1492,8 @@ public class Path extends Managed implements Iterable {
     public Path addPoly(Point[] pts, boolean close) {
         float[] flat = new float[pts.length * 2];
         for (int i = 0; i < pts.length; ++i) {
-            flat[i * 2] = pts[i].x;
-            flat[i * 2 + 1] = pts[i].y;
+            flat[i * 2] = pts[i]._x;
+            flat[i * 2 + 1] = pts[i]._y;
         }
         return addPoly(flat, close);
     }
@@ -1496,7 +1515,7 @@ public class Path extends Managed implements Iterable {
     public Path addPoly(float[] pts, boolean close) {
         assert pts.length % 2 == 0 : "Expected even amount of pts, got " + pts.length;
         Stats.onNativeCall();
-        nAddPoly(_ptr, pts, close);
+        _nAddPoly(_ptr, pts, close);
         return this;
     }
 
@@ -1526,7 +1545,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path addPath(Path src, boolean extend) {
         Stats.onNativeCall();
-        nAddPath(_ptr, Native.getPtr(src), extend);
+        _nAddPath(_ptr, Native.getPtr(src), extend);
         return this;
     }
 
@@ -1560,7 +1579,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path addPath(Path src, float dx, float dy, boolean extend) {
         Stats.onNativeCall();
-        nAddPathOffset(_ptr, Native.getPtr(src), dx, dy, extend);
+        _nAddPathOffset(_ptr, Native.getPtr(src), dx, dy, extend);
         return this;
     }
 
@@ -1594,7 +1613,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path addPath(Path src, float[] matrix, boolean extend) {
         Stats.onNativeCall();
-        nAddPathTransform(_ptr, Native.getPtr(src), matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8], extend);
+        _nAddPathTransform(_ptr, Native.getPtr(src), matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8], extend);
         return this;
     }
 
@@ -1609,7 +1628,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path reverseAddPath(Path src) {
         Stats.onNativeCall();
-        nReverseAddPath(_ptr, Native.getPtr(src));
+        _nReverseAddPath(_ptr, Native.getPtr(src));
         return this;
     }
 
@@ -1637,7 +1656,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path offset(float dx, float dy, Path dst) {
         Stats.onNativeCall();
-        nOffset(_ptr, dx, dy, Native.getPtr(dst));
+        _nOffset(_ptr, dx, dy, Native.getPtr(dst));
         return this;
     }
 
@@ -1698,7 +1717,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path transform(float[] matrix, Path dst, boolean applyPerspectiveClip) {
         Stats.onNativeCall();
-        nTransform(_ptr, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8], Native.getPtr(dst), applyPerspectiveClip);
+        _nTransform(_ptr, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5], matrix[6], matrix[7], matrix[8], Native.getPtr(dst), applyPerspectiveClip);
         return this;
     }
 
@@ -1712,7 +1731,7 @@ public class Path extends Managed implements Iterable {
      */
     public Point getLastPt() {
         Stats.onNativeCall();
-        return nGetLastPt(_ptr);
+        return _nGetLastPt(_ptr);
     }
 
     /**
@@ -1727,7 +1746,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path setLastPt(float x, float y) {
         Stats.onNativeCall();
-        nSetLastPt(_ptr, x, y);
+        _nSetLastPt(_ptr, x, y);
         return this;
     }
 
@@ -1739,7 +1758,7 @@ public class Path extends Managed implements Iterable {
      * @return   this
      */
     public Path setLastPt(Point p) {
-        return setLastPt(p.x, p.y);
+        return setLastPt(p._x, p._y);
     }
 
     public static final int SEGMENT_MASK_LINE  = 1 << 0;
@@ -1757,42 +1776,65 @@ public class Path extends Managed implements Iterable {
      *
      * @return  SegmentMask bits or zero
      *
-     * @see {@link SEGMENT_MASK_LINE}
-     * @see {@link SEGMENT_MASK_QUAD}
-     * @see {@link SEGMENT_MASK_CONIC}
-     * @see {@link SEGMENT_MASK_CUBIC}
+     * @see {@link #SEGMENT_MASK_LINE}
+     * @see {@link #SEGMENT_MASK_QUAD}
+     * @see {@link #SEGMENT_MASK_CONIC}
+     * @see {@link #SEGMENT_MASK_CUBIC}
      */
     public int getSegmentMasks() {
         Stats.onNativeCall();
-        return nGetSegmentMasks(_ptr);
+        return _nGetSegmentMasks(_ptr);
     }
 
+    @AllArgsConstructor
+    @Getter
     public static class Segment {
-        public Verb    verb;
-        public Point   p0;
-        public Point   p1;
-        public Point   p2;
-        public Point   p3;
-        public float   conicWeight;
-        public boolean isCloseLine;
-        public boolean isClosedContour;
+        public final Verb    _verb;
+        public final Point   _p0;
+        public final Point   _p1;
+        public final Point   _p2;
+        public final Point   _p3;
+        public final float   _conicWeight;
+        public final boolean _closeLine;
+        public final boolean _closedContour;
 
-        public Segment(int verbOrdinal) {
-            verb = Verb.values()[verbOrdinal];
+        public Segment() {
+            this(Verb.DONE, null, null, null, null, 0f, false, false);
+        }
+
+        public Segment(int verbOrdinal, float x0, float y0, boolean isClosedContour) {
+            this(Verb.values()[verbOrdinal], new Point(x0, y0), null, null, null, 0f, false, isClosedContour);
+            assert verbOrdinal == Verb.MOVE.ordinal() || verbOrdinal == Verb.CLOSE.ordinal() : "Expected MOVE or CLOSE, got " + Verb.values()[verbOrdinal];
+        }
+
+        public Segment(float x0, float y0, float x1, float y1, boolean isCloseLine, boolean isClosedContour) {
+            this(Verb.LINE, new Point(x0, y0), new Point(x1, y1), null, null, 0f, isCloseLine, isClosedContour);
+        }
+
+        public Segment(float x0, float y0, float x1, float y1, float x2, float y2, boolean isClosedContour) {
+            this(Verb.QUAD, new Point(x0, y0), new Point(x1, y1), new Point(x2, y2), null, 0f, false, isClosedContour);
+        }
+
+        public Segment(float x0, float y0, float x1, float y1, float x2, float y2, float conicWeight, boolean isClosedContour) {
+            this(Verb.CONIC, new Point(x0, y0), new Point(x1, y1), new Point(x2, y2), null, conicWeight, false, isClosedContour);
+        }
+
+        public Segment(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, boolean isClosedContour) {
+            this(Verb.CUBIC, new Point(x0, y0), new Point(x1, y1), new Point(x2, y2), new Point(x3, y3), 0f, false, isClosedContour);
         }
 
         @Override
         public String toString() {
-            return "Segment{" +
-                    "verb=" + verb +
-                    (verb != Verb.DONE ? ", p0=" + p0 : "") +
-                    (verb == Verb.LINE || verb == Verb.QUAD || verb == Verb.CONIC || verb == Verb.CUBIC ? ", p1=" + p1 : "") +
-                    (verb == Verb.QUAD || verb == Verb.CONIC || verb == Verb.CUBIC ? ", p2=" + p2 : "") +
-                    (verb == Verb.CUBIC ? ", p3=" + p3 : "") +
-                    (verb == Verb.CONIC ? ", conicWeight=" + conicWeight : "") +
-                    (verb == Verb.LINE  ? ", isCloseLine=" + isCloseLine : "") +
-                    (verb != Verb.DONE ? ", isClosedContour=" + isClosedContour : "") +
-                    '}';
+            return "Segment(" +
+                    "verb=" + _verb +
+                    (_verb != Verb.DONE ? ", p0=" + _p0 : "") +
+                    (_verb == Verb.LINE || _verb == Verb.QUAD || _verb == Verb.CONIC || _verb == Verb.CUBIC ? ", p1=" + _p1 : "") +
+                    (_verb == Verb.QUAD || _verb == Verb.CONIC || _verb == Verb.CUBIC ? ", p2=" + _p2 : "") +
+                    (_verb == Verb.CUBIC ? ", p3=" + _p3 : "") +
+                    (_verb == Verb.CONIC ? ", conicWeight=" + _conicWeight : "") +
+                    (_verb == Verb.LINE  ? ", closeLine=" + _closeLine : "") +
+                    (_verb != Verb.DONE ? ", closedContour=" + _closedContour : "") +
+                    ")";
         }
 
         @Override
@@ -1800,31 +1842,31 @@ public class Path extends Managed implements Iterable {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Segment segment = (Segment) o;
-            return verb == segment.verb &&
-                   (verb != Verb.DONE ? Objects.equals(p0, segment.p0) : true) &&
-                   (verb == Verb.LINE || verb == Verb.QUAD || verb == Verb.CONIC || verb == Verb.CUBIC ? Objects.equals(p1, segment.p1) : true) &&
-                   (verb == Verb.QUAD || verb == Verb.CONIC || verb == Verb.CUBIC ? Objects.equals(p2, segment.p2) : true) &&
-                   (verb == Verb.CUBIC ? Objects.equals(p3, segment.p3) : true) &&
-                   (verb == Verb.CONIC ? Float.compare(segment.conicWeight, conicWeight) == 0 : true) &&
-                   (verb == Verb.LINE  ? isCloseLine == segment.isCloseLine : true) &&
-                   (verb != Verb.DONE ? isClosedContour == segment.isClosedContour : true);
+            return _verb == segment._verb &&
+                   (_verb != Verb.DONE ? Objects.equals(_p0, segment._p0) : true) &&
+                   (_verb == Verb.LINE || _verb == Verb.QUAD || _verb == Verb.CONIC || _verb == Verb.CUBIC ? Objects.equals(_p1, segment._p1) : true) &&
+                   (_verb == Verb.QUAD || _verb == Verb.CONIC || _verb == Verb.CUBIC ? Objects.equals(_p2, segment._p2) : true) &&
+                   (_verb == Verb.CUBIC ? Objects.equals(_p3, segment._p3) : true) &&
+                   (_verb == Verb.CONIC ? Float.compare(segment._conicWeight, _conicWeight) == 0 : true) &&
+                   (_verb == Verb.LINE  ? _closeLine == segment._closeLine : true) &&
+                   (_verb != Verb.DONE ? _closedContour == segment._closedContour : true);
         }
 
         @Override
         public int hashCode() {
-            switch (verb) {
+            switch (_verb) {
                 case DONE:
-                    return Objects.hash(verb);
+                    return Objects.hash(_verb);
                 case MOVE:
-                    return Objects.hash(verb, p0, isClosedContour);
+                    return Objects.hash(_verb, _p0, _closedContour);
                 case LINE:
-                    return Objects.hash(verb, p0, p1, isCloseLine, isClosedContour);
+                    return Objects.hash(_verb, _p0, _p1, _closeLine, _closedContour);
                 case QUAD:
-                    return Objects.hash(verb, p0, p1, p2, isClosedContour);
+                    return Objects.hash(_verb, _p0, _p1, _p2, _closedContour);
                 case CONIC:
-                    return Objects.hash(verb, p0, p1, p2, conicWeight, isClosedContour);
+                    return Objects.hash(_verb, _p0, _p1, _p2, _conicWeight, _closedContour);
                 case CUBIC:    
-                    return Objects.hash(verb, p0, p1, p2, p3, isClosedContour);
+                    return Objects.hash(_verb, _p0, _p1, _p2, _p3, _closedContour);
                 default:
                     throw new RuntimeException("Unreachable");
             }
@@ -1832,40 +1874,41 @@ public class Path extends Managed implements Iterable {
     }
 
     public static class Iter extends Managed implements Iterator<Segment> {
-        protected Path path;
-        protected Segment nextSegment;
+        public final Path _path;
+        public Segment _nextSegment;
 
         @Override
         public Segment next() {
-            if (nextSegment.verb == Verb.DONE)
+            if (_nextSegment._verb == Verb.DONE)
                 throw new NoSuchElementException();
-            Segment res = nextSegment;
-            nextSegment = nNext(_ptr);
+            Segment res = _nextSegment;
+            _nextSegment = _nNext(_ptr);
             return res;
         }
 
         @Override
         public boolean hasNext() {
-            return nextSegment.verb != Verb.DONE;
+            return _nextSegment._verb != Verb.DONE;
         }
 
-        protected Iter(Path path, long ptr) {
-            super(ptr, nGetNativeFinalizer());
-            this.path = path;
+        @Internal
+        public Iter(Path path, long ptr) {
+            super(ptr, _nGetFinalizer());
+            this._path = path;
             Stats.onNativeCall();
         }
 
         public static Iter make(Path path, boolean forceClose) {
-            long ptr = nInit(Native.getPtr(path), forceClose);
+            long ptr = _nMake(Native.getPtr(path), forceClose);
             Iter i = new Iter(path, ptr);
-            i.nextSegment = nNext(ptr);
+            i._nextSegment = _nNext(ptr);
             return i;
         }
 
-        private static final  long nativeFinalizer = nGetNativeFinalizer();
-        private static native long nInit(long pathPtr, boolean forceClose);
-        private static native long nGetNativeFinalizer();
-        private static native Segment nNext(long ptr);
+        public static final  long _finalizerPtr = _nGetFinalizer();
+        public static native long _nMake(long pathPtr, boolean forceClose);
+        public static native long _nGetFinalizer();
+        public static native Segment _nNext(long ptr);
     } 
 
     @Override
@@ -1889,7 +1932,7 @@ public class Path extends Managed implements Iterable {
      */
     public boolean contains(float x, float y) {
         Stats.onNativeCall();
-        return nContains(_ptr, x, y);
+        return _nContains(_ptr, x, y);
     }
 
     /**
@@ -1902,7 +1945,7 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_contains">https://fiddle.skia.org/c/@Path_contains</a>
      */
     public boolean contains(Point p) {
-        return contains(p.x, p.y);
+        return contains(p._x, p._y);
     }
 
     /**
@@ -1917,7 +1960,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path dump() {
         Stats.onNativeCall();
-        nDump(_ptr);
+        _nDump(_ptr);
         return this;
     }
 
@@ -1935,7 +1978,7 @@ public class Path extends Managed implements Iterable {
      */
     public Path dumpHex() {
         Stats.onNativeCall();
-        nDumpHex(_ptr);
+        _nDumpHex(_ptr);
         return this;
     }
 
@@ -1954,7 +1997,7 @@ public class Path extends Managed implements Iterable {
      */
     public byte[] writeToMemory() {
         Stats.onNativeCall();
-        return nWriteToMemory(_ptr);
+        return _nWriteToMemory(_ptr);
     }
 
     /**
@@ -1974,7 +2017,7 @@ public class Path extends Managed implements Iterable {
      */
     public static Path readFromMemory(byte[] data) {
         Stats.onNativeCall();
-        return new Path(nReadFromMemory(data));
+        return new Path(_nReadFromMemory(data));
     }
 
     /** 
@@ -1991,9 +2034,9 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_getGenerationID">https://fiddle.skia.org/c/@Path_getGenerationID</a>
      * @see Skia bug 1762
      */
-    public int nGetGenerationID() {
+    public int getGenerationID() {
         Stats.onNativeCall();
-        return nGetGenerationID(_ptr);
+        return _nGetGenerationID(_ptr);
     }    
 
     /**
@@ -2005,91 +2048,97 @@ public class Path extends Managed implements Iterable {
      */
     public boolean isValid() {
         Stats.onNativeCall();
-        return nIsValid(_ptr);
+        return _nIsValid(_ptr);
     }
 
-    protected Path(long ptr) { super(ptr, nativeFinalizer); Stats.onNativeCall(); }
-    private static final  long    nativeFinalizer = nGetNativeFinalizer();
-    private static native long    nInit();
-    private static native long    nGetNativeFinalizer();
-    private static native boolean nEquals(long aPtr, long bPtr);
-    private static native boolean nIsInterpolatable(long ptr, long comparePtr);
-    private static native long    nInterpolate(long ptr, long endingPtr, float weight);
-    private static native void    nSetFillType(long ptr, int fillType);
-    private static native int     nGetConvexityType(long ptr);
-    private static native int     nGetConvexityTypeOrUnknown(long ptr);
-    private static native void    nSetConvexityType(long ptr, int convexity);
-    private static native Rect    nIsOval(long ptr);
-    private static native RoundedRect nIsRoundedRect(long ptr);
-    private static native void    nReset(long ptr);
-    private static native void    nRewind(long ptr);
-    private static native boolean nIsEmpty(long ptr);
-    private static native boolean nIsLastContourClosed(long ptr);
-    private static native boolean nIsFinite(long ptr);
-    private static native void    nSetIsVolatile(long ptr, boolean isVolatile);
-    private static native boolean nIsLineDegenerate(float x0, float y0, float x1, float y1, boolean exact);
-    private static native boolean nIsQuadDegenerate(float x0, float y0, float x1, float y1, float x2, float y2, boolean exact);
-    private static native boolean nIsCubicDegenerate(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, boolean exact);
-    private static native Point[] nIsLine(long ptr);
-    private static native int     nCountPoints(long ptr);
-    private static native Point   nGetPoint(long ptr, int index);
-    private static native int     nGetPoints(long ptr, Point[] points, int max);
-    private static native int     nCountVerbs(long ptr);
-    private static native int     nGetVerbs(long ptr, byte[] verbs, int max);
-    private static native long    nApproximateBytesUsed(long ptr);
-    private static native void    nSwap(long ptr, long otherPtr);
+    @Internal
+    public Path(long ptr) {
+        super(ptr, _finalizerPtr);
+        Stats.onNativeCall();
+    }
 
-    private static native Rect    nGetBounds(long ptr);
-    private static native void    nUpdateBoundsCache(long ptr);
-    private static native Rect    nComputeTightBounds(long ptr);
-    private static native boolean nConservativelyContainsRect(long ptr, float l, float t, float r, float b);
-    private static native void    nIncReserve(long ptr, int extraPtCount);
-    private static native void    nShrinkToFit(long ptr);
-    private static native void    nMoveTo(long ptr, float x, float y);
-    private static native void    nRMoveTo(long ptr, float dx, float dy);
-    private static native void    nLineTo(long ptr, float x, float y);
-    private static native void    nRLineTo(long ptr, float dx, float dy);
-    private static native void    nQuadTo(long ptr, float x1, float y1, float x2, float y2);
-    private static native void    nRQuadTo(long ptr, float dx1, float dy1, float dx2, float dy2);
-    private static native void    nConicTo(long ptr, float x1, float y1, float x2, float y2, float w);
-    private static native void    nRConicTo(long ptr, float dx1, float dy1, float dx2, float dy2, float w);
-    private static native void    nCubicTo(long ptr, float x1, float y1, float x2, float y2, float x3, float y3);
-    private static native void    nRCubicTo(long ptr, float dx1, float dy1, float dx2, float dy2, float dx3, float dy3);
-    private static native void    nArcTo(long ptr, float left, float top, float right, float bottom, float startAngle, float sweepAngle, boolean forceMoveTo);
-    private static native void    nTangentArcTo(long ptr, float x1, float y1, float x2, float y2, float radius);
-    private static native void    nEllipticalArcTo(long ptr, float rx, float ry, float xAxisRotate, int size, int direction, float x, float y);
-    private static native void    nREllipticalArcTo(long ptr, float rx, float ry, float xAxisRotate, int size, int direction, float dx, float dy);
-    private static native void    nClosePath(long ptr);
-    private static native Point[] nConvertConicToQuads(float x0, float y0, float x1, float y1, float x2, float y2, float w, int pow2);
-    private static native Rect    nIsRect(long ptr);
-    private static native void    nAddRect(long ptr, float l, float t, float r, float b, int dir, int start);
-    private static native void    nAddOval(long ptr, float l, float t, float r, float b, int dir, int start);
-    private static native void    nAddCircle(long ptr, float x, float y, float r, int dir);
-    private static native void    nAddArc(long ptr, float l, float t, float r, float b, float startAngle, float sweepAngle);
-    private static native void    nAddRoundedRect(long ptr, float l, float t, float r, float b, float[] radii, int dir, int start);
-    private static native void    nAddPoly(long ptr, float[] coords, boolean close);
-    private static native void    nAddPath(long ptr, long srcPtr, boolean extend);
-    private static native void    nAddPathOffset(long ptr, long srcPtr, float dx, float dy, boolean extend);
-    private static native void    nAddPathTransform(long ptr, long srcPtr,
+    public static final  long    _finalizerPtr = _nGetFinalizer();
+    public static native long    _nMake();
+    public static native long    _nGetFinalizer();
+    public static native boolean _nEquals(long aPtr, long bPtr);
+    public static native boolean _nIsInterpolatable(long ptr, long comparePtr);
+    public static native long    _nMakeLerp(long ptr, long endingPtr, float weight);
+    public static native int     _nGetFillType(long ptr);
+    public static native void    _nSetFillType(long ptr, int fillType);
+    public static native int     _nGetConvexityType(long ptr);
+    public static native int     _nGetConvexityTypeOrUnknown(long ptr);
+    public static native void    _nSetConvexityType(long ptr, int convexity);
+    public static native Rect    _nIsOval(long ptr);
+    public static native RRect _nIsRRect(long ptr);
+    public static native void    _nReset(long ptr);
+    public static native void    _nRewind(long ptr);
+    public static native boolean _nIsEmpty(long ptr);
+    public static native boolean _nIsLastContourClosed(long ptr);
+    public static native boolean _nIsFinite(long ptr);
+    public static native boolean _nIsVolatile(long ptr);
+    public static native void    _nSetVolatile(long ptr, boolean isVolatile);
+    public static native boolean _nIsLineDegenerate(float x0, float y0, float x1, float y1, boolean exact);
+    public static native boolean _nIsQuadDegenerate(float x0, float y0, float x1, float y1, float x2, float y2, boolean exact);
+    public static native boolean _nIsCubicDegenerate(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, boolean exact);
+    public static native Point[] _nMaybeGetAsLine(long ptr);
+    public static native int     _nGetPointsCount(long ptr);
+    public static native Point   _nGetPoint(long ptr, int index);
+    public static native int     _nGetPoints(long ptr, Point[] points, int max);
+    public static native int     _nCountVerbs(long ptr);
+    public static native int     _nGetVerbs(long ptr, byte[] verbs, int max);
+    public static native long    _nApproximateBytesUsed(long ptr);
+    public static native void    _nSwap(long ptr, long otherPtr);
+    public static native Rect    _nGetBounds(long ptr);
+    public static native void    _nUpdateBoundsCache(long ptr);
+    public static native Rect    _nComputeTightBounds(long ptr);
+    public static native boolean _nConservativelyContainsRect(long ptr, float l, float t, float r, float b);
+    public static native void    _nIncReserve(long ptr, int extraPtCount);
+    public static native void    _nShrinkToFit(long ptr);
+    public static native void    _nMoveTo(long ptr, float x, float y);
+    public static native void    _nRMoveTo(long ptr, float dx, float dy);
+    public static native void    _nLineTo(long ptr, float x, float y);
+    public static native void    _nRLineTo(long ptr, float dx, float dy);
+    public static native void    _nQuadTo(long ptr, float x1, float y1, float x2, float y2);
+    public static native void    _nRQuadTo(long ptr, float dx1, float dy1, float dx2, float dy2);
+    public static native void    _nConicTo(long ptr, float x1, float y1, float x2, float y2, float w);
+    public static native void    _nRConicTo(long ptr, float dx1, float dy1, float dx2, float dy2, float w);
+    public static native void    _nCubicTo(long ptr, float x1, float y1, float x2, float y2, float x3, float y3);
+    public static native void    _nRCubicTo(long ptr, float dx1, float dy1, float dx2, float dy2, float dx3, float dy3);
+    public static native void    _nArcTo(long ptr, float left, float top, float right, float bottom, float startAngle, float sweepAngle, boolean forceMoveTo);
+    public static native void    _nTangentArcTo(long ptr, float x1, float y1, float x2, float y2, float radius);
+    public static native void    _nEllipticalArcTo(long ptr, float rx, float ry, float xAxisRotate, int size, int direction, float x, float y);
+    public static native void    _nREllipticalArcTo(long ptr, float rx, float ry, float xAxisRotate, int size, int direction, float dx, float dy);
+    public static native void    _nClosePath(long ptr);
+    public static native Point[] _nConvertConicToQuads(float x0, float y0, float x1, float y1, float x2, float y2, float w, int pow2);
+    public static native Rect    _nIsRect(long ptr);
+    public static native void    _nAddRect(long ptr, float l, float t, float r, float b, int dir, int start);
+    public static native void    _nAddOval(long ptr, float l, float t, float r, float b, int dir, int start);
+    public static native void    _nAddCircle(long ptr, float x, float y, float r, int dir);
+    public static native void    _nAddArc(long ptr, float l, float t, float r, float b, float startAngle, float sweepAngle);
+    public static native void    _nAddRRect(long ptr, float l, float t, float r, float b, float[] radii, int dir, int start);
+    public static native void    _nAddPoly(long ptr, float[] coords, boolean close);
+    public static native void    _nAddPath(long ptr, long srcPtr, boolean extend);
+    public static native void    _nAddPathOffset(long ptr, long srcPtr, float dx, float dy, boolean extend);
+    public static native void    _nAddPathTransform(long ptr, long srcPtr,
         float scaleX, float skewX,  float transX,
         float skewY,  float scaleY, float transY,
         float persp0, float persp1, float persp2,
         boolean extend);
-    private static native void    nReverseAddPath(long ptr, long srcPtr);
-    private static native void    nOffset(long ptr, float dx, float dy, long dst);
-    private static native void    nTransform(long ptr,
+    public static native void    _nReverseAddPath(long ptr, long srcPtr);
+    public static native void    _nOffset(long ptr, float dx, float dy, long dst);
+    public static native void    _nTransform(long ptr,
         float scaleX, float skewX,  float transX,
         float skewY,  float scaleY, float transY,
         float persp0, float persp1, float persp2,
         long dst, boolean applyPerspectiveClip);
-    private static native Point   nGetLastPt(long ptr);
-    private static native void    nSetLastPt(long ptr, float x, float y);
-    private static native int     nGetSegmentMasks(long ptr);
-    private static native boolean nContains(long ptr, float x, float y);
-    private static native void    nDump(long ptr);
-    private static native void    nDumpHex(long ptr);
-    private static native byte[]  nWriteToMemory(long ptr);
-    private static native long    nReadFromMemory(byte[] data);
-    private static native int     nGetGenerationID(long ptr);
-    private static native boolean nIsValid(long ptr);
+    public static native Point   _nGetLastPt(long ptr);
+    public static native void    _nSetLastPt(long ptr, float x, float y);
+    public static native int     _nGetSegmentMasks(long ptr);
+    public static native boolean _nContains(long ptr, float x, float y);
+    public static native void    _nDump(long ptr);
+    public static native void    _nDumpHex(long ptr);
+    public static native byte[]  _nWriteToMemory(long ptr);
+    public static native long    _nReadFromMemory(byte[] data);
+    public static native int     _nGetGenerationID(long ptr);
+    public static native boolean _nIsValid(long ptr);
 }

@@ -1,20 +1,23 @@
 package org.jetbrains.skija.paragraph;
 
-import org.jetbrains.skija.Managed;
-import org.jetbrains.skija.Native;
-import org.jetbrains.skija.Stats;
+import org.jetbrains.skija.impl.Managed;
+import org.jetbrains.skija.impl.Native;
+import org.jetbrains.skija.impl.Stats;
 
 public class ParagraphStyle extends Managed {
-    public ParagraphStyle() { super(nInit(), nativeFinalizer); Stats.onNativeCall(); }
+    public ParagraphStyle() {
+        super(_nMake(), _finalizerPtr);
+        Stats.onNativeCall();
+    }
 
     public ParagraphStyle setTextStyle(TextStyle style) {
         Stats.onNativeCall();
-        nSetTextStyle(_ptr, Native.getPtr(style));
+        _nSetTextStyle(_ptr, Native.getPtr(style));
         return this;
     }
 
-    private static final long nativeFinalizer = nGetNativeFinalizer();
-    private static native long nInit();
-    private static native long nGetNativeFinalizer();
-    private static native void nSetTextStyle(long ptr, long textStylePtr);
+    public static final  long _finalizerPtr = _nGetFinalizer();
+    public static native long _nMake();
+    public static native long _nGetFinalizer();
+    public static native void _nSetTextStyle(long ptr, long textStylePtr);
 }

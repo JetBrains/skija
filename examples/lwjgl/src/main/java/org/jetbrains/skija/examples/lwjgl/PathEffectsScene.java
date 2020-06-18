@@ -1,6 +1,5 @@
 package org.jetbrains.skija.examples.lwjgl;
 
-import java.util.stream.IntStream;
 import org.jetbrains.skija.*;
 
 public class PathEffectsScene implements Scene {
@@ -19,22 +18,22 @@ public class PathEffectsScene implements Scene {
             float offset = 1f - System.currentTimeMillis() % 1000 / 1000f;
 
             PathEffect[] effects = new PathEffect[] {
-                PathEffect.path1D(pattern, 10, 10 * offset, PathEffect.Style.TRANSLATE),
-                PathEffect.path1D(pattern, 20, 20 * offset, PathEffect.Style.TRANSLATE),
-                PathEffect.path1D(pattern, 20, 20 * offset, PathEffect.Style.ROTATE),
-                PathEffect.path1D(pattern, 20, 20 * offset, PathEffect.Style.MORPH),
-                PathEffect.path1D(dash, 15, 15 * offset, PathEffect.Style.MORPH),
-                PathEffect.path2D(Matrix.scale(15), pattern),
-                PathEffect.line2D(1, Matrix.scale(3, 3)),
-                PathEffect.line2D(1, Matrix.scale(Matrix.rotate(30), 3, 3)),
-                PathEffect.corner(10),
-                PathEffect.corner(30),
-                PathEffect.dash(new float[] {10, 10}, 20 * offset),
-                PathEffect.dash(new float[] {10, 5}, 15 * offset),
-                PathEffect.dash(new float[] {10, 5, 2, 5}, 22 * offset),
-                PathEffect.discrete(5, 2, (int) (System.currentTimeMillis() / 100)),
-                PathEffect.dash(new float[] {10, 5, 2, 5}, 22 * offset).compose(PathEffect.corner(50)),
-                PathEffect.dash(new float[] {10, 5, 2, 5}, 22 * offset).sum(PathEffect.corner(50)),
+                PathEffect.makePath1D(pattern, 10, 10 * offset, PathEffect.Style.TRANSLATE),
+                PathEffect.makePath1D(pattern, 20, 20 * offset, PathEffect.Style.TRANSLATE),
+                PathEffect.makePath1D(pattern, 20, 20 * offset, PathEffect.Style.ROTATE),
+                PathEffect.makePath1D(pattern, 20, 20 * offset, PathEffect.Style.MORPH),
+                PathEffect.makePath1D(dash, 15, 15 * offset, PathEffect.Style.MORPH),
+                PathEffect.makePath2D(Matrix.makeScale(15), pattern),
+                PathEffect.makeLine2D(1, Matrix.makeScale(3, 3)),
+                PathEffect.makeLine2D(1, Matrix.makeScale(Matrix.makeRotate(30), 3, 3)),
+                PathEffect.makeCorner(10),
+                PathEffect.makeCorner(30),
+                PathEffect.makeDash(new float[] {10, 10}, 20 * offset),
+                PathEffect.makeDash(new float[] {10, 5}, 15 * offset),
+                PathEffect.makeDash(new float[] {10, 5, 2, 5}, 22 * offset),
+                PathEffect.makeDiscrete(5, 2, (int) (System.currentTimeMillis() / 100)),
+                PathEffect.makeDash(new float[] {10, 5, 2, 5}, 22 * offset).makeCompose(PathEffect.makeCorner(50)),
+                PathEffect.makeDash(new float[] {10, 5, 2, 5}, 22 * offset).makeSum(PathEffect.makeCorner(50)),
             };
 
             for (PathEffect effect: effects) {

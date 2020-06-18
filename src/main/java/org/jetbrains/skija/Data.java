@@ -1,22 +1,26 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.skija.impl.Managed;
+import org.jetbrains.skija.impl.Native;
+import org.jetbrains.skija.impl.Stats;
+
 /**
  *  Data holds an immutable data buffer.
  */
 public class Data extends Managed {
-
-    public long size() {
+    public long getSize() {
         Stats.onNativeCall();
-        return nSize(_ptr);
+        return _nSize(_ptr);
     }
 
-    public byte[] bytes() {
-        return bytes(0, size());
+    public byte[] getBytes() {
+        return getBytes(0, getSize());
     }
 
-    public byte[] bytes(long offset, long length) {
+    public byte[] getBytes(long offset, long length) {
         Stats.onNativeCall();
-        return nBytes(_ptr, offset, length);
+        return _nBytes(_ptr, offset, length);
     }
 
     /**
@@ -24,13 +28,9 @@ public class Data extends Managed {
      *  effectively returning 0 == memcmp(...)
      */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Data od = (Data) o;
-        if (_ptr == od._ptr) return true;
+    public boolean nativeEquals(Native other) {
         Stats.onNativeCall();
-        return nEquals(_ptr, od._ptr);
+        return _nEquals(_ptr, Native.getPtr(other));
     }
 
     public static Data makeFromBytes(byte[] bytes) {
@@ -39,7 +39,7 @@ public class Data extends Managed {
 
     public static Data makeFromBytes(byte[] bytes, long offset, long length) {
         Stats.onNativeCall();
-        return new Data(nMakeFromBytes(bytes, offset, length));
+        return new Data(_nMakeFromBytes(bytes, offset, length));
     }
 
     /**
@@ -48,7 +48,7 @@ public class Data extends Managed {
      */
     public static Data makeFromFileName(String path) {
         Stats.onNativeCall();
-        return new Data(nMakeFromFileName(path));
+        return new Data(_nMakeFromFileName(path));
     }
 
     /**
@@ -57,35 +57,36 @@ public class Data extends Managed {
      */
     public Data makeSubset(long offset, long length) {
         Stats.onNativeCall();
-        return new Data(nMakeSubset(_ptr, offset, length));
+        return new Data(_nMakeSubset(_ptr, offset, length));
     }
 
     public Data makeCopy() {
         Stats.onNativeCall();
-        return new Data(nMakeSubset(_ptr, 0, size()));
+        return new Data(_nMakeSubset(_ptr, 0, getSize()));
     }
 
     /**
      *  Returns a new empty dataref (or a reference to a shared empty dataref).
-     *  New or shared, the caller must see that {@link close()} is eventually called.
+     *  New or shared, the caller must see that {@link #close()} is eventually called.
      */
     public static Data makeEmpty() {
         Stats.onNativeCall();
-        return new Data(nMakeEmpty());
+        return new Data(_nMakeEmpty());
     }
 
-    protected Data(long ptr) {
-        super(ptr, nativeFinalizer);
+    @Internal
+    public Data(long ptr) {
+        super(ptr, _finalizerPtr);
         Stats.onNativeCall();
     }
 
-    private static final  long    nativeFinalizer = nGetNativeFinalizer();
-    private static native long    nGetNativeFinalizer();
-    private static native long    nSize(long ptr);
-    private static native byte[]  nBytes(long ptr, long offset, long length);
-    private static native boolean nEquals(long ptr, long otherPtr);
-    private static native long    nMakeFromBytes(byte[] bytes, long offset, long length);
-    private static native long    nMakeFromFileName(String path);
-    private static native long    nMakeSubset(long ptr, long offset, long length);
-    private static native long    nMakeEmpty();
+    public static final  long    _finalizerPtr = _nGetFinalizer();
+    public static native long    _nGetFinalizer();
+    public static native long    _nSize(long ptr);
+    public static native byte[]  _nBytes(long ptr, long offset, long length);
+    public static native boolean _nEquals(long ptr, long otherPtr);
+    public static native long    _nMakeFromBytes(byte[] bytes, long offset, long length);
+    public static native long    _nMakeFromFileName(String path);
+    public static native long    _nMakeSubset(long ptr, long offset, long length);
+    public static native long    _nMakeEmpty();
 }

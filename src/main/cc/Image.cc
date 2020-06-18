@@ -4,7 +4,7 @@
 #include "SkImage.h"
 #include "interop.hh"
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image_nFromEncoded
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image__1nMakeFromEncoded
   (JNIEnv* env, jclass jclass, jbyteArray encodedArray, jobject subsetObj) {
     jsize encodedLen = env->GetArrayLength(encodedArray);
     jbyte* encoded = env->GetByteArrayElements(encodedArray, 0);
@@ -17,7 +17,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image_nFromEncoded
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image_nDimensions
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image__1nGetDimensions
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkImage* instance = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(ptr));
     return (uint64_t (instance->height()) << 32) | instance->width();

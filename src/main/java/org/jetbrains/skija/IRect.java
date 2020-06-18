@@ -1,20 +1,34 @@
 package org.jetbrains.skija;
 
-public class IRect {
-    public final int left;
-    public final int top;
-    public final int right;
-    public final int bottom;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+import org.jetbrains.skija.impl.Internal;
 
-    protected IRect(int l, int t, int r, int b) {
-        this.left = l;
-        this.top = t;
-        this.right = r;
-        this.bottom = b;
+@Getter
+@EqualsAndHashCode
+@ToString
+public class IRect {
+    public final int _left;
+    public final int _top;
+    public final int _right;
+    public final int _bottom;
+
+    @Internal
+    public IRect(int l, int t, int r, int b) {
+        _left = l;
+        _top = t;
+        _right = r;
+        _bottom = b;
     }
 
-    public int getWidth() { return Math.abs(right - left); }
-    public int getHeight() { return Math.abs(bottom - top); }
+    public int getWidth() {
+        return Math.abs(_right - _left);
+    }
+
+    public int getHeight() {
+        return Math.abs(_bottom - _top);
+    }
 
     public static IRect makeLTRB(int l, int t, int r, int b) {
         return new IRect(l, t, r, b);
@@ -24,30 +38,7 @@ public class IRect {
         return new IRect(l, t, l + w, t + h);
     }
 
-    public static Rect makeWH(int w, int h) {
-        return new Rect(0, 0, w, h);
+    public static IRect makeWH(int w, int h) {
+        return new IRect(0, 0, w, h);
     }
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || IRect.class != object.getClass()) return false;
-        IRect that = (IRect) object;
-        return java.lang.Integer.compare(that.left, left) == 0 &&
-                java.lang.Integer.compare(that.top, top) == 0 &&
-                java.lang.Integer.compare(that.right, right) == 0 &&
-                java.lang.Integer.compare(that.bottom, bottom) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return java.util.Objects.hash(left, top, right, bottom);
-    }
-
-    @Override
-    public java.lang.String toString() {
-        return "IRect{left=" + left + ", top=" + top + ", right=" + right + ", bottom=" + bottom + '}';
-    }
-
-
 }

@@ -1,15 +1,25 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.skija.impl.RefCnt;
+import org.jetbrains.skija.impl.Stats;
+
 public class Context extends RefCnt {
     public static Context makeGL() {
         Stats.onNativeCall();
-        return new Context(nMakeGL());
+        return new Context(_nMakeGL());
     }
 
-    public void flush() { Stats.onNativeCall(); nFlush(_ptr); }
+    public void flush() {
+        Stats.onNativeCall();
+        _nFlush(_ptr);
+    }
 
-    protected Context(long nativeInstance) { super(nativeInstance); }
+    @Internal
+    public Context(long ptr) {
+        super(ptr);
+    }
 
-    private static native long nMakeGL();
-    private static native long nFlush(long nativeInstance);
+    public static native long _nMakeGL();
+    public static native long _nFlush(long ptr);
 }

@@ -8,7 +8,7 @@
 #include "SkTableColorFilter.h"
 #include "interop.hh"
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nCompose
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter__1nMakeComposed
   (JNIEnv* env, jclass jclass, jlong outerPtr, jlong innerPtr) {
     SkColorFilter* outer = reinterpret_cast<SkColorFilter*>(static_cast<uintptr_t>(outerPtr));
     SkColorFilter* inner = reinterpret_cast<SkColorFilter*>(static_cast<uintptr_t>(innerPtr));
@@ -16,7 +16,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nCompose
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nBlend
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter__1nMakeBlend
   (JNIEnv* env, jclass jclass, jint colorInt, jint modeInt) {
     SkColor color = static_cast<SkColor>(colorInt);
     SkBlendMode mode = static_cast<SkBlendMode>(modeInt);
@@ -24,7 +24,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nBlend
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nMatrix
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter__1nMakeMatrix
   (JNIEnv* env, jclass jclass, jfloatArray rowMajorArray) {
     jfloat* rowMajor = env->GetFloatArrayElements(rowMajorArray, 0);
     SkColorFilter* ptr = SkColorFilters::Matrix(rowMajor).release();
@@ -32,7 +32,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nMatrix
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nHSLAMatrix
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter__1nMakeHSLAMatrix
   (JNIEnv* env, jclass jclass, jfloatArray rowMajorArray) {
     jfloat* rowMajor = env->GetFloatArrayElements(rowMajorArray, 0);
     SkColorFilter* ptr = SkColorFilters::HSLAMatrix(rowMajor).release();
@@ -40,19 +40,19 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nHSLAMat
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nLinearToSRGBGamma
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter__1nGetLinearToSRGBGamma
   (JNIEnv* env, jclass jclass) {
     SkColorFilter* ptr = SkColorFilters::LinearToSRGBGamma().release();
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nSRGBToLinearGamma
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter__1nGetSRGBToLinearGamma
   (JNIEnv* env, jclass jclass) {
     SkColorFilter* ptr = SkColorFilters::SRGBToLinearGamma().release();
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nLerp
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter__1nMakeLerp
   (JNIEnv* env, jclass jclass, jfloat t, jlong dstPtr, jlong srcPtr) {
     SkColorFilter* dst = reinterpret_cast<SkColorFilter*>(static_cast<uintptr_t>(dstPtr));
     SkColorFilter* src = reinterpret_cast<SkColorFilter*>(static_cast<uintptr_t>(srcPtr));
@@ -60,20 +60,20 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nLerp
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nLighting
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter__1nMakeLighting
   (JNIEnv* env, jclass jclass, jint mul, jint add) {
     SkColorFilter* ptr = SkColorMatrixFilter::MakeLightingFilter(mul, add).release();
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nHighContrast
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter__1nMakeHighContrast
   (JNIEnv* env, jclass jclass, jboolean grayscale, jint invertStyleInt, jfloat contrast) {
     SkHighContrastConfig config(grayscale, static_cast<SkHighContrastConfig::InvertStyle>(invertStyleInt), contrast);
     SkColorFilter* ptr = SkHighContrastFilter::Make(config).release();
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nTable
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter__1nMakeTable
   (JNIEnv* env, jclass jclass, jbyteArray tableArray) {
     jbyte* table = env->GetByteArrayElements(tableArray, 0);
     SkColorFilter* ptr = SkTableColorFilter::Make(reinterpret_cast<uint8_t*>(table)).release();
@@ -81,7 +81,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nTable
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nTableARGB
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter__1nMakeTableARGB
   (JNIEnv* env, jclass jclass, jbyteArray arrayA, jbyteArray arrayR, jbyteArray arrayG, jbyteArray arrayB) {
     jbyte* a = arrayA ? env->GetByteArrayElements(arrayA, 0) : nullptr;
     jbyte* r = arrayR ? env->GetByteArrayElements(arrayR, 0) : nullptr;
@@ -98,7 +98,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nTableAR
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nOverdraw
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter__1nMakeOverdraw
   (JNIEnv* env, jclass jclass, jint c0, jint c1, jint c2, jint c3, jint c4, jint c5) {
     SkColor colors[6];
     colors[0] = c0;
@@ -111,7 +111,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nOverdra
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter_nLuma
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter__1nGetLuma
   (JNIEnv* env, jclass jclass) {
     SkColorFilter* ptr = SkLumaColorFilter::Make().release();
     return reinterpret_cast<jlong>(ptr);

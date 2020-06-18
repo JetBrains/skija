@@ -4,7 +4,7 @@ import org.jetbrains.skija.test.TestRunner;
 
 public class TestSuite {
     public static void main(String[] args) {
-        JNI.loadLibrary("/", "skija");
+        Library.load("/", "skija");
         TestRunner.startTesting();
         TestRunner.testClass(PathTest.class);
         TestRunner.testClass(FontTest.class);

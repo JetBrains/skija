@@ -28,35 +28,35 @@ public class PathTest implements Executable {
              var i = p.iterator();) {
             assertEquals(true, i.hasNext());
             Path.Segment s = i.next();
-            assertEquals(Path.Verb.MOVE, s.verb);
-            assertEquals(new Point(10, 10), s.p0);
-            assertEquals(true, s.isClosedContour);
+            assertEquals(Path.Verb.MOVE, s.getVerb());
+            assertEquals(new Point(10, 10), s.getP0());
+            assertEquals(true, s.isClosedContour());
 
             assertEquals(true, i.hasNext());
             s = i.next();
-            assertEquals(Path.Verb.LINE, s.verb);
-            assertEquals(new Point(10, 10), s.p0);
-            assertEquals(new Point(20, 0), s.p1);
-            assertEquals(false, s.isCloseLine);
+            assertEquals(Path.Verb.LINE, s.getVerb());
+            assertEquals(new Point(10, 10), s.getP0());
+            assertEquals(new Point(20, 0), s.getP1());
+            assertEquals(false, s.isCloseLine());
 
             assertEquals(true, i.hasNext());
             s = i.next();
-            assertEquals(Path.Verb.LINE, s.verb);
-            assertEquals(new Point(20, 0), s.p0);
-            assertEquals(new Point(20, 20), s.p1);
-            assertEquals(false, s.isCloseLine);
+            assertEquals(Path.Verb.LINE, s.getVerb());
+            assertEquals(new Point(20, 0), s.getP0());
+            assertEquals(new Point(20, 20), s.getP1());
+            assertEquals(false, s.isCloseLine());
 
             assertEquals(true, i.hasNext());
             s = i.next();
-            assertEquals(Path.Verb.LINE, s.verb);
-            assertEquals(new Point(20, 20), s.p0);
-            assertEquals(new Point(10, 10), s.p1);
-            assertEquals(true, s.isCloseLine);
+            assertEquals(Path.Verb.LINE, s.getVerb());
+            assertEquals(new Point(20, 20), s.getP0());
+            assertEquals(new Point(10, 10), s.getP1());
+            assertEquals(true, s.isCloseLine());
 
             assertEquals(true, i.hasNext());
             s = i.next();
-            assertEquals(Path.Verb.CLOSE, s.verb);
-            assertEquals(new Point(10, 10), s.p0);
+            assertEquals(Path.Verb.CLOSE, s.getVerb());
+            assertEquals(new Point(10, 10), s.getP0());
 
             assertEquals(false, i.hasNext());
             assertThrows(NoSuchElementException.class, () -> i.next());
@@ -90,7 +90,7 @@ public class PathTest implements Executable {
                 try (Path p = new Path().addRect(Rect.makeLTRB(0, 0, 40, 20), dir, start)) {
                     assertEquals(Rect.makeLTRB(0, 0, 40, 20), p.isRect());
                     assertEquals(null, p.isOval());
-                    assertEquals(null, p.isRoundedRect());
+                    assertEquals(null, p.isRRect());
                 }
             }
         }
@@ -100,7 +100,7 @@ public class PathTest implements Executable {
                 try (Path p = new Path().addOval(Rect.makeLTRB(0, 0, 40, 20), dir, start)) {
                     assertEquals(null, p.isRect());
                     assertEquals(Rect.makeLTRB(0, 0, 40, 20), p.isOval());
-                    assertEquals(null, p.isRoundedRect());
+                    assertEquals(null, p.isRRect());
                 }
             }
         }
@@ -109,28 +109,28 @@ public class PathTest implements Executable {
             try (Path p = new Path().addCircle(20, 20, 20, dir)) {
                 assertEquals(null, p.isRect());
                 assertEquals(Rect.makeLTRB(0, 0, 40, 40), p.isOval());
-                assertEquals(null, p.isRoundedRect());
+                assertEquals(null, p.isRRect());
             }
         }
 
         for (var dir: Path.Direction.values()) {
             for (int start = 0; start < 8; ++start) {
-                try (Path p = new Path().addRoundedRect(RoundedRect.makeLTRB(0, 0, 40, 20, 5), dir, start)) {
+                try (Path p = new Path().addRRect(RRect.makeLTRB(0, 0, 40, 20, 5), dir, start)) {
                     assertEquals(null, p.isRect());
                     assertEquals(null, p.isOval());
-                    assertEquals(RoundedRect.makeLTRB(0, 0, 40, 20, 5), p.isRoundedRect());
+                    assertEquals(RRect.makeLTRB(0, 0, 40, 20, 5), p.isRRect());
                 }
 
-                try (Path p = new Path().addRoundedRect(RoundedRect.makeLTRB(0, 0, 40, 20, 0), dir, start)) {
+                try (Path p = new Path().addRRect(RRect.makeLTRB(0, 0, 40, 20, 0), dir, start)) {
                     assertEquals(Rect.makeLTRB(0, 0, 40, 20), p.isRect());
                     assertEquals(null, p.isOval());
-                    assertEquals(null, p.isRoundedRect());
+                    assertEquals(null, p.isRRect());
                 }
 
-                try (Path p = new Path().addRoundedRect(RoundedRect.makeLTRB(0f, 0f, 40f, 20f, 20f, 10f), dir, start)) {
+                try (Path p = new Path().addRRect(RRect.makeLTRB(0f, 0f, 40f, 20f, 20f, 10f), dir, start)) {
                     assertEquals(null, p.isRect());
                     assertEquals(Rect.makeLTRB(0, 0, 40, 20), p.isOval());
-                    assertEquals(null, p.isRoundedRect());
+                    assertEquals(null, p.isRRect());
                 }
             }
         }
@@ -138,7 +138,7 @@ public class PathTest implements Executable {
         try (Path p = new Path().lineTo(40, 40).lineTo(40, 0).lineTo(0, 40).lineTo(0, 0).closePath()) {
             assertEquals(null, p.isRect());
             assertEquals(null, p.isOval());
-            assertEquals(null, p.isRoundedRect());
+            assertEquals(null, p.isRRect());
         }
     }
 
@@ -182,11 +182,11 @@ public class PathTest implements Executable {
         }
 
         try (Path p = new Path().lineTo(40, 40).lineTo(40, 0).lineTo(0, 40).lineTo(0, 0).closePath()) {
-            assertEquals(null, p.isLine());
+            assertEquals(null, p.getAsLine());
         }
 
         try (Path p = new Path().moveTo(20, 20).lineTo(40, 40)) {
-            assertArrayEquals(new Point[] { new Point(20, 20), new Point(40, 40) }, p.isLine());
+            assertArrayEquals(new Point[] { new Point(20, 20), new Point(40, 40) }, p.getAsLine());
         }
     }
 
@@ -207,7 +207,7 @@ public class PathTest implements Executable {
             Point p4 = new Point(0, 0);
             Point p5 = new Point(10, 10);
 
-            assertEquals(5, p.countPoints());
+            assertEquals(5, p.getPointsCount());
             assertEquals(p0, p.getPoint(0));
             assertEquals(p1, p.getPoint(1));
             assertEquals(p2, p.getPoint(2));
@@ -236,7 +236,7 @@ public class PathTest implements Executable {
             p.getPoints(pts, 10);
             assertArrayEquals(new Point[] { p0, p1, p2, p3, p5, null, null, null, null, null }, pts);
 
-            assertEquals(6, p.countVerbs());
+            assertEquals(6, p.getVerbsCount());
             assertEquals(6, p.getVerbs(null, 0));
 
             Path.Verb[] verbs = new Path.Verb[6];
@@ -255,7 +255,7 @@ public class PathTest implements Executable {
             p.getVerbs(verbs, 10);
             assertArrayEquals(new Path.Verb[] { Path.Verb.MOVE, Path.Verb.LINE, Path.Verb.LINE, Path.Verb.LINE, Path.Verb.LINE, Path.Verb.CLOSE, null, null, null, null }, verbs);
 
-            assertEquals(62L, p.approximateBytesUsed());
+            assertEquals(62L, p.getApproximateBytesUsed());
 
             assertEquals(Path.SEGMENT_MASK_LINE, p.getSegmentMasks());
 
@@ -273,7 +273,7 @@ public class PathTest implements Executable {
     }
 
     public void contains() {
-        try (Path p = new Path().addRoundedRect(RoundedRect.makeLTRB(10, 20, 54, 120, 10, 20))) {
+        try (Path p = new Path().addRRect(RRect.makeLTRB(10, 20, 54, 120, 10, 20))) {
             assertEquals(true, p.conservativelyContainsRect(Rect.makeLTRB(10, 40, 54, 80)));
             assertEquals(true, p.conservativelyContainsRect(Rect.makeLTRB(25, 20, 39, 120)));
             assertEquals(true, p.conservativelyContainsRect(Rect.makeLTRB(15, 25, 49, 115)));
@@ -305,12 +305,12 @@ public class PathTest implements Executable {
             Path.convertConicToQuads(new Point(0, 20), new Point(20, 0), new Point(40, 20), 0.5f, 2));
 
         try (Path p = new Path().lineTo(40, 40)) {
-            var g1 = p.nGetGenerationID();
+            var g1 = p.getGenerationID();
             p.lineTo(10, 40);
-            var g2 = p.nGetGenerationID();
+            var g2 = p.getGenerationID();
             assertNotEquals(g1, g2);
             p.setFillType(Path.FillType.EVEN_ODD);
-            var g3 = p.nGetGenerationID();
+            var g3 = p.getGenerationID();
             assertEquals(g2, g3);
         }
     }
