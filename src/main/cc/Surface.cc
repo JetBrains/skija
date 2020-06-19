@@ -23,8 +23,23 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeFromB
     return reinterpret_cast<jlong>(surface.release());
 }
 
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeRasterN32Premul
+  (JNIEnv* env, jclass jclass, jint width, jint height) {
+    sk_sp<SkSurface> surface = SkSurface::MakeRasterN32Premul(
+        width, height,
+        /* const SkSurfaceProps* */ nullptr
+    );
+    return reinterpret_cast<jlong>(surface.release());
+}
+
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nGetCanvas
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkSurface* surface = reinterpret_cast<SkSurface*>(static_cast<uintptr_t>(ptr));
     return reinterpret_cast<jlong>(surface->getCanvas());
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeImageSnapshot
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkSurface* surface = reinterpret_cast<SkSurface*>(static_cast<uintptr_t>(ptr));
+    return reinterpret_cast<jlong>(surface->makeImageSnapshot().release());
 }
