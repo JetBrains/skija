@@ -27,6 +27,11 @@ public class Image extends RefCnt {
         return _height;
     }
 
+    public Data encodeToData() {
+        Stats.onNativeCall();
+        return new Data(_nEncodeToData(_ptr));
+    }
+
     public void _getDimensions() {
         Stats.onNativeCall();
         long res = _nGetDimensions(_ptr);
@@ -41,4 +46,5 @@ public class Image extends RefCnt {
 
     public static native long _nMakeFromEncoded(byte[] bytes, IRect subset);
     public static native long _nGetDimensions(long ptr);
+    public static native long _nEncodeToData(long ptr);
 }
