@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
@@ -60,7 +60,7 @@ public class PathEffect extends RefCnt {
         return new PathEffect(_nMakeDiscrete(segLength, dev, seed));
     }
 
-    @Internal
+    @ApiStatus.Internal
     public PathEffect(long ptr) {
         super(ptr);
     }

@@ -45,7 +45,7 @@ Paragraph            ▓▓▓▓▓▓▓▓▓▓
 ParagraphCache       ░░░░░░░░░░
 ParagraphStyle       ▓░░░░░░░░░
 ParagraphBuilder     ▓▓▓▓▓▓▓▓░░
-TextStyle            ▓▓░░░░░░░░
+TextStyle            ▓▓▓▓▓▓▓▓▓▓
 TypefaceFontProvider ▓▓▓▓▓▓▓▓▓▓
 ```
 

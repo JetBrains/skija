@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
 
@@ -24,7 +24,7 @@ public class Typeface extends RefCnt {
         return new Typeface(_nMakeClone(_ptr, variations));
     }
 
-    @Internal
+    @ApiStatus.Internal
     public Typeface(long ptr) {
         super(ptr);
     }

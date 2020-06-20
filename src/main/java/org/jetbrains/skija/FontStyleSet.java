@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
 
@@ -37,7 +37,7 @@ public class FontStyleSet extends RefCnt {
         return ptr == 0 ? null : new Typeface(ptr);
     }    
 
-    @Internal
+    @ApiStatus.Internal
     public FontStyleSet(long ptr) {
         super(ptr);
     }

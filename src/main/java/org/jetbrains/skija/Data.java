@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.Managed;
 import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.Stats;
@@ -74,7 +74,7 @@ public class Data extends Managed {
         return new Data(_nMakeEmpty());
     }
 
-    @Internal
+    @ApiStatus.Internal
     public Data(long ptr) {
         super(ptr, _finalizerPtr);
         Stats.onNativeCall();

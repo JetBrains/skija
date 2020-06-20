@@ -3,7 +3,7 @@ package org.jetbrains.skija;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 
 @Getter
 @EqualsAndHashCode
@@ -14,7 +14,7 @@ public class IRect {
     public final int _right;
     public final int _bottom;
 
-    @Internal
+    @ApiStatus.Internal
     public IRect(int l, int t, int r, int b) {
         _left = l;
         _top = t;

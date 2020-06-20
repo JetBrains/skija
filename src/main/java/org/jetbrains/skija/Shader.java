@@ -2,7 +2,7 @@ package org.jetbrains.skija;
 
 import lombok.Getter;
 import lombok.With;
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
@@ -19,7 +19,7 @@ public class Shader extends RefCnt {
         @Getter @With
         public final Matrix33 _localMatrix;
 
-        @Internal
+        @ApiStatus.Internal
         public GradientOptions(TileMode t, int f, Matrix33 m) {
             _tileMode = t;
             _flags = f;
@@ -148,7 +148,7 @@ public class Shader extends RefCnt {
         return new Shader(_nMakeLerp(t, Native.getPtr(dst), Native.getPtr(src)));
     }
 
-    @Internal
+    @ApiStatus.Internal
     public Shader(long ptr) {
         super(ptr);
     }

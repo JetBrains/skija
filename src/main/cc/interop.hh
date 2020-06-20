@@ -9,14 +9,26 @@
 #include "SkRRect.h"
 #include "SkString.h"
 
-jintArray javaIntArray(JNIEnv* env, std::vector<int> ints);
+namespace java {
+    namespace lang {
+        namespace Float {
+            extern jclass cls;
+            extern jmethodID ctor;
+        }
 
-jlongArray javaLongArray(JNIEnv* env, std::vector<long> longs);
-
-jfloatArray javaFloatArray(JNIEnv* env, std::vector<float> floats);
+        namespace String {
+            extern jclass cls;
+        }
+    }
+}
 
 namespace skija {
     namespace FontAxisInfo {
+        extern jclass cls;
+        extern jmethodID ctor;
+    }
+
+    namespace FontMetrics {
         extern jclass cls;
         extern jmethodID ctor;
     }
@@ -88,7 +100,13 @@ namespace skija {
     }
 }
 
+SkFontStyle skFontStyle(jint style);
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray arr);
 SkString skString(JNIEnv* env, jstring str);
+jobject javaFloat(JNIEnv* env, float val);
 jstring javaString(JNIEnv* env, const SkString& str);
-SkFontStyle skFontStyle(jint style);
+
+jintArray    javaIntArray   (JNIEnv* env, const std::vector<int>& ints);
+jlongArray   javaLongArray  (JNIEnv* env, const std::vector<long>& longs);
+jfloatArray  javaFloatArray (JNIEnv* env, const std::vector<float>& floats);
+jobjectArray javaStringArray(JNIEnv* env, const std::vector<SkString>& strings);

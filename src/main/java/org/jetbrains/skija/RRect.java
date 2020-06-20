@@ -2,14 +2,14 @@ package org.jetbrains.skija;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 
 @EqualsAndHashCode(callSuper = true)
 @ToString
 public class RRect extends Rect {
     public final float[] _radii;
 
-    @Internal
+    @ApiStatus.Internal
     public RRect(float l, float t, float r, float b, float[] radii) {
         super(l, t, r, b);
         this._radii = radii;

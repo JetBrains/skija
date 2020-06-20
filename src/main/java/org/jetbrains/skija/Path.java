@@ -1,15 +1,15 @@
 package org.jetbrains.skija;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.Managed;
 import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.Stats;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 
 /**
  * <p>Path contain geometry. Path may be empty, or contain one or more verbs that
@@ -1890,7 +1890,7 @@ public class Path extends Managed implements Iterable {
             return _nextSegment._verb != Verb.DONE;
         }
 
-        @Internal
+        @ApiStatus.Internal
         public Iter(Path path, long ptr) {
             super(ptr, _nGetFinalizer());
             this._path = path;
@@ -2050,7 +2050,7 @@ public class Path extends Managed implements Iterable {
         return _nIsValid(_ptr);
     }
 
-    @Internal
+    @ApiStatus.Internal
     public Path(long ptr) {
         super(ptr, _finalizerPtr);
         Stats.onNativeCall();

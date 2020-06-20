@@ -5,22 +5,36 @@
 #include "interop.hh"
 #include "paragraph/interop.hh"
 
-jintArray javaIntArray(JNIEnv* env, std::vector<int> ints) {
-    jintArray res = env->NewIntArray(ints.size());
-    env->SetIntArrayRegion(res, 0, ints.size(), ints.data());
-    return res;
-}
+namespace java {
+    namespace lang {
+        namespace Float {
+            jclass cls;
+            jmethodID ctor;
 
-jlongArray javaLongArray(JNIEnv* env, std::vector<long> longs) {
-    jlongArray res = env->NewLongArray(longs.size());
-    env->SetLongArrayRegion(res, 0, longs.size(), longs.data());
-    return res;
-}
+            void onLoad(JNIEnv* env) {
+                jclass local = env->FindClass("java/lang/Float");
+                cls  = static_cast<jclass>(env->NewGlobalRef(local));
+                ctor = env->GetMethodID(cls, "<init>", "(F)V");
+            }
 
-jfloatArray javaFloatArray(JNIEnv* env, std::vector<float> floats) {
-    jfloatArray res = env->NewFloatArray(floats.size());
-    env->SetFloatArrayRegion(res, 0, floats.size(), floats.data());
-    return res;
+            void onUnload(JNIEnv* env) {
+                env->DeleteGlobalRef(cls);
+            }
+        }
+
+        namespace String {
+            jclass cls;
+
+            void onLoad(JNIEnv* env) {
+                jclass local = env->FindClass("java/lang/String");
+                cls = static_cast<jclass>(env->NewGlobalRef(local));
+            }
+
+            void onUnload(JNIEnv* env) {
+                env->DeleteGlobalRef(cls);
+            }
+        }
+    }
 }
 
 namespace skija {
@@ -32,6 +46,21 @@ namespace skija {
             jclass local = env->FindClass("org/jetbrains/skija/FontAxisInfo");
             cls  = static_cast<jclass>(env->NewGlobalRef(local));
             ctor = env->GetMethodID(cls, "<init>", "(IILjava/lang/String;IFFF)V");
+        }
+
+        void onUnload(JNIEnv* env) {
+            env->DeleteGlobalRef(cls);
+        }
+    }
+
+    namespace FontMetrics {
+        jclass cls;
+        jmethodID ctor;
+
+        void onLoad(JNIEnv* env) {
+            jclass local = env->FindClass("org/jetbrains/skija/FontMetrics");
+            cls  = static_cast<jclass>(env->NewGlobalRef(local));
+            ctor = env->GetMethodID(cls, "<init>", "(FFFFFFFFFFFLjava/lang/Float;Ljava/lang/Float;Ljava/lang/Float;Ljava/lang/Float;)V");
         }
 
         void onUnload(JNIEnv* env) {
@@ -283,7 +312,11 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_10) != JNI_OK)
         return JNI_ERR;
 
+    java::lang::Float::onLoad(env);
+    java::lang::String::onLoad(env);
+
     skija::FontAxisInfo::onLoad(env);
+    skija::FontMetrics::onLoad(env);
     skija::FontVariation::onLoad(env);
     skija::IRect::onLoad(env);
     skija::Path::Segment::onLoad(env);
@@ -293,6 +326,9 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 
     skija::paragraph::LineMetrics::onLoad(env);
     skija::paragraph::Paragraph::TextBox::onLoad(env);
+    skija::paragraph::TextStyle::Decoration::onLoad(env);
+    skija::paragraph::TextStyle::Shadow::onLoad(env);
+    skija::paragraph::TextStyle::FontFeature::onLoad(env);
     
     return JNI_VERSION_10;
 }
@@ -302,16 +338,27 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_10) != JNI_OK)
         return;
 
-    skija::paragraph::LineMetrics::onUnload(env);
-    skija::paragraph::Paragraph::TextBox::onUnload(env);
+    java::lang::Float::onUnload(env);
+    java::lang::String::onUnload(env);
 
     skija::FontAxisInfo::onUnload(env);
+    skija::FontMetrics::onUnload(env);
     skija::FontVariation::onUnload(env);
     skija::IRect::onUnload(env);
     skija::Path::Segment::onUnload(env);
     skija::Point::onUnload(env);
     skija::Rect::onUnload(env);
     skija::RRect::onUnload(env);
+
+    skija::paragraph::LineMetrics::onUnload(env);
+    skija::paragraph::Paragraph::TextBox::onUnload(env);
+    skija::paragraph::TextStyle::Decoration::onUnload(env);
+    skija::paragraph::TextStyle::Shadow::onUnload(env);
+    skija::paragraph::TextStyle::FontFeature::onUnload(env);
+}
+
+SkFontStyle skFontStyle(jint style) {
+    return SkFontStyle(style & 0xFFFF, (style >> 16) & 0xFF, static_cast<SkFontStyle::Slant>((style >> 24) & 0xFF));
 }
 
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray matrixArray) {
@@ -335,10 +382,35 @@ SkString skString(JNIEnv* env, jstring s) {
     return res;
 }
 
+jobject javaFloat(JNIEnv* env, float val) {
+    return env->NewObject(java::lang::Float::cls, java::lang::Float::ctor, val);
+}
+
 jstring javaString(JNIEnv* env, const SkString& str) {
     return env->NewStringUTF(str.c_str());
 }
 
-SkFontStyle skFontStyle(jint style) {
-    return SkFontStyle(style & 0xFFFF, (style >> 16) & 0xFF, static_cast<SkFontStyle::Slant>((style >> 24) & 0xFF));
+jintArray javaIntArray(JNIEnv* env, const std::vector<int>& ints) {
+    jintArray res = env->NewIntArray(ints.size());
+    env->SetIntArrayRegion(res, 0, ints.size(), ints.data());
+    return res;
+}
+
+jlongArray javaLongArray(JNIEnv* env, const std::vector<long>& longs) {
+    jlongArray res = env->NewLongArray(longs.size());
+    env->SetLongArrayRegion(res, 0, longs.size(), longs.data());
+    return res;
+}
+
+jfloatArray javaFloatArray(JNIEnv* env, const std::vector<float>& floats) {
+    jfloatArray res = env->NewFloatArray(floats.size());
+    env->SetFloatArrayRegion(res, 0, floats.size(), floats.data());
+    return res;
+}
+
+jobjectArray javaStringArray(JNIEnv* env, const std::vector<SkString>& strings) {
+    jobjectArray res = env->NewObjectArray(strings.size(), java::lang::String::cls, nullptr);
+    for (int i = 0; i < strings.size(); ++i)
+        env->SetObjectArrayElement(res, i, javaString(env, strings[i]));
+    return res;
 }

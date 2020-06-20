@@ -9,12 +9,14 @@
 
 - camelCase in Java & C++.
 - UPPER_CASE for enum values.
-- Field/method prefixes:.
+- Field/method prefixes:
   - `_n...` for native methods.
   - `_...`  for “private” fields.
   - `get...`/`is...` for getters.
   - `set...`/`with...` for setters.
   - `make...` for static named constructors.
+  - `_FLAG_<TYPE>_<NAME>` for bit flags.
+  - `...Mask` for bit masks.
 
 Some common dictionary:
 
@@ -22,6 +24,11 @@ Some common dictionary:
 - finalizer
 - lerp
 - count (instead of size/length/...)
+
+# Code convention
+
+- Java/CC method order must match Skia’s *.h method order
+- If no reference order is present, sort alphabetically (e.g. java imports)
 
 # Things we fix in Skia APIs
 
@@ -34,7 +41,7 @@ Some common dictionary:
 
 - All fields/methods `public`.
 - Fields/methods/inner classes not for public consumption: also `public`, but prefixed with `_` (`startIndex` -> `_startIndex`).
-- Constructors not for public consumption: @Internal
+- Constructors not for public consumption: @ApiStatus.Internal
 
 Why public?
 
@@ -49,6 +56,7 @@ Why public?
 - public final fields prefixed with `_`.
 - public getters/setters following javaBeans convention (get/is/set/with).
 - setters return this.
+- flags/bit masks are not exposed as getters, instead, individual check for each flag value is done.
 
 Why getters/setters?
 
@@ -63,7 +71,12 @@ public:
     size_t fEndIndex = 0;
     size_t fEndExcludingWhitespaces = 0;
     size_t fEndIncludingNewline = 0;
-    bool fHardBreak = false;
+    bool   fHardBreak = false;
+    int    fFlags = 0;
+    enum Flags {
+      kIsBold_Flag   = 1,
+      kIsItalic_Flag = 2,
+    };
 }
 ```
 
@@ -77,6 +90,13 @@ public class LineMetrics {
     public final long    _endExcludingWhitespaces;
     public final long    _endIncludingNewline;
     public final boolean _hardBreak;
+    @Getter(AccessLevel.NONE)
+    public final int     _flags;
+
+    public static final int _FLAG_IS_BOLD   = 0b0001;
+    public static final int _FLAG_IS_ITALIC = 0b0010;
+    public boolean isBold() { return (_flags | _FLAG_IS_BOLD) != 0; }
+    public boolean isItalic() { return (_flags | _FLAG_IS_ITALIC) != 0; }
 }
 ```
 
@@ -92,9 +112,14 @@ public class LineMetrics {
 - Two-integers are returned as single long.
 - Strings are passed as Strings (converted to UTF-8/UTF-16 on C++ side).
 - When a managed object is returned, its ref count should be bumped (normally Skia follows that as well, no extra action needed).
-- size_t -> jlong
 - Prefer `Native.ptr(obj)` to `obj._ptr` because some Skia APIs are fine with accepting `nullptr` as some arguments, so obj might be null.
 - Assert known constraint on Java side (e.g. `assert matrix.length == 9`).
+
+Types correspondence:
+
+- size_t -> jlong
+- SkColor -> jint
+- SkScalar -> jfloat
 
 # Example
 

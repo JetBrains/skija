@@ -1,8 +1,7 @@
 package org.jetbrains.skija;
 
-import org.jetbrains.skija.impl.Managed;
-import org.jetbrains.skija.impl.Native;
-import org.jetbrains.skija.impl.Stats;
+import org.jetbrains.annotations.*;
+import org.jetbrains.skija.impl.*;
 
 public class Paint extends Managed {
     public enum Style {
@@ -26,6 +25,16 @@ public class Paint extends Managed {
     public Paint() {
         super(_nMake(), _finalizerPtr);
         Stats.onNativeCall();
+    }
+
+    @ApiStatus.Internal
+    public Paint(long ptr) {
+        super(ptr, _finalizerPtr);
+    }
+
+    @Override
+    public boolean nativeEquals(Native other) {
+        return _nEquals(_ptr, Native.getPtr(other));
     }
 
     public boolean isAntiAlias() {
@@ -242,6 +251,7 @@ public class Paint extends Managed {
     public static final  long _finalizerPtr = _nGetFinalizer();
     public static native long _nMake();
     public static native long _nGetFinalizer();
+    public static native boolean _nEquals(long ptr, long otherPtr);
     public static native boolean _nIsAntiAlias(long ptr);
     public static native void _nSetAntiAlias(long ptr, boolean value);
     public static native int  _nGetStyle(long ptr);

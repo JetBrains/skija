@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.Managed;
 import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.Stats;
@@ -37,12 +37,12 @@ public class ColorSpace extends Managed {
         return new Color4f(_nConvert(_ptr, Native.getPtr(to == null ? getSRGB() : to), color.getR(), color.getG(), color.getB(), color.getA()));
     }
 
-    @Internal
+    @ApiStatus.Internal
     public ColorSpace(long ptr) {
         super(ptr, _finalizerPtr);
     }
 
-    @Internal
+    @ApiStatus.Internal
     public ColorSpace(long ptr, boolean allowClose) {
         super(ptr, _finalizerPtr, allowClose);
     }

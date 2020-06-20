@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
@@ -51,7 +51,7 @@ public class MaskFilter extends RefCnt {
     //     return new MaskFilter(_nMakeEmboss(blurSigma, lightDirectionX, lightDirectionY, lightDirectionZ, lightPad, lightAmbient, lightSpecular));
     // }
 
-    @Internal
+    @ApiStatus.Internal
     public MaskFilter(long ptr) {
         super(ptr);
     }

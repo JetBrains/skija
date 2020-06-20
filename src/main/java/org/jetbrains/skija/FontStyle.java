@@ -1,7 +1,7 @@
 package org.jetbrains.skija;
 
 import lombok.EqualsAndHashCode;
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 
 @EqualsAndHashCode
 public class FontStyle {
@@ -44,7 +44,7 @@ public class FontStyle {
         _value = (weight & 0xFFFF) | ((width & 0xFF) << 16) | (slant.ordinal() << 24);
     }
 
-    @Internal
+    @ApiStatus.Internal
     public FontStyle(int value) {
         this._value = value;
     }

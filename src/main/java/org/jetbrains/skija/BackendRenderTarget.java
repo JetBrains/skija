@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.Managed;
 import org.jetbrains.skija.impl.Stats;
 
@@ -126,7 +126,7 @@ public class BackendRenderTarget extends Managed {
         return new BackendRenderTarget(_nMakeGL(width, height, sampleCnt, stencilBits, fbId, fbFormat));
     }
 
-    @Internal
+    @ApiStatus.Internal
     public BackendRenderTarget(long ptr) {
         super(ptr, _finalizerPtr);
     }

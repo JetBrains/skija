@@ -9,15 +9,17 @@ if [ ! -f target/build_timestamp ]; then
     touch -t 200912310000 target/build_timestamp
 fi
 
+ANNOTATIONS=~/.m2/repository/org/jetbrains/annotations/19.0.0/annotations-19.0.0.jar
 LOMBOK=~/.m2/repository/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar
-if [[ ! -f $LOMBOK ]]; then
+
+if [[ ! -f $ANNOTATIONS ]] || [[ ! -f $LOMBOK ]] ; then
     # fetch missing dependencies
     mvn compile
 fi
 
 mkdir -p target/classes/org/jetbrains/skija
 find src/main/java/org/jetbrains/skija/lombok.config -newer target/build_timestamp | xargs -I '{}' cp '{}' target/classes/org/jetbrains/skija
-find src -name "*.java" -newer target/build_timestamp | xargs javac --release 11 -cp target/classes:target/test-classes:$LOMBOK
+find src -name "*.java" -newer target/build_timestamp | xargs javac --release 11 -cp target/classes:target/test-classes:$ANNOTATIONS:$LOMBOK
 
 # move impl
 mkdir -p target/classes/org/jetbrains/skija/impl

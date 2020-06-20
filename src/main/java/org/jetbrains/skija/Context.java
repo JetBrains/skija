@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
 
@@ -15,7 +15,7 @@ public class Context extends RefCnt {
         _nFlush(_ptr);
     }
 
-    @Internal
+    @ApiStatus.Internal
     public Context(long ptr) {
         super(ptr);
     }

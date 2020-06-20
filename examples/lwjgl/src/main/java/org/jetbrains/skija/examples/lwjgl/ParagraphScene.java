@@ -1,18 +1,19 @@
 package org.jetbrains.skija.examples.lwjgl;
 
+import java.util.Arrays;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.paragraph.*;
 
 public class ParagraphScene implements Scene {
-    FontCollection fc = new FontCollection();
+    public FontCollection fc = new FontCollection();
     
     public ParagraphScene() {
         fc.setDefaultFontManager(FontMgr.getDefault());
         
         TypefaceFontProvider fm = new TypefaceFontProvider();
-        Typeface jbMono = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf", 0);
+        Typeface jbMono = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf");
         fm.registerTypeface(jbMono);
-        Typeface inter = Typeface.makeFromFile("fonts/Inter-Regular.ttf", 0);
+        Typeface inter = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         fm.registerTypeface(inter, "Interface");
         fc.setAssetFontManager(fm);
     }
@@ -114,21 +115,6 @@ public class ParagraphScene implements Scene {
                 pb.popStyle();
             }
 
-            //            + "Thou art more lovely and more temperate:\n"
-            //            + "Rough winds do shake the darling buds of May,\n"
-            //            + "And summer's lease hath all too short a date:\n"
-            //            + "Sometime too hot the eye of heaven shines,\n"
-            //            + "And often is his gold complexion dimm'd;\n"
-            //            + "And every fair from fair sometime declines,\n"
-            //            + "By chance or nature's changing course untrimm'd;\n"
-            //            + "But thy eternal summer shall not fade\n"
-            //            + "Nor lose possession of that fair thou owest;\n"
-            //            + "Nor shall Death brag thou wander'st in his shade,\n"
-            //            + "When in eternal lines to time thou growest:\n"
-            //            + "So long as men can breathe or eyes can see,\n"
-            //            + "So long lives this and this gives life to thee.\n"
-            //            + "\n");
-
             try (Paragraph p = pb.build();) {
                 p.layout(Float.POSITIVE_INFINITY);
                 float minW = p.getMinIntrinsicWidth();
@@ -150,13 +136,12 @@ public class ParagraphScene implements Scene {
     }
 
     public void drawMetrics(Canvas canvas, float dx, float dy) {
-        canvas.save();
-         try (TextStyle defaultTs = new TextStyle().setFontSize(24).setColor(0xFF000000);
-              TextStyle largeTs   = new TextStyle().setFontSize(36).setColor(0xFF000000);
-              TextStyle smallTs   = new TextStyle().setFontSize(12).setColor(0xFF000000);
-              ParagraphStyle ps   = new ParagraphStyle();
-              ParagraphBuilder pb = new ParagraphBuilder(ps, fc);
-              Paint boundaries    = new Paint().setColor(0xFFFAA6B2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);)
+        try (TextStyle defaultTs = new TextStyle().setFontSize(24).setColor(0xFF000000);
+             TextStyle largeTs   = new TextStyle().setFontSize(36).setColor(0xFF000000);
+             TextStyle smallTs   = new TextStyle().setFontSize(12).setColor(0xFF000000);
+             ParagraphStyle ps   = new ParagraphStyle();
+             ParagraphBuilder pb = new ParagraphBuilder(ps, fc);
+             Paint boundaries    = new Paint().setColor(0xFFFAA6B2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);)
         {
             // default style
             pb.pushStyle(defaultTs);
@@ -191,12 +176,6 @@ public class ParagraphScene implements Scene {
 
                 // getGlyphPositionAtCoordinate
                 int glyphIdx = p.getGlyphPositionAtCoordinate(dx, dy).getPosition();
-                try (var typeface = fc.defaultFallback();
-                     var font = new Font(typeface, 16);
-                     var blob = font.shape("idx: " + glyphIdx, Float.POSITIVE_INFINITY);
-                     var paint = new Paint().setColor(0xFFcc3333)) {
-                    canvas.drawTextBlob(blob, 0, p.getHeight(), font, paint);
-                }
 
                 try (var blue   = new Paint().setColor(0x80b3d7ff);
                      var orange = new Paint().setColor(0x80ffd7b3);) {
@@ -212,10 +191,17 @@ public class ParagraphScene implements Scene {
                         canvas.drawRect(box.getRect(), orange);
                     }
                 }
-
                 p.paint(canvas, 0, 0);
+                canvas.translate(0, p.getHeight());
+
+                try (var typeface = fc.defaultFallback();
+                     var font = new Font(typeface, 16);
+                     var blob = font.shape("idx: " + glyphIdx, Float.POSITIVE_INFINITY);
+                     var paint = new Paint().setColor(0xFFcc3333)) {
+                    canvas.drawTextBlob(blob, 0, 0, font, paint);
+                    canvas.translate(0, blob.getBounds().getHeight());
+                }
             }
-        }       
-        canvas.restore();
+        }
     }
 }

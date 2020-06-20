@@ -3,7 +3,7 @@ package org.jetbrains.skija;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 
 @Getter
 @EqualsAndHashCode
@@ -14,7 +14,7 @@ public class Rect {
     public final float _right;
     public final float _bottom;
 
-    @Internal
+    @ApiStatus.Internal
     public Rect(float l, float t, float r, float b) {
         this._left = l;
         this._top = t;

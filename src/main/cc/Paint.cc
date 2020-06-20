@@ -22,6 +22,12 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Paint__1nGetFinalize
     return static_cast<jlong>(reinterpret_cast<uintptr_t>(&deletePaint));
 }
 
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Paint__1nEquals(JNIEnv* env, jclass jclass, jlong aPtr, jlong bPtr) {
+    SkPaint* a = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(aPtr));
+    SkPaint* b = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(bPtr));
+    return *a == *b;
+}
+
 extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Paint__1nIsAntiAlias(JNIEnv* env, jclass jclass, jlong ptr) {
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
     return instance->isAntiAlias();

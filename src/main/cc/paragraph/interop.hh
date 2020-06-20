@@ -18,5 +18,28 @@ namespace skija {
                 void onUnload(JNIEnv* env);
             }
         }
+
+        namespace TextStyle {
+            namespace Decoration {
+                extern jclass cls;
+                extern jmethodID ctor;
+                void onLoad(JNIEnv* env);
+                void onUnload(JNIEnv* env);   
+            }
+
+            namespace Shadow {
+                extern jclass cls;
+                extern jmethodID ctor;
+                void onLoad(JNIEnv* env);
+                void onUnload(JNIEnv* env);   
+            }
+
+            namespace FontFeature {
+                extern jclass cls;
+                extern jmethodID ctor;
+                void onLoad(JNIEnv* env);
+                void onUnload(JNIEnv* env);   
+            }
+        }
     }
 }

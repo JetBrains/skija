@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
@@ -40,7 +40,7 @@ public class Surface extends RefCnt {
     public static Surface makeFromBackendRenderTarget(Context context, BackendRenderTarget rt, Origin origin, ColorType colorType, ColorSpace colorSpace) {
         Stats.onNativeCall();
         long ptr = _nMakeFromBackendRenderTarget(Native.getPtr(context), Native.getPtr(rt), origin.ordinal(), colorType.ordinal(), Native.getPtr(colorSpace));
-        return new Surface(ptr, context, rt);
+        return new Surface(ptr);
     }
 
     public static Surface makeRasterN32Premul(int width, int height) {
@@ -59,13 +59,8 @@ public class Surface extends RefCnt {
         return new Image(_nMakeImageSnapshot(_ptr));
     }
 
-    @Internal
+    @ApiStatus.Internal
     public Surface(long ptr) {
-        super(ptr);
-    }
-
-    @Internal
-    public Surface(long ptr, Context context, BackendRenderTarget rt) {
         super(ptr);
     }
 

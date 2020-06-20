@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.Stats;
 
@@ -21,7 +21,7 @@ public class Canvas extends Native {
         FAST
     }
 
-    @Internal
+    @ApiStatus.Internal
     public Canvas(long ptr) {
         super(ptr);
     }

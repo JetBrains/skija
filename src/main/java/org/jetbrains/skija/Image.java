@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
 
@@ -39,7 +39,7 @@ public class Image extends RefCnt {
         _height = (int) (res >>> 32);
     }
 
-    @Internal
+    @ApiStatus.Internal
     public Image(long ptr) {
         super(ptr);
     }

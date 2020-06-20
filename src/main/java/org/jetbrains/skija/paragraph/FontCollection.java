@@ -1,5 +1,6 @@
 package org.jetbrains.skija.paragraph;
 
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
@@ -75,7 +76,7 @@ public class FontCollection extends RefCnt {
         return this;
     }
 
-    @Internal
+    @ApiStatus.Internal
     public FontCollection(long ptr) {
         super(ptr);
     }

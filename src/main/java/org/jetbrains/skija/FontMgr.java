@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-import org.jetbrains.skija.impl.Internal;
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
@@ -110,12 +110,12 @@ public class FontMgr extends RefCnt {
         return _DefaultHolder.INSTANCE;
     }
 
-    @Internal
+    @ApiStatus.Internal
     public FontMgr(long ptr) {
         super(ptr);
     }
 
-    @Internal
+    @ApiStatus.Internal
     public FontMgr(long ptr, boolean allowClose) {
         super(ptr, allowClose);
     }
