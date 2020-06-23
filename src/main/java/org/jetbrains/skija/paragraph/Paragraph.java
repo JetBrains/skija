@@ -1,7 +1,5 @@
 package org.jetbrains.skija.paragraph;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.Managed;
@@ -9,81 +7,6 @@ import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.Stats;
 
 public class Paragraph extends Managed {
-    public enum Affinity {
-        UPSTREAM,
-        DOWNSTREAM
-    }
-
-    public enum RectHeightStyle {
-
-        /** Provide tight bounding boxes that fit heights per run. */
-        TIGHT,
-
-        /**
-         * The height of the boxes will be the maximum height of all runs in the
-         * line. All rects in the same line will be the same height.
-         */
-        MAX,
-
-        /**
-         * Extends the top and/or bottom edge of the bounds to fully cover any line
-         * spacing. The top edge of each line should be the same as the bottom edge
-         * of the line above. There should be no gaps in vertical coverage given any
-         * ParagraphStyle line_height.
-         *
-         * The top and bottom of each rect will cover half of the
-         * space above and half of the space below the line.
-         */
-        INCLUDE_LINE_SPACING_MIDDLE,
-
-        /** The line spacing will be added to the top of the rect. */
-        INCLUDE_LINE_SPACING_TOP,
-
-        /** The line spacing will be added to the bottom of the rect. */
-        INCLUDE_LINE_SPACING_BOTTOM,
-
-        STRUT
-    }
-
-    public enum RectWidthStyle {
-
-        /** Provide tight bounding boxes that fit widths to the runs of each line independently. */
-        TIGHT,
-
-        /** Extends the width of the last rect of each line to match the position of the widest rect over all the lines. */
-        MAX
-    }
-
-    public enum TextDirection {
-        RTL,
-        LTR
-    }
-
-    @Data
-    public static class PositionWithAffinity {
-        public final int _position;
-        public final Affinity _affinity;
-    }
-
-    @AllArgsConstructor
-    @Data
-    public static class TextBox {
-        public final Rect _rect;
-        public final TextDirection _direction;
-
-        public TextBox(float l, float t, float r, float b, int direction) {
-            this(Rect.makeLTRB(l, t, r, b), TextDirection.values()[direction]);
-        }
-    }
-
-    public enum TextAlign {
-        LEFT,
-        RIGHT,
-        CENTER,
-        JUSTIFY,
-        START,
-        END,
-    }
 
     public float getMaxWidth() {
         Stats.onNativeCall();
@@ -187,9 +110,9 @@ public class Paragraph extends Managed {
         return _nGetUnresolvedGlyphsCount(_ptr);
     }
 
-    public Paragraph updateTextAlign(TextAlign align) {
+    public Paragraph updateAlign(Align align) {
         Stats.onNativeCall();
-        _nUpdateTextAlign(_ptr, align.ordinal());
+        _nUpdateAlign(_ptr, align.ordinal());
         return this;
     }
 
@@ -242,7 +165,7 @@ public class Paragraph extends Managed {
     public static native long  _nGetLineNumber(long ptr);
     public static native void  _nMarkDirty(long ptr);
     public static native int _nGetUnresolvedGlyphsCount(long ptr);
-    public static native void  _nUpdateTextAlign(long ptr, int textAlign);
+    public static native void  _nUpdateAlign(long ptr, int Align);
     public static native void  _nUpdateText(long ptr, int from, String text);
     public static native void  _nUpdateFontSize(long ptr, int from, int to, float size);
     public static native void  _nUpdateForegroundPaint(long ptr, int from, int to, long paintPtr);

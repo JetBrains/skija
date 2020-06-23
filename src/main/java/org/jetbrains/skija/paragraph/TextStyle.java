@@ -11,86 +11,20 @@ import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
 public class TextStyle extends Managed {
-    @AllArgsConstructor
-    @Data
-    @With
-    public static class Decoration {
-        public static final Decoration NONE = new Decoration(false, false, false, Mode.GAPS, 0xFF000000, Style.SOLID, 1f);
-
-        public enum Mode {
-            GAPS,
-            THROUGH
-        }
-
-        public enum Style {
-            SOLID,
-            DOUBLE,
-            DOTTED,
-            DASHED,
-            WAVY
-        }
-
-        @Getter(AccessLevel.NONE)
-        public final boolean _underline;
-        @Getter(AccessLevel.NONE)
-        public final boolean _overline;
-        @Getter(AccessLevel.NONE)
-        public final boolean _lineThrough;
-        public final Mode  _mode;
-        public final int   _color;
-        public final Style _style;
-        public final float _thicknessMultiplier;
-
-        @ApiStatus.Internal
-        public Decoration(boolean underline, boolean overline, boolean lineThrough, int mode, int color, int style, float thicknessMultiplier) {
-            this(underline, overline, lineThrough, Mode.values()[mode], color, Style.values()[style], thicknessMultiplier);
-        }
-
-        public boolean hasUnderline() {
-            return _underline;
-        }
-
-        public boolean hasOverline() {
-            return _overline;
-        }
-
-        public boolean hasLineThrough() {
-            return _lineThrough;
-        }
-    }
-
-    @AllArgsConstructor
-    @Data
-    public static class Shadow {
-        public final int    _color;
-        public final float  _offsetX;
-        public final float  _offsetY;
-        public final double _blurRadius;
-
-        public Shadow(int color, Point offset, double blurRadius) {
-            this(color, offset.getX(), offset.getY(), blurRadius);
-        }
-
-        public Point getOffset() {
-            return new Point(_offsetX, _offsetY);
-        }
-    }
-
-    // TODO unify with FontFeature?
-    @Data
-    public static class FontFeature {
-        public final String _name;
-        public final int    _value;
-    }
-
-    public enum BaselineType {
-        ALPHABETIC,
-        IDEOGRAPHIC,
+    @ApiStatus.Internal
+    public TextStyle(long ptr) {
+        super(ptr, _finalizerPtr);
     }
 
     public TextStyle() {
-        super(_nMake(), _finalizerPtr);
+        this(_nMake());
         Stats.onNativeCall();
+    }
+
+    @ApiStatus.Internal @Override
+    public boolean _nativeEquals(Native other) {
+        Stats.onNativeCall();
+        return _nEquals(_ptr, Native.getPtr(other));
     }
 
     public int getColor() {
@@ -311,42 +245,43 @@ public class TextStyle extends Managed {
         return this;
     }
 
-    public static final  long    _finalizerPtr = _nGetFinalizer();
-    public static native long    _nGetFinalizer();
-    public static native long    _nMake();
-    public static native int     _nGetColor(long ptr);
-    public static native void    _nSetColor(long ptr,int color);
-    public static native long    _nGetForeground(long ptr);
-    public static native void    _nSetForeground(long ptr, long paintPtr);
-    public static native long    _nGetBackground(long ptr);
-    public static native void    _nSetBackground(long ptr, long paintPtr);
+    public static final  long  _finalizerPtr = _nGetFinalizer();
+    public static native long  _nGetFinalizer();
+    public static native boolean _nEquals(long ptr, long otherPtr);
+    public static native long  _nMake();
+    public static native int   _nGetColor(long ptr);
+    public static native void  _nSetColor(long ptr,int color);
+    public static native long  _nGetForeground(long ptr);
+    public static native void  _nSetForeground(long ptr, long paintPtr);
+    public static native long  _nGetBackground(long ptr);
+    public static native void  _nSetBackground(long ptr, long paintPtr);
     public static native Decoration _nGetDecoration(long ptr);
-    public static native void    _nSetDecoration(long ptr, boolean underline, boolean overline, boolean lineThrough, int mode, int color, int style, float thicknessMultiplier);
-    public static native int     _nGetFontStyle(long ptr);
-    public static native void    _nSetFontStyle(long ptr, int fontStyle);
+    public static native void  _nSetDecoration(long ptr, boolean underline, boolean overline, boolean lineThrough, int mode, int color, int style, float thicknessMultiplier);
+    public static native int   _nGetFontStyle(long ptr);
+    public static native void  _nSetFontStyle(long ptr, int fontStyle);
     public static native Shadow[] _nGetShadows(long ptr);
-    public static native void    _nAddShadow(long ptr, int color, float offsetX, float offsetY, double blurRadius);
-    public static native void    _nClearShadows(long ptr);
+    public static native void  _nAddShadow(long ptr, int color, float offsetX, float offsetY, double blurRadius);
+    public static native void  _nClearShadows(long ptr);
     public static native FontFeature[] _nGetFontFeatures(long ptr);
-    public static native void    _nAddFontFeature(long ptr, String name, int value);
-    public static native void    _nClearFontFeatures(long ptr);
-    public static native float   _nGetFontSize(long ptr);
-    public static native void    _nSetFontSize(long ptr, float size);
+    public static native void  _nAddFontFeature(long ptr, String name, int value);
+    public static native void  _nClearFontFeatures(long ptr);
+    public static native float _nGetFontSize(long ptr);
+    public static native void  _nSetFontSize(long ptr, float size);
     public static native String[] _nGetFontFamilies(long ptr);
-    public static native void    _nSetFontFamilies(long ptr, String[] families);
-    public static native Float   _nGetHeight(long ptr);
-    public static native void    _nSetHeight(long ptr, boolean override, float height);
-    public static native float   _nGetLetterSpacing(long ptr);
-    public static native void    _nSetLetterSpacing(long ptr, float letterSpacing);
-    public static native float   _nGetWordSpacing(long ptr);
-    public static native void    _nSetWordSpacing(long ptr, float wordSpacing);
-    public static native long    _nGetTypeface(long ptr);
-    public static native void    _nSetTypeface(long ptr, long typefacePtr);
-    public static native String  _nGetLocale(long ptr);
-    public static native void    _nSetLocale(long ptr, String locale);
-    public static native int     _nGetBaselineType(long ptr);
-    public static native void    _nSetBaselineType(long ptr, int baseline);
+    public static native void  _nSetFontFamilies(long ptr, String[] families);
+    public static native Float _nGetHeight(long ptr);
+    public static native void  _nSetHeight(long ptr, boolean override, float height);
+    public static native float _nGetLetterSpacing(long ptr);
+    public static native void  _nSetLetterSpacing(long ptr, float letterSpacing);
+    public static native float _nGetWordSpacing(long ptr);
+    public static native void  _nSetWordSpacing(long ptr, float wordSpacing);
+    public static native long  _nGetTypeface(long ptr);
+    public static native void  _nSetTypeface(long ptr, long typefacePtr);
+    public static native String _nGetLocale(long ptr);
+    public static native void  _nSetLocale(long ptr, String locale);
+    public static native int   _nGetBaselineType(long ptr);
+    public static native void  _nSetBaselineType(long ptr, int baseline);
     public static native FontMetrics _nGetFontMetrics(long ptr);
     public static native boolean _nIsPlaceholder(long ptr);
-    public static native void    _nSetPlaceholder(long ptr);
+    public static native void  _nSetPlaceholder(long ptr);
 }

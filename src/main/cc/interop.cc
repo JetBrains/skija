@@ -325,10 +325,10 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::RRect::onLoad(env);
 
     skija::paragraph::LineMetrics::onLoad(env);
-    skija::paragraph::Paragraph::TextBox::onLoad(env);
-    skija::paragraph::TextStyle::Decoration::onLoad(env);
-    skija::paragraph::TextStyle::Shadow::onLoad(env);
-    skija::paragraph::TextStyle::FontFeature::onLoad(env);
+    skija::paragraph::TextBox::onLoad(env);
+    skija::paragraph::Decoration::onLoad(env);
+    skija::paragraph::Shadow::onLoad(env);
+    skija::paragraph::FontFeature::onLoad(env);
     
     return JNI_VERSION_10;
 }
@@ -351,14 +351,18 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::RRect::onUnload(env);
 
     skija::paragraph::LineMetrics::onUnload(env);
-    skija::paragraph::Paragraph::TextBox::onUnload(env);
-    skija::paragraph::TextStyle::Decoration::onUnload(env);
-    skija::paragraph::TextStyle::Shadow::onUnload(env);
-    skija::paragraph::TextStyle::FontFeature::onUnload(env);
+    skija::paragraph::TextBox::onUnload(env);
+    skija::paragraph::Decoration::onUnload(env);
+    skija::paragraph::Shadow::onUnload(env);
+    skija::paragraph::FontFeature::onUnload(env);
 }
 
 SkFontStyle skFontStyle(jint style) {
     return SkFontStyle(style & 0xFFFF, (style >> 16) & 0xFF, static_cast<SkFontStyle::Slant>((style >> 24) & 0xFF));
+}
+
+jint javaFontStyle(const SkFontStyle& fs) {
+    return (static_cast<int>(fs.slant()) << 24)| (fs.width() << 16) | fs.weight();
 }
 
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray matrixArray) {
@@ -375,6 +379,15 @@ std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray matrixArray) {
 
 SkString skString(JNIEnv* env, jstring s) {
     // TODO fix UTF-8
+
+    // void ParagraphStyle::setEllipsis(const std::u16string& ellipsis) {
+    //     icu::UnicodeString unicode;
+    //     unicode.setTo((UChar*)ellipsis.data());
+    //     std::string str;
+    //     unicode.toUTF8String(str);
+    //     fEllipsis = SkString(str.c_str());
+    // }
+
     jsize       len   = env->GetStringUTFLength(s);
     const char* chars = env->GetStringUTFChars(s, nullptr);
     SkString res(chars, len);
@@ -382,12 +395,12 @@ SkString skString(JNIEnv* env, jstring s) {
     return res;
 }
 
-jobject javaFloat(JNIEnv* env, float val) {
-    return env->NewObject(java::lang::Float::cls, java::lang::Float::ctor, val);
-}
-
 jstring javaString(JNIEnv* env, const SkString& str) {
     return env->NewStringUTF(str.c_str());
+}
+
+jobject javaFloat(JNIEnv* env, float val) {
+    return env->NewObject(java::lang::Float::cls, java::lang::Float::ctor, val);
 }
 
 jintArray javaIntArray(JNIEnv* env, const std::vector<int>& ints) {
@@ -405,6 +418,16 @@ jlongArray javaLongArray(JNIEnv* env, const std::vector<long>& longs) {
 jfloatArray javaFloatArray(JNIEnv* env, const std::vector<float>& floats) {
     jfloatArray res = env->NewFloatArray(floats.size());
     env->SetFloatArrayRegion(res, 0, floats.size(), floats.data());
+    return res;
+}
+
+std::vector<SkString> skStringVector(JNIEnv* env, jobjectArray arr) {
+    size_t len = env->GetArrayLength(arr);
+    std::vector<SkString> res(len);
+    for (int i = 0; i < len; ++i) {
+        jstring str = static_cast<jstring>(env->GetObjectArrayElement(arr, i));
+        res[i] = skString(env, str);
+    }
     return res;
 }
 

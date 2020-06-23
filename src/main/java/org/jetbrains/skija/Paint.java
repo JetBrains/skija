@@ -32,8 +32,8 @@ public class Paint extends Managed {
         super(ptr, _finalizerPtr);
     }
 
-    @Override
-    public boolean nativeEquals(Native other) {
+    @ApiStatus.Internal @Override
+    public boolean _nativeEquals(Native other) {
         return _nEquals(_ptr, Native.getPtr(other));
     }
 

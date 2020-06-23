@@ -43,7 +43,7 @@ FontCollection       ▓▓▓▓▓▓▓▓▓░
 LineMetrics          ▓▓▓▓▓▓▓▓▓░
 Paragraph            ▓▓▓▓▓▓▓▓▓▓
 ParagraphCache       ░░░░░░░░░░
-ParagraphStyle       ▓░░░░░░░░░
+ParagraphStyle       ▓▓▓▓▓▓▓▓▓▓
 ParagraphBuilder     ▓▓▓▓▓▓▓▓░░
 TextStyle            ▓▓▓▓▓▓▓▓▓▓
 TypefaceFontProvider ▓▓▓▓▓▓▓▓▓▓

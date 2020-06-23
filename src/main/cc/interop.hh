@@ -101,12 +101,18 @@ namespace skija {
 }
 
 SkFontStyle skFontStyle(jint style);
+jint javaFontStyle(const SkFontStyle& style);
+
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray arr);
+
 SkString skString(JNIEnv* env, jstring str);
-jobject javaFloat(JNIEnv* env, float val);
 jstring javaString(JNIEnv* env, const SkString& str);
+
+jobject javaFloat(JNIEnv* env, float val);
 
 jintArray    javaIntArray   (JNIEnv* env, const std::vector<int>& ints);
 jlongArray   javaLongArray  (JNIEnv* env, const std::vector<long>& longs);
 jfloatArray  javaFloatArray (JNIEnv* env, const std::vector<float>& floats);
+
+std::vector<SkString> skStringVector(JNIEnv* env, jobjectArray arr);
 jobjectArray javaStringArray(JNIEnv* env, const std::vector<SkString>& strings);

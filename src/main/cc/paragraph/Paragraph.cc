@@ -83,10 +83,10 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Par
   (JNIEnv* env, jclass jclass, jlong ptr, jint start, jint end, jint rectHeightStyle, jint rectWidthStyle) {
     Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
     std::vector<TextBox> rects = instance->getRectsForRange(start, end, static_cast<RectHeightStyle>(rectHeightStyle), static_cast<RectWidthStyle>(rectWidthStyle));
-    jobjectArray rectsArray = env->NewObjectArray(rects.size(), skija::paragraph::Paragraph::TextBox::cls, nullptr);
+    jobjectArray rectsArray = env->NewObjectArray(rects.size(), skija::paragraph::TextBox::cls, nullptr);
     for (int i = 0; i < rects.size(); ++i) {
         TextBox box = rects[i];
-        jobject boxObj = env->NewObject(skija::paragraph::Paragraph::TextBox::cls, skija::paragraph::Paragraph::TextBox::ctor, box.rect.fLeft, box.rect.fTop, box.rect.fRight, box.rect.fBottom, static_cast<jint>(box.direction));
+        jobject boxObj = env->NewObject(skija::paragraph::TextBox::cls, skija::paragraph::TextBox::ctor, box.rect.fLeft, box.rect.fTop, box.rect.fRight, box.rect.fBottom, static_cast<jint>(box.direction));
         env->SetObjectArrayElement(rectsArray, i, boxObj);
     }
     return rectsArray;
@@ -96,10 +96,10 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Par
   (JNIEnv* env, jclass jclass, jlong ptr) {
     Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
     std::vector<TextBox> rects = instance->getRectsForPlaceholders();
-    jobjectArray rectsArray = env->NewObjectArray(rects.size(), skija::paragraph::Paragraph::TextBox::cls, nullptr);
+    jobjectArray rectsArray = env->NewObjectArray(rects.size(), skija::paragraph::TextBox::cls, nullptr);
     for (int i = 0; i < rects.size(); ++i) {
         TextBox box = rects[i];
-        jobject boxObj = env->NewObject(skija::paragraph::Paragraph::TextBox::cls, skija::paragraph::Paragraph::TextBox::ctor, box.rect.fLeft, box.rect.fTop, box.rect.fRight, box.rect.fBottom, static_cast<jint>(box.direction));
+        jobject boxObj = env->NewObject(skija::paragraph::TextBox::cls, skija::paragraph::TextBox::ctor, box.rect.fLeft, box.rect.fTop, box.rect.fRight, box.rect.fBottom, static_cast<jint>(box.direction));
         env->SetObjectArrayElement(rectsArray, i, boxObj);
     }
     return rectsArray;
@@ -154,7 +154,7 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_paragraph_Paragraph__
     return instance->unresolvedGlyphs();
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_Paragraph__1nUpdateTextAlign
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_Paragraph__1nUpdateAlign
   (JNIEnv* env, jclass jclass, jlong ptr, jint textAlign) {
     Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
     return instance->updateTextAlign(static_cast<TextAlign>(textAlign));

@@ -10,36 +10,32 @@ namespace skija {
             void onUnload(JNIEnv* env);
         }
 
-        namespace Paragraph {
-            namespace TextBox {
-                extern jclass cls;
-                extern jmethodID ctor;
-                void onLoad(JNIEnv* env);
-                void onUnload(JNIEnv* env);
-            }
+        namespace TextBox {
+            extern jclass cls;
+            extern jmethodID ctor;
+            void onLoad(JNIEnv* env);
+            void onUnload(JNIEnv* env);
         }
 
-        namespace TextStyle {
-            namespace Decoration {
-                extern jclass cls;
-                extern jmethodID ctor;
-                void onLoad(JNIEnv* env);
-                void onUnload(JNIEnv* env);   
-            }
+        namespace Decoration {
+            extern jclass cls;
+            extern jmethodID ctor;
+            void onLoad(JNIEnv* env);
+            void onUnload(JNIEnv* env);   
+        }
 
-            namespace Shadow {
-                extern jclass cls;
-                extern jmethodID ctor;
-                void onLoad(JNIEnv* env);
-                void onUnload(JNIEnv* env);   
-            }
+        namespace Shadow {
+            extern jclass cls;
+            extern jmethodID ctor;
+            void onLoad(JNIEnv* env);
+            void onUnload(JNIEnv* env);   
+        }
 
-            namespace FontFeature {
-                extern jclass cls;
-                extern jmethodID ctor;
-                void onLoad(JNIEnv* env);
-                void onUnload(JNIEnv* env);   
-            }
+        namespace FontFeature {
+            extern jclass cls;
+            extern jmethodID ctor;
+            void onLoad(JNIEnv* env);
+            void onUnload(JNIEnv* env);   
         }
     }
 }

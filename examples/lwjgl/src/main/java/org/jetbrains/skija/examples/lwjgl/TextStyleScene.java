@@ -1,7 +1,14 @@
 package org.jetbrains.skija.examples.lwjgl;
 
 import java.util.Arrays;
-import org.jetbrains.skija.*;
+import org.jetbrains.skija.Canvas;
+import org.jetbrains.skija.FontMetrics;
+import org.jetbrains.skija.FontMgr;
+import org.jetbrains.skija.FontStyle;
+import org.jetbrains.skija.Paint;
+import org.jetbrains.skija.Shader;
+import org.jetbrains.skija.Typeface;
+
 import org.jetbrains.skija.paragraph.*;
 
 public class TextStyleScene implements Scene {
@@ -52,26 +59,26 @@ public class TextStyleScene implements Scene {
             drawLine(canvas, "Rough winds do shake the darling buds of May,", ts); 
         }
 
-        var d = TextStyle.Decoration.NONE.withUnderline(true).withColor(0xFF3A1C71);
+        var d = Decoration.NONE.withUnderline(true).withColor(0xFF3A1C71);
         try (var ts = new TextStyle().setColor(0xFF000000).setDecoration(d)) {
-            assert d.equals(ts.getDecoration());
+            assert d.equals(ts.getDecoration()) : "Expected " + d + ", got " + ts.getDecoration();
             assert d.hasUnderline() && !d.hasOverline() && !d.hasLineThrough();
             drawLine(canvas, "And summer’s lease hath all too short a date;", ts);
         }
 
-        d = TextStyle.Decoration.NONE.withUnderline(true).withColor(0xFFFFAF7B).withMode(TextStyle.Decoration.Mode.THROUGH);
+        d = Decoration.NONE.withUnderline(true).withColor(0xFFFFAF7B).withMode(DecorationMode.THROUGH);
         try (var ts = new TextStyle().setColor(0xFF000000).setDecoration(d)) {
             assert d.equals(ts.getDecoration());
             drawLine(canvas, "Sometime too hot the eye of heaven shines,", ts);
         }
 
-        d = TextStyle.Decoration.NONE.withUnderline(true).withColor(0xFF3A1C71).withStyle(TextStyle.Decoration.Style.DOTTED);
+        d = Decoration.NONE.withUnderline(true).withColor(0xFF3A1C71).withStyle(DecorationStyle.DOTTED);
         try (var ts = new TextStyle().setColor(0xFF000000).setDecoration(d)) {
             assert d.equals(ts.getDecoration());
             drawLine(canvas, "And often is his gold complexion dimm'd;", ts);
         }
 
-        d = TextStyle.Decoration.NONE.withOverline(true).withLineThrough(true).withColor(0xFFD76D77).withThicknessMultiplier(3);
+        d = Decoration.NONE.withOverline(true).withLineThrough(true).withColor(0xFFD76D77).withThicknessMultiplier(3);
         try (var ts = new TextStyle().setColor(0xFF000000).setDecoration(d)) {
             assert d.equals(ts.getDecoration());
             assert !d.hasUnderline() && d.hasOverline() && d.hasLineThrough();
@@ -83,30 +90,30 @@ public class TextStyleScene implements Scene {
             drawLine(canvas, "By chance or nature’s changing course untrimm'd;", ts);
         }
 
-        var shadows = new TextStyle.Shadow[] {
-            new TextStyle.Shadow(0x803A1C71, -1, -1, 0),
-            new TextStyle.Shadow(0xFFD76D77, 3, 3, 3)
+        var shadows = new Shadow[] {
+            new Shadow(0x803A1C71, -1, -1, 0),
+            new Shadow(0xFFD76D77, 3, 3, 3)
         };
         try (var ts = new TextStyle().setColor(0xFF000000).addShadows(shadows)) {
             assert Arrays.equals(shadows, ts.getShadows());
             drawLine(canvas, "But thy eternal summer shall not fade,", ts);
             ts.clearShadows();
-            assert Arrays.equals(new TextStyle.Shadow[0], ts.getShadows());
+            assert Arrays.equals(new Shadow[0], ts.getShadows());
         }
 
-        var fontFeatures = new TextStyle.FontFeature[] {
-            new TextStyle.FontFeature("cv06", 1),
-            new TextStyle.FontFeature("cv07", 1),
+        var fontFeatures = new FontFeature[] {
+            new FontFeature("cv06", 1),
+            new FontFeature("cv07", 1),
         };
 
         var fontFamilies = new String[] { "System Font", "Apple Color Emoji" };
 
         try (var ts = new TextStyle().setColor(0xFF000000).setFontFamilies(fontFamilies).addFontFeatures(fontFeatures)) {
-            assert Arrays.equals(fontFamilies, ts.getFontFamilies());
+            assert Arrays.equals(fontFamilies, ts.getFontFamilies()) : "Expected " + Arrays.toString(fontFamilies) + ", got " + Arrays.toString(ts.getFontFamilies());
             assert Arrays.equals(fontFeatures, ts.getFontFeatures());
             drawLine(canvas, "Nor lose possession of that fair thou 🧑🏿‍🦰 ow’st;", ts);
             ts.clearFontFeatures();
-            assert Arrays.equals(new TextStyle.FontFeature[0], ts.getFontFeatures());
+            assert Arrays.equals(new FontFeature[0], ts.getFontFeatures());
 
             FontMetrics m = ts.getFontMetrics();
             assert m.getTop() < m.getAscent() && m.getAscent() < m.getDescent() && m.getDescent() < m.getBottom();
@@ -151,8 +158,15 @@ public class TextStyleScene implements Scene {
             // }
         }
 
-        try (var ts = new TextStyle().setColor(0xFF000000).setBaselineType(TextStyle.BaselineType.IDEOGRAPHIC)) {
-            assert TextStyle.BaselineType.IDEOGRAPHIC == ts.getBaselineType();
+        for (String locale: new String[] { "ru", "bg"}) {
+            try (var ts = new TextStyle().setColor(0xFF000000).setLocale(locale).setFontFamily("System Font")) {
+                assert locale.equals(ts.getLocale());
+                drawLine(canvas, "Привет как дела это тест кириллицы / болгарицы. locale=\"" + locale + "\"", ts);
+            }
+        }
+
+        try (var ts = new TextStyle().setColor(0xFF000000).setBaselineType(BaselineType.IDEOGRAPHIC)) {
+            assert BaselineType.IDEOGRAPHIC == ts.getBaselineType();
             drawLine(canvas, "Baseline Type", ts);
         }
 

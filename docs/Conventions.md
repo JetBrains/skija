@@ -29,6 +29,7 @@ Some common dictionary:
 
 - Java/CC method order must match Skia’s *.h method order
 - If no reference order is present, sort alphabetically (e.g. java imports)
+- No inner classes
 
 # Things we fix in Skia APIs
 
@@ -40,8 +41,9 @@ Some common dictionary:
 # Visibility
 
 - All fields/methods `public`.
-- Fields/methods/inner classes not for public consumption: also `public`, but prefixed with `_` (`startIndex` -> `_startIndex`).
-- Constructors not for public consumption: @ApiStatus.Internal
+- Fields/methods/inner classes not for public consumption:
+  - also `public`, but prefixed with `_` (`startIndex` -> `_startIndex`).
+  - annotated with @ApiStatus.Internal
 
 Why public?
 

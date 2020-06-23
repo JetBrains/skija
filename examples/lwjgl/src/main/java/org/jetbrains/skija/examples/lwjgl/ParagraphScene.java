@@ -1,6 +1,5 @@
 package org.jetbrains.skija.examples.lwjgl;
 
-import java.util.Arrays;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.paragraph.*;
 
@@ -181,13 +180,13 @@ public class ParagraphScene implements Scene {
                      var orange = new Paint().setColor(0x80ffd7b3);) {
                     
                     // getRectsForRange    
-                    for (Paragraph.TextBox box: p.getRectsForRange(0, glyphIdx, Paragraph.RectHeightStyle.TIGHT, Paragraph.RectWidthStyle.TIGHT)) {
+                    for (TextBox box: p.getRectsForRange(0, glyphIdx, RectHeightStyle.TIGHT, RectWidthStyle.TIGHT)) {
                         canvas.drawRect(box.getRect(), blue);
                     }
 
                     // getWordBoundary
                     IRange word = p.getWordBoundary(glyphIdx);
-                    for (Paragraph.TextBox box: p.getRectsForRange(word.getStart(), word.getEnd(), Paragraph.RectHeightStyle.TIGHT, Paragraph.RectWidthStyle.TIGHT)) {
+                    for (TextBox box: p.getRectsForRange(word.getStart(), word.getEnd(), RectHeightStyle.TIGHT, RectWidthStyle.TIGHT)) {
                         canvas.drawRect(box.getRect(), orange);
                     }
                 }

@@ -140,8 +140,8 @@ public class Path extends Managed implements Iterable {
      * @param other  Path to compare
      * @return   true if this and Path are equivalent
     */
-    @Override
-    public boolean nativeEquals(Native other) {
+    @ApiStatus.Internal @Override
+    public boolean _nativeEquals(Native other) {
         return _nEquals(_ptr, Native.getPtr(other));
     }
 

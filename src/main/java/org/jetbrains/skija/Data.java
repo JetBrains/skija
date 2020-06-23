@@ -27,8 +27,8 @@ public class Data extends Managed {
      *  Returns true if these two objects have the same length and contents,
      *  effectively returning 0 == memcmp(...)
      */
-    @Override
-    public boolean nativeEquals(Native other) {
+    @ApiStatus.Internal @Override
+    public boolean _nativeEquals(Native other) {
         Stats.onNativeCall();
         return _nEquals(_ptr, Native.getPtr(other));
     }

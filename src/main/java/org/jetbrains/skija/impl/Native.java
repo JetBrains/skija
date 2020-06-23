@@ -1,5 +1,7 @@
 package org.jetbrains.skija.impl;
 
+import org.jetbrains.annotations.*;
+
 public abstract class Native {
     public long _ptr;
 
@@ -25,10 +27,11 @@ public abstract class Native {
         Native nOther = (Native) other;
         if (_ptr == nOther._ptr)
             return true;
-        return nativeEquals(nOther);
+        return _nativeEquals(nOther);
     }
 
-    public boolean nativeEquals(Native other) {
+    @ApiStatus.Internal
+    public boolean _nativeEquals(Native other) {
         return false;
     }
 

@@ -23,6 +23,13 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_paragraph_TextStyle_
     return reinterpret_cast<jlong>(instance);
 }
 
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nEquals
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong otherPtr) {
+    TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
+    TextStyle* other = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(otherPtr));
+    return instance->equals(*other);
+}
+
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nGetColor
   (JNIEnv* env, jclass jclass, jlong ptr) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
@@ -73,7 +80,7 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_paragraph_TextStyl
   (JNIEnv* env, jclass jclass, jlong ptr) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
     Decoration d = instance->getDecoration();
-    return env->NewObject(skija::paragraph::TextStyle::Decoration::cls, skija::paragraph::TextStyle::Decoration::ctor,
+    return env->NewObject(skija::paragraph::Decoration::cls, skija::paragraph::Decoration::ctor,
       (d.fType & TextDecoration::kUnderline) != 0,
       (d.fType & TextDecoration::kOverline) != 0,
       (d.fType & TextDecoration::kLineThrough) != 0,
@@ -100,8 +107,7 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nGetFontStyle
   (JNIEnv* env, jclass jclass, jlong ptr) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
-    SkFontStyle fs = instance->getFontStyle();
-    return (static_cast<int>(fs.slant()) << 24)| (fs.width() << 16) | fs.weight();
+    return javaFontStyle(instance->getFontStyle());
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nSetFontStyle
@@ -114,10 +120,10 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Tex
   (JNIEnv* env, jclass jclass, jlong ptr) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
     std::vector<TextShadow> shadows = instance->getShadows();
-    jobjectArray shadowsArr = env->NewObjectArray(shadows.size(), skija::paragraph::TextStyle::Shadow::cls, nullptr);
+    jobjectArray shadowsArr = env->NewObjectArray(shadows.size(), skija::paragraph::Shadow::cls, nullptr);
     for (int i = 0; i < shadows.size(); ++i) {
         const TextShadow& s = shadows[i];
-        env->SetObjectArrayElement(shadowsArr, i, env->NewObject(skija::paragraph::TextStyle::Shadow::cls, skija::paragraph::TextStyle::Shadow::ctor, s.fColor, s.fOffset.fX, s.fOffset.fY, s.fBlurRadius));
+        env->SetObjectArrayElement(shadowsArr, i, env->NewObject(skija::paragraph::Shadow::cls, skija::paragraph::Shadow::ctor, s.fColor, s.fOffset.fX, s.fOffset.fY, s.fBlurRadius));
     }
     return shadowsArr;
 }
@@ -138,10 +144,10 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Tex
   (JNIEnv* env, jclass jclass, jlong ptr) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
     std::vector<FontFeature> fontFeatures = instance->getFontFeatures();
-    jobjectArray fontFeaturesArr = env->NewObjectArray(fontFeatures.size(), skija::paragraph::TextStyle::FontFeature::cls, nullptr);
+    jobjectArray fontFeaturesArr = env->NewObjectArray(fontFeatures.size(), skija::paragraph::FontFeature::cls, nullptr);
     for (int i = 0; i < fontFeatures.size(); ++i) {
         const FontFeature& ff = fontFeatures[i];
-        env->SetObjectArrayElement(fontFeaturesArr, i, env->NewObject(skija::paragraph::TextStyle::FontFeature::cls, skija::paragraph::TextStyle::FontFeature::ctor, javaString(env, ff.fName), ff.fValue));
+        env->SetObjectArrayElement(fontFeaturesArr, i, env->NewObject(skija::paragraph::FontFeature::cls, skija::paragraph::FontFeature::ctor, javaString(env, ff.fName), ff.fValue));
     }
     return fontFeaturesArr;
 }
@@ -179,17 +185,7 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Tex
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nSetFontFamilies
   (JNIEnv* env, jclass jclass, jlong ptr, jobjectArray familiesArray) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
-
-    std::vector<SkString> families;
-    for (int i=0; i < env->GetArrayLength(familiesArray); ++i) {
-        jstring family    = static_cast<jstring>(env->GetObjectArrayElement(familiesArray, i));
-        jsize   len       = env->GetStringUTFLength(family);
-        const char* chars = env->GetStringUTFChars(family, nullptr);
-        families.push_back(SkString(chars, len));
-        env->ReleaseStringUTFChars(family, chars);
-    }
-
-    instance->setFontFamilies(families);
+    instance->setFontFamilies(skStringVector(env, familiesArray));
 }
 
 extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nGetHeight
