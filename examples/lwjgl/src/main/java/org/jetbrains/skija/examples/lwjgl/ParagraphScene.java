@@ -21,8 +21,8 @@ public class ParagraphScene implements Scene {
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         canvas.translate(30, 30);
         drawSonnet(canvas);
-        canvas.translate(0, 300);
-        drawMetrics(canvas, xpos - 30f, ypos - 330f);
+        canvas.translate(0, 500);
+        drawMetrics(canvas, xpos - 30f, ypos - 530f);
     }
 
     public void drawSonnet(Canvas canvas) {
@@ -31,7 +31,8 @@ public class ParagraphScene implements Scene {
         try (TextStyle defaultTs = new TextStyle().setColor(0xFF000000);
              ParagraphStyle ps = new ParagraphStyle();
              ParagraphBuilder pb = new ParagraphBuilder(ps, fc);
-             Paint boundaries = new Paint().setColor(0xFFFAA6B2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);)
+             Paint boundaries = new Paint().setColor(0xFFFAA6B2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+             Paint placeholders = new Paint().setColor(0xFFFAA6B2);)
         {
             // default style
             pb.pushStyle(defaultTs);
@@ -101,18 +102,38 @@ public class ParagraphScene implements Scene {
                 pb.popStyle();
             }
 
-            // emojis
+            // fonts
             try (TextStyle ts  = new TextStyle().setColor(0xFF000000).setFontFamilies(new String[] { "JetBrains Mono" });
                  TextStyle ts2  = new TextStyle().setColor(0xFF2a9d8f).setFontFamilies(new String[] { "Interface" });
                  TextStyle ts3  = new TextStyle().setColor(0xFF000000).setFontFamilies(new String[] { "Inter" });) {
                 pb.pushStyle(ts);
-                pb.addText("Shall I compare ");
+                pb.addText("By chance ");
                 pb.popStyle().pushStyle(ts2);
-                pb.addText("thee to a ");
+                pb.addText("or nature’s changing course ");
                 pb.popStyle().pushStyle(ts3);
-                pb.addText("summer’s day?\n");
+                pb.addText("untrimm’d\n");
                 pb.popStyle();
             }
+
+            // placeholders
+            // pb.setParagraphStyle(ps);
+            pb.addText("But thy");
+            pb.addPlaceholder(new PlaceholderStyle(20, 40, PlaceholderAlignment.BASELINE, BaselineType.ALPHABETIC, 0));
+            pb.addText("eternal");
+            pb.addPlaceholder(new PlaceholderStyle(20, 40, PlaceholderAlignment.ABOVE_BASELINE, BaselineType.ALPHABETIC, 0));
+            pb.addText("summer");
+            pb.addPlaceholder(new PlaceholderStyle(20, 40, PlaceholderAlignment.BELOW_BASELINE, BaselineType.IDEOGRAPHIC, 0));
+            pb.addText("shall");
+            pb.addPlaceholder(new PlaceholderStyle(40, 20, PlaceholderAlignment.TOP, BaselineType.ALPHABETIC, 0));
+            pb.addText("not");
+            pb.addPlaceholder(new PlaceholderStyle(20, 40, PlaceholderAlignment.MIDDLE, BaselineType.ALPHABETIC, 0));
+            pb.addText("fade,\n");
+
+            // Nor lose possession of that fair thou ow’st;
+            // Nor shall death brag thou wander’st in his shade,
+            // When in eternal lines to time thou grow’st:
+            //    So long as men can breathe or eyes can see,
+            //    So long lives this, and this gives life to thee.
 
             try (Paragraph p = pb.build();) {
                 p.layout(Float.POSITIVE_INFINITY);
@@ -120,12 +141,17 @@ public class ParagraphScene implements Scene {
                 float maxW = p.getMaxIntrinsicWidth();
                 float range = maxW - minW;
                 for (float w = maxW; w >= minW; w -= range / 5) {
-                    p.layout(w);
+                    p.layout((float) Math.ceil(w));
                     p.paint(canvas, 0, 0);
                     float h = p.getHeight();
                     canvas.drawRect(Rect.makeXYWH(0, 0, minW, h), boundaries);
                     canvas.drawRect(Rect.makeXYWH(0, 0, w,    h), boundaries);
                     // canvas.drawRect(Rect.makeXYWH(0, 0, maxW, h), boundaries);
+
+                    for (TextBox placeholder: p.getRectsForPlaceholders()) {
+                        canvas.drawRect(placeholder.getRect(), placeholders);
+                    }
+
                     canvas.translate(w + 15, 0);
                 }
             }
@@ -140,6 +166,7 @@ public class ParagraphScene implements Scene {
              TextStyle smallTs   = new TextStyle().setFontSize(12).setColor(0xFF000000);
              ParagraphStyle ps   = new ParagraphStyle();
              ParagraphBuilder pb = new ParagraphBuilder(ps, fc);
+             ParagraphStyle ps2  = new ParagraphStyle().setAlign(Align.RIGHT);
              Paint boundaries    = new Paint().setColor(0xFFFAA6B2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);)
         {
             // default style
@@ -159,13 +186,15 @@ public class ParagraphScene implements Scene {
             pb.addText(" is false\n");
             pb.popStyle();
 
+            pb.setParagraphStyle(ps2);
+            pb.pushStyle(defaultTs);
             pb.addText("— Vicious circularity, \n");
             pb.pushStyle(smallTs);
             pb.addText("  or infinite regress");
             pb.popStyle();
 
             try (Paragraph p = pb.build();) {
-                p.layout(Float.POSITIVE_INFINITY);
+                p.layout(600f);
 
                 // getLineMetrics
                 for (LineMetrics lm: p.getLineMetrics()) {

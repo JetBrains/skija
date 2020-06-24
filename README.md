@@ -44,7 +44,7 @@ LineMetrics          ▓▓▓▓▓▓▓▓▓░
 Paragraph            ▓▓▓▓▓▓▓▓▓▓
 ParagraphCache       ░░░░░░░░░░
 ParagraphStyle       ▓▓▓▓▓▓▓▓▓▓
-ParagraphBuilder     ▓▓▓▓▓▓▓▓░░
+ParagraphBuilder     ▓▓▓▓▓▓▓▓▓▓
 TextStyle            ▓▓▓▓▓▓▓▓▓▓
 TypefaceFontProvider ▓▓▓▓▓▓▓▓▓▓
 ```
