@@ -142,11 +142,15 @@ public class TestRunner {
 
     public static int finishTesting() {
         assert runner.stack.isEmpty() : "Expected stack to be empty, got: " + runner.stack.toString();
-        System.out.println("]");
-        for (String message: runner.messages) {
-            System.err.println(message + "\n");
+        if (runner.messages.isEmpty()) {
+            System.out.println("] Asserts: " + runner.asserts + ", failures: " + runner.failures + ", errors: " + runner.errors);
+        } else {
+            System.out.println("]");
+            for (String message: runner.messages) {
+                System.err.println(message + "\n");
+            }
+            System.out.println("[ DONE ] Asserts: " + runner.asserts + ", failures: " + runner.failures + ", errors: " + runner.errors);
         }
-        System.out.println("[ DONE ] Asserts: " + runner.asserts + ", failures: " + runner.failures + ", errors: " + runner.errors);
         return runner.failures + runner.errors;
     }
 }

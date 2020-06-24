@@ -8,6 +8,12 @@
 using namespace std;
 using namespace skia::textlayout;
 
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nMake
+  (JNIEnv* env, jclass jclass) {
+    TextStyle* instance = new TextStyle();
+    return reinterpret_cast<jlong>(instance);
+}
+
 static void deleteTextStyle(TextStyle* instance) {
     delete instance;
 }
@@ -17,17 +23,21 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_paragraph_TextStyle_
     return static_cast<jlong>(reinterpret_cast<uintptr_t>(&deleteTextStyle));
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nMake
-  (JNIEnv* env, jclass jclass) {
-    TextStyle* instance = new TextStyle();
-    return reinterpret_cast<jlong>(instance);
-}
-
 extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nEquals
   (JNIEnv* env, jclass jclass, jlong ptr, jlong otherPtr) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
     TextStyle* other = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(otherPtr));
     return instance->equals(*other);
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nAttributeEquals
+  (JNIEnv* env, jclass jclass, jlong ptr, jint attribute, jlong otherPtr) {
+    TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
+    TextStyle* other = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(otherPtr));
+    if (attribute == static_cast<jint>(StyleType::kWordSpacing) + 1) // FONT_EXACT
+        return instance->equalsByFonts(*other);
+    else
+        return instance->matchOneAttribute(static_cast<StyleType>(attribute), *other);
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nGetColor

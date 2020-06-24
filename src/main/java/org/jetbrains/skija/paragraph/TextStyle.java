@@ -27,6 +27,11 @@ public class TextStyle extends Managed {
         return _nEquals(_ptr, Native.getPtr(other));
     }
 
+    public boolean equals(TextStyleAttribute attribute, TextStyle other) {
+        Stats.onNativeCall();
+        return _nAttributeEquals(_ptr, attribute.ordinal(), Native.getPtr(other));
+    }
+
     public int getColor() {
         Stats.onNativeCall();
         return _nGetColor(_ptr);
@@ -246,9 +251,10 @@ public class TextStyle extends Managed {
     }
 
     public static final  long  _finalizerPtr = _nGetFinalizer();
+    public static native long  _nMake();
     public static native long  _nGetFinalizer();
     public static native boolean _nEquals(long ptr, long otherPtr);
-    public static native long  _nMake();
+    public static native boolean _nAttributeEquals(long ptr, int attribute, long otherPtr);
     public static native int   _nGetColor(long ptr);
     public static native void  _nSetColor(long ptr,int color);
     public static native long  _nGetForeground(long ptr);
