@@ -93,14 +93,14 @@ cd skija
 
 ## Using prebuilt Skia
 
-At the moment Skija is built against `chrome/m83` branch of Skia with `skshaper` and `skparagraph` modules.
+At the moment Skija is built against `chrome/m84` branch of Skia with `skshaper` and `skparagraph` modules.
 
 Prebuilt Skia can be downloaded from [JetBrains Bintray](https://bintray.com/beta/#/jetbrains/skija/Skia?tab=files).
 
 Download, unpack and set
 
 ```
-export SKIA_DIR=~/Downloads/Skia_m83-macOS-Release-x64
+export SKIA_DIR=~/Downloads/Skia_m84-macOS-Release-x64
 ```
 
 ## Building Skia from scratch
