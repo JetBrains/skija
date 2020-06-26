@@ -6,6 +6,7 @@
 #include "SkPaint.h"
 #include "SkPathEffect.h"
 #include "SkShader.h"
+#include "SkFilterQuality.h"
 
 static void deletePaint(SkPaint* paint) {
     // std::cout << "Deleting [SkPaint " << paint << "]" << std::endl;
@@ -183,4 +184,15 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint__1nSetColorFilt
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
     SkColorFilter* colorFilter = reinterpret_cast<SkColorFilter*>(static_cast<uintptr_t>(colorFilterPtr));
     instance->setColorFilter(sk_ref_sp<SkColorFilter>(colorFilter));
+}
+
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Paint__1nGetFilterQuality(JNIEnv* env, jclass jclass, jlong ptr) {
+    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
+    return static_cast<jint>(instance->getFilterQuality());
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint__1nSetFilterQuality(JNIEnv* env, jclass jclass, jlong ptr, jint jquality) {
+    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
+    SkFilterQuality quality = static_cast<SkFilterQuality>(jquality);
+    instance->setFilterQuality(quality);
 }

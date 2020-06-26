@@ -248,6 +248,17 @@ public class Paint extends Managed {
         return this;
     }
 
+    public ImageFilter.FilterQuality getFilterQuality() {
+        Stats.onNativeCall();
+        return ImageFilter.FilterQuality.values()[_nGetFilterQuality(_ptr)];
+    }
+
+    public Paint setFilterQuality(ImageFilter.FilterQuality filterQuality) {
+        Stats.onNativeCall();
+        _nSetFilterQuality(_ptr, filterQuality.ordinal());
+        return this;
+    }
+
     public static final  long _finalizerPtr = _nGetFinalizer();
     public static native long _nMake();
     public static native long _nGetFinalizer();
@@ -280,5 +291,7 @@ public class Paint extends Managed {
     public static native void _nSetMaskFilter(long ptr, long filterPtr);
     public static native long _nGetImageFilter(long ptr);
     public static native void _nSetImageFilter(long ptr, long filterPtr);
+    public static native int _nGetFilterQuality(long ptr);
+    public static native void _nSetFilterQuality(long ptr, int quality);
 }
 
