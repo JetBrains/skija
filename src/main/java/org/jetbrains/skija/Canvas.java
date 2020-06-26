@@ -247,6 +247,11 @@ public class Canvas extends Native {
         return _nSave(_ptr);
     }
 
+    public int saveLayer(float left, float top, float right, float bottom, Paint paint) {
+        Stats.onNativeCall();
+        return _nSaveLayer(_ptr, left, top, right, bottom, paint._ptr);
+    }
+
     public int getSaveCount() {
         Stats.onNativeCall();
         return _nGetSaveCount(_ptr);
@@ -286,6 +291,7 @@ public class Canvas extends Native {
     public static native void _nClipRegion(long ptr, long nativeRegion, int op);
     public static native void _nConcat(long ptr, float[] matrix);
     public static native int  _nSave(long ptr);
+    public static native int  _nSaveLayer(long ptr, float left, float top, float right, float bottom, long paintPtr);
     public static native int  _nGetSaveCount(long ptr);
     public static native void _nRestore(long ptr);
     public static native void _nRestoreToCount(long ptr, int saveCount);
