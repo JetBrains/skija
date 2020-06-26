@@ -253,7 +253,7 @@ public class Canvas extends Native {
 
     public int saveLayer(float left, float top, float right, float bottom, Paint paint) {
         Stats.onNativeCall();
-        return _nSaveLayer(_ptr, left, top, right, bottom, paint._ptr);
+        return _nSaveLayer(_ptr, left, top, right, bottom, Native.getPtr(paint));
     }
 
     public int getSaveCount() {
