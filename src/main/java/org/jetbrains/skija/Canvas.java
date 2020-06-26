@@ -236,6 +236,10 @@ public class Canvas extends Native {
         return concat(Matrix33.makeRotate(deg));
     }
 
+    public Canvas skew(float sx, float sy) {
+        return concat(Matrix33.makeSkew(sx, sy));
+    }
+
     public Canvas concat(Matrix33 matrix) {
         Stats.onNativeCall();
         _nConcat(_ptr, matrix.getMat());
