@@ -250,9 +250,9 @@ public class TextStyle extends Managed {
         return this;
     }
 
-    public static final  long  _finalizerPtr = _nGetFinalizer();
     public static native long  _nMake();
     public static native long  _nGetFinalizer();
+    public static final  long  _finalizerPtr = _nGetFinalizer();
     public static native boolean _nEquals(long ptr, long otherPtr);
     public static native boolean _nAttributeEquals(long ptr, int attribute, long otherPtr);
     public static native int   _nGetColor(long ptr);

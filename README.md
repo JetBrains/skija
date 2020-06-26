@@ -39,10 +39,10 @@ Typeface             ▓▓░░░░░░░░
 Paragraph progress:
 
 ```
-FontCollection       ▓▓▓▓▓▓▓▓▓░
+FontCollection       ▓▓▓▓▓▓▓▓▓▓
 LineMetrics          ▓▓▓▓▓▓▓▓▓░
 Paragraph            ▓▓▓▓▓▓▓▓▓▓
-ParagraphCache       ░░░░░░░░░░
+ParagraphCache       ▓▓▓▓▓▓▓▓▓▓
 ParagraphStyle       ▓▓▓▓▓▓▓▓▓▓
 ParagraphBuilder     ▓▓▓▓▓▓▓▓▓▓
 TextStyle            ▓▓▓▓▓▓▓▓▓▓

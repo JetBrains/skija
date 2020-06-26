@@ -5,6 +5,7 @@ import org.jetbrains.skija.paragraph.*;
 
 public class ParagraphScene implements Scene {
     public FontCollection fc = new FontCollection();
+    public long lastUpdate = 0;
     
     public ParagraphScene() {
         fc.setDefaultFontManager(FontMgr.getDefault());
@@ -19,6 +20,21 @@ public class ParagraphScene implements Scene {
 
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
+        if (System.currentTimeMillis() - lastUpdate > 1000) {
+            ParagraphCache cache = fc.getParagraphCache();
+            if ((System.currentTimeMillis() / 1000) % 2 == 0) {
+                System.out.println("ParagrapCache.enabled = true");
+                cache.reset();
+                cache.setEnabled(true);
+            } else {
+                System.out.println("ParagrapCache.enabled = false");
+                // cache.abandon();
+                cache.setEnabled(false);
+            }
+            cache.printStatistics();
+            lastUpdate = System.currentTimeMillis();
+        }
+
         canvas.translate(30, 30);
         drawSonnet(canvas);
         canvas.translate(0, 500);
@@ -198,7 +214,10 @@ public class ParagraphScene implements Scene {
 
                 // getLineMetrics
                 for (LineMetrics lm: p.getLineMetrics()) {
-                    canvas.drawRect(Rect.makeXYWH((float) lm.getLeft(), (float) (lm.getBaseline() - lm.getAscent()), (float) lm.getWidth(), (float) (lm.getAscent() + lm.getDescent())), boundaries);
+                    canvas.drawRect(Rect.makeXYWH((float) lm.getLeft(),
+                                                  (float) (lm.getBaseline() - lm.getAscent()),
+                                                  (float) lm.getWidth(),
+                                                  (float) (lm.getAscent() + lm.getDescent())), boundaries);
                     canvas.drawLine((float) lm.getLeft(), (float) lm.getBaseline(), (float) (lm.getLeft() + lm.getWidth()), (float) lm.getBaseline(), boundaries);
                 }
 

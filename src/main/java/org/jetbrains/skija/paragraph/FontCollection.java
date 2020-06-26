@@ -76,6 +76,11 @@ public class FontCollection extends RefCnt {
         return this;
     }
 
+    public ParagraphCache getParagraphCache() {
+        Stats.onNativeCall();
+        return new ParagraphCache(this, _nGetParagraphCache(_ptr));
+    }
+
     @ApiStatus.Internal
     public FontCollection(long ptr) {
         super(ptr);
@@ -92,4 +97,5 @@ public class FontCollection extends RefCnt {
     public static native long   _nDefaultFallbackChar(long ptr, int unicode, int fontStyle, String locale);
     public static native long   _nDefaultFallback(long ptr);
     public static native long   _nSetEnableFallback(long ptr, boolean value);
+    public static native long   _nGetParagraphCache(long ptr);
 }
