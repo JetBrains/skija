@@ -81,7 +81,7 @@ public class Paint extends Managed {
         return this;
     }
 
-    public long getStrokeMiter() {
+    public float getStrokeMiter() {
         Stats.onNativeCall();
         return _nGetStrokeMiter(_ptr);
     }
@@ -258,9 +258,9 @@ public class Paint extends Managed {
     public static native void _nSetStyle(long ptr, int value);
     public static native int  _nGetColor(long ptr);
     public static native void _nSetColor(long ptr, int argb);
-    public static native long _nGetStrokeWidth(long ptr);
+    public static native float _nGetStrokeWidth(long ptr);
     public static native void _nSetStrokeWidth(long ptr, float value);
-    public static native long _nGetStrokeMiter(long ptr);
+    public static native float _nGetStrokeMiter(long ptr);
     public static native void _nSetStrokeMiter(long ptr, float value);
     public static native int  _nGetStrokeCap(long ptr);
     public static native void _nSetStrokeCap(long ptr, int value);
