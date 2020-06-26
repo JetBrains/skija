@@ -54,4 +54,12 @@ public class Matrix33 {
         if (Math.abs(cos) <= tolerance) cos = 0;
         return new Matrix33(new float[] {(float) cos, (float) -sin, 0, (float) sin, (float) cos, 0, 0, 0, 1});
     }
+
+    public static Matrix33 makeSkew(float sx, float sy) {
+        return new Matrix33(new float[]{
+                1, sx, 0,
+                sy, 1, 0,
+                0, 0, 1
+        });
+    }
 }

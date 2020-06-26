@@ -48,6 +48,8 @@ public class ImagesScene implements Scene {
         canvas.translate(170, 0);
         canvas.drawImageRect(ducks, IRect.makeXYWH(300, 300, 40, 40), Rect.makeXYWH(0, 0, 160, 160), null, Canvas.SrcRectConstraint.FAST);
         canvas.translate(170, 0);
+        canvas.drawImageRect(ducks, IRect.makeXYWH(300, 300, 40, 40), Rect.makeXYWH(0, 0, 160, 160), new Paint().setFilterQuality(ImageFilter.FilterQuality.HIGH), Canvas.SrcRectConstraint.FAST);
+        canvas.translate(170, 0);
         canvas.restore();
         canvas.translate(0, 170);
 

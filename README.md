@@ -163,7 +163,7 @@ Examples require latest master build of Skija installed locally in `.m2` (see [B
 GLFW (via LWJGL), Java and Maven:
 
 ```sh
-cd examplpes/lwjgl
+cd examples/lwjgl
 ./script/build.sh && ./script/run.sh
 ```
 

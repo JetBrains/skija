@@ -13,6 +13,7 @@ public class GeometryScene implements Scene {
         drawLines(canvas);
         drawArcs(canvas);
         drawRotate(canvas);
+        drawSkew(canvas);
         drawRectInscribed(canvas, new Paint().setColor(0xFF1D7AA2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f));
         drawRectInscribed(canvas, new Paint().setColor(0xFF6DC1B3).setStyle(Paint.Style.STROKE).setStrokeWidth(5f));
         drawRectInscribed(canvas, new Paint().setColor(0xFF9BC730));
@@ -122,6 +123,33 @@ public class GeometryScene implements Scene {
         }
         canvas.restore();
         canvas.translate(0, 50);
+    }
+
+    public void drawSkew(Canvas canvas) {
+        Paint paint = new Paint().setColor(0xFFFFCC66);
+
+        canvas.save();
+
+        canvas.save();
+        canvas.skew(0.3F, 0);
+        canvas.drawRect(Rect.makeXYWH(0, 0, 65, 40), paint);
+        canvas.restore();
+        canvas.translate(90, 0);
+
+        canvas.save();
+        canvas.skew(0F, 0.1F);
+        canvas.drawRect(Rect.makeXYWH(0, 0, 65, 40), paint);
+        canvas.restore();
+        canvas.translate(80, 0);
+
+        canvas.save();
+        canvas.skew(-0.2F, 0F);
+        canvas.drawOval(Rect.makeXYWH(0, 0, 65, 40), paint);
+        canvas.restore();
+        canvas.translate(75, 0);
+
+        canvas.restore();
+        canvas.translate(0, 60);
     }
 
     public void drawArcs(Canvas canvas) {
