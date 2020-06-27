@@ -125,30 +125,28 @@ namespace skija {
         }
     }
 
-    namespace Path {
-        namespace Segment {
-            jclass cls;
-            jmethodID ctorDone;
-            jmethodID ctorMoveClose;
-            jmethodID ctorLine;
-            jmethodID ctorQuad;
-            jmethodID ctorConic;
-            jmethodID ctorCubic;
+    namespace PathSegment {
+        jclass cls;
+        jmethodID ctorDone;
+        jmethodID ctorMoveClose;
+        jmethodID ctorLine;
+        jmethodID ctorQuad;
+        jmethodID ctorConic;
+        jmethodID ctorCubic;
 
-            void onLoad(JNIEnv* env) {
-                jclass local  = env->FindClass("org/jetbrains/skija/Path$Segment");
-                cls           = static_cast<jclass>(env->NewGlobalRef(local));
-                ctorDone      = env->GetMethodID(cls, "<init>", "()V");
-                ctorMoveClose = env->GetMethodID(cls, "<init>", "(IFFZ)V");
-                ctorLine      = env->GetMethodID(cls, "<init>", "(FFFFZZ)V");
-                ctorQuad      = env->GetMethodID(cls, "<init>", "(FFFFFFZ)V");
-                ctorConic     = env->GetMethodID(cls, "<init>", "(FFFFFFFZ)V");
-                ctorCubic     = env->GetMethodID(cls, "<init>", "(FFFFFFFFZ)V");
-            }
+        void onLoad(JNIEnv* env) {
+            jclass local  = env->FindClass("org/jetbrains/skija/PathSegment");
+            cls           = static_cast<jclass>(env->NewGlobalRef(local));
+            ctorDone      = env->GetMethodID(cls, "<init>", "()V");
+            ctorMoveClose = env->GetMethodID(cls, "<init>", "(IFFZ)V");
+            ctorLine      = env->GetMethodID(cls, "<init>", "(FFFFZZ)V");
+            ctorQuad      = env->GetMethodID(cls, "<init>", "(FFFFFFZ)V");
+            ctorConic     = env->GetMethodID(cls, "<init>", "(FFFFFFFZ)V");
+            ctorCubic     = env->GetMethodID(cls, "<init>", "(FFFFFFFFZ)V");
+        }
 
-            void onUnload(JNIEnv* env) {
-                env->DeleteGlobalRef(cls);
-            }
+        void onUnload(JNIEnv* env) {
+            env->DeleteGlobalRef(cls);
         }
     }
 
@@ -319,14 +317,14 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::FontMetrics::onLoad(env);
     skija::FontVariation::onLoad(env);
     skija::IRect::onLoad(env);
-    skija::Path::Segment::onLoad(env);
+    skija::PathSegment::onLoad(env);
     skija::Point::onLoad(env);
     skija::Rect::onLoad(env);
     skija::RRect::onLoad(env);
 
     skija::paragraph::LineMetrics::onLoad(env);
     skija::paragraph::TextBox::onLoad(env);
-    skija::paragraph::Decoration::onLoad(env);
+    skija::paragraph::DecorationStyle::onLoad(env);
     skija::paragraph::Shadow::onLoad(env);
     skija::paragraph::FontFeature::onLoad(env);
     
@@ -345,14 +343,14 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::FontMetrics::onUnload(env);
     skija::FontVariation::onUnload(env);
     skija::IRect::onUnload(env);
-    skija::Path::Segment::onUnload(env);
+    skija::PathSegment::onUnload(env);
     skija::Point::onUnload(env);
     skija::Rect::onUnload(env);
     skija::RRect::onUnload(env);
 
     skija::paragraph::LineMetrics::onUnload(env);
     skija::paragraph::TextBox::onUnload(env);
-    skija::paragraph::Decoration::onUnload(env);
+    skija::paragraph::DecorationStyle::onUnload(env);
     skija::paragraph::Shadow::onUnload(env);
     skija::paragraph::FontFeature::onUnload(env);
 }

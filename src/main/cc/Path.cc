@@ -44,27 +44,27 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path__1nMakeLerp(JNI
     }
 }
 
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Path__1nGetFillType(JNIEnv* env, jclass jclass, jlong ptr) {
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Path__1nGetFillMode(JNIEnv* env, jclass jclass, jlong ptr) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
     return static_cast<jint>(instance->getFillType());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nSetFillType(JNIEnv* env, jclass jclass, jlong ptr, jint fillType) {
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nSetFillMode(JNIEnv* env, jclass jclass, jlong ptr, jint fillMode) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
-    instance->setFillType(static_cast<SkPathFillType>(fillType));
+    instance->setFillType(static_cast<SkPathFillType>(fillMode));
 }
 
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Path__1nGetConvexityType(JNIEnv* env, jclass jclass, jlong ptr) {
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Path__1nGetConvexity(JNIEnv* env, jclass jclass, jlong ptr) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
     return static_cast<jint>(instance->getConvexityType());
 }
 
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Path__1nGetConvexityTypeOrUnknown(JNIEnv* env, jclass jclass, jlong ptr) {
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Path__1nGetConvexityOrUnknown(JNIEnv* env, jclass jclass, jlong ptr) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
     return static_cast<jint>(instance->getConvexityTypeOrUnknown());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nSetConvexityType(JNIEnv* env, jclass jclass, jlong ptr, jint convexityInt) {
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nSetConvexity(JNIEnv* env, jclass jclass, jlong ptr, jint convexityInt) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
     SkPathConvexityType convexity = static_cast<SkPathConvexityType>(convexityInt);
     instance->setConvexityType(convexity);
@@ -431,53 +431,6 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Path__1nGetSegmentMas
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
     return instance->getSegmentMasks();
-}
-
-static void deletePathIter(SkPath::Iter* iter) {
-    // std::cout << "Deleting [SkPath " << path << "]" << std::endl;
-    delete iter;
-}
-
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path_00024Iter__1nMake
-  (JNIEnv* env, jclass jclass, jlong pathPtr, jboolean forceClose) {
-    SkPath* path = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(pathPtr));
-    SkPath::Iter* iter = new SkPath::Iter(*path, forceClose);
-    return reinterpret_cast<jlong>(iter);
-}
-
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path_00024Iter__1nGetFinalizer
-  (JNIEnv* env, jclass jclass) {
-    return static_cast<jlong>(reinterpret_cast<uintptr_t>(&deletePathIter));
-}
-
-extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Path_00024Iter__1nNext
-  (JNIEnv* env, jclass jclass, jlong ptr) {
-    SkPath::Iter* instance = reinterpret_cast<SkPath::Iter*>(static_cast<uintptr_t>(ptr));
-    SkPoint pts[4];
-    SkPath::Verb verb = instance->next(pts);
-    jobject segment;
-    switch (verb) {
-        case SkPath::Verb::kDone_Verb:
-            segment = env->NewObject(skija::Path::Segment::cls, skija::Path::Segment::ctorDone);
-            break;
-        case SkPath::Verb::kMove_Verb:
-        case SkPath::Verb::kClose_Verb:
-            segment = env->NewObject(skija::Path::Segment::cls, skija::Path::Segment::ctorMoveClose, static_cast<jint>(verb), pts[0].fX, pts[0].fY, instance->isClosedContour());
-            break;
-        case SkPath::Verb::kLine_Verb:
-            segment = env->NewObject(skija::Path::Segment::cls, skija::Path::Segment::ctorLine, pts[0].fX, pts[0].fY, pts[1].fX, pts[1].fY, instance->isCloseLine(), instance->isClosedContour());
-            break;
-        case SkPath::Verb::kQuad_Verb:
-            segment = env->NewObject(skija::Path::Segment::cls, skija::Path::Segment::ctorQuad, pts[0].fX, pts[0].fY, pts[1].fX, pts[1].fY, pts[2].fX, pts[2].fY, instance->isClosedContour());
-            break;
-        case SkPath::Verb::kConic_Verb:
-            segment = env->NewObject(skija::Path::Segment::cls, skija::Path::Segment::ctorConic, pts[0].fX, pts[0].fY, pts[1].fX, pts[1].fY, pts[2].fX, pts[2].fY, instance->conicWeight(), instance->isClosedContour());
-            break;
-        case SkPath::Verb::kCubic_Verb:
-            segment = env->NewObject(skija::Path::Segment::cls, skija::Path::Segment::ctorConic, pts[0].fX, pts[0].fY, pts[1].fX, pts[1].fY, pts[2].fX, pts[2].fY, pts[3].fX, pts[3].fY, instance->isClosedContour());
-            break;
-    }
-    return segment;
 }
 
 extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Path__1nContains

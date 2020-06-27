@@ -50,11 +50,11 @@ public class ShadersScene implements Scene {
         Shader[] shaders = new Shader[] {
             Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
             Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
-            Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.withTileMode(TileMode.REPEAT)),
-            Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.withTileMode(TileMode.MIRROR)),
-            Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.withTileMode(TileMode.DECAL)),
+            Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, GradientStyle.DEFAULT.withTileMode(FilterTileMode.REPEAT)),
+            Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, GradientStyle.DEFAULT.withTileMode(FilterTileMode.MIRROR)),
+            Shader.makeLinearGradient(20,  0, 40,  0, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, GradientStyle.DEFAULT.withTileMode(FilterTileMode.DECAL)),
             Shader.makeLinearGradient( 0,  0,  0, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
-            Shader.makeLinearGradient( 0,  0,  0, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.withLocalMatrix(Matrix33.makeRotate(45))),
+            Shader.makeLinearGradient( 0,  0,  0, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, GradientStyle.DEFAULT.withLocalMatrix(Matrix33.makeRotate(45))),
             Shader.makeLinearGradient( 0,  0, 60, 60, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
             Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0x00000000 }),
             Shader.makeLinearGradient( 0,  0, 60,  0, new int[] { 0xFF247ba0, 0xFFff1654, 0xFF70c1b3, 0xFFf3ffbd, 0xFFb2dbbf }),
@@ -62,12 +62,12 @@ public class ShadersScene implements Scene {
 
             Shader.makeRadialGradient(30, 30, 30, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
             Shader.makeRadialGradient(30, 30, 10, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
-            Shader.makeRadialGradient(30, 30, 10, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, Shader.GradientOptions.DEFAULT.withTileMode(TileMode.REPEAT)),
+            Shader.makeRadialGradient(30, 30, 10, new int[] { 0xFF247ba0, 0xFFf3ffbd }, null, GradientStyle.DEFAULT.withTileMode(FilterTileMode.REPEAT)),
 
             Shader.makeTwoPointConicalGradient(20, 20, 10, 40, 40, 40, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
 
             Shader.makeSweepGradient(30, 30, new int[] { 0xFF247ba0, 0xFFf3ffbd }),
-            Shader.makeSweepGradient(30, 30, 45, 315, new int[] { 0xFF247ba0, 0xFFff1654, 0xFF70c1b3, 0xFFf3ffbd, 0xFFb2dbbf }, null, Shader.GradientOptions.DEFAULT.withTileMode(TileMode.DECAL)),
+            Shader.makeSweepGradient(30, 30, 45, 315, new int[] { 0xFF247ba0, 0xFFff1654, 0xFF70c1b3, 0xFFf3ffbd, 0xFFb2dbbf }, null, GradientStyle.DEFAULT.withTileMode(FilterTileMode.DECAL)),
         };
             
         try (Paint fill = new Paint()) {
@@ -80,7 +80,7 @@ public class ShadersScene implements Scene {
         }
 
         try (var sh = Shader.makeSweepGradient(30, 30, new int[] { 0xFFFF00FF, 0xFF00FFFF, 0xFFFFFF00, 0xFFFF00FF });
-             var stroke = new Paint().setShader(sh).setStyle(Paint.Style.STROKE).setStrokeWidth(10))
+             var stroke = new Paint().setShader(sh).setMode(PaintMode.STROKE).setStrokeWidth(10))
         {
             canvas.drawCircle(30, 30, 30, stroke);
             canvas.translate(70, 0);
@@ -123,7 +123,7 @@ public class ShadersScene implements Scene {
             pos[i] = (float) i / steps;
             colors[i] = from.makeLerp(to, pos[i]);
         }
-        return Shader.makeLinearGradient(x0, y0, x1, y1, colors, cs, pos, Shader.GradientOptions.DEFAULT);
+        return Shader.makeLinearGradient(x0, y0, x1, y1, colors, cs, pos, GradientStyle.DEFAULT);
     } 
 
     private void drawLinearCS(Canvas canvas) {
@@ -173,7 +173,7 @@ public class ShadersScene implements Scene {
         try (Paint fill = new Paint();
              Shader gr1 = Shader.makeLinearGradient(0, 0, 0, 100, new int[] {pink, purple});
              Shader gr2 = Shader.makeLinearGradient(0, 0, 400, 0, new int[] {orange, transparentBlack});
-             Shader gr3 = Shader.makeLinearGradient(0, 0, 400, 0, new int[] {orange, transparentBlack}, null, Shader.GradientOptions.DEFAULT.withPremul(false));
+             Shader gr3 = Shader.makeLinearGradient(0, 0, 400, 0, new int[] {orange, transparentBlack}, null, GradientStyle.DEFAULT.withPremul(false));
              Shader gr4 = Shader.makeBlend(BlendMode.SRC_OVER, gr1, gr2);)
         {
             canvas.save();

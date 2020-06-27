@@ -66,9 +66,9 @@ public class ParagraphStyleScene implements Scene {
                 drawLine(canvas, "Kissing with golden face the meadows green,", ps, width);
             }
 
-            try (ParagraphStyle ps = new ParagraphStyle().setTextStyle(ts).setAlign(Align.CENTER)) {
-                assert Align.CENTER == ps.getAlign();
-                assert Align.CENTER == ps.getEffectiveAlign();
+            try (ParagraphStyle ps = new ParagraphStyle().setTextStyle(ts).setAlignment(Alignment.CENTER)) {
+                assert Alignment.CENTER == ps.getAlignment();
+                assert Alignment.CENTER == ps.getEffectiveAlignment();
                 drawLine(canvas, "Gilding pale streams with heavenly alchemy;", ps, width);
 
                 assert null == ps.getEllipsis();
@@ -85,18 +85,18 @@ public class ParagraphStyleScene implements Scene {
                 drawLine(canvas, "And from the forlorn world his visage hide,", ps, width);
             }
 
-            try (ParagraphStyle ps = new ParagraphStyle().setTextStyle(ts).setHeightBehavior(HeightBehavior.DISABLE_FIRST_ASCENT)) {
-                assert HeightBehavior.DISABLE_FIRST_ASCENT == ps.getHeightBehavior();
+            try (ParagraphStyle ps = new ParagraphStyle().setTextStyle(ts).setHeightMode(HeightMode.DISABLE_FIRST_ASCENT)) {
+                assert HeightMode.DISABLE_FIRST_ASCENT == ps.getHeightMode();
                 drawLine(canvas, "Stealing unseen to west with this disgrace:", ps, width);
             }
 
-            try (ParagraphStyle ps = new ParagraphStyle().setTextStyle(ts).setHeightBehavior(HeightBehavior.DISABLE_LAST_DESCENT)) {
-                assert HeightBehavior.DISABLE_LAST_DESCENT == ps.getHeightBehavior();
+            try (ParagraphStyle ps = new ParagraphStyle().setTextStyle(ts).setHeightMode(HeightMode.DISABLE_LAST_DESCENT)) {
+                assert HeightMode.DISABLE_LAST_DESCENT == ps.getHeightMode();
                 drawLine(canvas, "Even so my sun one early morn did shine,", ps, width);
             }
 
-            try (ParagraphStyle ps = new ParagraphStyle().setTextStyle(ts).setHeightBehavior(HeightBehavior.DISABLE_ALL)) {
-                assert HeightBehavior.DISABLE_ALL == ps.getHeightBehavior();
+            try (ParagraphStyle ps = new ParagraphStyle().setTextStyle(ts).setHeightMode(HeightMode.DISABLE_ALL)) {
+                assert HeightMode.DISABLE_ALL == ps.getHeightMode();
                 drawLine(canvas, "With all triumphant splendour on my brow;", ps, width);
             }
 

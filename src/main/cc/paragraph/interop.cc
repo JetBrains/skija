@@ -33,14 +33,14 @@ namespace skija {
             }
         }
 
-        namespace Decoration {
+        namespace DecorationStyle {
             jclass cls;
             jmethodID ctor;
 
             void onLoad(JNIEnv* env) {
-                jclass local = env->FindClass("org/jetbrains/skija/paragraph/Decoration");
+                jclass local = env->FindClass("org/jetbrains/skija/paragraph/DecorationStyle");
                 cls  = static_cast<jclass>(env->NewGlobalRef(local));
-                ctor = env->GetMethodID(cls, "<init>", "(ZZZIIIF)V");
+                ctor = env->GetMethodID(cls, "<init>", "(ZZZZIIF)V");
             }
 
             void onUnload(JNIEnv* env) {

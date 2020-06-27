@@ -8,7 +8,7 @@ public class PathsScene implements Scene {
         canvas.translate(30, 30);
 
         drawPaths(canvas, new Paint().setColor(0xFFF6BC01));
-        drawPaths(canvas, new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1f));
+        drawPaths(canvas, new Paint().setColor(0xFF437AA0).setMode(PaintMode.STROKE).setStrokeWidth(1f));
         drawAdds(canvas);
         drawTransforms(canvas);
         drawFillPaths(canvas);
@@ -16,17 +16,17 @@ public class PathsScene implements Scene {
     }
 
     public void drawPaths(Canvas canvas, Paint paint) {
-        var tangentStroke = new Paint().setColor(0xFFFAA6B2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+        var tangentStroke = new Paint().setColor(0xFFFAA6B2).setMode(PaintMode.STROKE).setStrokeWidth(1f);
 
         canvas.save();
 
         Path path = new Path();
 
         // moveTo, lineTo, close
-        for (var fillType: Path.FillType.values()) {
+        for (var fillMode: PathFillMode.values()) {
             canvas.save();
             canvas.clipRect(Rect.makeLTRB(0, 0, 40, 40));
-            path.reset().setFillType(fillType);
+            path.reset().setFillMode(fillMode);
             path.moveTo(20, 1.6f);
             path.lineTo(31.7f, 37.8f);
             path.lineTo(0.9f, 15.4f);
@@ -39,7 +39,7 @@ public class PathsScene implements Scene {
         }
 
         // rMoveTo, rLineTo
-        path.reset().setFillType(Path.FillType.EVEN_ODD);
+        path.reset().setFillMode(PathFillMode.EVEN_ODD);
         path.rMoveTo(20, 1.6f).rLineTo(11.7f, 36.2f).rLineTo(-30.8f, -22.4f).rLineTo(38.1f, 0f).rLineTo(-30.8f, 22.4f);
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
@@ -123,35 +123,35 @@ public class PathsScene implements Scene {
         canvas.translate(50, 0);
 
         // ellipticalArcTo, getBounds
-        path.reset().moveTo(0, 30).ellipticalArcTo(30, 15, 30, Path.ArcSize.SMALL, Path.Direction.CLOCKWISE, 40, 30);
+        path.reset().moveTo(0, 30).ellipticalArcTo(30, 15, 30, PathEllipseArc.SMALLER, PathDirection.CLOCKWISE, 40, 30);
         Rect bounds = path.getBounds();
         canvas.drawRect(bounds, tangentStroke);
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
         // ellipticalArcTo, getBounds
-        path.reset().moveTo(0, 30).ellipticalArcTo(30, 15, 30, Path.ArcSize.LARGE, Path.Direction.CLOCKWISE, 40, 30);
+        path.reset().moveTo(0, 30).ellipticalArcTo(30, 15, 30, PathEllipseArc.LARGER, PathDirection.CLOCKWISE, 40, 30);
         bounds = path.getBounds();
         canvas.drawRect(bounds, tangentStroke);
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
         // rEllipticalArcTo, getTightBounds
-        path.reset().moveTo(0, 10).rEllipticalArcTo(30, 15, 30, Path.ArcSize.SMALL, Path.Direction.COUNTER_CLOCKWISE, 40, 0);
+        path.reset().moveTo(0, 10).rEllipticalArcTo(30, 15, 30, PathEllipseArc.SMALLER, PathDirection.COUNTER_CLOCKWISE, 40, 0);
         bounds = path.computeTightBounds();
         canvas.drawRect(bounds, tangentStroke);
         canvas.drawPath(path, paint);
         canvas.translate(50, 0);
 
         // rEllipticalArcTo, getTightBounds
-        path.reset().moveTo(0, 10).rEllipticalArcTo(30, 15, 30, Path.ArcSize.LARGE, Path.Direction.COUNTER_CLOCKWISE, 40, 0);
+        path.reset().moveTo(0, 10).rEllipticalArcTo(30, 15, 30, PathEllipseArc.LARGER, PathDirection.COUNTER_CLOCKWISE, 40, 0);
         bounds = path.computeTightBounds();
         canvas.drawRect(bounds, tangentStroke);
         canvas.drawPath(path, paint);
         canvas.translate(70, 0);
 
         // multi shapes
-        path.reset().setFillType(Path.FillType.EVEN_ODD);
+        path.reset().setFillMode(PathFillMode.EVEN_ODD);
         path.arcTo(Rect.makeLTRB(0, 5, 35, 40), 0, 359, true);
         path.closePath();
         path.addPoly(new float[] { 5, 0, 35, 0, 35, 30, 5, 30 }, true);
@@ -169,28 +169,28 @@ public class PathsScene implements Scene {
     private void drawAdds(Canvas canvas) {
         canvas.save();
         try (var path = new Path();
-             var paint = new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1f)) {
+             var paint = new Paint().setColor(0xFF437AA0).setMode(PaintMode.STROKE).setStrokeWidth(1f)) {
 
             // addRect
-            path.reset().addRect(Rect.makeLTRB(10, 10, 30, 30), Path.Direction.CLOCKWISE, 0).lineTo(20, 20);
+            path.reset().addRect(Rect.makeLTRB(10, 10, 30, 30), PathDirection.CLOCKWISE, 0).lineTo(20, 20);
             canvas.drawPath(path, paint);
             canvas.translate(50, 0);
 
-            path.reset().addRect(Rect.makeLTRB(10, 10, 30, 30), Path.Direction.COUNTER_CLOCKWISE, 1).lineTo(20, 20);
+            path.reset().addRect(Rect.makeLTRB(10, 10, 30, 30), PathDirection.COUNTER_CLOCKWISE, 1).lineTo(20, 20);
             canvas.drawPath(path, paint);
             canvas.translate(50, 0);
 
             // addOval
-            path.reset().addOval(Rect.makeLTRB(10, 0, 30, 40), Path.Direction.CLOCKWISE, 0).lineTo(20, 20);
+            path.reset().addOval(Rect.makeLTRB(10, 0, 30, 40), PathDirection.CLOCKWISE, 0).lineTo(20, 20);
             canvas.drawPath(path, paint);
             canvas.translate(50, 0);
 
-            path.reset().addOval(Rect.makeLTRB(10, 0, 30, 40), Path.Direction.COUNTER_CLOCKWISE, 1).lineTo(20, 20);
+            path.reset().addOval(Rect.makeLTRB(10, 0, 30, 40), PathDirection.COUNTER_CLOCKWISE, 1).lineTo(20, 20);
             canvas.drawPath(path, paint);
             canvas.translate(50, 0);
 
             // addCircle
-            path.reset().addCircle(20, 20, 15, Path.Direction.CLOCKWISE).lineTo(20, 20);
+            path.reset().addCircle(20, 20, 15, PathDirection.CLOCKWISE).lineTo(20, 20);
             canvas.drawPath(path, paint);
             canvas.translate(50, 0);
 
@@ -201,7 +201,7 @@ public class PathsScene implements Scene {
 
             // addRRect
             for (int i = 0; i < 8; ++i) {
-                path.reset().addRRect(RRect.makeLTRB(10, 10, 30, 30, 5), Path.Direction.CLOCKWISE, i).lineTo(20, 20);
+                path.reset().addRRect(RRect.makeLTRB(10, 10, 30, 30, 5), PathDirection.CLOCKWISE, i).lineTo(20, 20);
                 canvas.drawPath(path, paint);
                 canvas.translate(50, 0);            
             }
@@ -237,8 +237,8 @@ public class PathsScene implements Scene {
     private void drawTransforms(Canvas canvas) {
         canvas.save();
         try (var path = new Path();
-             var paint = new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
-             var secondaryPaint = new Paint().setColor(0xFFFAA6B2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);) {
+             var paint = new Paint().setColor(0xFF437AA0).setMode(PaintMode.STROKE).setStrokeWidth(1f);
+             var secondaryPaint = new Paint().setColor(0xFFFAA6B2).setMode(PaintMode.STROKE).setStrokeWidth(1f);) {
 
             // offsets
             path.reset().addRRect(RRect.makeLTRB(0, 0, 20, 20, 5));
@@ -277,13 +277,13 @@ public class PathsScene implements Scene {
         canvas.save();
 
         try (Path path = new Path().moveTo(20, 5).lineTo(35, 35).lineTo(5, 35).closePath();
-             Paint stroke1 = new Paint().setColor(0xFF247ba0).setStyle(Paint.Style.STROKE).setStrokeWidth(1))
+             Paint stroke1 = new Paint().setColor(0xFF247ba0).setMode(PaintMode.STROKE).setStrokeWidth(1))
         {
             Paint[] paints = new Paint[] {
-                new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10),
-                new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10).setStrokeMiter(2),
-                new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10).setStrokeJoin(Paint.Join.ROUND),
-                new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10).setStrokeJoin(Paint.Join.BEVEL)
+                new Paint().setColor(0xFFffe066).setMode(PaintMode.STROKE).setStrokeWidth(10),
+                new Paint().setColor(0xFFffe066).setMode(PaintMode.STROKE).setStrokeWidth(10).setStrokeMiter(2),
+                new Paint().setColor(0xFFffe066).setMode(PaintMode.STROKE).setStrokeWidth(10).setStrokeJoin(PaintStrokeJoin.ROUND),
+                new Paint().setColor(0xFFffe066).setMode(PaintMode.STROKE).setStrokeWidth(10).setStrokeJoin(PaintStrokeJoin.BEVEL)
             };
 
             for (Paint stroke5: paints) {
@@ -307,12 +307,12 @@ public class PathsScene implements Scene {
         }
 
         try (Path path = new Path().moveTo(5, 35).lineTo(15, 10).lineTo(25, 30).lineTo(35, 5);
-             Paint stroke1 = new Paint().setColor(0xFF247ba0).setStyle(Paint.Style.STROKE).setStrokeWidth(1))
+             Paint stroke1 = new Paint().setColor(0xFF247ba0).setMode(PaintMode.STROKE).setStrokeWidth(1))
         {
             Paint[] paints = new Paint[] {
-                new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10),
-                new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10).setStrokeCap(Paint.Cap.ROUND),
-                new Paint().setColor(0xFFffe066).setStyle(Paint.Style.STROKE).setStrokeWidth(10).setStrokeCap(Paint.Cap.SQUARE)
+                new Paint().setColor(0xFFffe066).setMode(PaintMode.STROKE).setStrokeWidth(10),
+                new Paint().setColor(0xFFffe066).setMode(PaintMode.STROKE).setStrokeWidth(10).setStrokeCap(PaintStrokeCap.ROUND),
+                new Paint().setColor(0xFFffe066).setMode(PaintMode.STROKE).setStrokeWidth(10).setStrokeCap(PaintStrokeCap.SQUARE)
             };
             for (Paint stroke5: paints) {
                 canvas.drawPath(path, stroke5);
@@ -342,7 +342,7 @@ public class PathsScene implements Scene {
                          : pair == 1 ? p2.makeLerp(p3, weight)
                          : pair == 2 ? p3.makeLerp(p4, weight)
                          : p4.makeLerp(p1, weight);
-             Paint stroke = new Paint().setColor(0xFF437AA0).setStyle(Paint.Style.STROKE).setStrokeWidth(1);)
+             Paint stroke = new Paint().setColor(0xFF437AA0).setMode(PaintMode.STROKE).setStrokeWidth(1);)
         {
             target.setVolatile(true);
             assert p1.isInterpolatable(p2);

@@ -1,15 +1,9 @@
 package org.jetbrains.skija;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.Managed;
 import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.Stats;
-
 
 /**
  * <p>Path contain geometry. Path may be empty, or contain one or more verbs that
@@ -30,111 +24,17 @@ import org.jetbrains.skija.impl.Stats;
  * <p>Internally, Path lazily computes metrics likes bounds and convexity. Call
  * {@link #updateBoundsCache()} to make Path thread safe.</p>
  */
-public class Path extends Managed implements Iterable {
-    public enum FillType { 
-        /** Specifies that "inside" is computed by a non-zero sum of signed edge crossings. */
-        WINDING,
-
-        /** Specifies that "inside" is computed by an odd number of edge crossings. */
-        EVEN_ODD,
-
-        /** Same as {@link #WINDING}, but draws outside of the path, rather than inside. */
-        INVERSE_WINDING,
-
-        /** Same as {@link #EVEN_ODD}, but draws outside of the path, rather than inside. */
-        INVERSE_EVEN_ODD;
-
-        /**
-         * Returns if FillType describes area outside Path geometry. The inverse fill area
-         * extends indefinitely.
-         *
-         * @return  true if FillType is {@link #INVERSE_WINDING} or {@link #INVERSE_EVEN_ODD}
-         */
-        public boolean isInverse() {
-            return this == INVERSE_WINDING || this == INVERSE_EVEN_ODD;
-        }
-
-        /**
-         * Returns the inverse fill type. The inverse of FillType describes the area
-         * unmodified by the original FillType.
-         *
-         * @return  inverse FillType
-         */
-        public FillType inverse() {
-            switch (this) {
-                case WINDING:
-                    return INVERSE_WINDING;
-                case EVEN_ODD:
-                    return INVERSE_EVEN_ODD;
-                case INVERSE_WINDING:
-                    return WINDING;
-                case INVERSE_EVEN_ODD:
-                    return EVEN_ODD;
-                default:
-                    throw new RuntimeException("Unreachable");
-            }
-        }
-    }
-
-    public enum Direction {
-        /** Clockwise direction for adding closed contours. */
-        CLOCKWISE,
-
-        /** Counter-clockwise direction for adding closed contours. */
-        COUNTER_CLOCKWISE
-    }
-
-    public enum ArcSize {
-        /** Smaller of arc pair. */
-        SMALL,
-
-        /** Larger of arc pair. */
-        LARGE
-    }
-
-    public enum ConvexityType {
-        UNKNOWN,
-        CONVEX,
-        CONCAVE
-    }
-
-    /**
-     * Verb instructs Path how to interpret one or more Point and optional conic weight;
-     * manage contour, and terminate Path.
-     */
-    public enum Verb {
-        /** iter.next returns 1 point */
-        MOVE,
-
-        /** iter.next returns 2 points */
-        LINE,
-
-        /** iter.next returns 3 points */
-        QUAD,
-
-        /** iter.next returns 3 points + iter.conicWeight() */
-        CONIC,
-
-        /** iter.next returns 4 points */
-        CUBIC,
-
-        /** iter.next returns 1 point (contour's moveTo pt) */
-        CLOSE,
-
-        /** iter.next returns 0 points */
-        DONE
-    }
-
+public class Path extends Managed implements Iterable<PathSegment> {
     /**
      * Constructs an empty Path. By default, Path has no verbs, no {@link Point}, and no weights.
-     * FillType is set to {@link FillType#WINDING}.
+     * FillMode is set to {@link PathFillMode#WINDING}.
      */
     public Path() {
         this(_nMake());
     }
 
     /**
-     * Compares this path and o; Returns true if {@link FillType}, verb array, Point array, and weights
+     * Compares this path and o; Returns true if {@link PathFillMode}, verb array, Point array, and weights
      * are equivalent.
      *
      * @param other  Path to compare
@@ -193,54 +93,54 @@ public class Path extends Managed implements Iterable {
         return new Path(ptr);
     }
 
-    public FillType getFillType() {
+    public PathFillMode getFillMode() {
         Stats.onNativeCall();
-        return FillType.values()[_nGetFillType(_ptr)];
+        return PathFillMode.values()[_nGetFillMode(_ptr)];
     }
 
-    public Path setFillType(FillType fillType) {
+    public Path setFillMode(PathFillMode fillMode) {
         Stats.onNativeCall();
-        _nSetFillType(_ptr, fillType.ordinal());
+        _nSetFillMode(_ptr, fillMode.ordinal());
         return this;
     }
 
     /**
-     * Returns the convexity type, computing if needed. Never returns {@link ConvexityType#UNKNOWN}.
+     * Returns the convexity type, computing if needed. Never returns {@link PathConvexity#UNKNOWN}.
      * 
-     * @return  path's convexity type ({@link ConvexityType#CONVEX} or {@link ConvexityType#CONCAVE})
+     * @return  path's convexity type ({@link PathConvexity#CONVEX} or {@link PathConvexity#CONCAVE})
      */
-    public ConvexityType getConvexityType() {
+    public PathConvexity getConvexity() {
         Stats.onNativeCall();
-        return ConvexityType.values()[_nGetConvexityType(_ptr)];
+        return PathConvexity.values()[_nGetConvexity(_ptr)];
     }
 
     /**
-     * If the path's convexity is already known, return it, else return {@link ConvexityType#UNKNOWN}.
+     * If the path's convexity is already known, return it, else return {@link PathConvexity#UNKNOWN}.
      * If you always want to know the convexity, even if that means having to compute it,
-     * call {@link #getConvexityType()}.
+     * call {@link #getConvexity()}.
      *
-     * @return  known convexity, or {@link ConvexityType#UNKNOWN}
+     * @return  known convexity, or {@link PathConvexity#UNKNOWN}
      */
-    public ConvexityType getConvexityTypeOrUnknown() {
+    public PathConvexity getConvexityOrUnknown() {
         Stats.onNativeCall();
-        return ConvexityType.values()[_nGetConvexityTypeOrUnknown(_ptr)];
+        return PathConvexity.values()[_nGetConvexityOrUnknown(_ptr)];
     }
 
     /**
      * <p>Stores a convexity type for this path.</p>
      *
      * <p>This is what will be returned if
-     * {@link #getConvexityTypeOrUnknown()} is called. If you pass {@link ConvexityType#UNKNOWN},
-     * then if {@link #getConvexityType()} is called, the real convexity will be computed.</p>
+     * {@link #getConvexityOrUnknown()} is called. If you pass {@link PathConvexity#UNKNOWN},
+     * then if {@link #getConvexity()} is called, the real convexity will be computed.</p>
      *
      * @param   convexity value to set
      * @return  this
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_setConvexity">https://fiddle.skia.org/c/@Path_setConvexity</a>
      */
-    public Path setConvexityType(ConvexityType convexity) {
+    public Path setConvexity(PathConvexity convexity) {
         Stats.onNativeCall();
-        _nSetConvexityType(_ptr, convexity.ordinal());
+        _nSetConvexity(_ptr, convexity.ordinal());
         return this;
     }
 
@@ -250,7 +150,7 @@ public class Path extends Managed implements Iterable {
      * @return  true or false
      */
     public boolean isConvex() {
-        return getConvexityType() == ConvexityType.CONVEX;
+        return getConvexity() == PathConvexity.CONVEX;
     }
 
     /**
@@ -280,7 +180,7 @@ public class Path extends Managed implements Iterable {
     /**
      * <p>Sets Path to its initial state.</p>
      * 
-     * <p>Removes verb array, Point array, and weights, and sets FillType to {@link FillType#WINDING}.
+     * <p>Removes verb array, Point array, and weights, and sets FillMode to {@link PathFillMode#WINDING}.
      * Internal storage associated with Path is released.</p>
      *
      * @return  this
@@ -295,7 +195,7 @@ public class Path extends Managed implements Iterable {
 
     /**
      * <p>Sets Path to its initial state, preserving internal storage.
-     * Removes verb array, Point array, and weights, and sets FillType to kWinding.
+     * Removes verb array, Point array, and weights, and sets FillMode to kWinding.
      * Internal storage associated with Path is retained.</p>
      *
      * <p>Use {@link #rewind()} instead of {@link #reset()} if Path storage will be reused and performance
@@ -314,7 +214,7 @@ public class Path extends Managed implements Iterable {
     /**
      * <p>Returns if Path is empty.</p>
      * 
-     * <p>Empty Path may have FillType but has no {@link Point}, {@link Verb}, or conic weight.
+     * <p>Empty Path may have FillMode but has no {@link Point}, {@link PathVerb}, or conic weight.
      * {@link Path()} constructs empty Path; {@link #reset()} and {@link #rewind()} make Path empty.</p>
      *
      * @return  true if the path contains no Verb array
@@ -328,9 +228,9 @@ public class Path extends Managed implements Iterable {
      * <p>Returns if contour is closed.</p>
      * 
      * <p>Contour is closed if Path Verb array was last modified by {@link #closePath()}. When stroked,
-     * closed contour draws {@link Paint.Join} instead of {@link Paint.Cap} at first and last Point.</p>
+     * closed contour draws {@link PaintStrokeJoin} instead of {@link PaintStrokeCap} at first and last Point.</p>
      *
-     * @return  true if the last contour ends with a {@link Verb#CLOSE}
+     * @return  true if the last contour ends with a {@link PathVerb#CLOSE}
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_isLastContourClosed">https://fiddle.skia.org/c/@Path_isLastContourClosed</a>
      */
@@ -447,7 +347,7 @@ public class Path extends Managed implements Iterable {
 
     /**
      * Returns array of two points if Path contains only one line;
-     * Verb array has two entries: {@link Verb#MOVE}, {@link Verb#LINE}.
+     * Verb array has two entries: {@link PathVerb#MOVE}, {@link PathVerb#LINE}.
      * Returns null if Path is not one line.
      *
      * @return  Point[2] if Path contains exactly one line, null otherwise
@@ -520,8 +420,8 @@ public class Path extends Managed implements Iterable {
     }
 
     /**
-     * Returns the number of verbs: {@link Verb#MOVE}, {@link Verb#LINE}, {@link Verb#QUAD}, {@link Verb#CONIC},
-     * {@link Verb#CUBIC}, and {@link Verb#CLOSE}; added to Path.
+     * Returns the number of verbs: {@link PathVerb#MOVE}, {@link PathVerb#LINE}, {@link PathVerb#QUAD}, {@link PathVerb#CONIC},
+     * {@link PathVerb#CUBIC}, and {@link PathVerb#CLOSE}; added to Path.
      *
      * @return  length of verb array
      *
@@ -532,8 +432,8 @@ public class Path extends Managed implements Iterable {
         return _nCountVerbs(_ptr);
     }
 
-    public Verb[] getVerbs() {
-        Verb[] res = new Verb[getVerbsCount()];
+    public PathVerb[] getVerbs() {
+        PathVerb[] res = new PathVerb[getVerbsCount()];
         getVerbs(res, res.length);
         return res;
     }
@@ -547,14 +447,14 @@ public class Path extends Managed implements Iterable {
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_getVerbs">https://fiddle.skia.org/c/@Path_getVerbs</a>
      */
-    public int getVerbs(Verb[] verbs, int max) {
+    public int getVerbs(PathVerb[] verbs, int max) {
         assert verbs == null ? max == 0 : true;
         Stats.onNativeCall();
         byte[] out = verbs == null ? null : new byte[max];
         int count = _nGetVerbs(_ptr, out, max);
         if (verbs != null)
             for (int i = 0; i < Math.min(count, max); ++i)
-                verbs[i] = Verb.values()[out[i]];
+                verbs[i] = PathVerb.values()[out[i]];
         return count;
     }
 
@@ -569,7 +469,7 @@ public class Path extends Managed implements Iterable {
     }
 
     /**
-     * <p>Exchanges the verb array, Point array, weights, and FillType with other.
+     * <p>Exchanges the verb array, Point array, weights, and FillMode with other.
      * Cached state is also exchanged. swap() internally exchanges pointers, so
      * it is lightweight and does not allocate memory.</p>
      *
@@ -591,7 +491,7 @@ public class Path extends Managed implements Iterable {
      * be larger or smaller than area affected when Path is drawn.</p>
      *
      * <p>Rect returned includes all Point added to Path, including Point associated with
-     * {@link Verb#MOVE} that define empty contours.</p>
+     * {@link PathVerb#MOVE} that define empty contours.</p>
      *
      * @return  bounds of all Point in Point array
      */
@@ -623,7 +523,7 @@ public class Path extends Managed implements Iterable {
      * Returned bounds width and height may be larger or smaller than area affected
      * when Path is drawn.</p>
      *
-     * <p>Includes Point associated with {@link Verb#MOVE} that define empty
+     * <p>Includes Point associated with {@link PathVerb#MOVE} that define empty
      * contours.</p>
      *
      * Behaves identically to {@link #getBounds()} when Path contains
@@ -733,10 +633,10 @@ public class Path extends Managed implements Iterable {
 
     /**
      * <p>Adds line from last point to (x, y). If Path is empty, or last Verb is
-     * {@link Verb#CLOSE}, last point is set to (0, 0) before adding line.</p>
+     * {@link PathVerb#CLOSE}, last point is set to (0, 0) before adding line.</p>
      *
-     * <p>lineTo() appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed.
-     * lineTo() then appends {@link Verb#LINE} to verb array and (x, y) to Point array.</p>
+     * <p>lineTo() appends {@link PathVerb#MOVE} to verb array and (0, 0) to Point array, if needed.
+     * lineTo() then appends {@link PathVerb#LINE} to verb array and (x, y) to Point array.</p>
      *
      * @param x  end of added line on x-axis
      * @param y  end of added line on y-axis
@@ -751,11 +651,11 @@ public class Path extends Managed implements Iterable {
     }
 
     /**
-     * <p>Adds line from last point to Point p. If Path is empty, or last {@link Verb} is
-     * {@link Verb#CLOSE}, last point is set to (0, 0) before adding line.</p>
+     * <p>Adds line from last point to Point p. If Path is empty, or last {@link PathVerb} is
+     * {@link PathVerb#CLOSE}, last point is set to (0, 0) before adding line.</p>
      *
-     * <p>lineTo() first appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed.
-     * lineTo() then appends {@link Verb#LINE} to verb array and Point p to Point array.</p>
+     * <p>lineTo() first appends {@link PathVerb#MOVE} to verb array and (0, 0) to Point array, if needed.
+     * lineTo() then appends {@link PathVerb#LINE} to verb array and Point p to Point array.</p>
      *
      * @param p  end Point of added line
      * @return   reference to Path
@@ -765,11 +665,11 @@ public class Path extends Managed implements Iterable {
     }
 
     /**
-     * <p>Adds line from last point to vector (dx, dy). If Path is empty, or last {@link Verb} is
-     * {@link Verb#CLOSE}, last point is set to (0, 0) before adding line.</p>
+     * <p>Adds line from last point to vector (dx, dy). If Path is empty, or last {@link PathVerb} is
+     * {@link PathVerb#CLOSE}, last point is set to (0, 0) before adding line.</p>
      *
-     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed;
-     * then appends {@link Verb#LINE} to verb array and line end to Point array.</p>
+     * <p>Appends {@link PathVerb#MOVE} to verb array and (0, 0) to Point array, if needed;
+     * then appends {@link PathVerb#LINE} to verb array and line end to Point array.</p>
      *
      * <p>Line end is last point plus vector (dx, dy).</p>
      * 
@@ -791,11 +691,11 @@ public class Path extends Managed implements Iterable {
 
     /**
      * Adds quad from last point towards (x1, y1), to (x2, y2).
-     * If Path is empty, or last {@link Verb} is {@link Verb#CLOSE}, last point is set to (0, 0)
+     * If Path is empty, or last {@link PathVerb} is {@link PathVerb#CLOSE}, last point is set to (0, 0)
      * before adding quad.
      *
-     * Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed;
-     * then appends {@link Verb#QUAD} to verb array; and (x1, y1), (x2, y2)
+     * Appends {@link PathVerb#MOVE} to verb array and (0, 0) to Point array, if needed;
+     * then appends {@link PathVerb#QUAD} to verb array; and (x1, y1), (x2, y2)
      * to Point array.
      *
      * @param x1  control Point of quad on x-axis
@@ -815,11 +715,11 @@ public class Path extends Managed implements Iterable {
     /**
      * <p>Adds quad from last point towards Point p1, to Point p2.</p>
      *
-     * <p>If Path is empty, or last {@link Verb} is {@link Verb#CLOSE}, last point is set to (0, 0)
+     * <p>If Path is empty, or last {@link PathVerb} is {@link PathVerb#CLOSE}, last point is set to (0, 0)
      * before adding quad.</p>
      *
-     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed;
-     * then appends {@link Verb#QUAD} to verb array; and Point p1, p2
+     * <p>Appends {@link PathVerb#MOVE} to verb array and (0, 0) to Point array, if needed;
+     * then appends {@link PathVerb#QUAD} to verb array; and Point p1, p2
      * to Point array.</p>
      *
      * @param p1  control Point of added quad
@@ -832,11 +732,11 @@ public class Path extends Managed implements Iterable {
 
     /**
      * <p>Adds quad from last point towards vector (dx1, dy1), to vector (dx2, dy2).
-     * If Path is empty, or last {@link Verb}
-     * is {@link Verb#CLOSE}, last point is set to (0, 0) before adding quad.</p>
+     * If Path is empty, or last {@link PathVerb}
+     * is {@link PathVerb#CLOSE}, last point is set to (0, 0) before adding quad.</p>
      *
-     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array,
-     * if needed; then appends {@link Verb#QUAD} to verb array; and appends quad
+     * <p>Appends {@link PathVerb#MOVE} to verb array and (0, 0) to Point array,
+     * if needed; then appends {@link PathVerb#QUAD} to verb array; and appends quad
      * control and quad end to Point array.</p>
      *
      * <p>Quad control is last point plus vector (dx1, dy1).</p>
@@ -865,18 +765,18 @@ public class Path extends Managed implements Iterable {
     /** 
      * <p>Adds conic from last point towards (x1, y1), to (x2, y2), weighted by w.</p>
      *
-     * <p>If Path is empty, or last {@link Verb} is {@link Verb#CLOSE}, last point is set to (0, 0)
+     * <p>If Path is empty, or last {@link PathVerb} is {@link PathVerb#CLOSE}, last point is set to (0, 0)
      * before adding conic.</p>
      *
-     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed.</p>
+     * <p>Appends {@link PathVerb#MOVE} to verb array and (0, 0) to Point array, if needed.</p>
      *
-     * <p>If w is finite and not one, appends {@link Verb#CONIC} to verb array;
+     * <p>If w is finite and not one, appends {@link PathVerb#CONIC} to verb array;
      * and (x1, y1), (x2, y2) to Point array; and w to conic weights.</p>
      *
-     * <p>If w is one, appends {@link Verb#QUAD} to verb array, and
+     * <p>If w is one, appends {@link PathVerb#QUAD} to verb array, and
      * (x1, y1), (x2, y2) to Point array.</p>
      *
-     * <p>If w is not finite, appends {@link Verb#LINE} twice to verb array, and
+     * <p>If w is not finite, appends {@link PathVerb#LINE} twice to verb array, and
      * (x1, y1), (x2, y2) to Point array.</p>
      *
      * @param x1  control Point of conic on x-axis
@@ -895,18 +795,18 @@ public class Path extends Managed implements Iterable {
     /** 
      * <p>Adds conic from last point towards Point p1, to Point p2, weighted by w.</p>
      *
-     * <p>If Path is empty, or last {@link Verb} is {@link Verb#CLOSE}, last point is set to (0, 0)
+     * <p>If Path is empty, or last {@link PathVerb} is {@link PathVerb#CLOSE}, last point is set to (0, 0)
      * before adding conic.</p>
      *
-     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed.</p>
+     * <p>Appends {@link PathVerb#MOVE} to verb array and (0, 0) to Point array, if needed.</p>
      *
-     * <p>If w is finite and not one, appends {@link Verb#CONIC} to verb array;
+     * <p>If w is finite and not one, appends {@link PathVerb#CONIC} to verb array;
      * and Point p1, p2 to Point array; and w to conic weights.</p>
      *
-     * <p>If w is one, appends {@link Verb#QUAD} to verb array, and Point p1, p2
+     * <p>If w is one, appends {@link PathVerb#QUAD} to verb array, and Point p1, p2
      * to Point array.</p>
      *
-     * <p>If w is not finite, appends {@link Verb#LINE} twice to verb array, and
+     * <p>If w is not finite, appends {@link PathVerb#LINE} twice to verb array, and
      * Point p1, p2 to Point array.</p>
      *
      * @param p1  control Point of added conic
@@ -920,15 +820,15 @@ public class Path extends Managed implements Iterable {
 
     /**
      * <p>Adds conic from last point towards vector (dx1, dy1), to vector (dx2, dy2),
-     * weighted by w. If Path is empty, or last {@link Verb}
-     * is {@link Verb#CLOSE}, last point is set to (0, 0) before adding conic.</p>
+     * weighted by w. If Path is empty, or last {@link PathVerb}
+     * is {@link PathVerb#CLOSE}, last point is set to (0, 0) before adding conic.</p>
      *
-     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array,
+     * <p>Appends {@link PathVerb#MOVE} to verb array and (0, 0) to Point array,
      * if needed.</p>
      *
-     * <p>If w is finite and not one, next appends {@link Verb#CONIC} to verb array,
+     * <p>If w is finite and not one, next appends {@link PathVerb#CONIC} to verb array,
      * and w is recorded as conic weight; otherwise, if w is one, appends
-     * {@link Verb#QUAD} to verb array; or if w is not finite, appends {@link Verb#LINE}
+     * {@link PathVerb#QUAD} to verb array; or if w is not finite, appends {@link PathVerb#LINE}
      * twice to verb array.</p>
      *
      * <p>In all cases appends Point control and end to Point array.
@@ -952,11 +852,11 @@ public class Path extends Managed implements Iterable {
 
     /**
      * <p>Adds cubic from last point towards (x1, y1), then towards (x2, y2), ending at
-     * (x3, y3). If Path is empty, or last {@link Verb} is {@link Verb#CLOSE}, last point is set to
+     * (x3, y3). If Path is empty, or last {@link PathVerb} is {@link PathVerb#CLOSE}, last point is set to
      * (0, 0) before adding cubic.</p>
      *
-     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed;
-     * then appends {@link Verb#CUBIC} to verb array; and (x1, y1), (x2, y2), (x3, y3)
+     * <p>Appends {@link PathVerb#MOVE} to verb array and (0, 0) to Point array, if needed;
+     * then appends {@link PathVerb#CUBIC} to verb array; and (x1, y1), (x2, y2), (x3, y3)
      * to Point array.</p>
      *
      * @param x1  first control Point of cubic on x-axis
@@ -975,11 +875,11 @@ public class Path extends Managed implements Iterable {
 
     /**
      * <p>Adds cubic from last point towards Point p1, then towards Point p2, ending at
-     * Point p3. If Path is empty, or last {@link Verb} is {@link Verb#CLOSE}, last point is set to
+     * Point p3. If Path is empty, or last {@link PathVerb} is {@link PathVerb#CLOSE}, last point is set to
      * (0, 0) before adding cubic.</p>
      *
-     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array, if needed;
-     * then appends {@link Verb#CUBIC} to verb array; and Point p1, p2, p3
+     * <p>Appends {@link PathVerb#MOVE} to verb array and (0, 0) to Point array, if needed;
+     * then appends {@link PathVerb#CUBIC} to verb array; and Point p1, p2, p3
      * to Point array.</p>
      *
      * @param p1  first control Point of cubic
@@ -994,11 +894,11 @@ public class Path extends Managed implements Iterable {
     /**
      * <p>Adds cubic from last point towards vector (dx1, dy1), then towards
      * vector (dx2, dy2), to vector (dx3, dy3).
-     * If Path is empty, or last {@link Verb}
-     * is {@link Verb#CLOSE}, last point is set to (0, 0) before adding cubic.</p>
+     * If Path is empty, or last {@link PathVerb}
+     * is {@link PathVerb#CLOSE}, last point is set to (0, 0) before adding cubic.</p>
      *
-     * <p>Appends {@link Verb#MOVE} to verb array and (0, 0) to Point array,
-     * if needed; then appends {@link Verb#CUBIC} to verb array; and appends cubic
+     * <p>Appends {@link PathVerb#MOVE} to verb array and (0, 0) to Point array,
+     * if needed; then appends {@link PathVerb#CUBIC} to verb array; and appends cubic
      * control and cubic end to Point array.</p>
      *
      * <p>Cubic control is last point plus vector (dx1, dy1).</p>
@@ -1117,20 +1017,20 @@ public class Path extends Managed implements Iterable {
      *
      * <p>ellipticalArcTo() implements the functionality of SVG arc, although SVG sweep-flag value
      * is opposite the integer value of sweep; SVG sweep-flag uses 1 for clockwise,
-     * while {@link Direction#CLOCKWISE} cast to int is zero.</p>
+     * while {@link PathDirection#CLOCKWISE} cast to int is zero.</p>
      *
      * @param rx           radius on x-axis before x-axis rotation
      * @param ry           radius on y-axis before x-axis rotation
      * @param xAxisRotate  x-axis rotation in degrees; positive values are clockwise
-     * @param size         chooses smaller or larger arc
+     * @param arc          chooses smaller or larger arc
      * @param direction    chooses clockwise or counterclockwise arc
      * @param x            end of arc
      * @param y            end of arc
      * @return             reference to Path
      */
-    public Path ellipticalArcTo(float rx, float ry, float xAxisRotate, ArcSize size, Direction direction, float x, float y) {
+    public Path ellipticalArcTo(float rx, float ry, float xAxisRotate, PathEllipseArc arc, PathDirection direction, float x, float y) {
         Stats.onNativeCall();
-        _nEllipticalArcTo(_ptr, rx, ry, xAxisRotate, size.ordinal(), direction.ordinal(), x, y);
+        _nEllipticalArcTo(_ptr, rx, ry, xAxisRotate, arc.ordinal(), direction.ordinal(), x, y);
         return this;
     }
 
@@ -1149,17 +1049,17 @@ public class Path extends Managed implements Iterable {
      *
      * <p>ellipticalArcTo() implements the functionality of SVG arc, although SVG sweep-flag value is
      * opposite the integer value of sweep; SVG sweep-flag uses 1 for clockwise, while
-     * {@link Direction#CLOCKWISE} cast to int is zero.</p>
+     * {@link PathDirection#CLOCKWISE} cast to int is zero.</p>
      *
      * @param r            radii on axes before x-axis rotation
      * @param xAxisRotate  x-axis rotation in degrees; positive values are clockwise
-     * @param size         chooses smaller or larger arc
+     * @param arc          chooses smaller or larger arc
      * @param direction    chooses clockwise or counterclockwise arc
      * @param xy           end of arc
      * @return             reference to Path
      */
-    public Path ellipticalArcTo(Point r, float xAxisRotate, ArcSize size, Direction direction, Point xy) {
-        return ellipticalArcTo(r._x, r._y, xAxisRotate, size, direction, xy._x, xy._y);
+    public Path ellipticalArcTo(Point r, float xAxisRotate, PathEllipseArc arc, PathDirection direction, Point xy) {
+        return ellipticalArcTo(r._x, r._y, xAxisRotate, arc, direction, xy._x, xy._y);
     }
 
     /**
@@ -1179,31 +1079,31 @@ public class Path extends Managed implements Iterable {
      *
      * <p>rEllipticalArcTo() implements the functionality of svg arc, although SVG "sweep-flag" value is
      * opposite the integer value of sweep; SVG "sweep-flag" uses 1 for clockwise, while
-     * {@link Direction#CLOCKWISE} cast to int is zero.</p>
+     * {@link PathDirection#CLOCKWISE} cast to int is zero.</p>
      *
      * @param rx           radius before x-axis rotation
      * @param ry           radius before x-axis rotation
      * @param xAxisRotate  x-axis rotation in degrees; positive values are clockwise
-     * @param size         chooses smaller or larger arc
+     * @param arc          chooses smaller or larger arc
      * @param direction    chooses clockwise or counterclockwise arc
      * @param dx           x-axis offset end of arc from last Path Point
      * @param dy           y-axis offset end of arc from last Path Point
      * @return             reference to Path
      */
-    public Path rEllipticalArcTo(float rx, float ry, float xAxisRotate, ArcSize size, Direction direction, float dx, float dy) {
+    public Path rEllipticalArcTo(float rx, float ry, float xAxisRotate, PathEllipseArc arc, PathDirection direction, float dx, float dy) {
         Stats.onNativeCall();
-        _nREllipticalArcTo(_ptr, rx, ry, xAxisRotate, size.ordinal(), direction.ordinal(), dx, dy);
+        _nREllipticalArcTo(_ptr, rx, ry, xAxisRotate, arc.ordinal(), direction.ordinal(), dx, dy);
         return this;
     }
 
     /**
-     * <p>Appends {@link Verb#CLOSE} to Path. A closed contour connects the first and last Point
+     * <p>Appends {@link PathVerb#CLOSE} to Path. A closed contour connects the first and last Point
      * with line, forming a continuous loop. Open and closed contour draw the same
-     * with {@link Paint.Style#FILL}. With {@link Paint.Style#STROKE}, open contour draws
-     * {@link Paint.Cap} at contour start and end; closed contour draws
-     * {@link Paint.Join} at contour start and end.</p>
+     * with {@link PaintMode#FILL}. With {@link PaintMode#STROKE}, open contour draws
+     * {@link PaintStrokeCap} at contour start and end; closed contour draws
+     * {@link PaintStrokeJoin} at contour start and end.</p>
      *
-     * <p>closePath() has no effect if Path is empty or last Path {@link Verb} is {@link Verb#CLOSE}.</p>
+     * <p>closePath() has no effect if Path is empty or last Path {@link PathVerb} is {@link PathVerb#CLOSE}.</p>
      *
      * @return  reference to Path
      *
@@ -1252,7 +1152,7 @@ public class Path extends Managed implements Iterable {
     /**
      * <p>Returns Rect if Path is equivalent to Rect when filled.</p>
      *
-     * rect may be smaller than the Path bounds. Path bounds may include {@link Verb#MOVE} points
+     * rect may be smaller than the Path bounds. Path bounds may include {@link PathVerb#MOVE} points
      * that do not alter the area drawn by the returned rect.
      *
      * @return  bounds if Path contains Rect, null otherwise
@@ -1265,7 +1165,7 @@ public class Path extends Managed implements Iterable {
     }
 
     /**
-     * Adds Rect to Path, appending {@link Verb#MOVE}, three {@link Verb#LINE}, and {@link Verb#CLOSE},
+     * Adds Rect to Path, appending {@link PathVerb#MOVE}, three {@link PathVerb#LINE}, and {@link PathVerb#CLOSE},
      * starting with top-left corner of Rect; followed by top-right, bottom-right,
      * and bottom-left.
      *
@@ -1275,14 +1175,14 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_addRect">https://fiddle.skia.org/c/@Path_addRect</a>
      */
     public Path addRect(Rect rect) {
-        return addRect(rect, Direction.CLOCKWISE, 0);
+        return addRect(rect, PathDirection.CLOCKWISE, 0);
     }
 
     /**
-     * Adds Rect to Path, appending {@link Verb#MOVE}, three {@link Verb#LINE}, and {@link Verb#CLOSE},
+     * Adds Rect to Path, appending {@link PathVerb#MOVE}, three {@link PathVerb#LINE}, and {@link PathVerb#CLOSE},
      * starting with top-left corner of Rect; followed by top-right, bottom-right,
-     * and bottom-left if dir is {@link Direction#CLOCKWISE}; or followed by bottom-left,
-     * bottom-right, and top-right if dir is {@link Direction#COUNTER_CLOCKWISE}.
+     * and bottom-left if dir is {@link PathDirection#CLOCKWISE}; or followed by bottom-left,
+     * bottom-right, and top-right if dir is {@link PathDirection#COUNTER_CLOCKWISE}.
      *
      * @param rect  Rect to add as a closed contour
      * @param dir   Direction to wind added contour
@@ -1290,14 +1190,14 @@ public class Path extends Managed implements Iterable {
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_addRect">https://fiddle.skia.org/c/@Path_addRect</a>
      */
-    public Path addRect(Rect rect, Direction dir) {
+    public Path addRect(Rect rect, PathDirection dir) {
         return addRect(rect, dir, 0);
     }
 
     /**
-     * Adds Rect to Path, appending {@link Verb#MOVE}, three {@link Verb#LINE}, and {@link Verb#CLOSE}.
-     * If dir is {@link Direction#CLOCKWISE}, Rect corners are added clockwise; if dir is
-     * {@link Direction#COUNTER_CLOCKWISE}, Rect corners are added counterclockwise.
+     * Adds Rect to Path, appending {@link PathVerb#MOVE}, three {@link PathVerb#LINE}, and {@link PathVerb#CLOSE}.
+     * If dir is {@link PathDirection#CLOCKWISE}, Rect corners are added clockwise; if dir is
+     * {@link PathDirection#COUNTER_CLOCKWISE}, Rect corners are added counterclockwise.
      * start determines the first corner added.
      *
      * @param rect   Rect to add as a closed contour
@@ -1307,14 +1207,14 @@ public class Path extends Managed implements Iterable {
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_addRect_2">https://fiddle.skia.org/c/@Path_addRect_2</a>
      */
-    public Path addRect(Rect rect, Direction dir, int start) {
+    public Path addRect(Rect rect, PathDirection dir, int start) {
         Stats.onNativeCall();
         _nAddRect(_ptr, rect._left, rect._top, rect._right, rect._bottom, dir.ordinal(), start);
         return this;
     }
 
     /**
-     * <p>Adds oval to path, appending {@link Verb#MOVE}, four {@link Verb#CONIC}, and {@link Verb#CLOSE}.</p>
+     * <p>Adds oval to path, appending {@link PathVerb#MOVE}, four {@link PathVerb#CONIC}, and {@link PathVerb#CLOSE}.</p>
      *
      * <p>Oval is upright ellipse bounded by Rect oval with radii equal to half oval width
      * and half oval height. Oval begins at (oval.fRight, oval.centerY()) and continues
@@ -1327,15 +1227,15 @@ public class Path extends Managed implements Iterable {
      */
 
     public Path addOval(Rect oval) {
-        return addOval(oval, Direction.CLOCKWISE, 1);
+        return addOval(oval, PathDirection.CLOCKWISE, 1);
     }
 
     /**
-     * <p>Adds oval to path, appending {@link Verb#MOVE}, four {@link Verb#CONIC}, and {@link Verb#CLOSE}.</p>
+     * <p>Adds oval to path, appending {@link PathVerb#MOVE}, four {@link PathVerb#CONIC}, and {@link PathVerb#CLOSE}.</p>
      *
      * <p>Oval is upright ellipse bounded by Rect oval with radii equal to half oval width
      * and half oval height. Oval begins at (oval.fRight, oval.centerY()) and continues
-     * clockwise if dir is {@link Direction#CLOCKWISE}, counterclockwise if dir is {@link Direction#COUNTER_CLOCKWISE}.</p>
+     * clockwise if dir is {@link PathDirection#CLOCKWISE}, counterclockwise if dir is {@link PathDirection#COUNTER_CLOCKWISE}.</p>
      *
      * @param oval  bounds of ellipse added
      * @param dir   Direction to wind ellipse
@@ -1343,15 +1243,15 @@ public class Path extends Managed implements Iterable {
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_addOval">https://fiddle.skia.org/c/@Path_addOval</a>
      */
-    public Path addOval(Rect oval, Direction dir) {
+    public Path addOval(Rect oval, PathDirection dir) {
         return addOval(oval, dir, 1);
     }
 
     /**
-     * Adds oval to Path, appending {@link Verb#MOVE}, four {@link Verb#CONIC}, and {@link Verb#CLOSE}.
+     * Adds oval to Path, appending {@link PathVerb#MOVE}, four {@link PathVerb#CONIC}, and {@link PathVerb#CLOSE}.
      * Oval is upright ellipse bounded by Rect oval with radii equal to half oval width
      * and half oval height. Oval begins at start and continues
-     * clockwise if dir is {@link Direction#CLOCKWISE}, counterclockwise if dir is {@link Direction#COUNTER_CLOCKWISE}.
+     * clockwise if dir is {@link PathDirection#CLOCKWISE}, counterclockwise if dir is {@link PathDirection#COUNTER_CLOCKWISE}.
      *
      * @param oval   bounds of ellipse added
      * @param dir    Direction to wind ellipse
@@ -1360,15 +1260,15 @@ public class Path extends Managed implements Iterable {
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_addOval_2">https://fiddle.skia.org/c/@Path_addOval_2</a>
      */
-    public Path addOval(Rect oval, Direction dir, int start) {
+    public Path addOval(Rect oval, PathDirection dir, int start) {
         Stats.onNativeCall();
         _nAddOval(_ptr, oval._left, oval._top, oval._right, oval._bottom, dir.ordinal(), start);
         return this;
     }
 
     /** 
-     * <p>Adds circle centered at (x, y) of size radius to Path, appending {@link Verb#MOVE},
-     * four {@link Verb#CONIC}, and {@link Verb#CLOSE}. Circle begins at: (x + radius, y)</p>
+     * <p>Adds circle centered at (x, y) of size radius to Path, appending {@link PathVerb#MOVE},
+     * four {@link PathVerb#CONIC}, and {@link PathVerb#CLOSE}. Circle begins at: (x + radius, y)</p>
      *
      * <p>Has no effect if radius is zero or negative.</p>
      *
@@ -1378,13 +1278,13 @@ public class Path extends Managed implements Iterable {
      * @return        reference to Path
      */
     public Path addCircle(float x, float y, float radius) {
-        return addCircle(x, y, radius, Direction.CLOCKWISE);
+        return addCircle(x, y, radius, PathDirection.CLOCKWISE);
     }
 
     /** 
-     * <p>Adds circle centered at (x, y) of size radius to Path, appending {@link Verb#MOVE},
-     * four {@link Verb#CONIC}, and {@link Verb#CLOSE}. Circle begins at: (x + radius, y), continuing
-     * clockwise if dir is {@link Direction#CLOCKWISE}, and counterclockwise if dir is {@link Direction#COUNTER_CLOCKWISE}.</p>
+     * <p>Adds circle centered at (x, y) of size radius to Path, appending {@link PathVerb#MOVE},
+     * four {@link PathVerb#CONIC}, and {@link PathVerb#CLOSE}. Circle begins at: (x + radius, y), continuing
+     * clockwise if dir is {@link PathDirection#CLOCKWISE}, and counterclockwise if dir is {@link PathDirection#COUNTER_CLOCKWISE}.</p>
      *
      * <p>Has no effect if radius is zero or negative.</p>
      *
@@ -1394,7 +1294,7 @@ public class Path extends Managed implements Iterable {
      * @param dir     Direction to wind circle
      * @return        reference to Path
      */
-    public Path addCircle(float x, float y, float radius, Direction dir) {
+    public Path addCircle(float x, float y, float radius, PathDirection dir) {
         Stats.onNativeCall();
         _nAddCircle(_ptr, x, y, radius, dir.ordinal());
         return this;
@@ -1435,13 +1335,13 @@ public class Path extends Managed implements Iterable {
      * @see <a href="https://fiddle.skia.org/c/@Path_addRRect">https://fiddle.skia.org/c/@Path_addRRect</a>
      */
     public Path addRRect(RRect rrect) {
-        return addRRect(rrect, Direction.CLOCKWISE, 6);
+        return addRRect(rrect, PathDirection.CLOCKWISE, 6);
     }
 
     /**
      * <p>Adds rrect to Path, creating a new closed contour. If
-     * dir is {@link Direction#CLOCKWISE}, rrect starts at top-left of the lower-left corner and
-     * winds clockwise. If dir is {@link Direction#COUNTER_CLOCKWISE}, rrect starts at the bottom-left
+     * dir is {@link PathDirection#CLOCKWISE}, rrect starts at top-left of the lower-left corner and
+     * winds clockwise. If dir is {@link PathDirection#COUNTER_CLOCKWISE}, rrect starts at the bottom-left
      * of the upper-left corner and winds counterclockwise.</p>
      *
      * <p>After appending, Path may be empty, or may contain: Rect, Oval, or RRect.</p>
@@ -1452,13 +1352,13 @@ public class Path extends Managed implements Iterable {
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_addRRect">https://fiddle.skia.org/c/@Path_addRRect</a>
      */
-    public Path addRRect(RRect rrect, Direction dir) {
-        return addRRect(rrect, dir, dir == Direction.CLOCKWISE ? 6 : 7);
+    public Path addRRect(RRect rrect, PathDirection dir) {
+        return addRRect(rrect, dir, dir == PathDirection.CLOCKWISE ? 6 : 7);
     }
 
     /**
-     * <p>Adds rrect to Path, creating a new closed contour. If dir is {@link Direction#CLOCKWISE}, rrect
-     * winds clockwise; if dir is {@link Direction#COUNTER_CLOCKWISE}, rrect winds counterclockwise.
+     * <p>Adds rrect to Path, creating a new closed contour. If dir is {@link PathDirection#CLOCKWISE}, rrect
+     * winds clockwise; if dir is {@link PathDirection#COUNTER_CLOCKWISE}, rrect winds counterclockwise.
      * start determines the first point of rrect to add.</p>
      *
      * @param rrect  bounds and radii of rounded rectangle
@@ -1469,7 +1369,7 @@ public class Path extends Managed implements Iterable {
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_addRRect_2">https://fiddle.skia.org/c/@Path_addRRect_2</a>
      */
-    public Path addRRect(RRect rrect, Direction dir, int start) {
+    public Path addRRect(RRect rrect, PathDirection dir, int start) {
         Stats.onNativeCall();
         _nAddRRect(_ptr, rrect._left, rrect._top, rrect._right, rrect._bottom, rrect._radii, dir.ordinal(), start);
         return this;
@@ -1478,10 +1378,10 @@ public class Path extends Managed implements Iterable {
     /**
      * <p>Adds contour created from line array, adding (pts.length - 1) line segments.
      * Contour added starts at pts[0], then adds a line for every additional Point
-     * in pts array. If close is true, appends {@link Verb#CLOSE} to Path, connecting
+     * in pts array. If close is true, appends {@link PathVerb#CLOSE} to Path, connecting
      * pts[pts.length - 1] and pts[0].</p>
      *
-     * <p>If pts is empty, append {@link Verb#MOVE} to path.</p>
+     * <p>If pts is empty, append {@link PathVerb#MOVE} to path.</p>
      *
      * @param pts    array of line sharing end and start Point
      * @param close  true to add line connecting contour end and start
@@ -1501,10 +1401,10 @@ public class Path extends Managed implements Iterable {
     /**
      * <p>Adds contour created from line array, adding (pts.length / 2 - 1) line segments.
      * Contour added starts at (pts[0], pts[1]), then adds a line for every additional pair of floats
-     * in pts array. If close is true, appends {@link Verb#CLOSE} to Path, connecting
+     * in pts array. If close is true, appends {@link PathVerb#CLOSE} to Path, connecting
      * (pts[count - 2], pts[count - 1]) and (pts[0], pts[1]).</p>
      *
-     * <p>If pts is empty, append {@link Verb#MOVE} to path.</p>
+     * <p>If pts is empty, append {@link PathVerb#MOVE} to path.</p>
      *
      * @param pts    flat array of line sharing end and start Point
      * @param close  true to add line connecting contour end and start
@@ -1734,7 +1634,7 @@ public class Path extends Managed implements Iterable {
     }
 
     /**
-     * Sets last point to (x, y). If Point array is empty, append {@link Verb#MOVE} to
+     * Sets last point to (x, y). If Point array is empty, append {@link PathVerb#MOVE} to
      * verb array and append (x, y) to Point array.
      *
      * @param x  set x-axis value of last point
@@ -1750,7 +1650,7 @@ public class Path extends Managed implements Iterable {
     }
 
     /**
-     * Sets the last point on the path. If Point array is empty, append {@link Verb#MOVE} to
+     * Sets the last point on the path. If Point array is empty, append {@link PathVerb#MOVE} to
      * verb array and append p to Point array.
      *
      * @param p  set value of last point
@@ -1759,11 +1659,6 @@ public class Path extends Managed implements Iterable {
     public Path setLastPt(Point p) {
         return setLastPt(p._x, p._y);
     }
-
-    public static final int SEGMENT_MASK_LINE  = 1 << 0;
-    public static final int SEGMENT_MASK_QUAD  = 1 << 1;
-    public static final int SEGMENT_MASK_CONIC = 1 << 2;
-    public static final int SEGMENT_MASK_CUBIC = 1 << 3;
 
     /**
      * <p>Returns a mask, where each set bit corresponds to a SegmentMask constant
@@ -1775,153 +1670,28 @@ public class Path extends Managed implements Iterable {
      *
      * @return  SegmentMask bits or zero
      *
-     * @see {@link #SEGMENT_MASK_LINE}
-     * @see {@link #SEGMENT_MASK_QUAD}
-     * @see {@link #SEGMENT_MASK_CONIC}
-     * @see {@link #SEGMENT_MASK_CUBIC}
+     * @see {@link PathSegmentMask#LINE}
+     * @see {@link PathSegmentMask#QUAD}
+     * @see {@link PathSegmentMask#CONIC}
+     * @see {@link PathSegmentMask#CUBIC}
      */
     public int getSegmentMasks() {
         Stats.onNativeCall();
         return _nGetSegmentMasks(_ptr);
     }
 
-    @AllArgsConstructor
-    @Getter
-    public static class Segment {
-        public final Verb    _verb;
-        public final Point   _p0;
-        public final Point   _p1;
-        public final Point   _p2;
-        public final Point   _p3;
-        public final float   _conicWeight;
-        public final boolean _closeLine;
-        public final boolean _closedContour;
-
-        public Segment() {
-            this(Verb.DONE, null, null, null, null, 0f, false, false);
-        }
-
-        public Segment(int verbOrdinal, float x0, float y0, boolean isClosedContour) {
-            this(Verb.values()[verbOrdinal], new Point(x0, y0), null, null, null, 0f, false, isClosedContour);
-            assert verbOrdinal == Verb.MOVE.ordinal() || verbOrdinal == Verb.CLOSE.ordinal() : "Expected MOVE or CLOSE, got " + Verb.values()[verbOrdinal];
-        }
-
-        public Segment(float x0, float y0, float x1, float y1, boolean isCloseLine, boolean isClosedContour) {
-            this(Verb.LINE, new Point(x0, y0), new Point(x1, y1), null, null, 0f, isCloseLine, isClosedContour);
-        }
-
-        public Segment(float x0, float y0, float x1, float y1, float x2, float y2, boolean isClosedContour) {
-            this(Verb.QUAD, new Point(x0, y0), new Point(x1, y1), new Point(x2, y2), null, 0f, false, isClosedContour);
-        }
-
-        public Segment(float x0, float y0, float x1, float y1, float x2, float y2, float conicWeight, boolean isClosedContour) {
-            this(Verb.CONIC, new Point(x0, y0), new Point(x1, y1), new Point(x2, y2), null, conicWeight, false, isClosedContour);
-        }
-
-        public Segment(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, boolean isClosedContour) {
-            this(Verb.CUBIC, new Point(x0, y0), new Point(x1, y1), new Point(x2, y2), new Point(x3, y3), 0f, false, isClosedContour);
-        }
-
-        @Override
-        public String toString() {
-            return "Segment(" +
-                    "verb=" + _verb +
-                    (_verb != Verb.DONE ? ", p0=" + _p0 : "") +
-                    (_verb == Verb.LINE || _verb == Verb.QUAD || _verb == Verb.CONIC || _verb == Verb.CUBIC ? ", p1=" + _p1 : "") +
-                    (_verb == Verb.QUAD || _verb == Verb.CONIC || _verb == Verb.CUBIC ? ", p2=" + _p2 : "") +
-                    (_verb == Verb.CUBIC ? ", p3=" + _p3 : "") +
-                    (_verb == Verb.CONIC ? ", conicWeight=" + _conicWeight : "") +
-                    (_verb == Verb.LINE  ? ", closeLine=" + _closeLine : "") +
-                    (_verb != Verb.DONE ? ", closedContour=" + _closedContour : "") +
-                    ")";
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Segment segment = (Segment) o;
-            return _verb == segment._verb &&
-                   (_verb != Verb.DONE ? Objects.equals(_p0, segment._p0) : true) &&
-                   (_verb == Verb.LINE || _verb == Verb.QUAD || _verb == Verb.CONIC || _verb == Verb.CUBIC ? Objects.equals(_p1, segment._p1) : true) &&
-                   (_verb == Verb.QUAD || _verb == Verb.CONIC || _verb == Verb.CUBIC ? Objects.equals(_p2, segment._p2) : true) &&
-                   (_verb == Verb.CUBIC ? Objects.equals(_p3, segment._p3) : true) &&
-                   (_verb == Verb.CONIC ? Float.compare(segment._conicWeight, _conicWeight) == 0 : true) &&
-                   (_verb == Verb.LINE  ? _closeLine == segment._closeLine : true) &&
-                   (_verb != Verb.DONE ? _closedContour == segment._closedContour : true);
-        }
-
-        @Override
-        public int hashCode() {
-            switch (_verb) {
-                case DONE:
-                    return Objects.hash(_verb);
-                case MOVE:
-                    return Objects.hash(_verb, _p0, _closedContour);
-                case LINE:
-                    return Objects.hash(_verb, _p0, _p1, _closeLine, _closedContour);
-                case QUAD:
-                    return Objects.hash(_verb, _p0, _p1, _p2, _closedContour);
-                case CONIC:
-                    return Objects.hash(_verb, _p0, _p1, _p2, _conicWeight, _closedContour);
-                case CUBIC:    
-                    return Objects.hash(_verb, _p0, _p1, _p2, _p3, _closedContour);
-                default:
-                    throw new RuntimeException("Unreachable");
-            }
-        }
-    }
-
-    public static class Iter extends Managed implements Iterator<Segment> {
-        public final Path _path;
-        public Segment _nextSegment;
-
-        @Override
-        public Segment next() {
-            if (_nextSegment._verb == Verb.DONE)
-                throw new NoSuchElementException();
-            Segment res = _nextSegment;
-            _nextSegment = _nNext(_ptr);
-            return res;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return _nextSegment._verb != Verb.DONE;
-        }
-
-        @ApiStatus.Internal
-        public Iter(Path path, long ptr) {
-            super(ptr, _nGetFinalizer());
-            this._path = path;
-            Stats.onNativeCall();
-        }
-
-        public static Iter make(Path path, boolean forceClose) {
-            long ptr = _nMake(Native.getPtr(path), forceClose);
-            Iter i = new Iter(path, ptr);
-            i._nextSegment = _nNext(ptr);
-            return i;
-        }
-
-        public static final  long _finalizerPtr = _nGetFinalizer();
-        public static native long _nMake(long pathPtr, boolean forceClose);
-        public static native long _nGetFinalizer();
-        public static native Segment _nNext(long ptr);
-    } 
-
     @Override
-    public Iter iterator() {
+    public PathSegmentIterator iterator() {
         return iterator(false);
     }
 
-    public Iter iterator(boolean forceClose) {
-        return Iter.make(this, forceClose);
+    public PathSegmentIterator iterator(boolean forceClose) {
+        return PathSegmentIterator.make(this, forceClose);
     }
 
     /**
      * Returns true if the point (x, y) is contained by Path, taking into
-     * account {@link FillType}.
+     * account {@link PathFillMode}.
      *
      * @param x  x-axis value of containment test
      * @param y  y-axis value of containment test
@@ -1936,7 +1706,7 @@ public class Path extends Managed implements Iterable {
 
     /**
      * Returns true if the point is contained by Path, taking into
-     * account {@link FillType}.
+     * account {@link PathFillMode}.
      *
      * @param p  point of containment test
      * @return   true if Point is in Path
@@ -1984,8 +1754,8 @@ public class Path extends Managed implements Iterable {
     /**
      * <p>Writes Path to byte buffer.</p>
      *
-     * <p>Writes {@link FillType}, verb array, Point array, conic weight, and
-     * additionally writes computed information like {@link ConvexityType} and bounds.</p>
+     * <p>Writes {@link PathFillMode}, verb array, Point array, conic weight, and
+     * additionally writes computed information like {@link PathConvexity} and bounds.</p>
      *
      * <p>Use only be used in concert with {@link readFromMemory(byte[])};
      * the format used for Path in memory is not guaranteed.</p>
@@ -2003,8 +1773,8 @@ public class Path extends Managed implements Iterable {
      * <p>Initializes Path from byte buffer. Returns null if the buffer is
      * data is inconsistent, or the length is too small.</p>
      *
-     * <p>Reads {@link FillType}, verb array, Point array, conic weight, and
-     * additionally reads computed information like {@link ConvexityType} and bounds.</p>
+     * <p>Reads {@link PathFillMode}, verb array, Point array, conic weight, and
+     * additionally reads computed information like {@link PathConvexity} and bounds.</p>
      *
      * <p>Used only in concert with {@link writeToMemory()};
      * the format used for Path in memory is not guaranteed.</p>
@@ -2023,10 +1793,10 @@ public class Path extends Managed implements Iterable {
      * <p>Returns a non-zero, globally unique value. A different value is returned
      * if verb array, Point array, or conic weight changes.</p>
      *
-     * <p>Setting {@link FillType} does not change generation identifier.</p>
+     * <p>Setting {@link PathFillMode} does not change generation identifier.</p>
      *
      * <p>Each time the path is modified, a different generation identifier will be returned.
-     * {@link FillType} does affect generation identifier on Android framework.</p>
+     * {@link PathFillMode} does affect generation identifier on Android framework.</p>
      *
      * @return  non-zero, globally unique value
      *
@@ -2062,11 +1832,11 @@ public class Path extends Managed implements Iterable {
     public static native boolean _nEquals(long aPtr, long bPtr);
     public static native boolean _nIsInterpolatable(long ptr, long comparePtr);
     public static native long    _nMakeLerp(long ptr, long endingPtr, float weight);
-    public static native int     _nGetFillType(long ptr);
-    public static native void    _nSetFillType(long ptr, int fillType);
-    public static native int     _nGetConvexityType(long ptr);
-    public static native int     _nGetConvexityTypeOrUnknown(long ptr);
-    public static native void    _nSetConvexityType(long ptr, int convexity);
+    public static native int     _nGetFillMode(long ptr);
+    public static native void    _nSetFillMode(long ptr, int fillMode);
+    public static native int     _nGetConvexity(long ptr);
+    public static native int     _nGetConvexityOrUnknown(long ptr);
+    public static native void    _nSetConvexity(long ptr, int convexity);
     public static native Rect    _nIsOval(long ptr);
     public static native RRect _nIsRRect(long ptr);
     public static native void    _nReset(long ptr);

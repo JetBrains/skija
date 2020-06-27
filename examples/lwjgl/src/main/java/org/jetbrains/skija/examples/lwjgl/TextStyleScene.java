@@ -59,28 +59,28 @@ public class TextStyleScene implements Scene {
             drawLine(canvas, "Rough winds do shake the darling buds of May,", ts); 
         }
 
-        var d = Decoration.NONE.withUnderline(true).withColor(0xFF3A1C71);
-        try (var ts = new TextStyle().setColor(0xFF000000).setDecoration(d)) {
-            assert d.equals(ts.getDecoration()) : "Expected " + d + ", got " + ts.getDecoration();
+        var d = DecorationStyle.NONE.withUnderline(true).withColor(0xFF3A1C71);
+        try (var ts = new TextStyle().setColor(0xFF000000).setDecorationStyle(d)) {
+            assert d.equals(ts.getDecorationStyle()) : "Expected " + d + ", got " + ts.getDecorationStyle();
             assert d.hasUnderline() && !d.hasOverline() && !d.hasLineThrough();
             drawLine(canvas, "And summer’s lease hath all too short a date;", ts);
         }
 
-        d = Decoration.NONE.withUnderline(true).withColor(0xFFFFAF7B).withMode(DecorationMode.THROUGH);
-        try (var ts = new TextStyle().setColor(0xFF000000).setDecoration(d)) {
-            assert d.equals(ts.getDecoration());
+        d = DecorationStyle.NONE.withUnderline(true).withColor(0xFFFFAF7B).withGaps(false);
+        try (var ts = new TextStyle().setColor(0xFF000000).setDecorationStyle(d)) {
+            assert d.equals(ts.getDecorationStyle());
             drawLine(canvas, "Sometime too hot the eye of heaven shines,", ts);
         }
 
-        d = Decoration.NONE.withUnderline(true).withColor(0xFF3A1C71).withStyle(DecorationStyle.DOTTED);
-        try (var ts = new TextStyle().setColor(0xFF000000).setDecoration(d)) {
-            assert d.equals(ts.getDecoration());
+        d = DecorationStyle.NONE.withUnderline(true).withColor(0xFF3A1C71).withLineStyle(DecorationLineStyle.DOTTED);
+        try (var ts = new TextStyle().setColor(0xFF000000).setDecorationStyle(d)) {
+            assert d.equals(ts.getDecorationStyle());
             drawLine(canvas, "And often is his gold complexion dimm'd;", ts);
         }
 
-        d = Decoration.NONE.withOverline(true).withLineThrough(true).withColor(0xFFD76D77).withThicknessMultiplier(3);
-        try (var ts = new TextStyle().setColor(0xFF000000).setDecoration(d)) {
-            assert d.equals(ts.getDecoration());
+        d = DecorationStyle.NONE.withOverline(true).withLineThrough(true).withColor(0xFFD76D77).withThicknessMultiplier(3);
+        try (var ts = new TextStyle().setColor(0xFF000000).setDecorationStyle(d)) {
+            assert d.equals(ts.getDecorationStyle());
             assert !d.hasUnderline() && d.hasOverline() && d.hasLineThrough();
             drawLine(canvas, "And every fair from fair sometime declines,", ts);
         }
@@ -165,9 +165,9 @@ public class TextStyleScene implements Scene {
             }
         }
 
-        try (var ts = new TextStyle().setColor(0xFF000000).setBaselineType(BaselineType.IDEOGRAPHIC)) {
-            assert BaselineType.IDEOGRAPHIC == ts.getBaselineType();
-            drawLine(canvas, "Baseline Type", ts);
+        try (var ts = new TextStyle().setColor(0xFF000000).setBaselineMode(BaselineMode.IDEOGRAPHIC)) {
+            assert BaselineMode.IDEOGRAPHIC == ts.getBaselineMode();
+            drawLine(canvas, "Baseline Mode", ts);
         }
 
         try (var ts = new TextStyle().setColor(0xFF000000).setPlaceholder()) {

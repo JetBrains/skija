@@ -5,21 +5,6 @@ import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.Stats;
 
 public class Canvas extends Native {
-    public enum PointMode {
-        POINTS,
-        LINES,
-        POLYGON
-    }
-
-    public enum ClipOp {
-        DIFFERENCE,
-        INTERSECT
-    }
-
-    public enum SrcRectConstraint {
-        STRICT,
-        FAST
-    }
 
     @ApiStatus.Internal
     public Canvas(long ptr) {
@@ -32,9 +17,21 @@ public class Canvas extends Native {
         return this;
     }
 
-    public Canvas drawPoints(PointMode mode, float[] coords, Paint paint) {
+    public Canvas drawPoints(float[] coords, Paint paint) {
         Stats.onNativeCall();
-        _nDrawPoints(_ptr, mode.ordinal(), coords, Native.getPtr(paint));
+        _nDrawPoints(_ptr, 0 /* SkCanvas::PointMode::kPoints_PointMode */, coords, Native.getPtr(paint));
+        return this;
+    }
+
+    public Canvas drawLines(float[] coords, Paint paint) {
+        Stats.onNativeCall();
+        _nDrawPoints(_ptr, 1 /* SkCanvas::PointMode::kLines_PointMode */, coords, Native.getPtr(paint));
+        return this;
+    }
+
+    public Canvas drawPolygon(float[] coords, Paint paint) {
+        Stats.onNativeCall();
+        _nDrawPoints(_ptr, 2 /* SkCanvas::PointMode::kPolygon_PointMode */, coords, Native.getPtr(paint));
         return this;
     }
 
@@ -92,7 +89,7 @@ public class Canvas extends Native {
 
     public Canvas drawImage(Image image, float left, float top, Paint paint) {
         Stats.onNativeCall();
-        _nDrawImageIRect(_ptr, Native.getPtr(image), 0, 0, image.getWidth(), image.getHeight(), left, top, image.getWidth(), image.getHeight(), Native.getPtr(paint), SrcRectConstraint.STRICT.ordinal());
+        _nDrawImageIRect(_ptr, Native.getPtr(image), 0, 0, image.getWidth(), image.getHeight(), left, top, image.getWidth(), image.getHeight(), Native.getPtr(paint), true);
         return this;
     }
 
@@ -102,17 +99,17 @@ public class Canvas extends Native {
 
     public Canvas drawImageRect(Image image, Rect dst, Paint paint) {
         Stats.onNativeCall();
-        _nDrawImageIRect(_ptr, Native.getPtr(image), 0, 0, image.getWidth(), image.getHeight(), dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), SrcRectConstraint.STRICT.ordinal());
+        _nDrawImageIRect(_ptr, Native.getPtr(image), 0, 0, image.getWidth(), image.getHeight(), dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), true);
         return this;
     }
 
     public Canvas drawImageRect(Image image, Rect src, Rect dst, Paint paint) {
-        return drawImageRect(image, src, dst, paint, SrcRectConstraint.STRICT);
+        return drawImageRect(image, src, dst, paint, true);
     }
 
-    public Canvas drawImageRect(Image image, Rect src, Rect dst, Paint paint, SrcRectConstraint constraint) {
+    public Canvas drawImageRect(Image image, Rect src, Rect dst, Paint paint, boolean strict) {
         Stats.onNativeCall();
-        _nDrawImageRect(_ptr, Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), constraint.ordinal());
+        _nDrawImageRect(_ptr, Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
         return this;
     }
 
@@ -121,12 +118,12 @@ public class Canvas extends Native {
     }
 
     public Canvas drawImageRect(Image image, IRect src, Rect dst, Paint paint) {
-        return drawImageRect(image, src, dst, paint, SrcRectConstraint.STRICT);
+        return drawImageRect(image, src, dst, paint, true);
     }
 
-    public Canvas drawImageRect(Image image, IRect src, Rect dst, Paint paint, SrcRectConstraint constraint) {
+    public Canvas drawImageRect(Image image, IRect src, Rect dst, Paint paint, boolean strict) {
         Stats.onNativeCall();
-        _nDrawImageIRect(_ptr, Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), constraint.ordinal());
+        _nDrawImageIRect(_ptr, Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
         return this;
     }
 
@@ -160,68 +157,68 @@ public class Canvas extends Native {
         return this;
     }
 
-    public Canvas clipRect(Rect r, ClipOp op, boolean antiAlias) {
+    public Canvas clipRect(Rect r, ClipMode mode, boolean antiAlias) {
         Stats.onNativeCall();
-        _nClipRect(_ptr, r._left, r._top, r._right, r._bottom, op.ordinal(), antiAlias);
+        _nClipRect(_ptr, r._left, r._top, r._right, r._bottom, mode.ordinal(), antiAlias);
         return this;
     }
 
-    public Canvas clipRect(Rect r, ClipOp op) {
-        return clipRect(r, op, false);
+    public Canvas clipRect(Rect r, ClipMode mode) {
+        return clipRect(r, mode, false);
     }
 
     public Canvas clipRect(Rect r, boolean antiAlias) {
-        return clipRect(r, ClipOp.INTERSECT, antiAlias);
+        return clipRect(r, ClipMode.INTERSECT, antiAlias);
     }
 
     public Canvas clipRect(Rect r) {
-        return clipRect(r, ClipOp.INTERSECT, false);
+        return clipRect(r, ClipMode.INTERSECT, false);
     }
 
-    public Canvas clipRRect(RRect r, ClipOp op, boolean antiAlias) {
+    public Canvas clipRRect(RRect r, ClipMode mode, boolean antiAlias) {
         Stats.onNativeCall();
-        _nClipRRect(_ptr, r._left, r._top, r._right, r._bottom, r._radii, op.ordinal(), antiAlias);
+        _nClipRRect(_ptr, r._left, r._top, r._right, r._bottom, r._radii, mode.ordinal(), antiAlias);
         return this;
     }
 
-    public Canvas clipRRect(RRect r, ClipOp op) {
-        return clipRRect(r, op, false);
+    public Canvas clipRRect(RRect r, ClipMode mode) {
+        return clipRRect(r, mode, false);
     }
 
     public Canvas clipRRect(RRect r, boolean antiAlias) {
-        return clipRRect(r, ClipOp.INTERSECT, antiAlias);
+        return clipRRect(r, ClipMode.INTERSECT, antiAlias);
     }
 
     public Canvas clipRRect(RRect r) {
-        return clipRRect(r, ClipOp.INTERSECT, false);
+        return clipRRect(r, ClipMode.INTERSECT, false);
     }
 
-    public Canvas clipPath(Path p, ClipOp op, boolean antiAlias) {
+    public Canvas clipPath(Path p, ClipMode mode, boolean antiAlias) {
         Stats.onNativeCall();
-        _nClipPath(_ptr, Native.getPtr(p), op.ordinal(), antiAlias);
+        _nClipPath(_ptr, Native.getPtr(p), mode.ordinal(), antiAlias);
         return this;
     }
 
-    public Canvas clipPath(Path p, ClipOp op) {
-        return clipPath(p, op, false);
+    public Canvas clipPath(Path p, ClipMode mode) {
+        return clipPath(p, mode, false);
     }
 
     public Canvas clipPath(Path p, boolean antiAlias) {
-        return clipPath(p, ClipOp.INTERSECT, antiAlias);
+        return clipPath(p, ClipMode.INTERSECT, antiAlias);
     }
 
     public Canvas clipPath(Path p) {
-        return clipPath(p, ClipOp.INTERSECT, false);
+        return clipPath(p, ClipMode.INTERSECT, false);
     }
 
-    public Canvas clipRegion(Region r, ClipOp op) {
+    public Canvas clipRegion(Region r, ClipMode mode) {
         Stats.onNativeCall();
-        _nClipRegion(_ptr, Native.getPtr(r), op.ordinal());
+        _nClipRegion(_ptr, Native.getPtr(r), mode.ordinal());
         return this;
     }
 
     public Canvas clipRegion(Region r) {
-        return clipRegion(r, ClipOp.INTERSECT);
+        return clipRegion(r, ClipMode.INTERSECT);
     }
 
     public Canvas translate(float dx, float dy) {
@@ -279,20 +276,20 @@ public class Canvas extends Native {
     public static native void _nDrawArc(long ptr, float left, float top, float width, float height, float startAngle, float sweepAngle, boolean includeCenter, long paintPtr);
     public static native void _nDrawRect(long ptr, float left, float top, float right, float bottom, long paintPtr);
     public static native void _nDrawOval(long ptr, float left, float top, float right, float bottom, long paintPtr);
-    public static native void _nDrawRRect(long ptr, float left, float top, float right, float bottom, float radii[], long paintPtr);
-    public static native void _nDrawDRRect(long ptr, float ol, float ot, float or, float ob, float oradii[], float il, float it, float ir, float ib, float iradii[], long paintPtr);
+    public static native void _nDrawRRect(long ptr, float left, float top, float right, float bottom, float[] radii, long paintPtr);
+    public static native void _nDrawDRRect(long ptr, float ol, float ot, float or, float ob, float[] oradii, float il, float it, float ir, float ib, float[] iradii, long paintPtr);
     public static native void _nDrawPath(long ptr, long nativePath, long paintPtr);
-    public static native void _nDrawImageRect(long ptr, long nativeImage, float sl, float st, float sr, float sb, float dl, float dt, float dr, float db, long paintPtr, int constraint);
-    public static native void _nDrawImageIRect(long ptr, long nativeImage, int sl, int st, int sr, int sb, float dl, float dt, float dr, float db, long paintPtr, int constraint);
+    public static native void _nDrawImageRect(long ptr, long nativeImage, float sl, float st, float sr, float sb, float dl, float dt, float dr, float db, long paintPtr, boolean strict);
+    public static native void _nDrawImageIRect(long ptr, long nativeImage, int sl, int st, int sr, int sb, float dl, float dt, float dr, float db, long paintPtr, boolean strict);
     public static native void _nDrawRegion(long ptr, long nativeRegion, long paintPtr);
     public static native void _nDrawString(long ptr, String string, float x, float y, long font, long paint);
     public static native void _nDrawTextBlob(long ptr, long blob, float x, float y, long font, long paint);
     public static native void _nClear(long ptr, int color);
     public static native void _nDrawPaint(long ptr, long paintPtr);
-    public static native void _nClipRect(long ptr, float left, float top, float right, float bottom, int op, boolean antiAlias);
-    public static native void _nClipRRect(long ptr, float left, float top, float right, float bottom, float[] radii, int op, boolean antiAlias);
-    public static native void _nClipPath(long ptr, long nativePath, int op, boolean antiAlias);
-    public static native void _nClipRegion(long ptr, long nativeRegion, int op);
+    public static native void _nClipRect(long ptr, float left, float top, float right, float bottom, int mode, boolean antiAlias);
+    public static native void _nClipRRect(long ptr, float left, float top, float right, float bottom, float[] radii, int mode, boolean antiAlias);
+    public static native void _nClipPath(long ptr, long nativePath, int mode, boolean antiAlias);
+    public static native void _nClipRegion(long ptr, long nativeRegion, int mode);
     public static native void _nConcat(long ptr, float[] matrix);
     public static native int  _nSave(long ptr);
     public static native int  _nSaveLayer(long ptr, float left, float top, float right, float bottom, long paintPtr);

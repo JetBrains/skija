@@ -71,13 +71,13 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_ParagraphSt
     instance->setTextDirection(static_cast<TextDirection>(textDirection));
 }
 
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_paragraph_ParagraphStyle__1nGetAlign
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_paragraph_ParagraphStyle__1nGetAlignment
   (JNIEnv* env, jclass jclass, jlong ptr) {
     ParagraphStyle* instance = reinterpret_cast<ParagraphStyle*>(static_cast<uintptr_t>(ptr));
     return static_cast<jint>(instance->getTextAlign());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_ParagraphStyle__1nSetAlign
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_ParagraphStyle__1nSetAlignment
   (JNIEnv* env, jclass jclass, jlong ptr, jint textAlign) {
     ParagraphStyle* instance = reinterpret_cast<ParagraphStyle*>(static_cast<uintptr_t>(ptr));
     instance->setTextAlign(static_cast<TextAlign>(textAlign));
@@ -119,19 +119,19 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_ParagraphSt
     instance->setHeight(height);
 }
 
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_paragraph_ParagraphStyle__1nGetHeightBehavior
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_paragraph_ParagraphStyle__1nGetHeightMode
   (JNIEnv* env, jclass jclass, jlong ptr) {
     ParagraphStyle* instance = reinterpret_cast<ParagraphStyle*>(static_cast<uintptr_t>(ptr));
     return static_cast<jint>(instance->getTextHeightBehavior());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_ParagraphStyle__1nSetHeightBehavior
-  (JNIEnv* env, jclass jclass, jlong ptr, jint heightBehavior) {
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_ParagraphStyle__1nSetHeightMode
+  (JNIEnv* env, jclass jclass, jlong ptr, jint heightMode) {
     ParagraphStyle* instance = reinterpret_cast<ParagraphStyle*>(static_cast<uintptr_t>(ptr));
-    instance->setTextHeightBehavior(static_cast<TextHeightBehavior>(heightBehavior));
+    instance->setTextHeightBehavior(static_cast<TextHeightBehavior>(heightMode));
 }
 
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_paragraph_ParagraphStyle__1nGetEffectiveAlign
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_paragraph_ParagraphStyle__1nGetEffectiveAlignment
   (JNIEnv* env, jclass jclass, jlong ptr) {
     ParagraphStyle* instance = reinterpret_cast<ParagraphStyle*>(static_cast<uintptr_t>(ptr));
     return static_cast<jint>(instance->effective_align());

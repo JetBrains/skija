@@ -67,8 +67,8 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter__1nMakeL
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorFilter__1nMakeHighContrast
-  (JNIEnv* env, jclass jclass, jboolean grayscale, jint invertStyleInt, jfloat contrast) {
-    SkHighContrastConfig config(grayscale, static_cast<SkHighContrastConfig::InvertStyle>(invertStyleInt), contrast);
+  (JNIEnv* env, jclass jclass, jboolean grayscale, jint inverionModeInt, jfloat contrast) {
+    SkHighContrastConfig config(grayscale, static_cast<SkHighContrastConfig::InvertStyle>(inverionModeInt), contrast);
     SkColorFilter* ptr = SkHighContrastFilter::Make(config).release();
     return reinterpret_cast<jlong>(ptr);
 }

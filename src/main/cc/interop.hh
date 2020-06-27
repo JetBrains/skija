@@ -51,16 +51,14 @@ namespace skija {
         std::unique_ptr<SkIRect> toSkIRect(JNIEnv* env, jobject obj);
     }
 
-    namespace Path {
-        namespace Segment {
-            extern jclass cls;
-            extern jmethodID ctorDone;
-            extern jmethodID ctorMoveClose;
-            extern jmethodID ctorLine;
-            extern jmethodID ctorQuad;
-            extern jmethodID ctorConic;
-            extern jmethodID ctorCubic;
-        }
+    namespace PathSegment {
+        extern jclass cls;
+        extern jmethodID ctorDone;
+        extern jmethodID ctorMoveClose;
+        extern jmethodID ctorLine;
+        extern jmethodID ctorQuad;
+        extern jmethodID ctorConic;
+        extern jmethodID ctorCubic;
     }
 
     namespace Point {

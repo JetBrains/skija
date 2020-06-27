@@ -64,9 +64,9 @@ public class Paragraph extends Managed {
      * Returns a vector of bounding boxes that enclose all text between
      * start and end glyph indexes, including start and excluding end.
      */
-    public TextBox[] getRectsForRange(int start, int end, RectHeightStyle rectHeightStyle, RectWidthStyle rectWidthStyle) {
+    public TextBox[] getRectsForRange(int start, int end, RectHeightMode rectHeightMode, RectWidthMode rectWidthMode) {
         Stats.onNativeCall();
-        return _nGetRectsForRange(_ptr, start, end, rectHeightStyle.ordinal(), rectWidthStyle.ordinal());
+        return _nGetRectsForRange(_ptr, start, end, rectHeightMode.ordinal(), rectWidthMode.ordinal());
     }
 
     public TextBox[] getRectsForPlaceholders() {
@@ -110,9 +110,9 @@ public class Paragraph extends Managed {
         return _nGetUnresolvedGlyphsCount(_ptr);
     }
 
-    public Paragraph updateAlign(Align align) {
+    public Paragraph updateAlignment(Alignment alignment) {
         Stats.onNativeCall();
-        _nUpdateAlign(_ptr, align.ordinal());
+        _nUpdateAlignment(_ptr, alignment.ordinal());
         return this;
     }
 
@@ -157,15 +157,15 @@ public class Paragraph extends Managed {
     public static native boolean _nDidExceedMaxLines(long ptr);
     public static native void  _nLayout(long ptr, float width);
     public static native long  _nPaint(long ptr, long canvasPtr, float x, float y);
-    public static native TextBox[] _nGetRectsForRange(long ptr, int start, int end, int rectHeightStyle, int rectWidthStyle);
+    public static native TextBox[] _nGetRectsForRange(long ptr, int start, int end, int rectHeightMode, int rectWidthMode);
     public static native TextBox[] _nGetRectsForPlaceholders(long ptr);
     public static native int   _nGetGlyphPositionAtCoordinate(long ptr, float dx, float dy);
     public static native long  _nGetWordBoundary(long ptr, int offset);
     public static native LineMetrics[] _nGetLineMetrics(long ptr);
     public static native long  _nGetLineNumber(long ptr);
     public static native void  _nMarkDirty(long ptr);
-    public static native int _nGetUnresolvedGlyphsCount(long ptr);
-    public static native void  _nUpdateAlign(long ptr, int Align);
+    public static native int   _nGetUnresolvedGlyphsCount(long ptr);
+    public static native void  _nUpdateAlignment(long ptr, int Align);
     public static native void  _nUpdateText(long ptr, int from, String text);
     public static native void  _nUpdateFontSize(long ptr, int from, int to, float size);
     public static native void  _nUpdateForegroundPaint(long ptr, int from, int to, long paintPtr);

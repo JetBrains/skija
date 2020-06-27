@@ -13,7 +13,7 @@ public class PathTest implements Executable {
     @Override
     public void execute() throws Exception {
         TestRunner.testMethod(this, "iter");
-        TestRunner.testMethod(this, "convex");
+        TestRunner.testMethod(this, "convexity");
         TestRunner.testMethod(this, "isShape");
         TestRunner.testMethod(this, "checks");
         TestRunner.testMethod(this, "storage");
@@ -27,35 +27,35 @@ public class PathTest implements Executable {
         try (Path p = new Path().moveTo(10, 10).lineTo(20, 0).lineTo(20, 20).closePath();
              var i = p.iterator();) {
             assertEquals(true, i.hasNext());
-            Path.Segment s = i.next();
-            assertEquals(Path.Verb.MOVE, s.getVerb());
+            PathSegment s = i.next();
+            assertEquals(PathVerb.MOVE, s.getVerb());
             assertEquals(new Point(10, 10), s.getP0());
             assertEquals(true, s.isClosedContour());
 
             assertEquals(true, i.hasNext());
             s = i.next();
-            assertEquals(Path.Verb.LINE, s.getVerb());
+            assertEquals(PathVerb.LINE, s.getVerb());
             assertEquals(new Point(10, 10), s.getP0());
             assertEquals(new Point(20, 0), s.getP1());
             assertEquals(false, s.isCloseLine());
 
             assertEquals(true, i.hasNext());
             s = i.next();
-            assertEquals(Path.Verb.LINE, s.getVerb());
+            assertEquals(PathVerb.LINE, s.getVerb());
             assertEquals(new Point(20, 0), s.getP0());
             assertEquals(new Point(20, 20), s.getP1());
             assertEquals(false, s.isCloseLine());
 
             assertEquals(true, i.hasNext());
             s = i.next();
-            assertEquals(Path.Verb.LINE, s.getVerb());
+            assertEquals(PathVerb.LINE, s.getVerb());
             assertEquals(new Point(20, 20), s.getP0());
             assertEquals(new Point(10, 10), s.getP1());
             assertEquals(true, s.isCloseLine());
 
             assertEquals(true, i.hasNext());
             s = i.next();
-            assertEquals(Path.Verb.CLOSE, s.getVerb());
+            assertEquals(PathVerb.CLOSE, s.getVerb());
             assertEquals(new Point(10, 10), s.getP0());
 
             assertEquals(false, i.hasNext());
@@ -64,28 +64,28 @@ public class PathTest implements Executable {
     }
 
 
-    public void convex() {
+    public void convexity() {
         try (Path p = new Path().lineTo(40, 20).lineTo(0, 40).lineTo(0, 0).closePath()) {
-            assertEquals(Path.ConvexityType.UNKNOWN, p.getConvexityTypeOrUnknown());
-            assertEquals(Path.ConvexityType.CONVEX, p.getConvexityType());
-            assertEquals(Path.ConvexityType.CONVEX, p.getConvexityTypeOrUnknown());
+            assertEquals(PathConvexity.UNKNOWN, p.getConvexityOrUnknown());
+            assertEquals(PathConvexity.CONVEX, p.getConvexity());
+            assertEquals(PathConvexity.CONVEX, p.getConvexityOrUnknown());
             assertEquals(true, p.isConvex());
-            p.setConvexityType(Path.ConvexityType.CONCAVE);
-            assertEquals(Path.ConvexityType.CONCAVE, p.getConvexityTypeOrUnknown());
-            assertEquals(Path.ConvexityType.CONCAVE, p.getConvexityType());
+            p.setConvexity(PathConvexity.CONCAVE);
+            assertEquals(PathConvexity.CONCAVE, p.getConvexityOrUnknown());
+            assertEquals(PathConvexity.CONCAVE, p.getConvexity());
             assertEquals(false, p.isConvex());
         }
 
         try (Path p = new Path().lineTo(40, 40).lineTo(40, 0).lineTo(0, 40).lineTo(0, 0).closePath()) {
-            assertEquals(Path.ConvexityType.UNKNOWN, p.getConvexityTypeOrUnknown());
-            assertEquals(Path.ConvexityType.CONCAVE, p.getConvexityType());
-            assertEquals(Path.ConvexityType.CONCAVE, p.getConvexityTypeOrUnknown());
+            assertEquals(PathConvexity.UNKNOWN, p.getConvexityOrUnknown());
+            assertEquals(PathConvexity.CONCAVE, p.getConvexity());
+            assertEquals(PathConvexity.CONCAVE, p.getConvexityOrUnknown());
             assertEquals(false, p.isConvex());
         }
     }
 
     public void isShape() {
-        for (var dir: Path.Direction.values()) {
+        for (var dir: PathDirection.values()) {
             for (int start = 0; start < 4; ++start) {
                 try (Path p = new Path().addRect(Rect.makeLTRB(0, 0, 40, 20), dir, start)) {
                     assertEquals(Rect.makeLTRB(0, 0, 40, 20), p.isRect());
@@ -95,7 +95,7 @@ public class PathTest implements Executable {
             }
         }
 
-        for (var dir: Path.Direction.values()) {
+        for (var dir: PathDirection.values()) {
             for (int start = 0; start < 4; ++start) {
                 try (Path p = new Path().addOval(Rect.makeLTRB(0, 0, 40, 20), dir, start)) {
                     assertEquals(null, p.isRect());
@@ -105,7 +105,7 @@ public class PathTest implements Executable {
             }
         }
 
-        for (var dir: Path.Direction.values()) {
+        for (var dir: PathDirection.values()) {
             try (Path p = new Path().addCircle(20, 20, 20, dir)) {
                 assertEquals(null, p.isRect());
                 assertEquals(Rect.makeLTRB(0, 0, 40, 40), p.isOval());
@@ -113,7 +113,7 @@ public class PathTest implements Executable {
             }
         }
 
-        for (var dir: Path.Direction.values()) {
+        for (var dir: PathDirection.values()) {
             for (int start = 0; start < 8; ++start) {
                 try (Path p = new Path().addRRect(RRect.makeLTRB(0, 0, 40, 20, 5), dir, start)) {
                     assertEquals(null, p.isRect());
@@ -239,25 +239,25 @@ public class PathTest implements Executable {
             assertEquals(6, p.getVerbsCount());
             assertEquals(6, p.getVerbs(null, 0));
 
-            Path.Verb[] verbs = new Path.Verb[6];
+            PathVerb[] verbs = new PathVerb[6];
             p.getVerbs(verbs, 6);
-            assertArrayEquals(new Path.Verb[] { Path.Verb.MOVE, Path.Verb.LINE, Path.Verb.LINE, Path.Verb.LINE, Path.Verb.LINE, Path.Verb.CLOSE }, verbs);
+            assertArrayEquals(new PathVerb[] { PathVerb.MOVE, PathVerb.LINE, PathVerb.LINE, PathVerb.LINE, PathVerb.LINE, PathVerb.CLOSE }, verbs);
 
-            verbs = new Path.Verb[3];
+            verbs = new PathVerb[3];
             p.getVerbs(verbs, 3);
-            assertArrayEquals(new Path.Verb[] { Path.Verb.MOVE, Path.Verb.LINE, Path.Verb.LINE }, verbs);
+            assertArrayEquals(new PathVerb[] { PathVerb.MOVE, PathVerb.LINE, PathVerb.LINE }, verbs);
 
-            verbs = new Path.Verb[6];
+            verbs = new PathVerb[6];
             p.getVerbs(verbs, 3);
-            assertArrayEquals(new Path.Verb[] { Path.Verb.MOVE, Path.Verb.LINE, Path.Verb.LINE, null, null, null }, verbs);
+            assertArrayEquals(new PathVerb[] { PathVerb.MOVE, PathVerb.LINE, PathVerb.LINE, null, null, null }, verbs);
 
-            verbs = new Path.Verb[10];
+            verbs = new PathVerb[10];
             p.getVerbs(verbs, 10);
-            assertArrayEquals(new Path.Verb[] { Path.Verb.MOVE, Path.Verb.LINE, Path.Verb.LINE, Path.Verb.LINE, Path.Verb.LINE, Path.Verb.CLOSE, null, null, null, null }, verbs);
+            assertArrayEquals(new PathVerb[] { PathVerb.MOVE, PathVerb.LINE, PathVerb.LINE, PathVerb.LINE, PathVerb.LINE, PathVerb.CLOSE, null, null, null, null }, verbs);
 
             assertEquals(62L, p.getApproximateBytesUsed());
 
-            assertEquals(Path.SEGMENT_MASK_LINE, p.getSegmentMasks());
+            assertEquals(PathSegmentMask.LINE, p.getSegmentMasks());
 
             TestRunner.popStack();
         }
@@ -309,7 +309,7 @@ public class PathTest implements Executable {
             p.lineTo(10, 40);
             var g2 = p.getGenerationID();
             assertNotEquals(g1, g2);
-            p.setFillType(Path.FillType.EVEN_ODD);
+            p.setFillMode(PathFillMode.EVEN_ODD);
             var g3 = p.getGenerationID();
             assertEquals(g2, g3);
         }

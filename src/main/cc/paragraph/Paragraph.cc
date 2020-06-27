@@ -154,10 +154,10 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_paragraph_Paragraph__
     return instance->unresolvedGlyphs();
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_Paragraph__1nUpdateAlign
-  (JNIEnv* env, jclass jclass, jlong ptr, jint textAlign) {
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_Paragraph__1nUpdateAlignment
+  (JNIEnv* env, jclass jclass, jlong ptr, jint textAlignment) {
     Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
-    return instance->updateTextAlign(static_cast<TextAlign>(textAlign));
+    return instance->updateTextAlign(static_cast<TextAlign>(textAlignment));
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_Paragraph__1nUpdateText

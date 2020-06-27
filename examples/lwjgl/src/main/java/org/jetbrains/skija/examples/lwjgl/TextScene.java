@@ -75,11 +75,11 @@ public class TextScene implements Scene {
             canvas.drawRect(bounds, paint);
 
             // container bounds
-            paint.setColor(0x40000000 | (color & 0xFFFFFF)).setStyle(Paint.Style.STROKE).setStrokeWidth(1);
+            paint.setColor(0x40000000 | (color & 0xFFFFFF)).setMode(PaintMode.STROKE).setStrokeWidth(1);
             canvas.drawRect(Rect.makeLTRB(0, 0, width, bounds.getBottom()), paint);
 
             // text
-            paint.setColor(0xFF000000 | (color & 0xFFFFFF)).setStyle(Paint.Style.FILL);
+            paint.setColor(0xFF000000 | (color & 0xFFFFFF)).setMode(PaintMode.FILL);
             canvas.drawTextBlob(blob, 0, 0, font, paint);
 
             canvas.translate(0, bounds.getHeight());

@@ -86,29 +86,29 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__
     }
 }
 
-extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nGetDecoration
+extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nGetDecorationStyle
   (JNIEnv* env, jclass jclass, jlong ptr) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
     Decoration d = instance->getDecoration();
-    return env->NewObject(skija::paragraph::Decoration::cls, skija::paragraph::Decoration::ctor,
+    return env->NewObject(skija::paragraph::DecorationStyle::cls, skija::paragraph::DecorationStyle::ctor,
       (d.fType & TextDecoration::kUnderline) != 0,
       (d.fType & TextDecoration::kOverline) != 0,
       (d.fType & TextDecoration::kLineThrough) != 0,
-      static_cast<jint>(d.fMode),
+      d.fMode == TextDecorationMode::kGaps,
       d.fColor,
       static_cast<jint>(d.fStyle),
       d.fThicknessMultiplier); 
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nSetDecoration
-  (JNIEnv* env, jclass jclass, jlong ptr, jboolean underline, jboolean overline, jboolean lineThrough, jint mode, jint color, jint style, jfloat thicknessMultiplier) {
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nSetDecorationStyle
+  (JNIEnv* env, jclass jclass, jlong ptr, jboolean underline, jboolean overline, jboolean lineThrough, jboolean gaps, jint color, jint style, jfloat thicknessMultiplier) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
     int typeMask = 0;
     if (underline)   typeMask |= TextDecoration::kUnderline;
     if (overline)    typeMask |= TextDecoration::kOverline;
     if (lineThrough) typeMask |= TextDecoration::kLineThrough;
     instance->setDecoration(static_cast<TextDecoration>(typeMask));
-    instance->setDecorationMode(static_cast<TextDecorationMode>(mode));
+    instance->setDecorationMode(gaps ? TextDecorationMode::kGaps : TextDecorationMode::kThrough);
     instance->setDecorationColor(color);
     instance->setDecorationStyle(static_cast<TextDecorationStyle>(style));
     instance->setDecorationThicknessMultiplier(thicknessMultiplier);
@@ -260,16 +260,16 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__
     instance->setLocale(skString(env, locale));
 }
 
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nGetBaselineType
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nGetBaselineMode
   (JNIEnv* env, jclass jclass, jlong ptr) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
     return static_cast<jint>(instance->getTextBaseline());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nSetBaselineType
-  (JNIEnv* env, jclass jclass, jlong ptr, jint baselineTypeValue) {
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nSetBaselineMode
+  (JNIEnv* env, jclass jclass, jlong ptr, jint baselineModeValue) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
-    instance->setTextBaseline(static_cast<TextBaseline>(baselineTypeValue));
+    instance->setTextBaseline(static_cast<TextBaseline>(baselineModeValue));
 }
 
 extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nGetFontMetrics

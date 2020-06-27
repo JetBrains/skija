@@ -1,11 +1,5 @@
 package org.jetbrains.skija.paragraph;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Data;
-import lombok.With;
-
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
@@ -69,14 +63,14 @@ public class TextStyle extends Managed {
         return this;
     }
 
-    public Decoration getDecoration() {
+    public DecorationStyle getDecorationStyle() {
         Stats.onNativeCall();
-        return _nGetDecoration(_ptr);
+        return _nGetDecorationStyle(_ptr);
     }
 
-    public TextStyle setDecoration(Decoration d) {
+    public TextStyle setDecorationStyle(DecorationStyle d) {
         Stats.onNativeCall();
-        _nSetDecoration(_ptr, d._underline, d._overline, d._lineThrough, d._mode.ordinal(), d._color, d._style.ordinal(), d._thicknessMultiplier);
+        _nSetDecorationStyle(_ptr, d._underline, d._overline, d._lineThrough, d._gaps, d._color, d._lineStyle.ordinal(), d._thicknessMultiplier);
         return this;
     }
 
@@ -223,14 +217,14 @@ public class TextStyle extends Managed {
         return this;
     }
 
-    public BaselineType getBaselineType() {
+    public BaselineMode getBaselineMode() {
         Stats.onNativeCall();
-        return BaselineType.values()[_nGetBaselineType(_ptr)];
+        return BaselineMode.values()[_nGetBaselineMode(_ptr)];
     }
 
-    public TextStyle setBaselineType(BaselineType baseline) {
+    public TextStyle setBaselineMode(BaselineMode baseline) {
         Stats.onNativeCall();
-        _nSetBaselineType(_ptr, baseline.ordinal());
+        _nSetBaselineMode(_ptr, baseline.ordinal());
         return this;
     }
 
@@ -261,8 +255,8 @@ public class TextStyle extends Managed {
     public static native void  _nSetForeground(long ptr, long paintPtr);
     public static native long  _nGetBackground(long ptr);
     public static native void  _nSetBackground(long ptr, long paintPtr);
-    public static native Decoration _nGetDecoration(long ptr);
-    public static native void  _nSetDecoration(long ptr, boolean underline, boolean overline, boolean lineThrough, int mode, int color, int style, float thicknessMultiplier);
+    public static native DecorationStyle _nGetDecorationStyle(long ptr);
+    public static native void  _nSetDecorationStyle(long ptr, boolean underline, boolean overline, boolean lineThrough, boolean gaps, int color, int style, float thicknessMultiplier);
     public static native int   _nGetFontStyle(long ptr);
     public static native void  _nSetFontStyle(long ptr, int fontStyle);
     public static native Shadow[] _nGetShadows(long ptr);
@@ -285,8 +279,8 @@ public class TextStyle extends Managed {
     public static native void  _nSetTypeface(long ptr, long typefacePtr);
     public static native String _nGetLocale(long ptr);
     public static native void  _nSetLocale(long ptr, String locale);
-    public static native int   _nGetBaselineType(long ptr);
-    public static native void  _nSetBaselineType(long ptr, int baseline);
+    public static native int   _nGetBaselineMode(long ptr);
+    public static native void  _nSetBaselineMode(long ptr, int mode);
     public static native FontMetrics _nGetFontMetrics(long ptr);
     public static native boolean _nIsPlaceholder(long ptr);
     public static native void  _nSetPlaceholder(long ptr);

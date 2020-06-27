@@ -1,6 +1,6 @@
 package org.jetbrains.skija.paragraph;
 
-public enum RectHeightStyle {
+public enum RectHeightMode {
 
     /** Provide tight bounding boxes that fit heights per run. */
     TIGHT,

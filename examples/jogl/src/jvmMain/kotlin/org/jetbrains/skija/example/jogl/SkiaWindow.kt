@@ -4,11 +4,14 @@ import com.jogamp.opengl.*
 import com.jogamp.opengl.awt.GLCanvas
 import com.jogamp.opengl.util.FPSAnimator
 import org.jetbrains.skija.BackendRenderTarget
+import org.jetbrains.skija.FramebufferFormat
 import org.jetbrains.skija.Canvas
 import org.jetbrains.skija.Context
 import org.jetbrains.skija.ColorSpace
-import org.jetbrains.skija.JNI
+import org.jetbrains.skija.Library
 import org.jetbrains.skija.Surface
+import org.jetbrains.skija.SurfaceOrigin
+import org.jetbrains.skija.SurfaceColorFormat
 
 import java.nio.IntBuffer
 import javax.swing.JFrame
@@ -41,7 +44,7 @@ class SkiaWindow(
 ) : JFrame() {
     companion object {
         init {
-            JNI.loadLibrary("/", "skija")
+            Library.load("/", "skija")
         }
     }
 
@@ -124,19 +127,19 @@ class SkiaWindow(
         val intBuf1 = IntBuffer.allocate(1)
         glCanvas.gl.glGetIntegerv(GL.GL_DRAW_FRAMEBUFFER_BINDING, intBuf1)
         val fbId = intBuf1[0]
-        skijaState.renderTarget = BackendRenderTarget.newGL(
+        skijaState.renderTarget = BackendRenderTarget.makeGL(
             (width * dpi).toInt(),
             (height * dpi).toInt(),
             0,
             8,
             fbId,
-            BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8
+            FramebufferFormat.GR_GL_RGBA8
         )
         skijaState.surface = Surface.makeFromBackendRenderTarget(
             skijaState.context,
             skijaState.renderTarget,
-            Surface.Origin.BOTTOM_LEFT,
-            Surface.ColorType.RGBA_8888,
+            SurfaceOrigin.BOTTOM_LEFT,
+            SurfaceColorFormat.RGBA_8888,
             ColorSpace.getSRGB()
         )
         skijaState.canvas = skijaState.surface!!.canvas

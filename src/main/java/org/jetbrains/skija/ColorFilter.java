@@ -52,14 +52,8 @@ public class ColorFilter extends RefCnt {
         return new ColorFilter(_nMakeLighting(colorMul, colorAdd));
     }
 
-    public enum InvertStyle {
-        NO,
-        BRIGHTNESS,
-        LIGHTNESS
-    }
-
-    public static ColorFilter makeHighContrast(boolean grayscale, InvertStyle invertStyle, float contrast) {
-        return new ColorFilter(_nMakeHighContrast(grayscale, invertStyle.ordinal(), contrast));
+    public static ColorFilter makeHighContrast(boolean grayscale, InversionMode mode, float contrast) {
+        return new ColorFilter(_nMakeHighContrast(grayscale, mode.ordinal(), contrast));
     }
 
     public static ColorFilter makeTable(byte[] table) {
@@ -107,7 +101,7 @@ public class ColorFilter extends RefCnt {
     public static native long _nGetSRGBToLinearGamma();
     public static native long _nMakeLerp(float t, long dstPtr, long srcPtr);
     public static native long _nMakeLighting(int colorMul, int colorAdd);
-    public static native long _nMakeHighContrast(boolean grayscale, int invertStyle, float contrast);
+    public static native long _nMakeHighContrast(boolean grayscale, int inversionMode, float contrast);
     public static native long _nMakeTable(byte[] table);
     public static native long _nMakeTableARGB(byte[] a, byte[] r, byte[] g, byte[] b);
     public static native long _nMakeOverdraw(int c0, int c1, int c2, int c3, int c4, int c5);

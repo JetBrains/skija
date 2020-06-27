@@ -1,6 +1,6 @@
 package org.jetbrains.skija.paragraph;
 
-public enum Align {
+public enum Alignment {
     LEFT,
     RIGHT,
     CENTER,

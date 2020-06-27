@@ -1,6 +1,6 @@
 package org.jetbrains.skija;
 
-public enum TileMode {
+public enum FilterTileMode {
     /** Replicate the edge color if the shader draws outside of its original bounds. */
     CLAMP,
 

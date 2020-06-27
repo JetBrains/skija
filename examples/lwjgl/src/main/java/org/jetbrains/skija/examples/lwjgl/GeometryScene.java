@@ -5,7 +5,7 @@ import org.jetbrains.skija.*;
 public class GeometryScene implements Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
-        var borderStroke = new Paint().setColor(0xFFFF0751).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+        var borderStroke = new Paint().setColor(0xFFFF0751).setMode(PaintMode.STROKE).setStrokeWidth(1f);
         canvas.drawRect(Rect.makeLTRB(10, 10, width - 10, height - 10), borderStroke);
         canvas.translate(30, 30);
 
@@ -14,8 +14,8 @@ public class GeometryScene implements Scene {
         drawArcs(canvas);
         drawRotate(canvas);
         drawSkew(canvas);
-        drawRectInscribed(canvas, new Paint().setColor(0xFF1D7AA2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f));
-        drawRectInscribed(canvas, new Paint().setColor(0xFF6DC1B3).setStyle(Paint.Style.STROKE).setStrokeWidth(5f));
+        drawRectInscribed(canvas, new Paint().setColor(0xFF1D7AA2).setMode(PaintMode.STROKE).setStrokeWidth(1f));
+        drawRectInscribed(canvas, new Paint().setColor(0xFF6DC1B3).setMode(PaintMode.STROKE).setStrokeWidth(5f));
         drawRectInscribed(canvas, new Paint().setColor(0xFF9BC730));
         drawClips(canvas);
         drawRegions(canvas, dpi);
@@ -26,50 +26,50 @@ public class GeometryScene implements Scene {
         var stroke1px = new Paint().setStrokeWidth(1f);
         var stroke2px = new Paint().setStrokeWidth(2f);
         var stroke5px = new Paint().setStrokeWidth(5f);
-        var stroke5pxRound = new Paint().setStrokeWidth(5f).setStrokeCap(Paint.Cap.ROUND);
-        var stroke5pxSquare = new Paint().setStrokeWidth(5f).setStyle(Paint.Style.STROKE).setStrokeCap(Paint.Cap.SQUARE);
+        var stroke5pxRound = new Paint().setStrokeWidth(5f).setStrokeCap(PaintStrokeCap.ROUND);
+        var stroke5pxSquare = new Paint().setStrokeWidth(5f).setMode(PaintMode.STROKE).setStrokeCap(PaintStrokeCap.SQUARE);
 
         canvas.save();
-        canvas.drawPoints(Canvas.PointMode.POINTS, new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, strokeHalfPx);
+        canvas.drawPoints(new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, strokeHalfPx);
         canvas.translate(40, 0);
 
-        canvas.drawPoints(Canvas.PointMode.POINTS, new float[] { 0.5f, 30.5f, 10.5f, 10.5f, 20.5f, 20.5f, 30.5f, 0.5f }, strokeHalfPx);
+        canvas.drawPoints(new float[] { 0.5f, 30.5f, 10.5f, 10.5f, 20.5f, 20.5f, 30.5f, 0.5f }, strokeHalfPx);
         canvas.translate(40, 0);
 
-        canvas.drawPoints(Canvas.PointMode.POINTS, new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke1px);
+        canvas.drawPoints(new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke1px);
         canvas.translate(40, 0);
 
-        canvas.drawPoints(Canvas.PointMode.POINTS, new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke2px);
+        canvas.drawPoints(new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke2px);
         canvas.translate(40, 0);
 
-        canvas.drawPoints(Canvas.PointMode.POINTS, new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke5px);
+        canvas.drawPoints(new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke5px);
         canvas.translate(40, 0);
 
-        canvas.drawPoints(Canvas.PointMode.POINTS, new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke5pxRound);
+        canvas.drawPoints(new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke5pxRound);
         canvas.translate(40, 0);
 
-        canvas.drawPoints(Canvas.PointMode.POINTS, new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke5pxSquare);
+        canvas.drawPoints(new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke5pxSquare);
         canvas.translate(40, 0);
 
-        canvas.drawPoints(Canvas.PointMode.LINES, new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke5px);
+        canvas.drawLines(new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke5px);
         canvas.translate(40, 0);
 
-        canvas.drawPoints(Canvas.PointMode.POLYGON, new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, strokeHalfPx);
+        canvas.drawPolygon(new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, strokeHalfPx);
         canvas.translate(40, 0);
 
-        canvas.drawPoints(Canvas.PointMode.POLYGON, new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke1px);
+        canvas.drawPolygon(new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke1px);
         canvas.translate(40, 0);
 
-        canvas.drawPoints(Canvas.PointMode.POLYGON, new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke2px);
+        canvas.drawPolygon(new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke2px);
         canvas.translate(40, 0);
 
-        canvas.drawPoints(Canvas.PointMode.POLYGON, new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke5px);
+        canvas.drawPolygon(new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke5px);
         canvas.translate(40, 0);
 
-        canvas.drawPoints(Canvas.PointMode.POLYGON, new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke5pxRound);
+        canvas.drawPolygon(new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke5pxRound);
         canvas.translate(40, 0);
 
-        canvas.drawPoints(Canvas.PointMode.POLYGON, new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke5pxSquare);
+        canvas.drawPolygon(new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, stroke5pxSquare);
         canvas.translate(40, 0);
 
         canvas.drawPath(new Path().addPoly(new float[] { 0, 30, 10, 10, 20, 20, 30, 0 }, false), stroke5pxSquare);
@@ -82,8 +82,8 @@ public class GeometryScene implements Scene {
     public void drawLines(Canvas canvas) {
         var stroke1px = new Paint().setStrokeWidth(1f);
         var stroke5px = new Paint().setStrokeWidth(5f);
-        var stroke5pxRound = new Paint().setStrokeWidth(5f).setStrokeCap(Paint.Cap.ROUND);
-        var stroke5pxSquare = new Paint().setStrokeWidth(5f).setStrokeCap(Paint.Cap.SQUARE);
+        var stroke5pxRound = new Paint().setStrokeWidth(5f).setStrokeCap(PaintStrokeCap.ROUND);
+        var stroke5pxSquare = new Paint().setStrokeWidth(5f).setStrokeCap(PaintStrokeCap.SQUARE);
 
         canvas.save();
 
@@ -153,7 +153,7 @@ public class GeometryScene implements Scene {
     }
 
     public void drawArcs(Canvas canvas) {
-        var stroke1px = new Paint().setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+        var stroke1px = new Paint().setMode(PaintMode.STROKE).setStrokeWidth(1f);
         var fill = new Paint().setColor(0xFFFC7901);
 
         canvas.save();
@@ -231,14 +231,14 @@ public class GeometryScene implements Scene {
 
         canvas.save();
         canvas.clipRect(Rect.makeXYWH(0, 0, 30, 30));
-        canvas.clipRect(Rect.makeXYWH(10, 10, 30, 30), Canvas.ClipOp.INTERSECT);
+        canvas.clipRect(Rect.makeXYWH(10, 10, 30, 30), ClipMode.INTERSECT);
         canvas.drawPaint(new Paint().setColor(0xFFF55E58));
         canvas.restore();
         canvas.translate(50, 0);
 
         canvas.save();
         canvas.clipRect(Rect.makeXYWH(0, 0, 30, 30));
-        canvas.clipRect(Rect.makeXYWH(10, 10, 30, 30), Canvas.ClipOp.DIFFERENCE);
+        canvas.clipRect(Rect.makeXYWH(10, 10, 30, 30), ClipMode.DIFFERENCE);
         canvas.drawPaint(new Paint().setColor(0xFFFFE15C));
         canvas.restore();
         canvas.translate(50, 0);
@@ -247,7 +247,7 @@ public class GeometryScene implements Scene {
         canvas.clipRect(Rect.makeXYWH(0, 0, 40, 40));
         canvas.translate(20, 20);
         canvas.rotate(15);
-        canvas.clipRect(Rect.makeXYWH(-15, -15, 30, 30), Canvas.ClipOp.DIFFERENCE, false);
+        canvas.clipRect(Rect.makeXYWH(-15, -15, 30, 30), ClipMode.DIFFERENCE, false);
         canvas.drawPaint(new Paint().setColor(0xFF1D7AA2));
         canvas.restore();
         canvas.translate(50, 0);
@@ -256,14 +256,14 @@ public class GeometryScene implements Scene {
         canvas.clipRect(Rect.makeXYWH(0, 0, 40, 40));
         canvas.translate(20, 20);
         canvas.rotate(15);
-        canvas.clipRect(Rect.makeXYWH(-15, -15, 30, 30), Canvas.ClipOp.DIFFERENCE, true);
+        canvas.clipRect(Rect.makeXYWH(-15, -15, 30, 30), ClipMode.DIFFERENCE, true);
         canvas.drawPaint(new Paint().setColor(0xFF6DC1B3));
         canvas.restore();
         canvas.translate(50, 0);
 
         canvas.save();
         canvas.clipRRect(RRect.makeXYWH(0, 0, 40, 40, 10), false);
-        canvas.clipRRect(RRect.makePillXYWH(10, 10, 30, 20), Canvas.ClipOp.DIFFERENCE, true);
+        canvas.clipRRect(RRect.makePillXYWH(10, 10, 30, 20), ClipMode.DIFFERENCE, true);
         canvas.drawPaint(new Paint().setColor(0xFFFF928A));
         canvas.restore();
         canvas.translate(50, 0);
@@ -286,10 +286,10 @@ public class GeometryScene implements Scene {
 
     private void drawRegions(Canvas canvas, float dpi) {
         Paint bgPaint = new Paint().setColor(0xFFEBD3AA);
-        Paint stroke1 = new Paint().setColor(0xFF3F80A7).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
-        Paint stroke2 = new Paint().setColor(0xFFF55E58).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+        Paint stroke1 = new Paint().setColor(0xFF3F80A7).setMode(PaintMode.STROKE).setStrokeWidth(1f);
+        Paint stroke2 = new Paint().setColor(0xFFF55E58).setMode(PaintMode.STROKE).setStrokeWidth(1f);
         int xOffset = 30;
-        int yOffset = 480;
+        int yOffset = 540;
 
         canvas.save();
 
@@ -315,7 +315,7 @@ public class GeometryScene implements Scene {
         xOffset += 50;
 
         // setPath
-        Path path = new Path().setFillType(Path.FillType.EVEN_ODD).moveTo(xOffset * dpi, yOffset * dpi)
+        Path path = new Path().setFillMode(PathFillMode.EVEN_ODD).moveTo(xOffset * dpi, yOffset * dpi)
             .rMoveTo(20 * dpi, 1.6f * dpi).rLineTo(11.7f * dpi, 36.2f * dpi).rLineTo(-30.8f * dpi, -22.4f * dpi).rLineTo(38.1f * dpi, 0f * dpi).rLineTo(-30.8f * dpi, 22.4f * dpi).closePath();
         Region r2 = new Region();
         r2.setRect(IRect.makeLTRB((int) ((xOffset + 7) * dpi), (int) ((yOffset + 7) * dpi), (int) ((xOffset + 33) * dpi), (int) ((yOffset + 33) * dpi)));

@@ -4,24 +4,6 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class Paint extends Managed {
-    public enum Style {
-        FILL,
-        STROKE,
-        STROKE_AND_FILL
-    }
-
-    public enum Cap {
-        BUTT,
-        ROUND,
-        SQUARE
-    }
-
-    public enum Join {
-        MITER,
-        ROUND,
-        BEVEL
-    }
-
     public Paint() {
         super(_nMake(), _finalizerPtr);
         Stats.onNativeCall();
@@ -48,14 +30,14 @@ public class Paint extends Managed {
         return this;
     }
 
-    public Style getStyle() {
+    public PaintMode getMode() {
         Stats.onNativeCall();
-        return Style.values()[_nGetStyle(_ptr)];
+        return PaintMode.values()[_nGetMode(_ptr)];
     }
 
-    public Paint setStyle(Style style) {
+    public Paint setMode(PaintMode style) {
         Stats.onNativeCall();
-        _nSetStyle(_ptr, style.ordinal());
+        _nSetMode(_ptr, style.ordinal());
         return this;
     }
 
@@ -92,23 +74,23 @@ public class Paint extends Managed {
         return this;
     }
 
-    public Cap getStrokeCap() {
+    public PaintStrokeCap getStrokeCap() {
         Stats.onNativeCall();
-        return Cap.values()[_nGetStrokeCap(_ptr)];
+        return PaintStrokeCap.values()[_nGetStrokeCap(_ptr)];
     }
 
-    public Paint setStrokeCap(Cap cap) {
+    public Paint setStrokeCap(PaintStrokeCap cap) {
         Stats.onNativeCall();
         _nSetStrokeCap(_ptr, cap.ordinal());
         return this;
     }
 
-    public Join getStrokeJoin() {
+    public PaintStrokeJoin getStrokeJoin() {
         Stats.onNativeCall();
-        return Join.values()[_nGetStrokeJoin(_ptr)];
+        return PaintStrokeJoin.values()[_nGetStrokeJoin(_ptr)];
     }
 
-    public Paint setStrokeJoin(Join join) {
+    public Paint setStrokeJoin(PaintStrokeJoin join) {
         Stats.onNativeCall();
         _nSetStrokeJoin(_ptr, join.ordinal());
         return this;
@@ -192,7 +174,7 @@ public class Paint extends Managed {
     }
 
     /**
-     * @param pathEffect  replace {@link Path} with a modification when drawn
+     * @param p  replace {@link Path} with a modification when drawn
      *
      * @see <a href="https://fiddle.skia.org/c/@Mask_Filter_Methods">https://fiddle.skia.org/c/@Mask_Filter_Methods</a>
      * @see <a href="https://fiddle.skia.org/c/@Paint_setPathEffect">https://fiddle.skia.org/c/@Paint_setPathEffect</a>
@@ -248,50 +230,50 @@ public class Paint extends Managed {
         return this;
     }
 
-    public ImageFilter.FilterQuality getFilterQuality() {
+    public FilterQuality getFilterQuality() {
         Stats.onNativeCall();
-        return ImageFilter.FilterQuality.values()[_nGetFilterQuality(_ptr)];
+        return FilterQuality.values()[_nGetFilterQuality(_ptr)];
     }
 
-    public Paint setFilterQuality(ImageFilter.FilterQuality filterQuality) {
+    public Paint setFilterQuality(FilterQuality filterQuality) {
         Stats.onNativeCall();
         _nSetFilterQuality(_ptr, filterQuality.ordinal());
         return this;
     }
 
-    public static final  long _finalizerPtr = _nGetFinalizer();
-    public static native long _nMake();
-    public static native long _nGetFinalizer();
+    public static final  long  _finalizerPtr = _nGetFinalizer();
+    public static native long  _nMake();
+    public static native long  _nGetFinalizer();
     public static native boolean _nEquals(long ptr, long otherPtr);
     public static native boolean _nIsAntiAlias(long ptr);
-    public static native void _nSetAntiAlias(long ptr, boolean value);
-    public static native int  _nGetStyle(long ptr);
-    public static native void _nSetStyle(long ptr, int value);
-    public static native int  _nGetColor(long ptr);
-    public static native void _nSetColor(long ptr, int argb);
+    public static native void  _nSetAntiAlias(long ptr, boolean value);
+    public static native int   _nGetMode(long ptr);
+    public static native void  _nSetMode(long ptr, int value);
+    public static native int   _nGetColor(long ptr);
+    public static native void  _nSetColor(long ptr, int argb);
     public static native float _nGetStrokeWidth(long ptr);
-    public static native void _nSetStrokeWidth(long ptr, float value);
+    public static native void  _nSetStrokeWidth(long ptr, float value);
     public static native float _nGetStrokeMiter(long ptr);
-    public static native void _nSetStrokeMiter(long ptr, float value);
-    public static native int  _nGetStrokeCap(long ptr);
-    public static native void _nSetStrokeCap(long ptr, int value);
-    public static native int  _nGetStrokeJoin(long ptr);
-    public static native void _nSetStrokeJoin(long ptr, int value);
-    public static native long _nGetFillPath(long ptr, long path, float resScale);
-    public static native long _nGetFillPathCull(long ptr, long path, float left, float top, float right, float bottom, float resScale);
-    public static native long _nGetShader(long ptr);
-    public static native void _nSetShader(long ptr, long shaderPtr);
-    public static native long _nGetColorFilter(long ptr);
-    public static native void _nSetColorFilter(long ptr, long colorFilterPtr);
-    public static native int  _nGetBlendMode(long ptr);
-    public static native void _nSetBlendMode(long ptr, int mode);
-    public static native long _nGetPathEffect(long ptr);
-    public static native void _nSetPathEffect(long ptr, long pathEffectPtr);
-    public static native long _nGetMaskFilter(long ptr);
-    public static native void _nSetMaskFilter(long ptr, long filterPtr);
-    public static native long _nGetImageFilter(long ptr);
-    public static native void _nSetImageFilter(long ptr, long filterPtr);
-    public static native int _nGetFilterQuality(long ptr);
-    public static native void _nSetFilterQuality(long ptr, int quality);
+    public static native void  _nSetStrokeMiter(long ptr, float value);
+    public static native int   _nGetStrokeCap(long ptr);
+    public static native void  _nSetStrokeCap(long ptr, int value);
+    public static native int   _nGetStrokeJoin(long ptr);
+    public static native void  _nSetStrokeJoin(long ptr, int value);
+    public static native long  _nGetFillPath(long ptr, long path, float resScale);
+    public static native long  _nGetFillPathCull(long ptr, long path, float left, float top, float right, float bottom, float resScale);
+    public static native long  _nGetShader(long ptr);
+    public static native void  _nSetShader(long ptr, long shaderPtr);
+    public static native long  _nGetColorFilter(long ptr);
+    public static native void  _nSetColorFilter(long ptr, long colorFilterPtr);
+    public static native int   _nGetBlendMode(long ptr);
+    public static native void  _nSetBlendMode(long ptr, int mode);
+    public static native long  _nGetPathEffect(long ptr);
+    public static native void  _nSetPathEffect(long ptr, long pathEffectPtr);
+    public static native long  _nGetMaskFilter(long ptr);
+    public static native void  _nSetMaskFilter(long ptr, long filterPtr);
+    public static native long  _nGetImageFilter(long ptr);
+    public static native void  _nSetImageFilter(long ptr, long filterPtr);
+    public static native int   _nGetFilterQuality(long ptr);
+    public static native void  _nSetFilterQuality(long ptr, int quality);
 }
 

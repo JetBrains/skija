@@ -1,6 +1,5 @@
 package org.jetbrains.skija.examples.lwjgl;
 
-import java.util.stream.IntStream;
 import org.jetbrains.skija.*;
 
 public class BlendsScene implements Scene {

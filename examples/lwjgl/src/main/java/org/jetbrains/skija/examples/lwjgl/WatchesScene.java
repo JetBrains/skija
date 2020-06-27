@@ -7,8 +7,8 @@ public class WatchesScene implements Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         var watchFill = new Paint().setColor(0xFFFFFFFF);
-        var watchStroke = new Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f).setAntiAlias(false);
-        var watchStrokeAA = new Paint().setColor(0xFF000000).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+        var watchStroke = new Paint().setColor(0xFF000000).setMode(PaintMode.STROKE).setStrokeWidth(1f).setAntiAlias(false);
+        var watchStrokeAA = new Paint().setColor(0xFF000000).setMode(PaintMode.STROKE).setStrokeWidth(1f);
         var watchFillHover = new Paint().setColor(0xFFE4FF01);
 
         for (var x = 0f; x < width - 50; x += 50) {

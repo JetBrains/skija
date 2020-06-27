@@ -6,24 +6,13 @@ import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
 
 public class MaskFilter extends RefCnt {
-    public enum BlurStyle {
-        /** fuzzy inside and outside */
-        NORMAL,
-        /** solid inside, fuzzy outside */
-        SOLID,
-        /** nothing inside, fuzzy outside */
-        OUTER,
-        /** fuzzy inside, nothing outside */
-        INNER
+    public static MaskFilter makeBlur(FilterBlurMode mode, float sigma) {
+        return makeBlur(mode, sigma, true);
     }
 
-    public static MaskFilter makeBlur(BlurStyle style, float sigma) {
-        return makeBlur(style, sigma, true);
-    }
-
-    public static MaskFilter makeBlur(BlurStyle style, float sigma, boolean respectCTM) {
+    public static MaskFilter makeBlur(FilterBlurMode mode, float sigma, boolean respectCTM) {
         Stats.onNativeCall();
-        return new MaskFilter(_nMakeBlur(style.ordinal(), sigma, respectCTM));
+        return new MaskFilter(_nMakeBlur(mode.ordinal(), sigma, respectCTM));
     }
 
     public static MaskFilter makeShader(Shader s) {
@@ -56,7 +45,7 @@ public class MaskFilter extends RefCnt {
         super(ptr);
     }
     
-    public static native long _nMakeBlur(int style, float sigma, boolean respectCTM);
+    public static native long _nMakeBlur(int mode, float sigma, boolean respectCTM);
     public static native long _nMakeShader(long shaderPtr);
     // public static native long _nMakeEmboss(float sigma, float x, float y, float z, int pad, int ambient, int specular);
     public static native long _nMakeTable(byte[] table);

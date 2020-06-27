@@ -1,6 +1,6 @@
 package org.jetbrains.skija.paragraph;
 
-public enum RectWidthStyle {
+public enum RectWidthMode {
 
     /** Provide tight bounding boxes that fit widths to the runs of each line independently. */
     TIGHT,

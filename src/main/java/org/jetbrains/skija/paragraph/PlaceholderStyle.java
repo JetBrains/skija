@@ -7,7 +7,7 @@ public class PlaceholderStyle {
     public final float _width;
     public final float _height;
     public final PlaceholderAlignment _alignment;
-    public final BaselineType _baselineType;
+    public final BaselineMode _baselineMode;
 
     /**
      * <p>Distance from the top edge of the rect to the baseline position. This

@@ -29,7 +29,7 @@ public class ImageFiltersScene implements Scene {
         try (Paint fill = new Paint().setColor(0xFF8E86C9);
              Path path = new Path())
         {
-            path.setFillType(Path.FillType.EVEN_ODD);
+            path.setFillMode(PathFillMode.EVEN_ODD);
             path.lineTo(0, 60).lineTo(60, 60).lineTo(60, 0).closePath();
             path.moveTo(10, 5).lineTo(55, 10).lineTo(50, 55).lineTo(5, 50).closePath();
 
@@ -40,10 +40,10 @@ public class ImageFiltersScene implements Scene {
                 ImageFilter.makeDropShadowOnly(0, 0, 2, 2, 0xFFCC3333),
                 ImageFilter.makeDropShadow(0, 0, 2, 2, 0xFFCC3333, null, IRect.makeXYWH(30, 30, 30, 30)),
                 ImageFilter.makeDropShadow(2, 2, 2, 2, 0xFF3333CC, ImageFilter.makeDropShadow(-2, -2, 2, 2, 0xFFCC3333), null),
-                ImageFilter.makeBlur(2, 2, TileMode.CLAMP),
-                ImageFilter.makeBlur(2, 2, TileMode.REPEAT),
-                ImageFilter.makeBlur(2, 2, TileMode.MIRROR),
-                ImageFilter.makeBlur(2, 2, TileMode.DECAL),
+                ImageFilter.makeBlur(2, 2, FilterTileMode.CLAMP),
+                ImageFilter.makeBlur(2, 2, FilterTileMode.REPEAT),
+                ImageFilter.makeBlur(2, 2, FilterTileMode.MIRROR),
+                ImageFilter.makeBlur(2, 2, FilterTileMode.DECAL),
             };
 
             for (var filter: filters) {
@@ -62,7 +62,7 @@ public class ImageFiltersScene implements Scene {
         try (Paint fill = new Paint().setColor(0xFFFF9F1B);
              Path path = new Path())
         {
-            path.setFillType(Path.FillType.EVEN_ODD);
+            path.setFillMode(PathFillMode.EVEN_ODD);
             path.moveTo(10, 10).rMoveTo(20, 1.6f).rLineTo(11.7f, 36.2f).rLineTo(-30.8f, -22.4f).rLineTo(38.1f, 0f).rLineTo(-30.8f, 22.4f);
 
             IRect bb = IRect.makeXYWH(0, 0, 60, 60);
@@ -80,7 +80,7 @@ public class ImageFiltersScene implements Scene {
                     ColorFilter.makeBlend(0x800000FF, BlendMode.SRC_OVER),
                     ImageFilter.makeDropShadow(0, 0, 10, 10, 0xFF000000),
                     bb),
-                ImageFilter.makeImage(image, Rect.makeXYWH(200, 200, 200, 200), Rect.makeXYWH(10, 10, 40, 40), ImageFilter.FilterQuality.LOW),
+                ImageFilter.makeImage(image, Rect.makeXYWH(200, 200, 200, 200), Rect.makeXYWH(10, 10, 40, 40), FilterQuality.LOW),
             };
 
             for (var filter: filters) {
@@ -99,7 +99,7 @@ public class ImageFiltersScene implements Scene {
         try (Paint fill = new Paint().setColor(0xFFFF9F1B);
              Path path = new Path())
         {
-            path.setFillType(Path.FillType.EVEN_ODD);
+            path.setFillMode(PathFillMode.EVEN_ODD);
             path.moveTo(10, 10).rMoveTo(20, 1.6f).rLineTo(11.7f, 36.2f).rLineTo(-30.8f, -22.4f).rLineTo(38.1f, 0f).rLineTo(-30.8f, 22.4f);
 
             IRect bb = IRect.makeXYWH(0, 0, 60, 60);

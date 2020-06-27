@@ -49,14 +49,14 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint__1nSetColor(JNI
     instance->setColor(color);
 }
 
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Paint__1nGetStyle(JNIEnv* env, jclass jclass, jlong ptr) {
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Paint__1nGetMode(JNIEnv* env, jclass jclass, jlong ptr) {
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
     return static_cast<jlong>(instance->getStyle());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint__1nSetStyle(JNIEnv* env, jclass jclass, jlong ptr, jint style) {
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint__1nSetMode(JNIEnv* env, jclass jclass, jlong ptr, jint mode) {
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
-    instance->setStyle(static_cast<SkPaint::Style>(style));
+    instance->setStyle(static_cast<SkPaint::Style>(mode));
 }
 
 extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_Paint__1nGetStrokeWidth(JNIEnv* env, jclass jclass, jlong ptr) {

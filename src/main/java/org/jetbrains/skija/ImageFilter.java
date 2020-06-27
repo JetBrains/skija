@@ -8,24 +8,6 @@ import org.jetbrains.skija.impl.Stats;
 import java.util.Arrays;
 
 public class ImageFilter extends RefCnt {
-    public enum FilterQuality {
-        /** fastest but lowest quality, typically nearest-neighbor */
-        NONE,
-        /** typically bilerp */
-        LOW,
-        /** typically bilerp + mipmaps for down-scaling */
-        MEDIUM,
-        /** slowest but highest quality, typically bicubic or bett */
-        HIGH
-    }
-
-    public enum ColorChannel {
-        R,
-        G,
-        B,
-        A
-    }
-
     public static ImageFilter makeAlphaThreshold(Region r, float innerMin, float outerMax, ImageFilter input, IRect crop) {
         Stats.onNativeCall();
         return new ImageFilter(_nMakeAlphaThreshold(Native.getPtr(r), innerMin, outerMax, Native.getPtr(input), crop));
@@ -36,11 +18,11 @@ public class ImageFilter extends RefCnt {
         return new ImageFilter(_nMakeArithmetic(k1, k2, k3, k4, enforcePMColor, Native.getPtr(bg), Native.getPtr(fg), crop));
     }
 
-    public static ImageFilter makeBlur(float sigmaX, float sigmaY, TileMode mode) {
+    public static ImageFilter makeBlur(float sigmaX, float sigmaY, FilterTileMode mode) {
         return makeBlur(sigmaX, sigmaY, mode, null, null);
     }
 
-    public static ImageFilter makeBlur(float sigmaX, float sigmaY, TileMode mode, ImageFilter input, IRect crop) {
+    public static ImageFilter makeBlur(float sigmaX, float sigmaY, FilterTileMode mode, ImageFilter input, IRect crop) {
         Stats.onNativeCall();
         return new ImageFilter(_nMakeBlur(sigmaX, sigmaY, mode.ordinal(), Native.getPtr(input), crop));
     }
@@ -93,7 +75,7 @@ public class ImageFilter extends RefCnt {
         return new ImageFilter(_nMakeMagnifier(r._left, r._top, r._right, r._bottom, inset, Native.getPtr(input), crop));
     }
 
-    public static ImageFilter makeMatrixConvolution(int kernelW, int kernelH, float[] kernel, float gain, float bias, int offsetX, int offsetY, TileMode tileMode, boolean convolveAlpha, ImageFilter input, IRect crop) {
+    public static ImageFilter makeMatrixConvolution(int kernelW, int kernelH, float[] kernel, float gain, float bias, int offsetX, int offsetY, FilterTileMode tileMode, boolean convolveAlpha, ImageFilter input, IRect crop) {
         Stats.onNativeCall();
         return new ImageFilter(_nMakeMatrixConvolution(kernelW, kernelH, kernel, gain, bias, offsetX, offsetY, tileMode.ordinal(), convolveAlpha, Native.getPtr(input), crop));
     }

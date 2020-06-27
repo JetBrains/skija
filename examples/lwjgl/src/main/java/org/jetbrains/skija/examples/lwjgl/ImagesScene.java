@@ -35,20 +35,20 @@ public class ImagesScene implements Scene {
         canvas.translate(30, 30);
 
         canvas.save();
-        canvas.drawImageRect(circus, IRect.makeXYWH(0, 0, 640, 640), Rect.makeXYWH(0, 0, 160, 160), null, Canvas.SrcRectConstraint.STRICT);
+        canvas.drawImageRect(circus, IRect.makeXYWH(0, 0, 640, 640), Rect.makeXYWH(0, 0, 160, 160), null, true);
         canvas.translate(170, 0);
-        canvas.drawImageRect(circusCropped, IRect.makeXYWH(0, 0, 320, 320), Rect.makeXYWH(0, 0, 160, 160), null, Canvas.SrcRectConstraint.STRICT);
+        canvas.drawImageRect(circusCropped, IRect.makeXYWH(0, 0, 320, 320), Rect.makeXYWH(0, 0, 160, 160), null, true);
         canvas.translate(170, 0);
-        canvas.drawImageRect(cloud, IRect.makeXYWH(0, 0, 666, 456), Rect.makeXYWH(0, 0, 160, 110), null, Canvas.SrcRectConstraint.STRICT);
-        canvas.drawImageRect(cloud, IRect.makeXYWH(0, 0, 666, 456), Rect.makeXYWH(0, 50, 160, 110), null, Canvas.SrcRectConstraint.STRICT);
+        canvas.drawImageRect(cloud, IRect.makeXYWH(0, 0, 666, 456), Rect.makeXYWH(0, 0, 160, 110), null, true);
+        canvas.drawImageRect(cloud, IRect.makeXYWH(0, 0, 666, 456), Rect.makeXYWH(0, 50, 160, 110), null, true);
         canvas.translate(170, 0);
-        canvas.drawImageRect(ducks, IRect.makeXYWH(0, 0, 640, 640), Rect.makeXYWH(0, 0, 80, 160), null, Canvas.SrcRectConstraint.STRICT);
+        canvas.drawImageRect(ducks, IRect.makeXYWH(0, 0, 640, 640), Rect.makeXYWH(0, 0, 80, 160), null, true);
         canvas.translate(90, 0);
-        canvas.drawImageRect(ducks, IRect.makeXYWH(0, 0, 640, 640), Rect.makeXYWH(0, 0, 160, 80), null, Canvas.SrcRectConstraint.STRICT);
+        canvas.drawImageRect(ducks, IRect.makeXYWH(0, 0, 640, 640), Rect.makeXYWH(0, 0, 160, 80), null, true);
         canvas.translate(170, 0);
-        canvas.drawImageRect(ducks, IRect.makeXYWH(300, 300, 40, 40), Rect.makeXYWH(0, 0, 160, 160), null, Canvas.SrcRectConstraint.FAST);
+        canvas.drawImageRect(ducks, IRect.makeXYWH(300, 300, 40, 40), Rect.makeXYWH(0, 0, 160, 160), null, false);
         canvas.translate(170, 0);
-        canvas.drawImageRect(ducks, IRect.makeXYWH(300, 300, 40, 40), Rect.makeXYWH(0, 0, 160, 160), new Paint().setFilterQuality(ImageFilter.FilterQuality.HIGH), Canvas.SrcRectConstraint.FAST);
+        canvas.drawImageRect(ducks, IRect.makeXYWH(300, 300, 40, 40), Rect.makeXYWH(0, 0, 160, 160), new Paint().setFilterQuality(FilterQuality.HIGH), false);
         canvas.translate(170, 0);
         canvas.restore();
         canvas.translate(0, 170);
@@ -64,7 +64,7 @@ public class ImagesScene implements Scene {
             canvas.drawImageRect(circus, Rect.makeXYWH(0, 0, 160, 160), paint);
         }
         canvas.translate(170, 0);
-        try (ImageFilter blur = ImageFilter.makeBlur(5, 5, TileMode.DECAL);
+        try (ImageFilter blur = ImageFilter.makeBlur(5, 5, FilterTileMode.DECAL);
              Paint paint = new Paint().setImageFilter(blur)) {
             canvas.drawImageRect(circus, Rect.makeXYWH(0, 0, 160, 160), paint);
         }

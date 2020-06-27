@@ -1,6 +1,6 @@
 package org.jetbrains.skija.paragraph;
 
-public enum BaselineType {
+public enum BaselineMode {
     ALPHABETIC,
-    IDEOGRAPHIC,
+    IDEOGRAPHIC
 }

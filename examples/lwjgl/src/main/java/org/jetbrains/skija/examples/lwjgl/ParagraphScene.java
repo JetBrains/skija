@@ -47,7 +47,7 @@ public class ParagraphScene implements Scene {
         try (TextStyle defaultTs = new TextStyle().setColor(0xFF000000);
              ParagraphStyle ps = new ParagraphStyle();
              ParagraphBuilder pb = new ParagraphBuilder(ps, fc);
-             Paint boundaries = new Paint().setColor(0xFFFAA6B2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);
+             Paint boundaries = new Paint().setColor(0xFFFAA6B2).setMode(PaintMode.STROKE).setStrokeWidth(1f);
              Paint placeholders = new Paint().setColor(0xFFFAA6B2);)
         {
             // default style
@@ -134,15 +134,15 @@ public class ParagraphScene implements Scene {
             // placeholders
             // pb.setParagraphStyle(ps);
             pb.addText("But thy");
-            pb.addPlaceholder(new PlaceholderStyle(20, 40, PlaceholderAlignment.BASELINE, BaselineType.ALPHABETIC, 0));
+            pb.addPlaceholder(new PlaceholderStyle(20, 40, PlaceholderAlignment.BASELINE, BaselineMode.ALPHABETIC, 0));
             pb.addText("eternal");
-            pb.addPlaceholder(new PlaceholderStyle(20, 40, PlaceholderAlignment.ABOVE_BASELINE, BaselineType.ALPHABETIC, 0));
+            pb.addPlaceholder(new PlaceholderStyle(20, 40, PlaceholderAlignment.ABOVE_BASELINE, BaselineMode.ALPHABETIC, 0));
             pb.addText("summer");
-            pb.addPlaceholder(new PlaceholderStyle(20, 40, PlaceholderAlignment.BELOW_BASELINE, BaselineType.IDEOGRAPHIC, 0));
+            pb.addPlaceholder(new PlaceholderStyle(20, 40, PlaceholderAlignment.BELOW_BASELINE, BaselineMode.IDEOGRAPHIC, 0));
             pb.addText("shall");
-            pb.addPlaceholder(new PlaceholderStyle(40, 20, PlaceholderAlignment.TOP, BaselineType.ALPHABETIC, 0));
+            pb.addPlaceholder(new PlaceholderStyle(40, 20, PlaceholderAlignment.TOP, BaselineMode.ALPHABETIC, 0));
             pb.addText("not");
-            pb.addPlaceholder(new PlaceholderStyle(20, 40, PlaceholderAlignment.MIDDLE, BaselineType.ALPHABETIC, 0));
+            pb.addPlaceholder(new PlaceholderStyle(20, 40, PlaceholderAlignment.MIDDLE, BaselineMode.ALPHABETIC, 0));
             pb.addText("fade,\n");
 
             // Nor lose possession of that fair thou ow’st;
@@ -182,8 +182,8 @@ public class ParagraphScene implements Scene {
              TextStyle smallTs   = new TextStyle().setFontSize(12).setColor(0xFF000000);
              ParagraphStyle ps   = new ParagraphStyle();
              ParagraphBuilder pb = new ParagraphBuilder(ps, fc);
-             ParagraphStyle ps2  = new ParagraphStyle().setAlign(Align.RIGHT);
-             Paint boundaries    = new Paint().setColor(0xFFFAA6B2).setStyle(Paint.Style.STROKE).setStrokeWidth(1f);)
+             ParagraphStyle ps2  = new ParagraphStyle().setAlignment(Alignment.RIGHT);
+             Paint boundaries    = new Paint().setColor(0xFFFAA6B2).setMode(PaintMode.STROKE).setStrokeWidth(1f);)
         {
             // default style
             pb.pushStyle(defaultTs);
@@ -228,13 +228,13 @@ public class ParagraphScene implements Scene {
                      var orange = new Paint().setColor(0x80ffd7b3);) {
                     
                     // getRectsForRange    
-                    for (TextBox box: p.getRectsForRange(0, glyphIdx, RectHeightStyle.TIGHT, RectWidthStyle.TIGHT)) {
+                    for (TextBox box: p.getRectsForRange(0, glyphIdx, RectHeightMode.TIGHT, RectWidthMode.TIGHT)) {
                         canvas.drawRect(box.getRect(), blue);
                     }
 
                     // getWordBoundary
                     IRange word = p.getWordBoundary(glyphIdx);
-                    for (TextBox box: p.getRectsForRange(word.getStart(), word.getEnd(), RectHeightStyle.TIGHT, RectWidthStyle.TIGHT)) {
+                    for (TextBox box: p.getRectsForRange(word.getStart(), word.getEnd(), RectHeightMode.TIGHT, RectWidthMode.TIGHT)) {
                         canvas.drawRect(box.getRect(), orange);
                     }
                 }

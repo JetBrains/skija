@@ -139,9 +139,9 @@ class Window {
         if (renderTarget != null) { renderTarget.close(); renderTarget = null; }
 
         int fbId = GL11.glGetInteger(0x8CA6); // GL_FRAMEBUFFER_BINDING
-        renderTarget = BackendRenderTarget.makeGL((int) (width * dpi), (int) (height * dpi), /*samples*/0, /*stencil*/8, fbId, BackendRenderTarget.FramebufferFormat.GR_GL_RGBA8);
+        renderTarget = BackendRenderTarget.makeGL((int) (width * dpi), (int) (height * dpi), /*samples*/0, /*stencil*/8, fbId, FramebufferFormat.GR_GL_RGBA8);
 
-        surface = Surface.makeFromBackendRenderTarget(context, renderTarget, Surface.Origin.BOTTOM_LEFT, Surface.ColorType.RGBA_8888, ColorSpace.getDisplayP3()); // TODO load monitor profile
+        surface = Surface.makeFromBackendRenderTarget(context, renderTarget, SurfaceOrigin.BOTTOM_LEFT, SurfaceColorFormat.RGBA_8888, ColorSpace.getDisplayP3()); // TODO load monitor profile
 
         canvas = surface.getCanvas();
         canvas.scale(dpi, dpi);
@@ -315,7 +315,7 @@ class Window {
         // scenes.put("Wall Cached",   new WallOfTextScene(true));
         // scenes.put("Wall of Text",  new WallOfTextScene(false));
         scenes.put("Watches",       new WatchesScene());
-        currentScene = "Paragraph";
+        currentScene = "Geometry";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();

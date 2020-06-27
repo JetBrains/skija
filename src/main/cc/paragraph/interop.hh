@@ -17,7 +17,7 @@ namespace skija {
             void onUnload(JNIEnv* env);
         }
 
-        namespace Decoration {
+        namespace DecorationStyle {
             extern jclass cls;
             extern jmethodID ctor;
             void onLoad(JNIEnv* env);

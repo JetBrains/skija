@@ -30,7 +30,7 @@ public class ParagraphBuilder extends Managed {
 
     public ParagraphBuilder addPlaceholder(PlaceholderStyle style) {
         Stats.onNativeCall();
-        _nAddPlaceholder(_ptr, style.getWidth(), style.getHeight(), style.getAlignment().ordinal(), style.getBaselineType().ordinal(), style.getBaseline());
+        _nAddPlaceholder(_ptr, style.getWidth(), style.getHeight(), style.getAlignment().ordinal(), style.getBaselineMode().ordinal(), style.getBaseline());
         return this;
     }
 
@@ -51,7 +51,7 @@ public class ParagraphBuilder extends Managed {
     public static native void _nPushStyle(long ptr, long textStylePtr);
     public static native void _nPopStyle(long ptr);
     public static native void _nAddText(long ptr, String text);
-    public static native void _nAddPlaceholder(long ptr, float width, float height, int alignment, int baselineType, float baseline);
+    public static native void _nAddPlaceholder(long ptr, float width, float height, int alignment, int baselineMode, float baseline);
     public static native void _nSetParagraphStyle(long ptr, long stylePtr);
     public static native long _nBuild(long ptr);
 }

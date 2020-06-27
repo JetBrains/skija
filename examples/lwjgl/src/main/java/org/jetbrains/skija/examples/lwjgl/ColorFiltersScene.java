@@ -58,12 +58,12 @@ public class ColorFiltersScene implements Scene {
             },
 
             new ColorFilter[] {
-                ColorFilter.makeHighContrast(true, ColorFilter.InvertStyle.NO, 0),
-                ColorFilter.makeHighContrast(false, ColorFilter.InvertStyle.NO, 0.5f),
-                ColorFilter.makeHighContrast(false, ColorFilter.InvertStyle.NO, -0.5f),
-                ColorFilter.makeHighContrast(false, ColorFilter.InvertStyle.BRIGHTNESS, 0),
-                ColorFilter.makeHighContrast(false, ColorFilter.InvertStyle.LIGHTNESS, 0),
-                ColorFilter.makeHighContrast(true, ColorFilter.InvertStyle.LIGHTNESS, 1),
+                ColorFilter.makeHighContrast(true, InversionMode.NO, 0),
+                ColorFilter.makeHighContrast(false, InversionMode.NO, 0.5f),
+                ColorFilter.makeHighContrast(false, InversionMode.NO, -0.5f),
+                ColorFilter.makeHighContrast(false, InversionMode.BRIGHTNESS, 0),
+                ColorFilter.makeHighContrast(false, InversionMode.LIGHTNESS, 0),
+                ColorFilter.makeHighContrast(true, InversionMode.LIGHTNESS, 1),
                 ColorFilter.makeTable(tablePosterize),
                 ColorFilter.makeTableARGB(null, tableInv, null, null),
             },

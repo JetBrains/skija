@@ -1,9 +1,6 @@
 package org.jetbrains.skija.examples.lwjgl;
 
-import org.jetbrains.skija.Canvas;
-import org.jetbrains.skija.Paint;
-import org.jetbrains.skija.RRect;
-import org.jetbrains.skija.Shader;
+import org.jetbrains.skija.*;
 
 public class SquaresScene implements Scene {
     static long start = System.currentTimeMillis();
@@ -13,7 +10,7 @@ public class SquaresScene implements Scene {
         final int squareWidth = 45;
         final int margin = 14;
         try (var shader = Shader.makeLinearGradient(0, -squareWidth / 2f, 0, squareWidth / 2f, new int[] { 0xFFFFA500, 0x00000000 } );
-             var gradient = new Paint().setStyle(Paint.Style.FILL).setShader(shader);)
+             var gradient = new Paint().setMode(PaintMode.FILL).setShader(shader);)
         {
             int currentX = margin;
             int currentY = margin;
@@ -27,7 +24,7 @@ public class SquaresScene implements Scene {
                 int r = Math.round((bouncePos * 50f + 50f) / 100f * 255f);
                 int b = Math.round((1 - bouncePos) * 50f  / 100f * 255f);
                 var color = 0xFF000000 | r << 16 | b;
-                try (var solid = new Paint().setColor(color).setStyle(Paint.Style.FILL)) {
+                try (var solid = new Paint().setColor(color).setMode(PaintMode.FILL)) {
                     var rotation = Math.round(pos * 360f);
                     var radius = bouncePos * 25f;
 

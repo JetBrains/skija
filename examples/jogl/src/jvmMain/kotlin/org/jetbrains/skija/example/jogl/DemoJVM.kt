@@ -10,8 +10,8 @@ import kotlin.math.sin
 fun displayScene(renderer: Renderer, width: Int, height: Int, xpos: Int, ypos: Int, state: State) {
     val canvas = renderer.canvas!!
     val watchFill = Paint().setColor(0xFFFFFFFF.toInt())
-    val watchStroke = Paint().setColor(0xFF000000.toInt()).setStyle(Paint.Style.STROKE).setStrokeWidth(1f).setAntiAlias(false)
-    val watchStrokeAA = Paint().setColor(0xFF000000.toInt()).setStyle(Paint.Style.STROKE).setStrokeWidth(1f)
+    val watchStroke = Paint().setColor(0xFF000000.toInt()).setMode(PaintMode.STROKE).setStrokeWidth(1f).setAntiAlias(false)
+    val watchStrokeAA = Paint().setColor(0xFF000000.toInt()).setMode(PaintMode.STROKE).setStrokeWidth(1f)
     val watchFillHover = Paint().setColor(0xFFE4FF01.toInt())
     for (x in 0 .. (width - 50) step 50) {
         for (y in 0 .. (height - 50) step 50) {
@@ -57,7 +57,7 @@ class Renderer(val displayScene: (Renderer, Int, Int) -> Unit): SkiaRenderer {
     val font = Font(typeface, 40f)
     val paint = Paint().apply {
             setColor(0xff9BC730L.toInt())
-            setStyle(Paint.Style.FILL)
+            setMode(PaintMode.FILL)
             setStrokeWidth(1f)
     }
     var canvas: Canvas? = null

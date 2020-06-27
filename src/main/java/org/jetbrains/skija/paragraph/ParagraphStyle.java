@@ -49,14 +49,14 @@ public class ParagraphStyle extends Managed {
         return this;
     }
 
-    public Align getAlign() {
+    public Alignment getAlignment() {
         Stats.onNativeCall();
-        return Align.values()[_nGetAlign(_ptr)];
+        return Alignment.values()[_nGetAlignment(_ptr)];
     }
 
-    public ParagraphStyle setAlign(Align align) {
+    public ParagraphStyle setAlignment(Alignment alignment) {
         Stats.onNativeCall();
-        _nSetAlign(_ptr, align.ordinal());
+        _nSetAlignment(_ptr, alignment.ordinal());
         return this;
     }
 
@@ -93,20 +93,20 @@ public class ParagraphStyle extends Managed {
         return this;
     }
 
-    public HeightBehavior getHeightBehavior() {
+    public HeightMode getHeightMode() {
         Stats.onNativeCall();
-        return HeightBehavior.values()[_nGetHeightBehavior(_ptr)];
+        return HeightMode.values()[_nGetHeightMode(_ptr)];
     }
 
-    public ParagraphStyle setHeightBehavior(HeightBehavior behavior) {
+    public ParagraphStyle setHeightMode(HeightMode behavior) {
         Stats.onNativeCall();
-        _nSetHeightBehavior(_ptr, behavior.ordinal());
+        _nSetHeightMode(_ptr, behavior.ordinal());
         return this;
     }
 
-    public Align getEffectiveAlign() {
+    public Alignment getEffectiveAlignment() {
         Stats.onNativeCall();
-        return Align.values()[_nGetEffectiveAlign(_ptr)];
+        return Alignment.values()[_nGetEffectiveAlignment(_ptr)];
     }
 
     public boolean isHintingEnabled() {
@@ -130,17 +130,17 @@ public class ParagraphStyle extends Managed {
     @ApiStatus.Internal public static native void    _nSetTextStyle(long ptr, long textStylePtr);
     @ApiStatus.Internal public static native int     _nGetDirection(long ptr);
     @ApiStatus.Internal public static native void    _nSetDirection(long ptr, int direction);
-    @ApiStatus.Internal public static native int     _nGetAlign(long ptr);
-    @ApiStatus.Internal public static native void    _nSetAlign(long ptr, int align);
+    @ApiStatus.Internal public static native int     _nGetAlignment(long ptr);
+    @ApiStatus.Internal public static native void    _nSetAlignment(long ptr, int align);
     @ApiStatus.Internal public static native long    _nGetMaxLinesCount(long ptr);
     @ApiStatus.Internal public static native void    _nSetMaxLinesCount(long ptr, long maxLines);
     @ApiStatus.Internal public static native String  _nGetEllipsis(long ptr);
     @ApiStatus.Internal public static native void    _nSetEllipsis(long ptr, String ellipsis);
     @ApiStatus.Internal public static native float   _nGetHeight(long ptr);
     @ApiStatus.Internal public static native void    _nSetHeight(long ptr, float height);
-    @ApiStatus.Internal public static native int     _nGetHeightBehavior(long ptr);
-    @ApiStatus.Internal public static native void    _nSetHeightBehavior(long ptr, int v);
-    @ApiStatus.Internal public static native int     _nGetEffectiveAlign(long ptr);
+    @ApiStatus.Internal public static native int     _nGetHeightMode(long ptr);
+    @ApiStatus.Internal public static native void    _nSetHeightMode(long ptr, int v);
+    @ApiStatus.Internal public static native int     _nGetEffectiveAlignment(long ptr);
     @ApiStatus.Internal public static native boolean _nIsHintingEnabled(long ptr);
     @ApiStatus.Internal public static native void    _nDisableHinting(long ptr);
 }

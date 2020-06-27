@@ -82,26 +82,24 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawPath
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawImageRect
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong imagePtr, jfloat sl, jfloat st, jfloat sr, jfloat sb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jlong paintPtr, jint 
-constraintInt) {
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong imagePtr, jfloat sl, jfloat st, jfloat sr, jfloat sb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jlong paintPtr, jboolean strict) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
     SkImage* image = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(imagePtr));
     SkRect src {sl, st, sr, sb};
     SkRect dst {dl, dt, dr, db};
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
-    SkCanvas::SrcRectConstraint constraint = static_cast<SkCanvas::SrcRectConstraint>(constraintInt);
+    SkCanvas::SrcRectConstraint constraint = strict ? SkCanvas::SrcRectConstraint::kStrict_SrcRectConstraint : SkCanvas::SrcRectConstraint::kFast_SrcRectConstraint;
     canvas->drawImageRect(image, src, dst, paint, constraint);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawImageIRect
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong imagePtr, jint sl, jint st, jint sr, jint sb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jlong paintPtr, jint 
-constraintInt) {
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong imagePtr, jint sl, jint st, jint sr, jint sb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jlong paintPtr, jboolean strict) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
     SkImage* image = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(imagePtr));
     SkIRect src {sl, st, sr, sb};
     SkRect dst {dl, dt, dr, db};
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
-    SkCanvas::SrcRectConstraint constraint = static_cast<SkCanvas::SrcRectConstraint>(constraintInt);
+    SkCanvas::SrcRectConstraint constraint = strict ? SkCanvas::SrcRectConstraint::kStrict_SrcRectConstraint : SkCanvas::SrcRectConstraint::kFast_SrcRectConstraint;
     canvas->drawImageRect(image, src, dst, paint, constraint);
 }
 
@@ -147,29 +145,29 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawPaint
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nClipRect
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloat left, jfloat top, jfloat right, jfloat bottom, jint op, jboolean antiAlias) {
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloat left, jfloat top, jfloat right, jfloat bottom, jint mode, jboolean antiAlias) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
-    canvas->clipRect({left, top, right, bottom}, static_cast<SkClipOp>(op), antiAlias);
+    canvas->clipRect({left, top, right, bottom}, static_cast<SkClipOp>(mode), antiAlias);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nClipRRect
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloat left, jfloat top, jfloat right, jfloat bottom, jfloatArray jradii, jint op, jboolean antiAlias) {
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloat left, jfloat top, jfloat right, jfloat bottom, jfloatArray jradii, jint mode, jboolean antiAlias) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
-    canvas->clipRRect(skija::RRect::toSkRRect(env, left, top, right, bottom, jradii), static_cast<SkClipOp>(op), antiAlias);
+    canvas->clipRRect(skija::RRect::toSkRRect(env, left, top, right, bottom, jradii), static_cast<SkClipOp>(mode), antiAlias);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nClipPath
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong pathPtr, jint op, jboolean antiAlias) {
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong pathPtr, jint mode, jboolean antiAlias) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
     SkPath* path = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(pathPtr));
-    canvas->clipPath(*path, static_cast<SkClipOp>(op), antiAlias);
+    canvas->clipPath(*path, static_cast<SkClipOp>(mode), antiAlias);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nClipRegion
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong regionPtr, jint op) {
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong regionPtr, jint mode) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
     SkRegion* region = reinterpret_cast<SkRegion*>(static_cast<uintptr_t>(regionPtr));
-    canvas->clipRegion(*region, static_cast<SkClipOp>(op));
+    canvas->clipRegion(*region, static_cast<SkClipOp>(mode));
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nConcat
