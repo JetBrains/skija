@@ -1803,9 +1803,9 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_getGenerationID">https://fiddle.skia.org/c/@Path_getGenerationID</a>
      * @see Skia bug 1762
      */
-    public int getGenerationID() {
+    public int getGenerationId() {
         Stats.onNativeCall();
-        return _nGetGenerationID(_ptr);
+        return _nGetGenerationId(_ptr);
     }    
 
     /**
@@ -1900,6 +1900,6 @@ public class Path extends Managed implements Iterable<PathSegment> {
     public static native void    _nDumpHex(long ptr);
     public static native byte[]  _nWriteToMemory(long ptr);
     public static native long    _nReadFromMemory(byte[] data);
-    public static native int     _nGetGenerationID(long ptr);
+    public static native int     _nGetGenerationId(long ptr);
     public static native boolean _nIsValid(long ptr);
 }

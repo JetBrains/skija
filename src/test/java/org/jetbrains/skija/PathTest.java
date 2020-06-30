@@ -305,12 +305,12 @@ public class PathTest implements Executable {
             Path.convertConicToQuads(new Point(0, 20), new Point(20, 0), new Point(40, 20), 0.5f, 2));
 
         try (Path p = new Path().lineTo(40, 40)) {
-            var g1 = p.getGenerationID();
+            var g1 = p.getGenerationId();
             p.lineTo(10, 40);
-            var g2 = p.getGenerationID();
+            var g2 = p.getGenerationId();
             assertNotEquals(g1, g2);
             p.setFillMode(PathFillMode.EVEN_ODD);
-            var g3 = p.getGenerationID();
+            var g3 = p.getGenerationId();
             assertEquals(g2, g3);
         }
     }

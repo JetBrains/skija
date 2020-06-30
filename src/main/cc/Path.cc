@@ -477,7 +477,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path__1nReadFromMemo
     }
 }
 
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Path__1nGetGenerationID
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Path__1nGetGenerationId
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
     return instance->getGenerationID();
