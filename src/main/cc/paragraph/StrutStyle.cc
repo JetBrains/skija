@@ -45,13 +45,13 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_StrutStyle_
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_paragraph_StrutStyle__1nGetFontStyle
   (JNIEnv* env, jclass jclass, jlong ptr) {
     StrutStyle* instance = reinterpret_cast<StrutStyle*>(static_cast<uintptr_t>(ptr));
-    return javaFontStyle(instance->getFontStyle());
+    return skija::FontStyle::toJava(instance->getFontStyle());
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_StrutStyle__1nSetFontStyle
   (JNIEnv* env, jclass jclass, jlong ptr, jint style) {
     StrutStyle* instance = reinterpret_cast<StrutStyle*>(static_cast<uintptr_t>(ptr));
-    instance->setFontStyle(skFontStyle(style));
+    instance->setFontStyle(skija::FontStyle::fromJava(style));
 }
 
 extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_paragraph_StrutStyle__1nGetFontSize

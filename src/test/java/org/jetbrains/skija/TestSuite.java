@@ -7,9 +7,12 @@ public class TestSuite {
     public static void main(String[] args) {
         Library.load("/", "skija");
         TestRunner.startTesting();
-        TestRunner.testClass(PathTest.class);
-        TestRunner.testClass(FontTest.class);
         TestRunner.testClass(DataTest.class);
+        TestRunner.testClass(FontMgrTest.class);
+        TestRunner.testClass(PathTest.class);
+        TestRunner.testClass(TypefaceTest.class);
+
+        TestRunner.testClass(FontCollectionTest.class);
         TestRunner.testClass(TextStyleTest.class);
         // TestRunner.testClass(TestTest.class);
         int res = TestRunner.finishTesting();

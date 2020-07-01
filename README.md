@@ -16,6 +16,7 @@ ColorFilter          ▓▓▓▓▓▓▓▓▓▓
 ColorSpace           ▓▓░░░░░░░░
 Data                 ▓▓▓▓▓▓▓▓▓░
 Font                 ▓▓░░░░░░░░
+FontData             ░░░░░░░░░░
 FontManager          ▓▓▓▓▓▓▓▓▓░ 
 FontStyle            ▓▓▓▓▓▓▓▓▓▓
 FontStyleSet         ▓▓▓▓▓▓▓▓▓▓
@@ -29,11 +30,12 @@ PathEffects          ▓▓▓▓▓▓▓▓▓▓
 Picture              ░░░░░░░░░░
 PictureRecorder      ░░░░░░░░░░
 Region               ▓▓▓▓▓▓▓▓▓▓
+ScalerContext        ░░░░░░░░░░
 Shader               ▓▓▓▓▓▓▓▓▓▓
 Stream               ░░░░░░░░░░
 Surface              ▓░░░░░░░░░
 TextBlob             ▓▓░░░░░░░░
-Typeface             ▓▓░░░░░░░░
+Typeface             ▓▓▓▓▓▓▓▓░░
 ```
 
 Paragraph progress:

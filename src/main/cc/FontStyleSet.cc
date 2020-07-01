@@ -42,6 +42,6 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_FontStyleSet__1nGetT
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_FontStyleSet__1nMatchStyle
   (JNIEnv* env, jclass jclass, jlong ptr, jint fontStyle) {
     SkFontStyleSet* instance = reinterpret_cast<SkFontStyleSet*>(static_cast<uintptr_t>(ptr));
-    SkTypeface* typeface = instance->matchStyle(skFontStyle(fontStyle));
+    SkTypeface* typeface = instance->matchStyle(skija::FontStyle::fromJava(fontStyle));
     return reinterpret_cast<jlong>(typeface);
 }

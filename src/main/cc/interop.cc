@@ -53,6 +53,21 @@ namespace skija {
         }
     }
 
+    namespace FontFamilyName {
+        jclass cls;
+        jmethodID ctor;
+
+        void onLoad(JNIEnv* env) {
+            jclass local = env->FindClass("org/jetbrains/skija/FontFamilyName");
+            cls  = static_cast<jclass>(env->NewGlobalRef(local));
+            ctor = env->GetMethodID(cls, "<init>", "(Ljava/lang/String;Ljava/lang/String;)V");
+        }
+
+        void onUnload(JNIEnv* env) {
+            env->DeleteGlobalRef(cls);
+        }
+    }
+
     namespace FontMetrics {
         jclass cls;
         jmethodID ctor;
@@ -68,14 +83,26 @@ namespace skija {
         }
     }
 
+    namespace FontStyle {
+        SkFontStyle fromJava(jint style) {
+            return SkFontStyle(style & 0xFFFF, (style >> 16) & 0xFF, static_cast<SkFontStyle::Slant>((style >> 24) & 0xFF));
+        }
+
+        jint toJava(const SkFontStyle& fs) {
+            return (static_cast<int>(fs.slant()) << 24)| (fs.width() << 16) | fs.weight();
+        }
+    }
+
     namespace FontVariation {
-        jclass   cls;
-        jfieldID tag;
-        jfieldID value;
+        jclass    cls;
+        jmethodID ctor;
+        jfieldID  tag;
+        jfieldID  value;
 
         void onLoad(JNIEnv* env) {
             jclass local = env->FindClass("org/jetbrains/skija/FontVariation");    
             cls   = static_cast<jclass>(env->NewGlobalRef(local));
+            ctor = env->GetMethodID(cls, "<init>", "(IF)V");
             tag   = env->GetFieldID(cls, "_tag", "I");
             value = env->GetFieldID(cls, "_value", "F");
         }
@@ -314,6 +341,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     java::lang::String::onLoad(env);
 
     skija::FontAxisInfo::onLoad(env);
+    skija::FontFamilyName::onLoad(env);
     skija::FontMetrics::onLoad(env);
     skija::FontVariation::onLoad(env);
     skija::IRect::onLoad(env);
@@ -340,6 +368,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     java::lang::String::onUnload(env);
 
     skija::FontAxisInfo::onUnload(env);
+    skija::FontFamilyName::onUnload(env);
     skija::FontMetrics::onUnload(env);
     skija::FontVariation::onUnload(env);
     skija::IRect::onUnload(env);
@@ -353,14 +382,6 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::paragraph::DecorationStyle::onUnload(env);
     skija::paragraph::Shadow::onUnload(env);
     skija::paragraph::FontFeature::onUnload(env);
-}
-
-SkFontStyle skFontStyle(jint style) {
-    return SkFontStyle(style & 0xFFFF, (style >> 16) & 0xFF, static_cast<SkFontStyle::Slant>((style >> 24) & 0xFF));
-}
-
-jint javaFontStyle(const SkFontStyle& fs) {
-    return (static_cast<int>(fs.slant()) << 24)| (fs.width() << 16) | fs.weight();
 }
 
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray matrixArray) {
@@ -399,6 +420,12 @@ jstring javaString(JNIEnv* env, const SkString& str) {
 
 jobject javaFloat(JNIEnv* env, float val) {
     return env->NewObject(java::lang::Float::cls, java::lang::Float::ctor, val);
+}
+
+jshortArray javaShortArray(JNIEnv* env, const std::vector<short>& shorts) {
+    jshortArray res = env->NewShortArray(shorts.size());
+    env->SetShortArrayRegion(res, 0, shorts.size(), shorts.data());
+    return res;
 }
 
 jintArray javaIntArray(JNIEnv* env, const std::vector<int>& ints) {

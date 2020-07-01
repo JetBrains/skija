@@ -72,7 +72,7 @@ extern "C" JNIEXPORT jlongArray JNICALL Java_org_jetbrains_skija_paragraph_FontC
         familyNames.push_back(skString(env, str));
     }
 
-    vector<sk_sp<SkTypeface>> found = instance->findTypefaces(familyNames, skFontStyle(fontStyle));
+    vector<sk_sp<SkTypeface>> found = instance->findTypefaces(familyNames, skija::FontStyle::fromJava(fontStyle));
     vector<jlong> res(found.size());
     for (int i = 0; i < found.size(); ++i)
         res[i] = reinterpret_cast<jlong>(found[i].release());
@@ -85,7 +85,7 @@ extern "C" JNIEXPORT jlongArray JNICALL Java_org_jetbrains_skija_paragraph_FontC
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_paragraph_FontCollection__1nDefaultFallbackChar
   (JNIEnv* env, jclass jclass, jlong ptr, jint unicode, jint fontStyle, jstring locale) {
     FontCollection* instance = reinterpret_cast<FontCollection*>(static_cast<uintptr_t>(ptr));
-    return reinterpret_cast<jlong>(instance->defaultFallback(unicode, skFontStyle(fontStyle), skString(env, locale)).release());
+    return reinterpret_cast<jlong>(instance->defaultFallback(unicode, skija::FontStyle::fromJava(fontStyle), skString(env, locale)).release());
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_paragraph_FontCollection__1nDefaultFallback

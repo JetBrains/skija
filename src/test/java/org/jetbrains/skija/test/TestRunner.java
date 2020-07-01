@@ -90,6 +90,30 @@ public class TestRunner {
         }
     }
 
+    public static void assertArrayEquals(short[] expected, short[] actual) {
+        runner.asserts++;
+        try {
+            if (!Arrays.equals(expected, actual))
+                runner.fail("Expected " + Arrays.toString(expected) + " == " + Arrays.toString(actual));
+            else
+                System.out.print(".");
+        } catch(Exception e) {
+            runner.error(e);
+        }
+    }
+
+    public static void assertArrayEquals(int[] expected, int[] actual) {
+        runner.asserts++;
+        try {
+            if (!Arrays.equals(expected, actual))
+                runner.fail("Expected " + Arrays.toString(expected) + " == " + Arrays.toString(actual));
+            else
+                System.out.print(".");
+        } catch(Exception e) {
+            runner.error(e);
+        }
+    }
+
     public static void assertThrows(Class<? extends Throwable> expected, Executable executable) {
         runner.asserts++;
         try {

@@ -117,13 +117,13 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nGetFontStyle
   (JNIEnv* env, jclass jclass, jlong ptr) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
-    return javaFontStyle(instance->getFontStyle());
+    return skija::FontStyle::toJava(instance->getFontStyle());
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nSetFontStyle
   (JNIEnv* env, jclass jclass, jlong ptr, jint fontStyleValue) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
-    instance->setFontStyle(skFontStyle(fontStyleValue));
+    instance->setFontStyle(skija::FontStyle::fromJava(fontStyleValue));
 }
 
 extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nGetShadows

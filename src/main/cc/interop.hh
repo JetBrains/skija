@@ -28,13 +28,24 @@ namespace skija {
         extern jmethodID ctor;
     }
 
+    namespace FontFamilyName {
+        extern jclass cls;
+        extern jmethodID ctor;
+    }
+
     namespace FontMetrics {
         extern jclass cls;
         extern jmethodID ctor;
     }
 
+    namespace FontStyle {
+        SkFontStyle fromJava(jint style);
+        jint toJava(const SkFontStyle& fs);
+    }
+
     namespace FontVariation {
         extern jclass cls;
+        extern jmethodID ctor;
         extern jfieldID tag;
         extern jfieldID value;
     }
@@ -98,9 +109,6 @@ namespace skija {
     }
 }
 
-SkFontStyle skFontStyle(jint style);
-jint javaFontStyle(const SkFontStyle& style);
-
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray arr);
 
 SkString skString(JNIEnv* env, jstring str);
@@ -108,6 +116,7 @@ jstring javaString(JNIEnv* env, const SkString& str);
 
 jobject javaFloat(JNIEnv* env, float val);
 
+jshortArray  javaShortArray (JNIEnv* env, const std::vector<short>& shorts);
 jintArray    javaIntArray   (JNIEnv* env, const std::vector<int>& ints);
 jlongArray   javaLongArray  (JNIEnv* env, const std::vector<long>& longs);
 jfloatArray  javaFloatArray (JNIEnv* env, const std::vector<float>& floats);
