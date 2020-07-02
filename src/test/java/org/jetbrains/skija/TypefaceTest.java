@@ -11,10 +11,6 @@ import static org.jetbrains.skija.test.TestRunner.assertNotEquals;
 public class TypefaceTest implements Executable {
     @Override
     public void execute() throws Exception {
-        TestRunner.testMethod(this, "testTypeface");
-    }
-
-    public void testTypeface() throws Exception {
         Typeface inter = Typeface.makeFromFile("src/test/resources/fonts/Inter-Regular.ttf");
         Typeface interV = Typeface.makeFromFile("src/test/resources/fonts/Inter-V.otf");
         Typeface jbMono = Typeface.makeFromFile("src/test/resources/fonts/JetBrainsMono-Regular.ttf");

@@ -9,10 +9,6 @@ import static org.jetbrains.skija.test.TestRunner.*;
 public class TextStyleTest implements Executable {
     @Override
     public void execute() throws Exception {
-        TestRunner.testMethod(this, "test");
-    }
-
-    public void test() throws Exception {
         assertEquals(new TextStyle(), new TextStyle());
 
         try (var ts1 = new TextStyle();

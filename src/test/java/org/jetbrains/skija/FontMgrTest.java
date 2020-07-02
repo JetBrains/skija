@@ -11,10 +11,6 @@ import static org.jetbrains.skija.test.TestRunner.assertEquals;
 public class FontMgrTest implements Executable {
     @Override
     public void execute() throws Exception {
-        TestRunner.testMethod(this, "testFontMgr");
-    }
-
-    public void testFontMgr() throws Exception {
         // FontManager
         TypefaceFontProvider fm = new TypefaceFontProvider();
         Typeface jbMono = Typeface.makeFromFile("src/test/resources/fonts/JetBrainsMono-Regular.ttf", 0);

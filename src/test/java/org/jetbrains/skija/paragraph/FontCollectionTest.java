@@ -12,10 +12,6 @@ import static org.jetbrains.skija.test.TestRunner.assertEquals;
 public class FontCollectionTest implements Executable {
     @Override
     public void execute() throws Exception {
-        TestRunner.testMethod(this, "testFontCollection");
-    }
-
-    public void testFontCollection() throws Exception {
         TypefaceFontProvider fm = new TypefaceFontProvider();
         Typeface jbMono = Typeface.makeFromFile("src/test/resources/fonts/JetBrainsMono-Regular.ttf", 0);
         fm.registerTypeface(jbMono);
