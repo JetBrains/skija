@@ -169,22 +169,31 @@ public class Typeface extends RefCnt {
     }
 
     /**
+     *  Given a string, returns corresponding glyph ids.
+     *
+     *  @return  the corresponding glyph ids for each character.
+     */
+    public short[] getStringGlyphIds(String s) {
+        return getUTF32GlyphIds(s.codePoints().toArray());
+    }
+
+    /**
      *  Given an array of UTF32 character codes, return their corresponding glyph IDs.
      *
      *  @return  the corresponding glyph IDs for each character.
      */
-    public short[] getGlyphIds(int[] uni) {
+    public short[] getUTF32GlyphIds(int[] uni) {
         Stats.onNativeCall();
-        return _nGetGlyphIds(_ptr, uni);
+        return _nGetUTF32GlyphIds(_ptr, uni);
     }
 
     /**
      *  This is a short-cut for calling {@link #getGlyphIds(int[])}.
      *  @return  the glyphID that corresponds to the specified unicode code-point (in UTF32 encoding). If the unichar is not supported, returns 0
      */
-    public short getGlyphId(int unichar) {
+    public short getUTF32GlyphId(int unichar) {
         Stats.onNativeCall();
-        return _nGetGlyphId(_ptr, unichar);
+        return _nGetUTF32GlyphId(_ptr, unichar);
     }
 
     /**
@@ -300,8 +309,8 @@ public class Typeface extends RefCnt {
     @ApiStatus.Internal public static native long     _nMakeFromFile(String path, int index);
     @ApiStatus.Internal public static native long     _nMakeFromData(long dataPtr, int index);
     @ApiStatus.Internal public static native long     _nMakeClone(long ptr, FontVariation[] variations, int collectionIndex);
-    @ApiStatus.Internal public static native short[]  _nGetGlyphIds(long ptr, int[] uni);
-    @ApiStatus.Internal public static native short    _nGetGlyphId(long ptr, int unichar);
+    @ApiStatus.Internal public static native short[]  _nGetUTF32GlyphIds(long ptr, int[] uni);
+    @ApiStatus.Internal public static native short    _nGetUTF32GlyphId(long ptr, int unichar);
     @ApiStatus.Internal public static native int      _nGetGlyphsCount(long ptr);
     @ApiStatus.Internal public static native int      _nGetTablesCount(long ptr);
     @ApiStatus.Internal public static native int[]    _nGetTableTags(long ptr);
