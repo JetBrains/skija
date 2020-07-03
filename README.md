@@ -15,7 +15,7 @@ Color                ▓░░░░░░░░░
 ColorFilter          ▓▓▓▓▓▓▓▓▓▓
 ColorSpace           ▓▓░░░░░░░░
 Data                 ▓▓▓▓▓▓▓▓▓░
-Font                 ▓▓░░░░░░░░
+Font                 ▓▓▓▓▓▓▓▓▓▓
 FontData             ░░░░░░░░░░
 FontManager          ▓▓▓▓▓▓▓▓▓░ 
 FontStyle            ▓▓▓▓▓▓▓▓▓▓

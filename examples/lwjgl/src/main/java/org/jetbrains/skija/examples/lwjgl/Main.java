@@ -298,6 +298,7 @@ class Window {
         scenes.put("Blends",        new BlendsScene());
         scenes.put("Color Filters", new ColorFiltersScene());
         // scenes.put("Empty",         new EmptyScene());
+        scenes.put("Font",          new FontScene());
         scenes.put("Geometry",      new GeometryScene());
         scenes.put("Images",        new ImagesScene());
         scenes.put("Image Filters", new ImageFiltersScene());
@@ -315,7 +316,7 @@ class Window {
         // scenes.put("Wall Cached",   new WallOfTextScene(true));
         // scenes.put("Wall of Text",  new WallOfTextScene(false));
         scenes.put("Watches",       new WatchesScene());
-        currentScene = "Geometry";
+        currentScene = "Font";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();

@@ -2,6 +2,7 @@
 #include <jni.h>
 #include <memory>
 #include <vector>
+#include "SkFontMetrics.h"
 #include "SkFontStyle.h"
 #include "SkMatrix.h"
 #include "SkRefCnt.h"
@@ -36,6 +37,7 @@ namespace skija {
     namespace FontMetrics {
         extern jclass cls;
         extern jmethodID ctor;
+        jobject toJava(JNIEnv* env, const SkFontMetrics& m);
     }
 
     namespace FontStyle {
@@ -60,6 +62,11 @@ namespace skija {
 
         jobject fromSkIRect(JNIEnv* env, const SkIRect& rect);
         std::unique_ptr<SkIRect> toSkIRect(JNIEnv* env, jobject obj);
+    }
+
+    namespace Path {
+        extern jclass cls;
+        extern jmethodID ctor;
     }
 
     namespace PathSegment {

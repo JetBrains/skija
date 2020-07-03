@@ -81,6 +81,26 @@ namespace skija {
         void onUnload(JNIEnv* env) {
             env->DeleteGlobalRef(cls);
         }
+
+        jobject toJava(JNIEnv* env, const SkFontMetrics& m) {
+            float f1, f2, f3, f4;
+            return env->NewObject(cls, ctor,
+                m.fTop,
+                m.fAscent,
+                m.fDescent,
+                m.fBottom,
+                m.fLeading,
+                m.fAvgCharWidth,
+                m.fMaxCharWidth,
+                m.fXMin,
+                m.fXMax,
+                m.fXHeight,
+                m.fCapHeight,
+                m.hasUnderlineThickness(&f1) ? javaFloat(env, f1) : nullptr,
+                m.hasUnderlinePosition(&f2)  ? javaFloat(env, f2) : nullptr,
+                m.hasStrikeoutThickness(&f3) ? javaFloat(env, f3) : nullptr,
+                m.hasStrikeoutPosition(&f4)  ? javaFloat(env, f4) : nullptr);
+        }
     }
 
     namespace FontStyle {
@@ -149,6 +169,21 @@ namespace skija {
                     env->GetIntField(obj, bottom)
                 });
             }
+        }
+    }
+
+    namespace Path {
+        jclass cls;
+        jmethodID ctor;
+
+        void onLoad(JNIEnv* env) {
+            jclass local = env->FindClass("org/jetbrains/skija/Path");
+            cls          = static_cast<jclass>(env->NewGlobalRef(local));
+            ctor         = env->GetMethodID(cls, "<init>", "(J)V");
+        }
+
+        void onUnload(JNIEnv* env) {
+            env->DeleteGlobalRef(cls);
         }
     }
 
@@ -345,6 +380,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::FontMetrics::onLoad(env);
     skija::FontVariation::onLoad(env);
     skija::IRect::onLoad(env);
+    skija::Path::onLoad(env);
     skija::PathSegment::onLoad(env);
     skija::Point::onLoad(env);
     skija::Rect::onLoad(env);
@@ -372,6 +408,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::FontMetrics::onUnload(env);
     skija::FontVariation::onUnload(env);
     skija::IRect::onUnload(env);
+    skija::Path::onUnload(env);
     skija::PathSegment::onUnload(env);
     skija::Point::onUnload(env);
     skija::Rect::onUnload(env);

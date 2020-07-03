@@ -31,6 +31,7 @@ public class Path extends Managed implements Iterable<PathSegment> {
      */
     public Path() {
         this(_nMake());
+        Stats.onNativeCall();
     }
 
     /**
@@ -1822,11 +1823,15 @@ public class Path extends Managed implements Iterable<PathSegment> {
 
     @ApiStatus.Internal
     public Path(long ptr) {
-        super(ptr, _finalizerPtr);
-        Stats.onNativeCall();
+        super(ptr, _FinalizerHolder.PTR);
     }
 
-    public static final  long    _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        static { Stats.onNativeCall(); }
+        public static final long PTR = _nGetFinalizer();
+    }
+
     public static native long    _nMake();
     public static native long    _nGetFinalizer();
     public static native boolean _nEquals(long aPtr, long bPtr);

@@ -277,25 +277,8 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_paragraph_TextStyl
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
     SkFontMetrics m;
     instance->getFontMetrics(&m);
-    float f1, f2, f3, f4;
-    return env->NewObject(skija::FontMetrics::cls, skija::FontMetrics::ctor,
-        m.fTop,
-        m.fAscent,
-        m.fDescent,
-        m.fBottom,
-        m.fLeading,
-        m.fAvgCharWidth,
-        m.fMaxCharWidth,
-        m.fXMin,
-        m.fXMax,
-        m.fXHeight,
-        m.fCapHeight,
-        m.hasUnderlineThickness(&f1) ? javaFloat(env, f1) : nullptr,
-        m.hasUnderlinePosition(&f2)  ? javaFloat(env, f2) : nullptr,
-        m.hasStrikeoutThickness(&f3) ? javaFloat(env, f3) : nullptr,
-        m.hasStrikeoutPosition(&f4)  ? javaFloat(env, f4) : nullptr);
+    return skija::FontMetrics::toJava(env, m);
 }
-
 
 extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__1nIsPlaceholder
   (JNIEnv* env, jclass jclass, jlong ptr) {
