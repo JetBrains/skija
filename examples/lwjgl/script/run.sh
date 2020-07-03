@@ -1,10 +1,16 @@
-#!/bin/zsh -euo pipefail
+#!/usr/bin/env -S /bin/zsh -euo pipefail
 cd `dirname $0`/..
 
 mkdir -p target
 
 LWJGL_VER=3.2.3
 LWJGL_OS=macos
+os=`uname`
+if [[ "$os" == 'Linux' ]]; then
+   LWJGL_OS='linux'
+elif [[ "$os" == 'Darwin' ]]; then
+   LWJGL_OS='macos'
+fi
 
 LWJGL_LIBS=(
     lwjgl
@@ -34,4 +40,4 @@ if [[ "$HAS_LWJLG" == "false" ]]; then
     mvn compile
 fi
 
-java -cp $CLASSPATH -XstartOnFirstThread -Djava.awt.headless=true -ea org.jetbrains.skija.examples.lwjgl.Main
+java -cp $CLASSPATH -Djava.awt.headless=true -ea org.jetbrains.skija.examples.lwjgl.Main
