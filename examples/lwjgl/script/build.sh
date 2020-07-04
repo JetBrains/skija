@@ -4,13 +4,14 @@ cd `dirname $0`/..
 mkdir -p target
 
 LWJGL_VER=3.2.3
-LWJGL_OS=macos
-LWJGL_OS=macos
 os=`uname`
 if [[ "$os" == 'Linux' ]]; then
    LWJGL_OS='linux'
 elif [[ "$os" == 'Darwin' ]]; then
    LWJGL_OS='macos'
+else
+  echo "Unsupported OS $os"
+  exit 1
 fi
 
 LWJGL_LIBS=(
@@ -44,10 +45,4 @@ fi
 
 mkdir -p target/classes
 
-if [[ ! -f target/build_timestamp ]]; then
-    touch -t 200912310000 target/build_timestamp
-fi
-
-find src -name "*.java" -newer target/build_timestamp | xargs javac --release 11 -cp $CLASSPATH -d target/classes
-
-touch target/build_timestamp
+find src -name "*.java" | xargs javac --release 11 -cp $CLASSPATH -d target/classes
