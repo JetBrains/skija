@@ -1,4 +1,4 @@
-#!/bin/zsh -euo pipefail
+#!/usr/bin/env -S zsh -euo pipefail
 
 SKIA_DIR=${SKIA_DIR:-`dirname $0`/../third_party/skia}
 SKIA_DIR_ABS=$(cd $SKIA_DIR; pwd)

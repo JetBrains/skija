@@ -11,6 +11,8 @@ import static org.jetbrains.skija.test.TestRunner.assertNotEquals;
 public class TypefaceTest implements Executable {
     @Override
     public void execute() throws Exception {
+        boolean isLinux = System.getProperty("os.name").equals("Linux");
+
         Typeface inter = Typeface.makeFromFile("src/test/resources/fonts/Inter-Regular.ttf");
         Typeface interV = Typeface.makeFromFile("src/test/resources/fonts/Inter-V.otf");
         Typeface jbMono = Typeface.makeFromFile("src/test/resources/fonts/JetBrainsMono-Regular.ttf");
@@ -42,7 +44,8 @@ public class TypefaceTest implements Executable {
         
         assertNotEquals(null, Typeface.makeDefault());
 
-        assertEquals("Arial", Typeface.makeFromName("Arial", FontStyle.NORMAL).getFamilyName());
+        if (!isLinux)
+            assertEquals("Arial", Typeface.makeFromName("Arial", FontStyle.NORMAL).getFamilyName());
 
         int[] Skia = new int[] { 83, 107, 105, 97 };
         assertArrayEquals(new short[] { 393, 709, 673, 501 }, inter.getUTF32GlyphIds(Skia));
@@ -66,7 +69,8 @@ public class TypefaceTest implements Executable {
 
         assertArrayEquals(new FontFamilyName[] { new FontFamilyName("Inter V", "en-US") }, interV.getFamilyNames());
         assertEquals("Inter V", interV.getFamilyName());
-        assertEquals(Rect.makeLTRB(-0.7386364f, -1.0909119f, 2.5830965f, 0.31959534f), interV.getBounds());
+        if (!isLinux)
+            assertEquals(Rect.makeLTRB(-0.7386364f, -1.0909119f, 2.5830965f, 0.31959534f), interV.getBounds());
     }
 }
 

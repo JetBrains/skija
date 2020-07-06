@@ -40,6 +40,8 @@ kotlin {
 
                 implementation files("$joglDir/gluegen-rt-natives-macosx-universal.jar")
                 implementation files("$joglDir/jogl-all-natives-macosx-universal.jar")
+                implementation files("$joglDir/gluegen-rt-natives-linux-amd64.jar")
+                implementation files("$joglDir/jogl-all-natives-linux-amd64.jar")
 
                 // We need version 2.4.0 which is not yet published to the Maven Central, use code below
                 // when ready.
