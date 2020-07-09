@@ -1758,16 +1758,16 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * <p>Writes {@link PathFillMode}, verb array, Point array, conic weight, and
      * additionally writes computed information like {@link PathConvexity} and bounds.</p>
      *
-     * <p>Use only be used in concert with {@link readFromMemory(byte[])};
+     * <p>Use only be used in concert with {@link makeFromBytes(byte[])};
      * the format used for Path in memory is not guaranteed.</p>
      *
      * @return  serialized Path; length always a multiple of 4
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_writeToMemory">https://fiddle.skia.org/c/@Path_writeToMemory</a>
      */
-    public byte[] writeToMemory() {
+    public byte[] serializeToBytes() {
         Stats.onNativeCall();
-        return _nWriteToMemory(_ptr);
+        return _nSerializeToBytes(_ptr);
     }
 
     /**
@@ -1777,7 +1777,7 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * <p>Reads {@link PathFillMode}, verb array, Point array, conic weight, and
      * additionally reads computed information like {@link PathConvexity} and bounds.</p>
      *
-     * <p>Used only in concert with {@link writeToMemory()};
+     * <p>Used only in concert with {@link serializeToBytes()};
      * the format used for Path in memory is not guaranteed.</p>
      *
      * @param data  storage for Path
@@ -1785,9 +1785,9 @@ public class Path extends Managed implements Iterable<PathSegment> {
      *
      * @see <a href="https://fiddle.skia.org/c/@Path_readFromMemory">https://fiddle.skia.org/c/@Path_readFromMemory</a>
      */
-    public static Path readFromMemory(byte[] data) {
+    public static Path makeFromBytes(byte[] data) {
         Stats.onNativeCall();
-        return new Path(_nReadFromMemory(data));
+        return new Path(_nMakeFromBytes(data));
     }
 
     /** 
@@ -1903,8 +1903,8 @@ public class Path extends Managed implements Iterable<PathSegment> {
     public static native boolean _nContains(long ptr, float x, float y);
     public static native void    _nDump(long ptr);
     public static native void    _nDumpHex(long ptr);
-    public static native byte[]  _nWriteToMemory(long ptr);
-    public static native long    _nReadFromMemory(byte[] data);
+    public static native byte[]  _nSerializeToBytes(long ptr);
+    public static native long    _nMakeFromBytes(byte[] data);
     public static native int     _nGetGenerationId(long ptr);
     public static native boolean _nIsValid(long ptr);
 }

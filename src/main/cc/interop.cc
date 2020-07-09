@@ -35,6 +35,26 @@ namespace java {
             }
         }
     }
+
+    namespace util {
+        namespace function {
+            namespace BooleanSupplier {
+                jclass cls;
+                jmethodID apply;
+
+                void onLoad(JNIEnv* env) {
+                    jclass local = env->FindClass("java/util/function/BooleanSupplier");
+                    cls   = static_cast<jclass>(env->NewGlobalRef(local));
+                    apply = env->GetMethodID(cls, "getAsBoolean", "()Z");
+                }
+
+                void onUnload(JNIEnv* env) {
+                    env->DeleteGlobalRef(cls);
+                }
+
+            }
+        }
+    }
 }
 
 namespace skija {
@@ -374,6 +394,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 
     java::lang::Float::onLoad(env);
     java::lang::String::onLoad(env);
+    java::util::function::BooleanSupplier::onLoad(env);
 
     skija::FontAxisInfo::onLoad(env);
     skija::FontFamilyName::onLoad(env);
@@ -402,6 +423,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
 
     java::lang::Float::onUnload(env);
     java::lang::String::onUnload(env);
+    java::util::function::BooleanSupplier::onUnload(env);
 
     skija::FontAxisInfo::onUnload(env);
     skija::FontFamilyName::onUnload(env);

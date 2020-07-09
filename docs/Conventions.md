@@ -26,6 +26,7 @@ Some common dictionary:
 - count (instead of size/length/...)
 - ...Style instead of ...Config/...Options/...Spec for appearance of something
 - ...Mode instead of ...Type/...Style/...Op/...Kind
+- serializeToData/..Bytes/makeFromData/..Bytes
 
 # Code convention
 

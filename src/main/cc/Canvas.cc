@@ -132,6 +132,15 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawTextBlo
     canvas->drawTextBlob(blob, x, y, *paint);
 }
 
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawPicture
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong picturePtr, jfloatArray matrixArr, jlong paintPtr) {
+    SkCanvas* canvas   = reinterpret_cast<SkCanvas*>   (static_cast<uintptr_t>(ptr));
+    SkPicture* picture = reinterpret_cast<SkPicture*>(static_cast<uintptr_t>(picturePtr));
+    std::unique_ptr<SkMatrix> matrix = skMatrix(env, matrixArr);
+    SkPaint* paint     = reinterpret_cast<SkPaint*>    (static_cast<uintptr_t>(paintPtr));
+    canvas->drawPicture(picture, matrix.get(), paint);
+}
+
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nClear(JNIEnv* env, jclass jclass, jlong ptr, jint color) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(ptr));
     canvas->clear(color);

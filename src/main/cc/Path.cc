@@ -451,7 +451,7 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nDumpHex
     instance->dumpHex();
 }
 
-extern "C" JNIEXPORT jbyteArray JNICALL Java_org_jetbrains_skija_Path__1nWriteToMemory
+extern "C" JNIEXPORT jbyteArray JNICALL Java_org_jetbrains_skija_Path__1nSerializeToBytes
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
     int count = instance->writeToMemory(nullptr);
@@ -462,7 +462,7 @@ extern "C" JNIEXPORT jbyteArray JNICALL Java_org_jetbrains_skija_Path__1nWriteTo
     return bytesArray;
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path__1nReadFromMemory
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path__1nMakeFromBytes
   (JNIEnv* env, jclass jclass, jbyteArray bytesArray) {
     SkPath* instance = new SkPath();
     int count = env->GetArrayLength(bytesArray);

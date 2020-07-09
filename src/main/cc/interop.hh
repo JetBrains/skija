@@ -21,6 +21,14 @@ namespace java {
             extern jclass cls;
         }
     }
+    namespace util {
+        namespace function {
+            namespace BooleanSupplier {
+                extern jclass cls;
+                extern jmethodID apply;
+            }
+        }
+    }
 }
 
 namespace skija {

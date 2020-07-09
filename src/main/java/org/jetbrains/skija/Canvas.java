@@ -145,6 +145,16 @@ public class Canvas extends Native {
         return this;
     }
 
+    public Canvas drawPicture(Picture picture) {
+        return drawPicture(picture, null, null);
+    }
+
+    public Canvas drawPicture(Picture picture, Matrix33 matrix, Paint paint) {
+        Stats.onNativeCall();
+        _nDrawPicture(_ptr, Native.getPtr(picture), matrix == null ? null : matrix._mat, Native.getPtr(paint));
+        return this;
+    }    
+
     public Canvas clear(int color) {
         Stats.onNativeCall();
         _nClear(_ptr, color);
@@ -284,6 +294,7 @@ public class Canvas extends Native {
     public static native void _nDrawRegion(long ptr, long nativeRegion, long paintPtr);
     public static native void _nDrawString(long ptr, String string, float x, float y, long font, long paint);
     public static native void _nDrawTextBlob(long ptr, long blob, float x, float y, long font, long paint);
+    public static native void _nDrawPicture(long ptr, long picturePtr, float[] matrix, long paintPtr);
     public static native void _nClear(long ptr, int color);
     public static native void _nDrawPaint(long ptr, long paintPtr);
     public static native void _nClipRect(long ptr, float left, float top, float right, float bottom, int mode, boolean antiAlias);

@@ -317,7 +317,7 @@ public class PathTest implements Executable {
 
     public void serialize() {
         try (Path p = new Path().lineTo(40, 40).lineTo(40, 0).lineTo(0, 40).lineTo(0, 0).closePath();) {
-            Path p2 = Path.readFromMemory(p.writeToMemory());
+            Path p2 = Path.makeFromBytes(p.serializeToBytes());
             assertEquals(p, p2);
         }
     }

@@ -15,6 +15,7 @@ Color                ▓░░░░░░░░░
 ColorFilter          ▓▓▓▓▓▓▓▓▓▓
 ColorSpace           ▓▓░░░░░░░░
 Data                 ▓▓▓▓▓▓▓▓▓░
+Drawable             ░░░░░░░░░░
 Font                 ▓▓▓▓▓▓▓▓▓▓
 FontData             ░░░░░░░░░░
 FontManager          ▓▓▓▓▓▓▓▓▓░ 
@@ -27,8 +28,8 @@ Matrix               ▓▓▓░░░░░░░
 Paint                ▓▓▓▓▓▓▓▓░░
 Path                 ▓▓▓▓▓▓▓▓▓▓
 PathEffects          ▓▓▓▓▓▓▓▓▓▓
-Picture              ░░░░░░░░░░
-PictureRecorder      ░░░░░░░░░░
+Picture              ▓▓▓▓▓▓▓▓▓░
+PictureRecorder      ▓▓▓▓▓▓▓▓▓▓
 Region               ▓▓▓▓▓▓▓▓▓▓
 ScalerContext        ░░░░░░░░░░
 Shader               ▓▓▓▓▓▓▓▓▓▓
