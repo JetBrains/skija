@@ -170,6 +170,26 @@ class Window {
         glfwSwapBuffers(window);
     }
 
+    public void drawStringCentered(String text, Rect outer, Font font, FontMetrics metrics, Canvas canvas, Paint paint) {
+        Rect inner = font.measureText(text, paint);
+        float innerHeight = metrics.getDescent() - metrics.getAscent();
+
+        canvas.drawString(text,
+            outer.getLeft() + (outer.getWidth() - inner.getWidth()) / 2f, 
+            outer.getTop() + (outer.getHeight() - innerHeight) / 2f - metrics.getAscent(),
+            font, paint);
+    }
+
+    public void drawStringLeft(String text, Rect outer, Font font, FontMetrics metrics, Canvas canvas, Paint paint) {
+        Rect inner = font.measureText(text, paint);
+        float innerHeight = metrics.getDescent() - metrics.getAscent();
+
+        canvas.drawString(text,
+            outer.getLeft(), 
+            outer.getTop() + (outer.getHeight() - innerHeight) / 2f - metrics.getAscent(),
+            font, paint);
+    }
+
     public void drawStats() {
         long nativeCalls = Stats.nativeCalls;
         Stats.nativeCalls = 0;
@@ -181,9 +201,7 @@ class Window {
         Paint graphPast = new Paint().setColor(0x9000FF00).setStrokeWidth(1);
         Paint graphLimit = new Paint().setColor(0xFFcc3333).setStrokeWidth(1);
         Font font = interRegular13tnum;
-        // FontExtents extents = font.hbFont.getHorizontalExtents();
-        FontExtents extents = new FontExtents(10, 3, 0); // FIXME
-        float baseline = (20 - (extents._descender + extents.getAscenderAbs())) / 2 + extents.getAscenderAbs();
+        FontMetrics metrics = font.getMetrics();
 
         // Background
         canvas.translate(width - 230, height - 160);
@@ -191,33 +209,33 @@ class Window {
         canvas.translate(5, 5);
 
         // Scene
-        canvas.drawRRect(RRect.makeLTRB(0, 0, 30, 20, 2), bg);
-        // canvas.drawTextBuffer(buffer, (30 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
-        canvas.drawString("←→", 0, baseline, font, fg); // FIXME center align
+        RRect buttonBounds = RRect.makeLTRB(0, 0, 30, 20, 2);
+        Rect  labelBounds = Rect.makeLTRB(35, 0, 225, 20);
+        canvas.drawRRect(buttonBounds, bg);
+        drawStringCentered("←→", buttonBounds, font, metrics,canvas, fg);
         int sceneIdx = 1;
         for (String scene : scenes.keySet()) {
             if (scene.equals(currentScene)) break;
             sceneIdx++;
         }
-        canvas.drawString("Scene: " + currentScene + " " + sceneIdx + "/" + scenes.size(), 35, baseline, font, fg);
+        drawStringLeft(sceneIdx + "/" + scenes.size() + " " + currentScene, labelBounds, font, metrics, canvas, fg);
         canvas.translate(0, 25);
 
         // VSync
-        canvas.drawRRect(RRect.makeXYWH(5, 0, 20, 20, 2), bg);
-        // canvas.drawTextBuffer(buffer, 5 + (20 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
-        canvas.drawString("V", 5, baseline, font, fg); // FIXME center align
-        canvas.drawString("VSync: " + (vsync ? "ON" : "OFF"), 35, baseline, font, fg);
+        buttonBounds = RRect.makeXYWH(5, 0, 20, 20, 2);
+        canvas.drawRRect(buttonBounds, bg);
+        drawStringCentered("V", buttonBounds, font, metrics,canvas, fg);
+        drawStringLeft("VSync: " + (vsync ? "ON" : "OFF"), labelBounds, font, metrics, canvas, fg);
         canvas.translate(0, 25);
 
         // GC
-        canvas.drawRRect(RRect.makeXYWH(5, 0, 20, 20, 2), bg);
-        // canvas.drawTextBuffer(buffer, 5 + (20 - buffer.getAdvances()[0]) / 2, baseline, font.skFont, fg);
-        canvas.drawString("G", 5, baseline, font, fg); // FIXME center align
-        canvas.drawString("GC objects: " + allocated, 35, baseline, font, fg);
+        canvas.drawRRect(buttonBounds, bg);
+        drawStringCentered("G", buttonBounds, font, metrics,canvas, fg);
+        drawStringLeft("GC objects: " + allocated, labelBounds, font, metrics, canvas, fg);
         canvas.translate(0, 25);
 
         // Native calls
-        canvas.drawString("Native calls: " + nativeCalls, 35, baseline, font, fg);
+        drawStringLeft("Native calls: " + nativeCalls, labelBounds, font, metrics, canvas, fg);
         canvas.translate(0, 25);
 
         // fps
@@ -231,9 +249,10 @@ class Window {
             canvas.drawLine(0, 45 - frameTime, times.length, 45 - frameTime, graphLimit);
         }
 
-        canvas.drawString(String.format("%.1fms", Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble()), times.length + 5, baseline, font, fg);
-
-        canvas.drawString(String.format("%.0f fps", 1000.0 / Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble()), times.length + 5, baseline + 25, font, fg);
+        String time = String.format("%.1fms", Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble());
+        drawStringLeft(time, Rect.makeLTRB(times.length + 5, 0, 225, 20), font, metrics, canvas, fg);
+        String fps = String.format("%.0f fps", 1000.0 / Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble());
+        drawStringLeft(fps, Rect.makeLTRB(times.length + 5, 25, 225, 40), font, metrics, canvas, fg);
         canvas.translate(0, 25);
 
         bg.close();
@@ -295,28 +314,29 @@ class Window {
         initSkia();
 
         scenes = new TreeMap<>();
-        scenes.put("Blends",        new BlendsScene());
-        scenes.put("Color Filters", new ColorFiltersScene());
+        scenes.put("Blends",           new BlendsScene());
+        scenes.put("Color Filters",    new ColorFiltersScene());
         // scenes.put("Empty",         new EmptyScene());
-        scenes.put("Font",          new FontScene());
-        scenes.put("Geometry",      new GeometryScene());
-        scenes.put("Images",        new ImagesScene());
-        scenes.put("Image Filters", new ImageFiltersScene());
-        scenes.put("Mask Filters",  new MaskFiltersScene());
-        scenes.put("Paragraph",     new ParagraphScene());
-        scenes.put("Paragraph Style", new ParagraphStyleScene());
-        scenes.put("Path Effects",  new PathEffectsScene());
-        scenes.put("Paths",         new PathsScene());
-        scenes.put("Pythagoras",    new PythagorasScene());
-        scenes.put("Shaders",       new ShadersScene());
-        scenes.put("Squares",       new SquaresScene());
-        scenes.put("Text",          new TextScene());
-        scenes.put("Text Blob",     new TextBlobScene());
-        scenes.put("Text Style",    new TextStyleScene());
+        scenes.put("Font",             new FontScene());
+        scenes.put("Geometry",         new GeometryScene());
+        scenes.put("Images",           new ImagesScene());
+        scenes.put("Image Filters",    new ImageFiltersScene());
+        scenes.put("Mask Filters",     new MaskFiltersScene());
+        scenes.put("Paragraph",        new ParagraphScene());
+        scenes.put("Paragraph Style",  new ParagraphStyleScene());
+        scenes.put("Path Effects",     new PathEffectsScene());
+        scenes.put("Paths",            new PathsScene());
+        scenes.put("Picture Recorder", new PictureRecorderScene());
+        scenes.put("Pythagoras",       new PythagorasScene());
+        scenes.put("Shaders",          new ShadersScene());
+        scenes.put("Squares",          new SquaresScene());
+        scenes.put("Text",             new TextScene());
+        scenes.put("Text Blob",        new TextBlobScene());
+        scenes.put("Text Style",       new TextStyleScene());
         // scenes.put("Wall Cached",   new WallOfTextScene(true));
         // scenes.put("Wall of Text",  new WallOfTextScene(false));
         scenes.put("Watches",       new WatchesScene());
-        currentScene = "Font";
+        currentScene = "Picture Recorder";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();
