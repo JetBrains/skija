@@ -1719,6 +1719,22 @@ public class Path extends Managed implements Iterable<PathSegment> {
     }
 
     /**
+     * <p>Set this path to the result of applying the Op to first path and the second path.
+     * <p>The resulting path will be constructed from non-overlapping contours.
+     * <p>The curve order is reduced where possible so that cubics may be turned
+     * into quadratics, and quadratics maybe turned into lines.
+     *
+     * @param one The first operand (for difference, the minuend)
+     * @param two The second operand (for difference, the subtrahend)
+     * @param op  The operator to apply.
+     * @return    true if operation was able to produce a result; otherwise, path is unmodified.
+     */
+    public boolean op(Path one, Path two, PathOp op) {
+        Stats.onNativeCall();
+        return _nOp(_ptr, one._ptr, two._ptr, op.ordinal());
+    }
+
+    /**
      * Writes text representation of Path to standard output. The representation may be
      * directly compiled as C++ code. Floating point values are written
      * with limited precision; it may not be possible to reconstruct original Path
@@ -1901,6 +1917,7 @@ public class Path extends Managed implements Iterable<PathSegment> {
     public static native void    _nSetLastPt(long ptr, float x, float y);
     public static native int     _nGetSegmentMasks(long ptr);
     public static native boolean _nContains(long ptr, float x, float y);
+    public static native boolean _nOp(long ptr, long onePtr, long twoPtr, int op);
     public static native void    _nDump(long ptr);
     public static native void    _nDumpHex(long ptr);
     public static native byte[]  _nSerializeToBytes(long ptr);

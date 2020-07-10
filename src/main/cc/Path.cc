@@ -4,6 +4,7 @@
 #include <vector>
 #include <jni.h>
 #include "SkPath.h"
+#include "SkPathOps.h"
 #include "interop.hh"
 
 static void deletePath(SkPath* path) {
@@ -437,6 +438,15 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Path__1nContains
   (JNIEnv* env, jclass jclass, jlong ptr, jfloat x, jfloat y) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
     return instance->contains(x, y);
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Path__1nOp
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong onePtr, jlong twoPtr, jint jop) {
+    SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
+    SkPath* one = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(onePtr));
+    SkPath* two = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(twoPtr));
+    SkPathOp op = static_cast<SkPathOp>(jop);
+    return Op(*one, *two, op, instance);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nDump

@@ -12,6 +12,7 @@ public class PathsScene implements Scene {
         drawAdds(canvas);
         drawTransforms(canvas);
         drawFillPaths(canvas);
+        drawPathsOp(canvas);
         drawInterpolate(canvas);
     }
 
@@ -325,6 +326,36 @@ public class PathsScene implements Scene {
                 stroke5.close();
             }
         }        
+
+        canvas.restore();
+        canvas.translate(0, 50);
+    }
+
+    private void drawPathsOp(Canvas canvas) {
+        canvas.save();
+
+        Paint paint1 = new Paint().setMode(PaintMode.FILL).setColor(0xFF437AA0);
+        Paint paint2 = new Paint().setMode(PaintMode.FILL).setColor(0x80FAA6B2);
+        Paint paint3 = new Paint().setMode(PaintMode.FILL).setColor(0xFFF6BC01);
+
+        Path one = new Path();
+        one.moveTo(5, 5);
+        one.conicTo(0, 35, 20, 20, 3);
+        one.conicTo(35, 0, 35, 35, 2);
+        one.closePath();
+
+        Path two = new Path();
+        two.addRect(Rect.makeLTRB(15, 15, 40, 40));
+
+        canvas.drawPath(one, paint1);
+        canvas.drawPath(two, paint2);
+
+        Path result = new Path();
+        for (PathOp op : PathOp.values()) {
+            result.op(one, two, op);
+            canvas.translate(50, 0);
+            canvas.drawPath(result, paint3);
+        }
 
         canvas.restore();
         canvas.translate(0, 50);
