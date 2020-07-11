@@ -46,6 +46,38 @@ public class ColorSpace extends Managed {
     public ColorSpace(long ptr, boolean allowClose) {
         super(ptr, _finalizerPtr, allowClose);
     }
+
+    /**
+     * @return  true if the color space gamma is near enough to be approximated as sRGB
+     */
+    public boolean isGammaCloseToSRGB() {
+        Stats.onNativeCall();
+        return _nIsGammaCloseToSRGB(_ptr);
+    }
+
+    /**
+     * @return  true if the color space gamma is linear
+     */
+    public boolean isGammaLinear() {
+        Stats.onNativeCall();
+        return _nIsGammaLinear(_ptr);
+    }
+
+    /**
+     * <p>Returns true if the color space is sRGB. Returns false otherwise.</p>
+     *
+     * <p>This allows a little bit of tolerance, given that we might see small numerical error
+     * in some cases: converting ICC fixed point to float, converting white point to D50,
+     * rounding decisions on transfer function and matrix.</p>
+     *
+     * <p>This does not consider a 2.2f exponential transfer function to be sRGB.  While these
+     * functions are similar (and it is sometimes useful to consider them together), this
+     * function checks for logical equality.</p>
+     */
+    public boolean isSRGB() {
+        Stats.onNativeCall();
+        return _nIsSRGB(_ptr);
+    }
     
     public static final long _finalizerPtr = _nGetFinalizer();
     public static native long _nGetFinalizer();
@@ -53,4 +85,7 @@ public class ColorSpace extends Managed {
     public static native long _nMakeDisplayP3();
     public static native long _nMakeSRGBLinear();
     public static native float[] _nConvert(long fromPtr, long toPtr, float r, float g, float b, float a);
+    public static native boolean _nIsGammaCloseToSRGB(long ptr);
+    public static native boolean _nIsGammaLinear(long ptr);
+    public static native boolean _nIsSRGB(long ptr);
 }

@@ -13,9 +13,11 @@ Bitmap               ░░░░░░░░░░
 Canvas               ▓▓▓▓▓▓░░░░
 Color                ▓░░░░░░░░░
 ColorFilter          ▓▓▓▓▓▓▓▓▓▓
-ColorSpace           ▓▓░░░░░░░░
+ColorInfo            ▓▓▓▓▓▓▓▓▓▓
+ColorSpace           ▓▓▓▓░░░░░░
 Data                 ▓▓▓▓▓▓▓▓▓░
 Drawable             ░░░░░░░░░░
+Flattenable          ░░░░░░░░░░
 Font                 ▓▓▓▓▓▓▓▓▓▓
 FontData             ░░░░░░░░░░
 FontManager          ▓▓▓▓▓▓▓▓▓░ 
@@ -23,6 +25,7 @@ FontStyle            ▓▓▓▓▓▓▓▓▓▓
 FontStyleSet         ▓▓▓▓▓▓▓▓▓▓
 Image                ▓▓░░░░░░░░
 ImageFilters         ▓▓▓▓▓▓▓▓▓▓
+ImageInfo            ▓▓▓▓▓▓▓▓▓▓
 MaskFilter           ▓▓▓▓▓▓▓▓▓▓
 Matrix               ▓▓▓░░░░░░░
 Paint                ▓▓▓▓▓▓▓▓░░

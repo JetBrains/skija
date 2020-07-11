@@ -44,3 +44,21 @@ extern "C" JNIEXPORT jfloatArray JNICALL Java_org_jetbrains_skija_ColorSpace__1n
     float a1 = skcms_TransferFunction_eval(&toFn, skcms_TransferFunction_eval(&fromFn, a));
     return javaFloatArray(env, {r1, g1, b1, a1});
 }
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorSpace__1nIsGammaCloseToSRGB
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkColorSpace* instance = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(ptr));
+    return instance->gammaCloseToSRGB();
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorSpace__1nIsGammaLinear
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkColorSpace* instance = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(ptr));
+    return instance->gammaIsLinear();
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ColorSpace__1nIsSRGB
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkColorSpace* instance = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(ptr));
+    return instance->isSRGB();
+}
