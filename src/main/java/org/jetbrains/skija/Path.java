@@ -1719,7 +1719,7 @@ public class Path extends Managed implements Iterable<PathSegment> {
     }
 
     /**
-     * <p>Set this path to the result of applying the Op to first path and the second path.
+     * <p>Set this path to the result of applying the Op to the first path and the second path.
      * <p>The resulting path will be constructed from non-overlapping contours.
      * <p>The curve order is reduced where possible so that cubics may be turned
      * into quadratics, and quadratics maybe turned into lines.
