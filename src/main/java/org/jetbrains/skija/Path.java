@@ -1784,9 +1784,8 @@ public class Path extends Managed implements Iterable<PathSegment> {
     @Nullable
     public static Path makeCombining(@NotNull Path a, @NotNull Path b, PathOp op) {
         Stats.onNativeCall();
-        Path path = new Path();
-        boolean succeeded = _nMakeCombining(path._ptr, a._ptr, b._ptr, op.ordinal());
-        return succeeded ? path : null;
+        long ptr = _nMakeCombining(a._ptr, b._ptr, op.ordinal());
+        return ptr == 0 ? null : new Path(ptr);
     }
 
     /**
@@ -1923,7 +1922,7 @@ public class Path extends Managed implements Iterable<PathSegment> {
     public static native void    _nDump(long ptr);
     public static native void    _nDumpHex(long ptr);
     public static native byte[]  _nSerializeToBytes(long ptr);
-    public static native boolean _nMakeCombining(long ptr, long onePtr, long twoPtr, int op);
+    public static native long    _nMakeCombining(long onePtr, long twoPtr, int op);
     public static native long    _nMakeFromBytes(byte[] data);
     public static native int     _nGetGenerationId(long ptr);
     public static native boolean _nIsValid(long ptr);

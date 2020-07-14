@@ -463,13 +463,16 @@ extern "C" JNIEXPORT jbyteArray JNICALL Java_org_jetbrains_skija_Path__1nSeriali
     return bytesArray;
 }
 
-extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Path__1nMakeCombining
-  (JNIEnv* env, jclass jclass, jlong ptr, jlong aPtr, jlong bPtr, jint jop) {
-    SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path__1nMakeCombining
+  (JNIEnv* env, jclass jclass, jlong aPtr, jlong bPtr, jint jop) {
     SkPath* a = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(aPtr));
     SkPath* b = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(bPtr));
     SkPathOp op = static_cast<SkPathOp>(jop);
-    return Op(*a, *b, op, instance);
+    auto res = std::make_unique<SkPath>();
+    if (Op(*a, *b, op, res.get()))
+        return reinterpret_cast<jlong>(res.release());
+    else
+        return 0;
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path__1nMakeFromBytes
