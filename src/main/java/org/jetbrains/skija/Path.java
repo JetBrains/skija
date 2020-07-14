@@ -1771,6 +1771,25 @@ public class Path extends Managed implements Iterable<PathSegment> {
     }
 
     /**
+     * <p>Returns Path that is the result of applying the Op to the first path and the second path.
+     * <p>The resulting path will be constructed from non-overlapping contours.
+     * <p>The curve order is reduced where possible so that cubics may be turned
+     * into quadratics, and quadratics maybe turned into lines.
+     *
+     * @param one The first operand (for difference, the minuend)
+     * @param two The second operand (for difference, the subtrahend)
+     * @param op  The operator to apply.
+     * @return    Path if operation was able to produce a result, null otherwise
+     */
+    @Nullable
+    public static Path makeCombining(@NotNull Path a, @NotNull Path b, PathOp op) {
+        Stats.onNativeCall();
+        Path path = new Path();
+        boolean succeeded = _nMakeCombining(path._ptr, a._ptr, b._ptr, op.ordinal());
+        return succeeded ? path : null;
+    }
+
+    /**
      * <p>Initializes Path from byte buffer. Returns null if the buffer is
      * data is inconsistent, or the length is too small.</p>
      *
@@ -1904,6 +1923,7 @@ public class Path extends Managed implements Iterable<PathSegment> {
     public static native void    _nDump(long ptr);
     public static native void    _nDumpHex(long ptr);
     public static native byte[]  _nSerializeToBytes(long ptr);
+    public static native boolean _nMakeCombining(long ptr, long onePtr, long twoPtr, int op);
     public static native long    _nMakeFromBytes(byte[] data);
     public static native int     _nGetGenerationId(long ptr);
     public static native boolean _nIsValid(long ptr);

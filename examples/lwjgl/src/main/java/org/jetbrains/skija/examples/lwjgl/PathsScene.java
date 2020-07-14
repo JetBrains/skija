@@ -12,6 +12,7 @@ public class PathsScene implements Scene {
         drawAdds(canvas);
         drawTransforms(canvas);
         drawFillPaths(canvas);
+        drawPathsOp(canvas);
         drawInterpolate(canvas);
     }
 
@@ -203,7 +204,7 @@ public class PathsScene implements Scene {
             for (int i = 0; i < 8; ++i) {
                 path.reset().addRRect(RRect.makeLTRB(10, 10, 30, 30, 5), PathDirection.CLOCKWISE, i).lineTo(20, 20);
                 canvas.drawPath(path, paint);
-                canvas.translate(50, 0);            
+                canvas.translate(50, 0);
             }
 
             // addPoly
@@ -272,7 +273,7 @@ public class PathsScene implements Scene {
         canvas.restore();
         canvas.translate(0, 50);
     }
-    
+
     private void drawFillPaths(Canvas canvas) {
         canvas.save();
 
@@ -324,7 +325,39 @@ public class PathsScene implements Scene {
                 canvas.translate(50, 0);
                 stroke5.close();
             }
-        }        
+        }
+
+        canvas.restore();
+        canvas.translate(0, 50);
+    }
+
+    private void drawPathsOp(Canvas canvas) {
+        canvas.save();
+
+        try (
+                Paint paint1 = new Paint().setMode(PaintMode.FILL).setColor(0xFF437AA0);
+                Paint paint2 = new Paint().setMode(PaintMode.FILL).setColor(0x80FAA6B2);
+                Paint paint3 = new Paint().setMode(PaintMode.FILL).setColor(0xFFF6BC01);
+                Path one = new Path();
+                Path two = new Path();
+        ) {
+            one.moveTo(5, 5);
+            one.conicTo(0, 35, 20, 20, 3);
+            one.conicTo(35, 0, 35, 35, 2);
+            one.closePath();
+
+            two.addRect(Rect.makeLTRB(15, 15, 40, 40));
+
+            canvas.drawPath(one, paint1);
+            canvas.drawPath(two, paint2);
+
+            for (PathOp op : PathOp.values()) {
+                try (Path result = Path.makeCombining(one, two, op)) {
+                    canvas.translate(50, 0);
+                    canvas.drawPath(result, paint3);
+                }
+            }
+        }
 
         canvas.restore();
         canvas.translate(0, 50);
@@ -333,7 +366,7 @@ public class PathsScene implements Scene {
     private void drawInterpolate(Canvas canvas) {
         float weight = 1f - System.currentTimeMillis() % 500 / 500f;
         long pair = (System.currentTimeMillis() / 500) % 4;
-        
+
         try (Path p1 = new Path().moveTo(0, 14).lineTo(20, 14).lineTo(20, 0).lineTo(40, 20).lineTo(20, 40).lineTo(20, 26).lineTo(0, 26).lineTo(0, 14).closePath();
              Path p2 = new Path().moveTo(0, 20).lineTo(14, 20).lineTo(14, 0).lineTo(26, 0).lineTo(26, 20).lineTo(40, 20).lineTo(20, 40).lineTo(0, 20).closePath();
              Path p3 = new Path().moveTo(0, 20).lineTo(20, 0).lineTo(20, 14).lineTo(40, 14).lineTo(40, 26).lineTo(20, 26).lineTo(20, 40).lineTo(0, 20).closePath();

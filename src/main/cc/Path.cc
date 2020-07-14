@@ -4,6 +4,7 @@
 #include <vector>
 #include <jni.h>
 #include "SkPath.h"
+#include "SkPathOps.h"
 #include "interop.hh"
 
 static void deletePath(SkPath* path) {
@@ -460,6 +461,15 @@ extern "C" JNIEXPORT jbyteArray JNICALL Java_org_jetbrains_skija_Path__1nSeriali
     instance->writeToMemory(bytes);
     env->ReleaseByteArrayElements(bytesArray, bytes, 0);
     return bytesArray;
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Path__1nMakeCombining
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong aPtr, jlong bPtr, jint jop) {
+    SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
+    SkPath* a = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(aPtr));
+    SkPath* b = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(bPtr));
+    SkPathOp op = static_cast<SkPathOp>(jop);
+    return Op(*a, *b, op, instance);
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path__1nMakeFromBytes

@@ -89,7 +89,7 @@ public class Canvas extends Native {
 
     public Canvas drawImage(Image image, float left, float top, Paint paint) {
         Stats.onNativeCall();
-        _nDrawImageIRect(_ptr, Native.getPtr(image), 0, 0, image.getWidth(), image.getHeight(), left, top, image.getWidth(), image.getHeight(), Native.getPtr(paint), true);
+        _nDrawImageIRect(_ptr, Native.getPtr(image), 0, 0, image.getWidth(), image.getHeight(), left, top, left + image.getWidth(), top + image.getHeight(), Native.getPtr(paint), true);
         return this;
     }
 
