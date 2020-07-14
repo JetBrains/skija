@@ -440,15 +440,6 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Path__1nContains
     return instance->contains(x, y);
 }
 
-extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Path__1nOp
-  (JNIEnv* env, jclass jclass, jlong ptr, jlong onePtr, jlong twoPtr, jint jop) {
-    SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
-    SkPath* one = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(onePtr));
-    SkPath* two = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(twoPtr));
-    SkPathOp op = static_cast<SkPathOp>(jop);
-    return Op(*one, *two, op, instance);
-}
-
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nDump
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
@@ -470,6 +461,15 @@ extern "C" JNIEXPORT jbyteArray JNICALL Java_org_jetbrains_skija_Path__1nSeriali
     instance->writeToMemory(bytes);
     env->ReleaseByteArrayElements(bytesArray, bytes, 0);
     return bytesArray;
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Path__1nMakeCombining
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong aPtr, jlong bPtr, jint jop) {
+    SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
+    SkPath* a = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(aPtr));
+    SkPath* b = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(bPtr));
+    SkPathOp op = static_cast<SkPathOp>(jop);
+    return Op(*a, *b, op, instance);
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path__1nMakeFromBytes
