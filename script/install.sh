@@ -4,4 +4,8 @@ cd "`dirname $0`/.."
 
 ./script/native.sh
 
-mvn test-compile exec:exec install
+mvn verify exec:exec
+
+pushd publish
+./gradlew publishToMavenLocal
+popd
