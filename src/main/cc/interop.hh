@@ -60,6 +60,11 @@ namespace skija {
         extern jfieldID value;
     }
 
+    namespace ImageInfo {
+        extern jclass cls;
+        extern jmethodID ctor;
+    }
+
     namespace IRect {
         extern jclass cls;
         extern jmethodID makeLTRB;

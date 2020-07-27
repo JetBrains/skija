@@ -152,6 +152,22 @@ namespace skija {
         }
     }
 
+    namespace ImageInfo {
+        jclass cls;
+        jmethodID ctor;
+
+        void onLoad(JNIEnv* env) {
+            jclass local = env->FindClass("org/jetbrains/skija/ImageInfo");    
+            cls   = static_cast<jclass>(env->NewGlobalRef(local));
+            ctor = env->GetMethodID(cls, "<init>", "(IIIIJ)V");
+        }
+
+        void onUnload(JNIEnv* env) {
+            env->DeleteGlobalRef(cls);
+        }
+    }
+
+
     namespace IRect {
         jclass cls;
         jmethodID makeLTRB;
@@ -400,6 +416,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::FontFamilyName::onLoad(env);
     skija::FontMetrics::onLoad(env);
     skija::FontVariation::onLoad(env);
+    skija::ImageInfo::onLoad(env);
     skija::IRect::onLoad(env);
     skija::Path::onLoad(env);
     skija::PathSegment::onLoad(env);
@@ -429,6 +446,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::FontFamilyName::onUnload(env);
     skija::FontMetrics::onUnload(env);
     skija::FontVariation::onUnload(env);
+    skija::ImageInfo::onUnload(env);
     skija::IRect::onUnload(env);
     skija::Path::onUnload(env);
     skija::PathSegment::onUnload(env);

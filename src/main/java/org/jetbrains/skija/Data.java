@@ -77,7 +77,6 @@ public class Data extends Managed {
     @ApiStatus.Internal
     public Data(long ptr) {
         super(ptr, _finalizerPtr);
-        Stats.onNativeCall();
     }
 
     public static final  long    _finalizerPtr = _nGetFinalizer();

@@ -31,6 +31,11 @@ public class ImageInfo {
         this(new ColorInfo(colorType, alphaType, colorSpace), width, height);
     }
 
+    @ApiStatus.Internal
+    public ImageInfo(int width, int height, int colorType, int alphaType, long colorSpace) {
+        this(width, height, ColorType.values()[colorType], ColorAlphaType.values()[alphaType], new ColorSpace(colorSpace));
+    }
+
     /**
      * @return  ImageInfo with {@link ColorType#N32}
      */

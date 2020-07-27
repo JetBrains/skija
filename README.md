@@ -9,7 +9,7 @@ Active development. Pre-alpha. Everything will change without notice.
 Core progress:
 
 ```
-Bitmap               ░░░░░░░░░░
+Bitmap               ▓▓▓░░░░░░░
 Canvas               ▓▓▓▓▓▓░░░░
 Color                ▓░░░░░░░░░
 ColorFilter          ▓▓▓▓▓▓▓▓▓▓
@@ -121,8 +121,8 @@ export PATH="${PWD}/depot_tools:${PATH}"
 Check out `skia` submodule:
 
 ```sh
-cd third_party/skia
 git submodule update --init
+cd third_party/skia
 ```
 
 Build Skia (macOS):
