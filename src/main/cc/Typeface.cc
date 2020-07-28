@@ -126,7 +126,7 @@ extern "C" JNIEXPORT jintArray JNICALL Java_org_jetbrains_skija_Typeface__1nGetT
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkTypeface* instance = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(ptr));
     int count = instance->countTables();
-    std::vector<int> tags(count);
+    std::vector<jint> tags(count);
     instance->getTableTags(reinterpret_cast<SkFontTableTag*>(tags.data()));
     return javaIntArray(env, tags);
 }
@@ -155,14 +155,16 @@ extern "C" JNIEXPORT jintArray JNICALL Java_org_jetbrains_skija_Typeface__1nGetK
     SkTypeface* instance = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(ptr));
     int count = glyphsArr == nullptr ? 0 : env->GetArrayLength(glyphsArr);
     if (count > 0) {
-        std::vector<int32_t> adjustments(count);
+        std::vector<jint> adjustments(count);
         jshort* glyphs = env->GetShortArrayElements(glyphsArr, nullptr);
-        bool res = instance->getKerningPairAdjustments(reinterpret_cast<SkGlyphID*>(glyphs), count, adjustments.data());
+        bool res = instance->getKerningPairAdjustments(
+          reinterpret_cast<SkGlyphID*>(glyphs), count,
+            reinterpret_cast<int32_t*>(adjustments.data()));
         env->ReleaseShortArrayElements(glyphsArr, glyphs, 0);
         return res ? javaIntArray(env, adjustments) : nullptr;
     } else {
         bool res = instance->getKerningPairAdjustments(nullptr, 0, nullptr);
-        return res ? javaIntArray(env, std::vector<int32_t>(0)) : nullptr;
+        return res ? javaIntArray(env, std::vector<jint>(0)) : nullptr;
     }
 }
 
