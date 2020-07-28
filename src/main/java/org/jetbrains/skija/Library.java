@@ -48,7 +48,6 @@ public class Library {
 
     public static String _getPrefix() {
         String os = System.getProperty("os.name");
-        System.err.println(os);
         String lowerCaseOs = os.toLowerCase();
         if (lowerCaseOs.contains("windows")) return "";
         return "lib";
