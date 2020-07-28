@@ -161,7 +161,7 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Path__1nGetPoint(J
 
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Path__1nGetPoints(JNIEnv* env, jclass jclass, jlong ptr, jobjectArray pointsArray, jint max) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
-    std::vector<SkPoint> p(std::min(max, instance->countPoints()));
+    std::vector<SkPoint> p(std::min<jint>(max, instance->countPoints()));
     int count = instance->getPoints(p.data(), max);
     for (int i = 0; i < max && i < count; ++ i)
         env->SetObjectArrayElement(pointsArray, i, skija::Point::fromSkPoint(env, p[i]));

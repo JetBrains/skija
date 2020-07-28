@@ -20,11 +20,11 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawPoints
     SkCanvas::PointMode skMode = static_cast<SkCanvas::PointMode>(mode);
     jsize len = env->GetArrayLength(coords);
     jfloat* arr = env->GetFloatArrayElements(coords, 0);
-    SkPoint points[len / 2];
+    std::vector<SkPoint> points(len / 2);
     for (int i = 0; i < len / 2; i++)
         points[i] = SkPoint { arr[i * 2], arr[i * 2 + 1] };
     env->ReleaseFloatArrayElements(coords, arr, 0);
-    canvas->drawPoints(skMode, len / 2, points, *paint);
+    canvas->drawPoints(skMode, len / 2, points.data(), *paint);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawLine
