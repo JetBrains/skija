@@ -136,9 +136,9 @@ jstring javaString(JNIEnv* env, const SkString& str);
 
 jobject javaFloat(JNIEnv* env, float val);
 
-jshortArray  javaShortArray (JNIEnv* env, const std::vector<short>& shorts);
-jintArray    javaIntArray   (JNIEnv* env, const std::vector<int>& ints);
-jlongArray   javaLongArray  (JNIEnv* env, const std::vector<long>& longs);
+jshortArray  javaShortArray (JNIEnv* env, const std::vector<jshort>& shorts);
+jintArray    javaIntArray   (JNIEnv* env, const std::vector<jint>& ints);
+jlongArray   javaLongArray  (JNIEnv* env, const std::vector<jlong>& longs);
 jfloatArray  javaFloatArray (JNIEnv* env, const std::vector<float>& floats);
 
 std::vector<SkString> skStringVector(JNIEnv* env, jobjectArray arr);

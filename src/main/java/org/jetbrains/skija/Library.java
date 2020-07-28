@@ -16,7 +16,7 @@ public class Library {
         if (_loaded) return;
         try {
             File file;
-            String fileName = "lib" + name + "." + _getExtension();
+            String fileName = _getPrefix() + name + "." + _getExtension();
 
             URL url = Library.class.getResource(resourcePath + fileName);
             if (url == null)
@@ -44,6 +44,13 @@ public class Library {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String _getPrefix() {
+        String os = System.getProperty("os.name");
+        String lowerCaseOs = os.toLowerCase();
+        if (lowerCaseOs.contains("windows")) return "";
+        return "lib";
     }
 
     public static String _getExtension() {
