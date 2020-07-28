@@ -499,25 +499,25 @@ jobject javaFloat(JNIEnv* env, float val) {
     return env->NewObject(java::lang::Float::cls, java::lang::Float::ctor, val);
 }
 
-jshortArray javaShortArray(JNIEnv* env, const std::vector<short>& shorts) {
+jshortArray javaShortArray(JNIEnv* env, const std::vector<jshort>& shorts) {
     jshortArray res = env->NewShortArray(shorts.size());
     env->SetShortArrayRegion(res, 0, shorts.size(), shorts.data());
     return res;
 }
 
-jintArray javaIntArray(JNIEnv* env, const std::vector<int>& ints) {
+jintArray javaIntArray(JNIEnv* env, const std::vector<jint>& ints) {
     jintArray res = env->NewIntArray(ints.size());
-    env->SetIntArrayRegion(res, 0, ints.size(), ints.data());
+    env->SetIntArrayRegion( res, 0, ints.size(), ints.data());
     return res;
 }
 
-jlongArray javaLongArray(JNIEnv* env, const std::vector<long>& longs) {
+jlongArray javaLongArray(JNIEnv* env, const std::vector<jlong>& longs) {
     jlongArray res = env->NewLongArray(longs.size());
     env->SetLongArrayRegion(res, 0, longs.size(), longs.data());
     return res;
 }
 
-jfloatArray javaFloatArray(JNIEnv* env, const std::vector<float>& floats) {
+jfloatArray javaFloatArray(JNIEnv* env, const std::vector<jfloat>& floats) {
     jfloatArray res = env->NewFloatArray(floats.size());
     env->SetFloatArrayRegion(res, 0, floats.size(), floats.data());
     return res;

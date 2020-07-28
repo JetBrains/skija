@@ -21,8 +21,8 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_Typeface__1nG
     SkTypeface* instance = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(ptr));
     int count = instance->getVariationDesignPosition(nullptr, 0);
     if (count > 0) {
-        SkFontArguments::VariationPosition::Coordinate coords[count];
-        instance->getVariationDesignPosition(coords, count);
+        std::vector<SkFontArguments::VariationPosition::Coordinate> coords(count);
+        instance->getVariationDesignPosition(coords.data(), count);
         jobjectArray res = env->NewObjectArray(count, skija::FontVariation::cls, nullptr);
         for (int i=0; i < count; ++i) {
             jobject var = env->NewObject(skija::FontVariation::cls, skija::FontVariation::ctor, coords[i].axis, coords[i].value);
@@ -77,7 +77,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Typeface__1nMakeClon
   (JNIEnv* env, jclass jclass, jlong typefacePtr, jobjectArray variations, jint collectionIndex) {
     SkTypeface* typeface = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(typefacePtr));
     int variationCount = env->GetArrayLength(variations);
-    SkFontArguments::VariationPosition::Coordinate coordinates[variationCount];
+    std::vector<SkFontArguments::VariationPosition::Coordinate> coordinates(variationCount);
     for (int i=0; i < variationCount; ++i) {
         jobject jvar = env->GetObjectArrayElement(variations, i);
         coordinates[i] = {
@@ -88,7 +88,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Typeface__1nMakeClon
     }
     SkFontArguments arg = SkFontArguments()
                             .setCollectionIndex(collectionIndex)
-                            .setVariationDesignPosition({coordinates, variationCount});
+                            .setVariationDesignPosition({coordinates.data(), variationCount});
     SkTypeface* clone = typeface->makeClone(arg).release();
     return reinterpret_cast<jlong>(clone);
 }
@@ -96,10 +96,10 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Typeface__1nMakeClon
 extern "C" JNIEXPORT jshortArray JNICALL Java_org_jetbrains_skija_Typeface__1nGetUTF32GlyphIds
   (JNIEnv* env, jclass jclass, jlong ptr, jintArray uniArr) {
     SkTypeface* instance = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(ptr));
-    int count = env->GetArrayLength(uniArr);
+    jint count = env->GetArrayLength(uniArr);
     std::vector<short> glyphs(count);
     jint* uni = env->GetIntArrayElements(uniArr, nullptr);
-    instance->unicharsToGlyphs(uni, count, reinterpret_cast<SkGlyphID*>(glyphs.data()));
+    instance->unicharsToGlyphs(reinterpret_cast<SkUnichar*>(uni), count, reinterpret_cast<SkGlyphID*>(glyphs.data()));
     env->ReleaseIntArrayElements(uniArr, uni, 0);
     return javaShortArray(env, glyphs);
 }

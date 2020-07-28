@@ -218,9 +218,9 @@ extern "C" JNIEXPORT jshortArray JNICALL Java_org_jetbrains_skija_Font__1nGetUTF
   (JNIEnv* env, jclass jclass, jlong ptr, jintArray uniArr) {
     SkFont* instance = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(ptr));
     int count = env->GetArrayLength(uniArr);
-    std::vector<short> glyphs(count);
+    std::vector<jshort> glyphs(count);
     jint* uni = env->GetIntArrayElements(uniArr, nullptr);
-    instance->unicharsToGlyphs(uni, count, reinterpret_cast<SkGlyphID*>(glyphs.data()));
+    instance->unicharsToGlyphs(reinterpret_cast<SkUnichar*>(uni), count, reinterpret_cast<SkGlyphID*>(glyphs.data()));
     env->ReleaseIntArrayElements(uniArr, uni, 0);
     return javaShortArray(env, glyphs);
 }

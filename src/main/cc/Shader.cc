@@ -16,7 +16,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader__1nMakeWithCo
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader__1nMakeLinearGradient
   (JNIEnv* env, jclass jclass, jfloat x0, jfloat y0, jfloat x1, jfloat y1, jintArray colorsArray, jfloatArray posArray, jint tileModeInt, jint flags, jfloatArray matrixArray) {
     SkPoint pts[2] {SkPoint::Make(x0, y0), SkPoint::Make(x1, y1)};
-    int* colors = env->GetIntArrayElements(colorsArray, nullptr);
+    jint* colors = env->GetIntArrayElements(colorsArray, nullptr);
     float* pos = posArray == nullptr ? nullptr : env->GetFloatArrayElements(posArray, nullptr);
     SkTileMode tileMode = static_cast<SkTileMode>(tileModeInt);
     std::unique_ptr<SkMatrix> localMatrix = skMatrix(env, matrixArray);
@@ -43,7 +43,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader__1nMakeLinear
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader__1nMakeRadialGradient
   (JNIEnv* env, jclass jclass, jfloat x, jfloat y, jfloat r, jintArray colorsArray, jfloatArray posArray, jint tileModeInt, jint flags, jfloatArray matrixArray) {
-    int* colors = env->GetIntArrayElements(colorsArray, nullptr);
+    jint* colors = env->GetIntArrayElements(colorsArray, nullptr);
     float* pos = posArray == nullptr ? nullptr : env->GetFloatArrayElements(posArray, nullptr);
     SkTileMode tileMode = static_cast<SkTileMode>(tileModeInt);
     std::unique_ptr<SkMatrix> localMatrix = skMatrix(env, matrixArray);
@@ -69,7 +69,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader__1nMakeRadial
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader__1nMakeTwoPointConicalGradient
   (JNIEnv* env, jclass jclass, jfloat x0, jfloat y0, jfloat r0, jfloat x1, jfloat y1, jfloat r1, jintArray colorsArray, jfloatArray posArray, jint tileModeInt, jint flags, jfloatArray matrixArray) {
-    int* colors = env->GetIntArrayElements(colorsArray, nullptr);
+    jint* colors = env->GetIntArrayElements(colorsArray, nullptr);
     float* pos = posArray == nullptr ? nullptr : env->GetFloatArrayElements(posArray, nullptr);
     SkTileMode tileMode = static_cast<SkTileMode>(tileModeInt);
     std::unique_ptr<SkMatrix> localMatrix = skMatrix(env, matrixArray);
@@ -95,7 +95,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader__1nMakeTwoPoi
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader__1nMakeSweepGradient
   (JNIEnv* env, jclass jclass, jfloat x, jfloat y, jfloat start, jfloat end, jfloat y1, jfloat r1, jintArray colorsArray, jfloatArray posArray, jint tileModeInt, jint flags, jfloatArray matrixArray) {
-    int* colors = env->GetIntArrayElements(colorsArray, nullptr);
+    jint* colors = env->GetIntArrayElements(colorsArray, nullptr);
     float* pos = posArray == nullptr ? nullptr : env->GetFloatArrayElements(posArray, nullptr);
     SkTileMode tileMode = static_cast<SkTileMode>(tileModeInt);
     std::unique_ptr<SkMatrix> localMatrix = skMatrix(env, matrixArray);

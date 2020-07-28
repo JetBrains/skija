@@ -67,12 +67,12 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Region__1nSetRect
 extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Region__1nSetRects(JNIEnv* env, jclass jclass, jlong ptr, jintArray coords) {
     SkRegion* instance = reinterpret_cast<SkRegion*>(static_cast<uintptr_t>(ptr));
     int len = env->GetArrayLength(coords);
-    SkIRect rects[len / 4];
+    std::vector<SkIRect> rects(len / 4);
     jint* arr = env->GetIntArrayElements(coords, 0);
     for (int i = 0; i < len; i += 4)
         rects[i / 4] = {arr[i], arr[i+1], arr[i+2], arr[i+3]};
     env->ReleaseIntArrayElements(coords, arr, 0);
-    return instance->setRects(rects, len / 4);
+    return instance->setRects(rects.data(), len / 4);
 }
 
 extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Region__1nSetRegion(JNIEnv* env, jclass jclass, jlong ptr, jlong regionPtr) {
