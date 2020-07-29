@@ -264,7 +264,7 @@ class Window {
 
     private void loop() {
         GL.createCapabilities();
-        Library.load("/", "skija");
+        Library.load();
         context = Context.makeGL();
 
         GLFW.glfwSetWindowSizeCallback(window, (window, width, height) -> {

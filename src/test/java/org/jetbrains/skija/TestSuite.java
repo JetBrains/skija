@@ -5,7 +5,7 @@ import org.jetbrains.skija.paragraph.*;
 
 public class TestSuite {
     public static void main(String[] args) {
-        Library.load("/", "skija");
+        Library.load();
         TestRunner.startTesting();
         TestRunner.testClass(DataTest.class);
         TestRunner.testClass(FontMgrTest.class);

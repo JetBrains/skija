@@ -44,7 +44,7 @@ class SkiaWindow(
 ) : JFrame() {
     companion object {
         init {
-            Library.load("/", "skija")
+            Library.load()
         }
     }
 

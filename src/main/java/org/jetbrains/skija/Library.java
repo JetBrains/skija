@@ -1,23 +1,38 @@
 package org.jetbrains.skija;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.io.*;
+import java.net.*;
+import java.nio.file.*;
+import org.jetbrains.annotations.*;
 
 public class Library {
+    @ApiStatus.Internal
     public static boolean _loaded = false;
 
-    // https://github.com/adamheinrich/native-utils/blob/e6a39489662846a77504634b6fafa4995ede3b1d/src/main/java/cz/adamh/utils/NativeUtils.java
-    public static void load(String resourcePath, String name) {
+    public static void load() {
         if (_loaded) return;
+
+        String os = System.getProperty("os.name").toLowerCase();
+        String fileName;
+
+        if (os.contains("mac") || os.contains("darwin"))
+            fileName = "libskija.dylib";
+        else if (os.contains("windows"))
+            fileName = "skija.dll";
+        else if (os.contains("nux") || os.contains("nix"))
+            fileName = "libskija.so";
+        else
+            throw new RuntimeException("Unknown operation system");
+
+        _load("/", fileName);
+        _loaded = true;
+    }
+
+    // https://github.com/adamheinrich/native-utils/blob/e6a39489662846a77504634b6fafa4995ede3b1d/src/main/java/cz/adamh/utils/NativeUtils.java
+    @ApiStatus.Internal
+    public static void _load(String resourcePath, String fileName) {
         try {
             File file;
-            String fileName = _getPrefix() + name + "." + _getExtension();
-
             URL url = Library.class.getResource(resourcePath + fileName);
             if (url == null)
                 throw new IllegalArgumentException("Library " + fileName + " is not found in " + resourcePath);
@@ -40,28 +55,8 @@ public class Library {
                 }
 
             System.load(file.getAbsolutePath());
-            _loaded = true;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
-    public static String _getPrefix() {
-        String os = System.getProperty("os.name");
-        String lowerCaseOs = os.toLowerCase();
-        if (lowerCaseOs.contains("windows")) return "";
-        return "lib";
-    }
-
-    public static String _getExtension() {
-        String os = System.getProperty("os.name");
-        if (os == null) throw new RuntimeException("Unknown operation system");
-        String lowerCaseOs = os.toLowerCase();
-        if (lowerCaseOs.contains("mac") || lowerCaseOs.contains("darwin")) return "dylib";
-        if (lowerCaseOs.contains("windows")) return "dll";
-        if (lowerCaseOs.contains("nux")) return "so";
-
-        throw new RuntimeException("Unknown operation system: " + os);
-    }
-
 }
