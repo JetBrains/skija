@@ -5,14 +5,14 @@ cd `dirname $0`/..
 cd third_party/skia
 VER=85
 git checkout chrome/m${VER}
-gn gen out/Release-x64 --args="is_debug=false is_official_build=true skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_sfntly=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false target_cpu=\"x64\" extra_cflags_cc=[\"-frtti\"] cxx=\"g++-9\""
+gn gen out/Release-x64 --args="is_debug=false is_official_build=true skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_sfntly=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false target_cpu=\"x64\""
 ninja -C out/Release-x64 skia modules
 
 if [ ! -z "${PUBLISH}" ]; then
-ARCHIVE="Skia-${VER}-linux-Release-x64.zip"
+ARCHIVE="Skia-${VER}-windows-Release-x64.zip"
 
 zip -r $ARCHIVE \
-  out/Release-x64/*.a \
+  out/Release-x64/*.lib \
   include \
   modules/particles/include/*.h \
   modules/skottie/include/*.h \
