@@ -5,7 +5,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Context__1nMakeGL(JN
     return reinterpret_cast<jlong>(GrContext::MakeGL().release());
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Context__1nFlush(JNIEnv* env, jclass jclass, long ptr) {
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Context__1nFlush(JNIEnv* env, jclass jclass, jlong ptr) {
     GrContext* context = reinterpret_cast<GrContext*>(static_cast<uintptr_t>(ptr));
     context->flush(GrFlushInfo());
 }

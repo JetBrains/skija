@@ -38,7 +38,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_paragraph_ParagraphS
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_ParagraphStyle__1nSetStrutStyle
-  (JNIEnv* env, jclass jclass, long ptr, long stylePtr) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong stylePtr) {
     ParagraphStyle* instance = reinterpret_cast<ParagraphStyle*>(static_cast<uintptr_t>(ptr));
     StrutStyle* style = reinterpret_cast<StrutStyle*>(static_cast<uintptr_t>(stylePtr));
     instance->setStrutStyle(*style);
