@@ -21,7 +21,8 @@ LWJGL_LIBS=(
 )
 
 HAS_LWJLG=true
-CLASSPATH=target/classes:../../target/classes
+LOMBOK=~/.m2/repository/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar
+CLASSPATH=target/classes:../../target/classes:$LOMBOK
 
 for LIB in "${LWJGL_LIBS[@]}"; do
     JAR=~/.m2/repository/org/lwjgl/$LIB/$LWJGL_VER/$LIB-$LWJGL_VER.jar
@@ -37,7 +38,9 @@ for LIB in "${LWJGL_LIBS[@]}"; do
     CLASSPATH=$CLASSPATH:$JAR:$NATIVE_JAR
 done
 
-if [[ "$HAS_LWJLG" == "false" ]]; then
+
+
+if [[ "$HAS_LWJLG" == "false" ]] || [[ ! -f $LOMBOK ]] ; then
     # fetch missing dependencies
     mvn compile
 fi

@@ -93,6 +93,12 @@
             <artifactId>skija</artifactId>
             <version>0.0.0-local</version>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.lwjgl</groupId>

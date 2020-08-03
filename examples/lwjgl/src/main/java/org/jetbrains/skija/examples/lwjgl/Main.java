@@ -32,6 +32,7 @@ class Window {
     public int xpos = 0;
     public int ypos = 0;
     public boolean vsync = true;
+    public boolean stats = true;
     private Typeface interRegular;
     private Font     interRegular13tnum;
     private int[] refreshRates;
@@ -163,7 +164,8 @@ class Window {
         scenes.get(currentScene).draw(canvas, width, height, dpi, xpos, ypos);
         canvas.restore();
         canvas.save();
-        drawStats();
+        if (stats)
+            drawStats();
         canvas.restore();
         timesIdx = (timesIdx + 1) % times.length;
         context.flush();
@@ -204,8 +206,8 @@ class Window {
         FontMetrics metrics = font.getMetrics();
 
         // Background
-        canvas.translate(width - 230, height - 160);
-        canvas.drawRRect(RRect.makeLTRB(0, 0, 225, 155, 7), bg);
+        canvas.translate(width - 230, height - 185);
+        canvas.drawRRect(RRect.makeLTRB(0, 0, 225, 180, 7), bg);
         canvas.translate(5, 5);
 
         // Scene
@@ -226,6 +228,13 @@ class Window {
         canvas.drawRRect(buttonBounds, bg);
         drawStringCentered("V", buttonBounds, font, metrics,canvas, fg);
         drawStringLeft("VSync: " + (vsync ? "ON" : "OFF"), labelBounds, font, metrics, canvas, fg);
+        canvas.translate(0, 25);
+
+        // Stats
+        buttonBounds = RRect.makeXYWH(5, 0, 20, 20, 2);
+        canvas.drawRRect(buttonBounds, bg);
+        drawStringCentered("S", buttonBounds, font, metrics,canvas, fg);
+        drawStringLeft("Stats: " + (stats ? "ON" : "OFF"), labelBounds, font, metrics, canvas, fg);
         canvas.translate(0, 25);
 
         // GC
@@ -285,10 +294,12 @@ class Window {
         });
 
         glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
-            System.out.println("Button " + button + " " + (action == 0 ? "released" : "pressed"));
+            // System.out.println("Button " + button + " " + (action == 0 ? "released" : "pressed"));
         });
 
-        glfwSetScrollCallback(window, (window, xoffset, yoffset) -> { System.out.println("Scroll by " + xoffset + "x" + yoffset); });
+        glfwSetScrollCallback(window, (window, xoffset, yoffset) -> {
+            scenes.get(currentScene).onScroll((float) xoffset * dpi, (float) yoffset * dpi);
+        });
 
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if (action == GLFW_PRESS) {
@@ -303,6 +314,9 @@ class Window {
                         vsync = !vsync;
                         glfwSwapInterval(vsync ? 1 : 0);
                         break;
+                    case GLFW_KEY_S:
+                        stats = !stats;
+                        break;
                     case GLFW_KEY_G:
                         System.out.println("Before GC " + Stats.allocated);
                         System.gc();
@@ -316,7 +330,8 @@ class Window {
         scenes = new TreeMap<>();
         scenes.put("Blends",           new BlendsScene());
         scenes.put("Color Filters",    new ColorFiltersScene());
-        // scenes.put("Empty",         new EmptyScene());
+        scenes.put("Empty",            new EmptyScene());
+        scenes.put("Figma",            new FigmaScene());
         scenes.put("Font",             new FontScene());
         scenes.put("Geometry",         new GeometryScene());
         scenes.put("Images",           new ImagesScene());
@@ -336,7 +351,7 @@ class Window {
         // scenes.put("Wall Cached",   new WallOfTextScene(true));
         // scenes.put("Wall of Text",  new WallOfTextScene(false));
         scenes.put("Watches",       new WatchesScene());
-        currentScene = "Picture Recorder";
+        currentScene = "Figma";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();

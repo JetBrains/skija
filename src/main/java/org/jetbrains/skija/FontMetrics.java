@@ -83,4 +83,8 @@ public class FontMetrics {
      */
     @Nullable
     public final Float _strikeoutPosition;
+
+    public float getHeight() {
+        return _descent - _ascent;
+    }
 }
