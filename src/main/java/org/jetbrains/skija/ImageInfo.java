@@ -33,7 +33,7 @@ public class ImageInfo {
 
     @ApiStatus.Internal
     public ImageInfo(int width, int height, int colorType, int alphaType, long colorSpace) {
-        this(width, height, ColorType.values()[colorType], ColorAlphaType.values()[alphaType], new ColorSpace(colorSpace));
+        this(width, height, ColorType.values()[colorType], ColorAlphaType.values()[alphaType], colorSpace == 0 ? null : new ColorSpace(colorSpace));
     }
 
     /**

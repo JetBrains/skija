@@ -43,6 +43,8 @@ class Window {
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         this.left = Math.max(0, (vidmode.width() - width) / 2);
         this.top = Math.max(0, (vidmode.height() - height) / 2);
+        xpos = width / 2;
+        ypos = height / 2;
         refreshRates = getRefreshRates();
     }
 
@@ -328,6 +330,7 @@ class Window {
         initSkia();
 
         scenes = new TreeMap<>();
+        scenes.put("Bitmap",           new BitmapScene());
         scenes.put("Blends",           new BlendsScene());
         scenes.put("Color Filters",    new ColorFiltersScene());
         scenes.put("Empty",            new EmptyScene());
@@ -351,7 +354,7 @@ class Window {
         // scenes.put("Wall Cached",   new WallOfTextScene(true));
         // scenes.put("Wall of Text",  new WallOfTextScene(false));
         scenes.put("Watches",       new WatchesScene());
-        currentScene = "Figma";
+        currentScene = "Bitmap";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();

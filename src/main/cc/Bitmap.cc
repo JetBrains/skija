@@ -1,5 +1,6 @@
 #include <jni.h>
 #include "SkBitmap.h"
+#include "SkShader.h"
 #include "interop.hh"
 
 static void deleteBitmap(SkBitmap* instance) {
@@ -108,7 +109,7 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Bitmap__1nCompute
 }
 
 extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Bitmap__1nSetImageInfo
-  (JNIEnv* env, jclass jclass, jlong ptr, jint colorType, jint alphaType, jlong colorSpacePtr, jint width, jint height, jlong rowBytes) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jint width, jint height, jint colorType, jint alphaType, jlong colorSpacePtr, jlong rowBytes) {
     SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
     SkColorSpace* colorSpace = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr));
     SkImageInfo imageInfo = SkImageInfo::Make(width,
@@ -119,4 +120,35 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Bitmap__1nSetImag
     return instance->setInfo(imageInfo, rowBytes);
 }
 
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Bitmap__1nAllocPixels
+  (JNIEnv* env, jclass jclass, jlong ptr, jint width, jint height, jint colorType, jint alphaType, jlong colorSpacePtr) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    SkColorSpace* colorSpace = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr));
+    SkImageInfo imageInfo = SkImageInfo::Make(width,
+                                              height,
+                                              static_cast<SkColorType>(colorType),
+                                              static_cast<SkAlphaType>(alphaType),
+                                              sk_ref_sp<SkColorSpace>(colorSpace));
+    return instance->tryAllocPixels(imageInfo);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Bitmap__1nEraseColor
+  (JNIEnv* env, jclass jclass, jlong ptr, jint color) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    instance->eraseColor(color);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Bitmap__1nErase
+  (JNIEnv* env, jclass jclass, jlong ptr, jint color, jint left, jint top, jint right, jint bottom) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    instance->erase(color, {left, top, right, bottom});
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Bitmap__1nMakeShader
+  (JNIEnv* env, jclass jclass, jlong ptr, jint tmx, jint tmy, jfloatArray localMatrixArr) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    std::unique_ptr<SkMatrix> localMatrix = skMatrix(env, localMatrixArr);
+    sk_sp<SkShader> shader = instance->makeShader(static_cast<SkTileMode>(tmx), static_cast<SkTileMode>(tmy), localMatrix.get());
+    return reinterpret_cast<jlong>(shader.release());
+}
 

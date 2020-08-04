@@ -413,25 +413,82 @@ public class Bitmap extends Managed {
     public boolean setImageInfo(ImageInfo imageInfo, long rowBytes) {
         Stats.onNativeCall();
         return _nSetImageInfo(_ptr,
+            imageInfo._width,
+            imageInfo._height,
             imageInfo._colorInfo._colorType.ordinal(),
             imageInfo._colorInfo._alphaType.ordinal(),
             Native.getPtr(imageInfo._colorInfo._colorSpace),
-            imageInfo._width,
-            imageInfo._height,
             rowBytes);
     }
 
-    @ApiStatus.Internal public static final  long _finalizerPtr = _nGetFinalizer();
-    @ApiStatus.Internal public static native long _nGetFinalizer();
-    @ApiStatus.Internal public static native long _nMake();
-    @ApiStatus.Internal public static native long _nMakeClone(long ptr);
-    @ApiStatus.Internal public static native void _nSwap(long ptr, long otherPtr);
-    @ApiStatus.Internal public static native ImageInfo _nGetImageInfo(long ptr);
-    
-    @ApiStatus.Internal public static native int _nGetRowBytesAsPixels(long ptr);
-    @ApiStatus.Internal public static native boolean _nIsNull(long ptr);
-    @ApiStatus.Internal public static native long _nGetRowBytes(long ptr);
+    /**
+     * <p>Sets ImageInfo to info following the rules in {@link #setImageInfo(ImageInfo, long)} and allocates pixel
+     * memory.</p>
+     *
+     * <p>Returns false and calls reset() if ImageInfo could not be set, or memory could
+     * not be allocated.</p>
+     *
+     * <p>On most platforms, allocating pixel memory may succeed even though there is
+     * not sufficient memory to hold pixels; allocation does not take place
+     * until the pixels are written to. The actual behavior depends on the platform
+     * implementation of malloc().</p>
+     *
+     * @param info  contains width, height, ColorAlphaType, ColorType, ColorSpace
+     * @return      true if pixel storage is allocated
+     * @see <a href="https://fiddle.skia.org/c/@Bitmap_allocPixels_2">https://fiddle.skia.org/c/@Bitmap_allocPixels_2</a>
+     */
+    public boolean allocPixels(ImageInfo imageInfo) {
+        Stats.onNativeCall();
+        return _nAllocPixels(_ptr,
+            imageInfo._width,
+            imageInfo._height,
+            imageInfo._colorInfo._colorType.ordinal(),
+            imageInfo._colorInfo._alphaType.ordinal(),
+            Native.getPtr(imageInfo._colorInfo._colorSpace));
+    }
 
+    public Bitmap erase(int color) {
+        Stats.onNativeCall();
+        _nEraseColor(_ptr, color);
+        return this;
+    }
+
+    public Bitmap erase(int color, IRect area) {
+        Stats.onNativeCall();
+        _nErase(_ptr, color, area._left, area._top, area._right, area._bottom);
+        return this;
+    }
+
+    public Shader makeShader() {
+        return makeShader(FilterTileMode.CLAMP, FilterTileMode.CLAMP, null);
+    }
+
+    public Shader makeShader(Matrix33 localMatrix) {
+        return makeShader(FilterTileMode.CLAMP, FilterTileMode.CLAMP, localMatrix);
+    }
+
+    public Shader makeShader(FilterTileMode tm) {
+        return makeShader(tm, tm, null);
+    }
+
+    public Shader makeShader(FilterTileMode tmx, FilterTileMode tmy) {
+        return makeShader(tmx, tmy, null);
+    }
+
+    public Shader makeShader(FilterTileMode tmx, FilterTileMode tmy, Matrix33 localMatrix) {
+        Stats.onNativeCall();
+        return new Shader(_nMakeShader(_ptr, tmx.ordinal(), tmy.ordinal(), localMatrix == null ? null : localMatrix._mat));
+    }
+
+    @ApiStatus.Internal public static final  long    _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal public static native long    _nGetFinalizer();
+    @ApiStatus.Internal public static native long    _nMake();
+    @ApiStatus.Internal public static native long    _nMakeClone(long ptr);
+    @ApiStatus.Internal public static native void    _nSwap(long ptr, long otherPtr);
+    @ApiStatus.Internal public static native ImageInfo _nGetImageInfo(long ptr);
+    @ApiStatus.Internal public static native int     _nGetRowBytesAsPixels(long ptr);
+    @ApiStatus.Internal public static native boolean _nIsNull(long ptr);
+    @ApiStatus.Internal public static native long    _nGetRowBytes(long ptr);
     @ApiStatus.Internal public static native boolean _nSetAlphaType(long ptr, int alphaType);
     @ApiStatus.Internal public static native long    _nComputeByteSize(long ptr);
     @ApiStatus.Internal public static native boolean _nIsImmutable(long ptr);
@@ -440,5 +497,10 @@ public class Bitmap extends Managed {
     @ApiStatus.Internal public static native void    _nSetVolatile(long ptr, boolean value);
     @ApiStatus.Internal public static native void    _nReset(long ptr);
     @ApiStatus.Internal public static native boolean _nComputeIsOpaque(long ptr);
-    @ApiStatus.Internal public static native boolean _nSetImageInfo(long ptr, int colorType, int alphaType, long colorSpacePtr, int width, int height, long rowBytes);
+    @ApiStatus.Internal public static native boolean _nSetImageInfo(long ptr, int width, int height, int colorType, int alphaType, long colorSpacePtr, long rowBytes);
+
+    @ApiStatus.Internal public static native boolean _nAllocPixels(long ptr, int width, int height, int colorType, int alphaType, long colorSpacePtr);
+    @ApiStatus.Internal public static native void    _nEraseColor(long ptr, int color);
+    @ApiStatus.Internal public static native void    _nErase(long ptr, int color, int left, int top, int right, int bottom);
+    @ApiStatus.Internal public static native long    _nMakeShader(long ptr, int tmx, int tmy, float[] localMatrix);
 }

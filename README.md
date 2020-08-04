@@ -56,8 +56,8 @@ Active development. Pre-alpha. Everything will change without notice.
 Core progress:
 
 ```
-Bitmap               ▓▓▓░░░░░░░
-Canvas               ▓▓▓▓▓▓░░░░
+Bitmap               ▓▓▓▓▓░░░░░
+Canvas               ▓▓▓▓▓▓▓░░░
 Color                ▓░░░░░░░░░
 ColorFilter          ▓▓▓▓▓▓▓▓▓▓
 ColorInfo            ▓▓▓▓▓▓▓▓▓▓

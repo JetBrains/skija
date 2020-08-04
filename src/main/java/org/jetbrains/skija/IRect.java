@@ -41,4 +41,19 @@ public class IRect {
     public static IRect makeWH(int w, int h) {
         return new IRect(0, 0, w, h);
     }
+
+    @Nullable
+    public IRect intersect(IRect other) {
+        if (_right <= other._left || other._right <= _left || _bottom <= other._top || other._bottom <= _top)
+            return null;
+        return new IRect(Math.max(_left, other._left), Math.max(_top, other._top), Math.min(_right, other._right), Math.min(_bottom, other._bottom));
+    }
+
+    public IRect translate(int dx, int dy) {
+        return new IRect(_left + dx, _top + dy, _right + dx, _bottom + dy);
+    }
+
+    public Rect toRect() {
+        return new Rect(_left, _top, _right, _bottom);
+    }
 }

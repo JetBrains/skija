@@ -41,4 +41,19 @@ public class Rect {
     public static Rect makeXYWH(float l, float t, float w, float h) {
         return new Rect(l, t, l + w, t + h);
     }
+
+    @Nullable
+    public Rect intersect(Rect other) {
+        if (_right <= other._left || other._right <= _left || _bottom <= other._top || other._bottom <= _top)
+            return null;
+        return new Rect(Math.max(_left, other._left), Math.max(_top, other._top), Math.min(_right, other._right), Math.min(_bottom, other._bottom));
+    }
+
+    public Rect translate(float dx, float dy) {
+        return new Rect(_left + dx, _top + dy, _right + dx, _bottom + dy);
+    }
+
+    public IRect toIRect() {
+        return new IRect((int) _left, (int) _top, (int) _right, (int) _bottom);
+    }
 }
