@@ -167,6 +167,28 @@ namespace skija {
         }
     }
 
+    namespace IPoint {
+        jclass    cls;
+        jmethodID ctor;
+
+        void onLoad(JNIEnv* env) {
+            jclass local = env->FindClass("org/jetbrains/skija/IPoint");
+            cls  = static_cast<jclass>(env->NewGlobalRef(local));
+            ctor = env->GetMethodID(cls, "<init>", "(II)V");
+        }
+
+        void onUnload(JNIEnv* env) {
+            env->DeleteGlobalRef(cls);
+        }
+
+        jobject make(JNIEnv* env, jint x, jint y) {
+            return env->NewObject(cls, ctor, x, y);
+        }
+
+        jobject fromSkIPoint(JNIEnv* env, const SkIPoint& p) {
+            return env->NewObject(cls, ctor, p.fX, p.fY);
+        }
+    }
 
     namespace IRect {
         jclass cls;
@@ -417,6 +439,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::FontMetrics::onLoad(env);
     skija::FontVariation::onLoad(env);
     skija::ImageInfo::onLoad(env);
+    skija::IPoint::onLoad(env);
     skija::IRect::onLoad(env);
     skija::Path::onLoad(env);
     skija::PathSegment::onLoad(env);
@@ -447,6 +470,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::FontMetrics::onUnload(env);
     skija::FontVariation::onUnload(env);
     skija::ImageInfo::onUnload(env);
+    skija::IPoint::onUnload(env);
     skija::IRect::onUnload(env);
     skija::Path::onUnload(env);
     skija::PathSegment::onUnload(env);
@@ -499,6 +523,12 @@ jobject javaFloat(JNIEnv* env, float val) {
     return env->NewObject(java::lang::Float::cls, java::lang::Float::ctor, val);
 }
 
+jbyteArray javaByteArray(JNIEnv* env, const std::vector<jbyte>& bytes) {
+    jbyteArray res = env->NewByteArray(bytes.size());
+    env->SetByteArrayRegion(res, 0, bytes.size(), bytes.data());
+    return res;
+}
+
 jshortArray javaShortArray(JNIEnv* env, const std::vector<jshort>& shorts) {
     jshortArray res = env->NewShortArray(shorts.size());
     env->SetShortArrayRegion(res, 0, shorts.size(), shorts.data());
@@ -538,4 +568,8 @@ jobjectArray javaStringArray(JNIEnv* env, const std::vector<SkString>& strings) 
     for (int i = 0; i < strings.size(); ++i)
         env->SetObjectArrayElement(res, i, javaString(env, strings[i]));
     return res;
+}
+
+void deleteJBytes(void* addr, void*) {
+    delete[] (jbyte*) addr;
 }

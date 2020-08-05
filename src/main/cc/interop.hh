@@ -65,6 +65,13 @@ namespace skija {
         extern jmethodID ctor;
     }
 
+    namespace IPoint {
+        extern jclass cls;
+        extern jmethodID ctor;
+        jobject make(JNIEnv* env, float x, float y);
+        jobject fromSkIPoint(JNIEnv* env, const SkIPoint& p);
+    }
+
     namespace IRect {
         extern jclass cls;
         extern jmethodID makeLTRB;
@@ -136,6 +143,7 @@ jstring javaString(JNIEnv* env, const SkString& str);
 
 jobject javaFloat(JNIEnv* env, float val);
 
+jbyteArray   javaByteArray  (JNIEnv* env, const std::vector<jbyte>& bytes);
 jshortArray  javaShortArray (JNIEnv* env, const std::vector<jshort>& shorts);
 jintArray    javaIntArray   (JNIEnv* env, const std::vector<jint>& ints);
 jlongArray   javaLongArray  (JNIEnv* env, const std::vector<jlong>& longs);
@@ -143,3 +151,5 @@ jfloatArray  javaFloatArray (JNIEnv* env, const std::vector<float>& floats);
 
 std::vector<SkString> skStringVector(JNIEnv* env, jobjectArray arr);
 jobjectArray javaStringArray(JNIEnv* env, const std::vector<SkString>& strings);
+
+void deleteJBytes(void* addr, void*);

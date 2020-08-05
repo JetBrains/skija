@@ -56,7 +56,7 @@ Active development. Pre-alpha. Everything will change without notice.
 Core progress:
 
 ```
-Bitmap               ▓▓▓▓▓░░░░░
+Bitmap               ▓▓▓▓▓▓▓▓▓▓
 Canvas               ▓▓▓▓▓▓▓░░░
 Color                ▓░░░░░░░░░
 ColorFilter          ▓▓▓▓▓▓▓▓▓▓
@@ -80,6 +80,8 @@ Path                 ▓▓▓▓▓▓▓▓▓▓
 PathEffects          ▓▓▓▓▓▓▓▓▓▓
 Picture              ▓▓▓▓▓▓▓▓▓░
 PictureRecorder      ▓▓▓▓▓▓▓▓▓▓
+PixelRef             ▓▓▓▓▓▓▓▓▓▓
+Pixmap               ░░░░░░░░░░
 Region               ▓▓▓▓▓▓▓▓▓▓
 ScalerContext        ░░░░░░░░░░
 Shader               ▓▓▓▓▓▓▓▓▓▓

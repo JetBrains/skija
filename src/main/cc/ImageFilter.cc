@@ -118,15 +118,14 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ImageFilter__1nMakeM
   (JNIEnv* env, jclass jclass, jlongArray filtersArray, jobject cropObj) {
     jlong* f = env->GetLongArrayElements(filtersArray, 0);
     jsize len = env->GetArrayLength(filtersArray);
-    sk_sp<SkImageFilter>* filters = new sk_sp<SkImageFilter>[len];
+    std::vector<sk_sp<SkImageFilter>> filters(len);
     for (int i = 0; i < len; ++i) {
         SkImageFilter* fi = reinterpret_cast<SkImageFilter*>(static_cast<uintptr_t>(f[i]));
         filters[i] = sk_ref_sp(fi);
     }
     env->ReleaseLongArrayElements(filtersArray, f, 0);
     std::unique_ptr<SkIRect> crop = skija::IRect::toSkIRect(env, cropObj);
-    SkImageFilter* ptr = SkImageFilters::Merge(filters, len, crop.get()).release();
-    delete[] filters;
+    SkImageFilter* ptr = SkImageFilters::Merge(filters.data(), len, crop.get()).release();
     return reinterpret_cast<jlong>(ptr);
 }
 

@@ -1,5 +1,6 @@
 #include <jni.h>
 #include "SkBitmap.h"
+#include "SkPixelRef.h"
 #include "SkShader.h"
 #include "interop.hh"
 
@@ -120,8 +121,8 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Bitmap__1nSetImag
     return instance->setInfo(imageInfo, rowBytes);
 }
 
-extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Bitmap__1nAllocPixels
-  (JNIEnv* env, jclass jclass, jlong ptr, jint width, jint height, jint colorType, jint alphaType, jlong colorSpacePtr) {
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Bitmap__1nAllocPixelsFlags
+  (JNIEnv* env, jclass jclass, jlong ptr, jint width, jint height, jint colorType, jint alphaType, jlong colorSpacePtr, jint flags) {
     SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
     SkColorSpace* colorSpace = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr));
     SkImageInfo imageInfo = SkImageInfo::Make(width,
@@ -129,7 +130,81 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Bitmap__1nAllocPi
                                               static_cast<SkColorType>(colorType),
                                               static_cast<SkAlphaType>(alphaType),
                                               sk_ref_sp<SkColorSpace>(colorSpace));
-    return instance->tryAllocPixels(imageInfo);
+    return instance->tryAllocPixelsFlags(imageInfo, flags);
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Bitmap__1nAllocPixelsRowBytes
+  (JNIEnv* env, jclass jclass, jlong ptr, jint width, jint height, jint colorType, jint alphaType, jlong colorSpacePtr, jlong rowBytes) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    SkColorSpace* colorSpace = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr));
+    SkImageInfo imageInfo = SkImageInfo::Make(width,
+                                              height,
+                                              static_cast<SkColorType>(colorType),
+                                              static_cast<SkAlphaType>(alphaType),
+                                              sk_ref_sp<SkColorSpace>(colorSpace));
+    return instance->tryAllocPixels(imageInfo, rowBytes);
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Bitmap__1nInstallPixels
+  (JNIEnv* env, jclass jclass, jlong ptr, jint width, jint height, jint colorType, jint alphaType, jlong colorSpacePtr, jbyteArray pixelsArr, jlong rowBytes) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    SkColorSpace* colorSpace = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr));
+    SkImageInfo imageInfo = SkImageInfo::Make(width,
+                                              height,
+                                              static_cast<SkColorType>(colorType),
+                                              static_cast<SkAlphaType>(alphaType),
+                                              sk_ref_sp<SkColorSpace>(colorSpace));
+
+    jsize len = env->GetArrayLength(pixelsArr);
+    jbyte* pixels = new jbyte[len];
+    env->GetByteArrayRegion(pixelsArr, 0, len, pixels);
+    return instance->installPixels(imageInfo, pixels, rowBytes, deleteJBytes, nullptr);
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Bitmap__1nAllocPixels
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    return instance->tryAllocPixels();
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Bitmap__1nGetPixelRef
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    SkPixelRef* pixelRef = instance->pixelRef();
+    pixelRef->ref();
+    return reinterpret_cast<jlong>(pixelRef);
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Bitmap__1nGetPixelRefOrigin
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    SkIPoint origin = instance->pixelRefOrigin();
+    return (uint64_t (origin.fX) << 32) | origin.fY;
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Bitmap__1nSetPixelRef
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong pixelRefPtr, jint dx, jint dy) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    SkPixelRef* pixelRef = reinterpret_cast<SkPixelRef*>(static_cast<uintptr_t>(pixelRefPtr));
+    instance->setPixelRef(sk_ref_sp<SkPixelRef>(pixelRef), dx, dy);
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Bitmap__1nIsReadyToDraw
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    return instance->readyToDraw();
+}
+
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Bitmap__1nGetGeneratioId
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    return instance->getGenerationID();
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Bitmap__1nNotifyPixelsChanged
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    instance->notifyPixelsChanged();
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Bitmap__1nEraseColor
@@ -142,6 +217,53 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Bitmap__1nErase
   (JNIEnv* env, jclass jclass, jlong ptr, jint color, jint left, jint top, jint right, jint bottom) {
     SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
     instance->erase(color, {left, top, right, bottom});
+}
+
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Bitmap__1nGetColor
+  (JNIEnv* env, jclass jclass, jlong ptr, jint x, jint y) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    return instance->getColor(x, y);
+}
+
+extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_Bitmap__1nGetAlphaf
+  (JNIEnv* env, jclass jclass, jlong ptr, jint x, jint y) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    return instance->getAlphaf(x, y);
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Bitmap__1nExtractSubset
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong dstPtr, jint left, jint top, jint right, jint bottom) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    SkBitmap* dst = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(dstPtr));
+    return instance->extractSubset(dst, {left, top, right, bottom});
+}
+
+extern "C" JNIEXPORT jbyteArray JNICALL Java_org_jetbrains_skija_Bitmap__1nReadPixels
+  (JNIEnv* env, jclass jclass, jlong ptr, jint width, jint height, jint colorType, jint alphaType, jlong colorSpacePtr, jlong rowBytes, jint srcX, jint srcY) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    SkColorSpace* colorSpace = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr));
+    SkImageInfo imageInfo = SkImageInfo::Make(width,
+                                              height,
+                                              static_cast<SkColorType>(colorType),
+                                              static_cast<SkAlphaType>(alphaType),
+                                              sk_ref_sp<SkColorSpace>(colorSpace));
+    std::vector<jbyte> pixels(std::min(height, instance->height() - srcY) * rowBytes);
+    if (instance->readPixels(imageInfo, pixels.data(), rowBytes, srcX, srcY))
+        return javaByteArray(env, pixels);
+    else
+        return nullptr;
+}
+
+extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Bitmap__1nExtractAlpha
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong dstPtr, jlong paintPtr) {
+    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
+    SkBitmap* dst = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(dstPtr));
+    SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
+    SkIPoint offset;
+    if (instance->extractAlpha(dst, paint, &offset))
+        return skija::IPoint::fromSkIPoint(env, offset);
+    else
+        return nullptr;
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Bitmap__1nMakeShader
