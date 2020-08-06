@@ -23,11 +23,11 @@ public class ImageInfo {
 
     public static final ImageInfo DEFAULT = new ImageInfo(ColorInfo.DEFAULT, 0, 0);
 
-    public ImageInfo(int width, int height, ColorType colorType, ColorAlphaType alphaType) {
+    public ImageInfo(int width, int height, @NotNull ColorType colorType, @NotNull ColorAlphaType alphaType) {
         this(new ColorInfo(colorType, alphaType, null), width, height);
     }
 
-    public ImageInfo(int width, int height, ColorType colorType, ColorAlphaType alphaType, ColorSpace colorSpace) {
+    public ImageInfo(int width, int height, @NotNull ColorType colorType, @NotNull ColorAlphaType alphaType, @Nullable ColorSpace colorSpace) {
         this(new ColorInfo(colorType, alphaType, colorSpace), width, height);
     }
 
@@ -39,14 +39,16 @@ public class ImageInfo {
     /**
      * @return  ImageInfo with {@link ColorType#N32}
      */
-    public static ImageInfo makeN32(int width, int height, ColorAlphaType alphaType) {
+    @NotNull @Contract("_, _, _ -> new")
+    public static ImageInfo makeN32(int width, int height, @NotNull ColorAlphaType alphaType) {
         return new ImageInfo(new ColorInfo(ColorType.N32, alphaType, null), width, height);
     }
 
     /**
      * @return  ImageInfo with {@link ColorType#N32}
      */
-    public static ImageInfo makeN32(int width, int height, ColorAlphaType alphaType, ColorSpace colorSpace) {
+    @NotNull @Contract("_, _, _, _ -> new")
+    public static ImageInfo makeN32(int width, int height, @NotNull ColorAlphaType alphaType, @Nullable ColorSpace colorSpace) {
         return new ImageInfo(new ColorInfo(ColorType.N32, alphaType, colorSpace), width, height);
     }
 
@@ -55,13 +57,15 @@ public class ImageInfo {
      *
      * @see     <a href="https://fiddle.skia.org/c/@ImageInfo_MakeS32">https://fiddle.skia.org/c/@ImageInfo_MakeS32</a>
      */
-    public static ImageInfo makeS32(int width, int height, ColorAlphaType alphaType) {
+    @NotNull @Contract("_, _, _ -> new")
+    public static ImageInfo makeS32(int width, int height, @NotNull ColorAlphaType alphaType) {
         return new ImageInfo(new ColorInfo(ColorType.N32, alphaType, ColorSpace.getSRGB()), width, height);
     }
 
     /**
      * @return  ImageInfo with {@link ColorType#N32} and {@link ColorAlphaType#PREMUL}
      */
+    @NotNull @Contract("_, _ -> new")
     public static ImageInfo makeN32Premul(int width, int height) {
         return new ImageInfo(new ColorInfo(ColorType.N32, ColorAlphaType.PREMUL, null), width, height);
     }
@@ -69,13 +73,15 @@ public class ImageInfo {
     /**
      * @return  ImageInfo with {@link ColorType#N32} and {@link ColorAlphaType#PREMUL}
      */
-    public static ImageInfo makeN32Premul(int width, int height, ColorSpace colorSpace) {
+    @NotNull @Contract("_, _, _ -> new")
+    public static ImageInfo makeN32Premul(int width, int height, @Nullable ColorSpace colorSpace) {
         return new ImageInfo(new ColorInfo(ColorType.N32, ColorAlphaType.PREMUL, colorSpace), width, height);
     }
 
     /**
      * @return  ImageInfo with {@link ColorType#ALPHA_8} and {@link ColorAlphaType#PREMUL}
      */
+    @NotNull @Contract("_, _ -> new")
     public static ImageInfo makeA8(int width, int height) {
         return new ImageInfo(new ColorInfo(ColorType.ALPHA_8, ColorAlphaType.PREMUL, null), width, height);
     }
@@ -83,31 +89,38 @@ public class ImageInfo {
     /**
      * @return  ImageInfo with {@link ColorType#UNKNOWN} and {@link ColorAlphaType#UNKNOWN}
      */
+    @NotNull @Contract("_, _ -> new")
     public static ImageInfo makeUnknown(int width, int height) {
         return new ImageInfo(new ColorInfo(ColorType.UNKNOWN, ColorAlphaType.UNKNOWN, null), width, height);
     }
 
-    ColorType getColorType() {
+    @NotNull
+    public ColorType getColorType() {
         return _colorInfo.getColorType();
     }
 
-    ImageInfo withColorType(ColorType colorType) {
+    @NotNull
+    public ImageInfo withColorType(@NotNull ColorType colorType) {
         return withColorInfo(_colorInfo.withColorType(colorType));
     }
 
-    ColorAlphaType getColorAlphaType() {
+    @NotNull
+    public ColorAlphaType getColorAlphaType() {
         return _colorInfo.getAlphaType();
     }
 
-    ImageInfo withColorAlphaType(ColorAlphaType alphaType) {
+    @NotNull
+    public ImageInfo withColorAlphaType(@NotNull ColorAlphaType alphaType) {
         return withColorInfo(_colorInfo.withAlphaType(alphaType));
     }   
 
-    ColorSpace getColorSpace() {
+    @Nullable
+    public ColorSpace getColorSpace() {
         return _colorInfo.getColorSpace();
     }
 
-    ImageInfo withColorSpace(ColorSpace colorSpace) {
+    @NotNull
+    public ImageInfo withColorSpace(@NotNull ColorSpace colorSpace) {
         return withColorInfo(_colorInfo.withColorSpace(colorSpace));
     }
 
@@ -135,6 +148,7 @@ public class ImageInfo {
     /**
      * @return  integral rectangle from (0, 0) to (getWidth(), getHeight())
      */
+    @NotNull
     public IRect getBounds() {
         return IRect.makeXYWH(0, 0, _width, _height);
     }
@@ -147,6 +161,7 @@ public class ImageInfo {
         return _colorInfo.isGammaCloseToSRGB();
     }
 
+    @NotNull
     public ImageInfo withWidthHeight(int width, int height) {
         return new ImageInfo(_colorInfo, width, height);
     }

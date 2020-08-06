@@ -23,23 +23,26 @@ public class IRect {
     }
 
     public int getWidth() {
-        return Math.abs(_right - _left);
+        return _right - _left;
     }
 
     public int getHeight() {
-        return Math.abs(_bottom - _top);
+        return _bottom - _top;
     }
 
+    @Nullable
     public static IRect makeLTRB(int l, int t, int r, int b) {
-        return new IRect(l, t, r, b);
+        return l <= r && t <= b ? new IRect(l, t, r, b) : null;
     }
 
+    @Nullable
     public static IRect makeXYWH(int l, int t, int w, int h) {
-        return new IRect(l, t, l + w, t + h);
+        return w >= 0 && h >= 0 ? new IRect(l, t, l + w, t + h) : null;
     }
 
+    @Nullable
     public static IRect makeWH(int w, int h) {
-        return new IRect(0, 0, w, h);
+        return w >= 0 && h >= 0 ? new IRect(0, 0, w, h) : null;
     }
 
     @Nullable

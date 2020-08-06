@@ -7,6 +7,7 @@ public class TestSuite {
     public static void main(String[] args) {
         Library.load();
         TestRunner.startTesting();
+        TestRunner.testClass(BitmapTest.class);
         TestRunner.testClass(DataTest.class);
         TestRunner.testClass(FontMgrTest.class);
         TestRunner.testClass(PathTest.class);

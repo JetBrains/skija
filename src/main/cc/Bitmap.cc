@@ -195,7 +195,7 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Bitmap__1nIsReady
     return instance->readyToDraw();
 }
 
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Bitmap__1nGetGeneratioId
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Bitmap__1nGetGenerationId
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
     return instance->getGenerationID();

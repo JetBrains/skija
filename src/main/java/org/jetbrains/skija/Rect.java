@@ -23,23 +23,26 @@ public class Rect {
     }
 
     public float getWidth() {
-        return Math.abs(_right - _left);
+        return _right - _left;
     }
 
     public float getHeight() {
-        return Math.abs(_bottom - _top);
+        return _bottom - _top;
     }
 
+    @Nullable
     public static Rect makeLTRB(float l, float t, float r, float b) {
-        return new Rect(l, t, r, b);
+        return l <= r && t <= b ? new Rect(l, t, r, b) : null;
     }
 
+    @Nullable
     public static Rect makeWH(float w, float h) {
-        return new Rect(0, 0, w, h);
+        return w >= 0 && h >= 0 ? new Rect(0, 0, w, h) : null;
     }
 
+    @Nullable
     public static Rect makeXYWH(float l, float t, float w, float h) {
-        return new Rect(l, t, l + w, t + h);
+        return w >= 0 && h >= 0 ? new Rect(l, t, l + w, t + h) : null;
     }
 
     @Nullable
