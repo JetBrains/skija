@@ -52,6 +52,44 @@ public class Paint extends Managed {
         return this;
     }
 
+    /**
+     * Retrieves alpha and RGB, unpremultiplied, as four floating point values. RGB are
+     * extended sRGB values (sRGB gamut, and encoded with the sRGB transfer function).
+     *
+     * @return  unpremultiplied RGBA
+     */
+    public Color4f getColor4f() {
+        Stats.onNativeCall();
+        return _nGetColor4f(_ptr);
+    }
+
+    /**
+     * Sets alpha and RGB used when stroking and filling. The color is four floating
+     * point values, unpremultiplied. The color values are interpreted as being in sRGB.
+     *
+     * @param color       unpremultiplied RGBA
+     * @return            this
+     */
+    public Paint setColor4f(Color4f color) {
+        return setColor4f(color, null);
+    }
+
+    /**
+     * Sets alpha and RGB used when stroking and filling. The color is four floating
+     * point values, unpremultiplied. The color values are interpreted as being in
+     * the colorSpace. If colorSpace is nullptr, then color is assumed to be in the
+     * sRGB color space.
+     *
+     * @param color       unpremultiplied RGBA
+     * @param colorSpace  SkColorSpace describing the encoding of color
+     * @return            this
+     */
+    public Paint setColor4f(Color4f color, ColorSpace colorSpace) {
+        Stats.onNativeCall();
+        _nSetColor4f(_ptr, color.getR(), color.getG(), color.getB(), color.getA(), Native.getPtr(colorSpace));
+        return this;
+    }
+
     public float getStrokeWidth() {
         Stats.onNativeCall();
         return _nGetStrokeWidth(_ptr);
@@ -251,6 +289,8 @@ public class Paint extends Managed {
     public static native void  _nSetMode(long ptr, int value);
     public static native int   _nGetColor(long ptr);
     public static native void  _nSetColor(long ptr, int argb);
+    public static native Color4f _nGetColor4f(long ptr);
+    public static native void  _nSetColor4f(long ptr, float r, float g, float b, float a, long colorSpacePtr);
     public static native float _nGetStrokeWidth(long ptr);
     public static native void  _nSetStrokeWidth(long ptr, float value);
     public static native float _nGetStrokeMiter(long ptr);

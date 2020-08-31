@@ -32,6 +32,11 @@ namespace java {
 }
 
 namespace skija {
+    namespace Color4f {
+        extern jclass cls;
+        extern jmethodID ctor;
+    }
+    
     namespace FontAxisInfo {
         extern jclass cls;
         extern jmethodID ctor;

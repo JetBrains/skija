@@ -6,10 +6,52 @@ public class ShadersScene implements Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         canvas.translate(20, 20);
+        drawColors(canvas);
         drawShaders(canvas);
         drawGradients(canvas);
         drawLinearCS(canvas);
         drawBlending(canvas);
+    }
+
+    private void drawColors(Canvas canvas) {
+        canvas.save();
+
+        try (Paint fill = new Paint()) {
+            fill.setColor(0xFFFF0000);
+            canvas.drawRect(Rect.makeXYWH(0, 0, 60, 20), fill);
+            fill.setColor(0xFF00FF00);
+            canvas.drawRect(Rect.makeXYWH(0, 20, 60, 20), fill);
+            fill.setColor(0xFF0000FF);
+            canvas.drawRect(Rect.makeXYWH(0, 40, 60, 20), fill);
+            canvas.translate(70, 0);
+
+            fill.setColor4f(new Color4f(1, 0, 0, 1));
+            canvas.drawRect(Rect.makeXYWH(0, 0, 60, 20), fill);
+            fill.setColor4f(new Color4f(0, 1, 0, 1));
+            canvas.drawRect(Rect.makeXYWH(0, 20, 60, 20), fill);
+            fill.setColor4f(new Color4f(0, 0, 1, 1));
+            canvas.drawRect(Rect.makeXYWH(0, 40, 60, 20), fill);
+            canvas.translate(70, 0);
+
+            fill.setColor4f(new Color4f(1, 0, 0, 1), ColorSpace.getSRGB());
+            canvas.drawRect(Rect.makeXYWH(0, 0, 60, 20), fill);
+            fill.setColor4f(new Color4f(0, 1, 0, 1), ColorSpace.getSRGB());
+            canvas.drawRect(Rect.makeXYWH(0, 20, 60, 20), fill);
+            fill.setColor4f(new Color4f(0, 0, 1, 1), ColorSpace.getSRGB());
+            canvas.drawRect(Rect.makeXYWH(0, 40, 60, 20), fill);
+            canvas.translate(70, 0);
+
+            fill.setColor4f(new Color4f(1, 0, 0, 1), ColorSpace.getDisplayP3());
+            canvas.drawRect(Rect.makeXYWH(0, 0, 60, 20), fill);
+            fill.setColor4f(new Color4f(0, 1, 0, 1), ColorSpace.getDisplayP3());
+            canvas.drawRect(Rect.makeXYWH(0, 20, 60, 20), fill);
+            fill.setColor4f(new Color4f(0, 0, 1, 1), ColorSpace.getDisplayP3());
+            canvas.drawRect(Rect.makeXYWH(0, 40, 60, 20), fill);
+            canvas.translate(70, 0);
+        }
+
+        canvas.restore();
+        canvas.translate(0, 70);
     }
 
     private void drawShaders(Canvas canvas) {

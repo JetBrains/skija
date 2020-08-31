@@ -7,6 +7,7 @@
 #include "SkPathEffect.h"
 #include "SkShader.h"
 #include "SkFilterQuality.h"
+#include "interop.hh"
 
 static void deletePaint(SkPaint* paint) {
     // std::cout << "Deleting [SkPaint " << paint << "]" << std::endl;
@@ -47,6 +48,18 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Paint__1nGetColor(JNI
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint__1nSetColor(JNIEnv* env, jclass jclass, jlong ptr, jint color) {
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
     instance->setColor(color);
+}
+
+extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Paint__1nGetColor4f(JNIEnv* env, jclass jclass, jlong ptr) {
+    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
+    SkColor4f color = instance->getColor4f();
+    return env->NewObject(skija::Color4f::cls, skija::Color4f::ctor, color.fR, color.fG, color.fB, color.fA);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint__1nSetColor4f(JNIEnv* env, jclass jclass, jlong ptr, jfloat r, jfloat g, jfloat b, jfloat a, jlong colorSpacePtr) {
+    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
+    SkColorSpace* colorSpace = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr));
+    instance->setColor4f({r, g, b, a}, colorSpace);
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Paint__1nGetMode(JNIEnv* env, jclass jclass, jlong ptr) {

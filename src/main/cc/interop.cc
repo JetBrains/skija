@@ -58,6 +58,21 @@ namespace java {
 }
 
 namespace skija {
+    namespace Color4f {
+        jclass cls;
+        jmethodID ctor;
+
+        void onLoad(JNIEnv* env) {
+            jclass local = env->FindClass("org/jetbrains/skija/Color4f");
+            cls  = static_cast<jclass>(env->NewGlobalRef(local));
+            ctor = env->GetMethodID(cls, "<init>", "(FFFF)V");
+        }
+
+        void onUnload(JNIEnv* env) {
+            env->DeleteGlobalRef(cls);
+        }
+    }
+
     namespace FontAxisInfo {
         jclass    cls;
         jmethodID ctor;
@@ -434,6 +449,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     java::lang::String::onLoad(env);
     java::util::function::BooleanSupplier::onLoad(env);
 
+    skija::Color4f::onLoad(env);
     skija::FontAxisInfo::onLoad(env);
     skija::FontFamilyName::onLoad(env);
     skija::FontMetrics::onLoad(env);
@@ -465,6 +481,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     java::lang::String::onUnload(env);
     java::util::function::BooleanSupplier::onUnload(env);
 
+    skija::Color4f::onUnload(env);
     skija::FontAxisInfo::onUnload(env);
     skija::FontFamilyName::onUnload(env);
     skija::FontMetrics::onUnload(env);
