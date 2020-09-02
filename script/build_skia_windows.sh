@@ -48,6 +48,6 @@ zip -r $ARCHIVE \
   third_party/externals/zlib/*.h
 
 echo "Publishing $ARCHIVE"
-curl -T $ARCHIVE -u$BINTRAY_USER:$BINTRAY_KEY -H "X-Bintray-Package:Skia" -H "X-Bintray-Version:win-${VER}" -H "X-Bintray-Publish:1" -H "X-Bintray-Override:1" https://api.bintray.com/content/jetbrains/skija/$ARCHIVE
+curl -T $ARCHIVE -u$BINTRAY_USER:$BINTRAY_KEY -H "X-Bintray-Package:Skia" -H "X-Bintray-Version:${VER}" -H "X-Bintray-Publish:1" -H "X-Bintray-Override:1" https://api.bintray.com/content/jetbrains/skija/$ARCHIVE
 
 fi
