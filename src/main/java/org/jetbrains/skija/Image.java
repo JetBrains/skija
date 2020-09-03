@@ -9,12 +9,8 @@ public class Image extends RefCnt {
     public int _height = -1;
 
     public static Image makeFromEncoded(byte[] bytes) {
-        return makeFromEncoded(bytes, null);
-    }
-
-    public static Image makeFromEncoded(byte[] bytes, IRect subset) {
         Stats.onNativeCall();
-        return new Image(_nMakeFromEncoded(bytes, subset));
+        return new Image(_nMakeFromEncoded(bytes));
     }
 
     public int getWidth() {
@@ -44,7 +40,7 @@ public class Image extends RefCnt {
         super(ptr);
     }
 
-    public static native long _nMakeFromEncoded(byte[] bytes, IRect subset);
+    public static native long _nMakeFromEncoded(byte[] bytes);
     public static native long _nGetDimensions(long ptr);
     public static native long _nEncodeToData(long ptr);
 }
