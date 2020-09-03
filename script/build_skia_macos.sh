@@ -2,6 +2,7 @@
 
 cd `dirname $0`/..
 
+git submodule update --init
 VER=m86
 cd third_party/skia
 git pull
