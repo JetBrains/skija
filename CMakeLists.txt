@@ -10,6 +10,7 @@ set(CMAKE_BUILD_TYPE Release)
 file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/*.cc)
 file(GLOB IMPL_SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/impl/*.cc)
 file(GLOB PARAGRAPH_SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/paragraph/*.cc)
+add_definitions(-DSK_GL)
 add_library(skija SHARED ${SOURCES} ${IMPL_SOURCES} ${PARAGRAPH_SOURCES})
 
 # JNI

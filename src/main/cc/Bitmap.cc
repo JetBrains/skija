@@ -85,18 +85,6 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Bitmap__1nSetImmutabl
     instance->setImmutable();
 }
 
-extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Bitmap__1nIsVolatile
-  (JNIEnv* env, jclass jclass, jlong ptr) {
-    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
-    return instance->isVolatile();
-}
-
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Bitmap__1nSetVolatile
-  (JNIEnv* env, jclass jclass, jlong ptr, jboolean value) {
-    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
-    instance->setIsVolatile(value);
-}
-
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Bitmap__1nReset
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));

@@ -77,12 +77,6 @@ public class FontMgr extends RefCnt {
         return ptr == 0 ? null : new Typeface(ptr);
     }
 
-    public Typeface matchFaceStyle(Typeface typeface, FontStyle style) {
-        Stats.onNativeCall();
-        long ptr = _nMatchFaceStyle(_ptr, Native.getPtr(typeface), style._value);
-        return ptr == 0 ? null : new Typeface(ptr);
-    }
-
     /**
      * Create a typeface for the specified data and TTC index (pass 0 for none)
      * or null if the data is not recognized. The caller must call {@link #close()} on
@@ -126,7 +120,6 @@ public class FontMgr extends RefCnt {
     public static native long _nMatchFamily(long ptr, String familyName);
     public static native long _nMatchFamilyStyle(long ptr, String familyName, int fontStyle);
     public static native long _nMatchFamilyStyleCharacter(long ptr, String familyName, int fontStyle, String[] bcp47, int character);
-    public static native long _nMatchFaceStyle(long ptr, long typefacePtr, int fontStyle);
     public static native long _nMakeFromData(long ptr, long dataPtr, int ttcIndex);
     public static native long _nDefault();
 }

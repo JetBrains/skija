@@ -69,14 +69,6 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_FontMgr__1nMatchFami
     return reinterpret_cast<jlong>(typeface);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_FontMgr__1nMatchFaceStyle
-  (JNIEnv* env, jclass jclass, jlong ptr, jlong typefacePtr, jint fontStyle) {
-    SkFontMgr* instance = reinterpret_cast<SkFontMgr*>(static_cast<uintptr_t>(ptr));
-    SkTypeface* typeface = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(typefacePtr));
-    SkTypeface* match = instance->matchFaceStyle(typeface, skija::FontStyle::fromJava(fontStyle));
-    return reinterpret_cast<jlong>(match);
-}
-
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_FontMgr__1nMakeFromData
   (JNIEnv* env, jclass jclass, jlong ptr, jlong dataPtr, jint ttcIndex) {
     SkFontMgr* instance = reinterpret_cast<SkFontMgr*>(static_cast<uintptr_t>(ptr));

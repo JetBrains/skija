@@ -5,16 +5,15 @@
 #include "interop.hh"
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image__1nMakeFromEncoded
-  (JNIEnv* env, jclass jclass, jbyteArray encodedArray, jobject subsetObj) {
+  (JNIEnv* env, jclass jclass, jbyteArray encodedArray) {
     jsize encodedLen = env->GetArrayLength(encodedArray);
     jbyte* encoded = env->GetByteArrayElements(encodedArray, 0);
     sk_sp<SkData> encodedData = SkData::MakeWithCopy(encoded, encodedLen);
     env->ReleaseByteArrayElements(encodedArray, encoded, 0);
 
-    std::unique_ptr<SkIRect> subset = skija::IRect::toSkIRect(env, subsetObj);
-    SkImage* ptr = SkImage::MakeFromEncoded(encodedData, subset.get()).release();
+    sk_sp<SkImage> image = SkImage::MakeFromEncoded(encodedData);
 
-    return reinterpret_cast<jlong>(ptr);
+    return reinterpret_cast<jlong>(image.release());
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image__1nGetDimensions

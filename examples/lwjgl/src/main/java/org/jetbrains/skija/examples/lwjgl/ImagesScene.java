@@ -15,7 +15,7 @@ public class ImagesScene implements Scene {
     public ImagesScene() {
         try {
             circus = Image.makeFromEncoded(Files.readAllBytes(Path.of("images", "circus.jpg")));
-            circusCropped = Image.makeFromEncoded(Files.readAllBytes(Path.of("images", "circus.jpg")), IRect.makeXYWH(160, 160, 320, 320));
+            circusCropped = Image.makeFromEncoded(Files.readAllBytes(Path.of("images", "circus.jpg")));
             cloud = Image.makeFromEncoded(Files.readAllBytes(Path.of("images", "cloud.png")));
             ducks = Image.makeFromEncoded(Files.readAllBytes(Path.of("images", "ducks.jpg")));
             tests = new Image[] {

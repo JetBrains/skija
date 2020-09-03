@@ -274,41 +274,6 @@ public class Bitmap extends Managed {
     }
 
     /**
-     * <p>Provides a hint to caller that pixels should not be cached. Only true if
-     * setVolatile() has been called to mark as volatile.</p>
-     *
-     * <p>Volatile state is not shared by other bitmaps sharing the same PixelRef.</p>
-     *
-     * @return  true if marked volatile
-     *
-     * @see <a href="https://fiddle.skia.org/c/@Bitmap_isVolatile">https://fiddle.skia.org/c/@Bitmap_isVolatile</a>
-    */
-    public boolean isVolatile() {
-        Stats.onNativeCall();
-        return _nIsVolatile(_ptr);
-    }
-
-    /** 
-     * Sets if pixels should be read from PixelRef on every access. Bitmap are not
-     * volatile by default; a GPU back end may upload pixel values expecting them to be
-     * accessed repeatedly. Marking temporary Bitmap as volatile provides a hint to
-     * BaseDevice that the Bitmap pixels should not be cached. This can
-     * improve performance by avoiding overhead and reducing resource
-     * consumption on BaseDevice.
-     *
-     * @param isVolatile  true if backing pixels are temporary
-     * @return            this
-     *
-     * @see <a href="https://fiddle.skia.org/c/@Bitmap_setIsVolatile">https://fiddle.skia.org/c/@Bitmap_setIsVolatile</a>
-     */
-    @NotNull @Contract("_ -> this")
-    public Bitmap setVolatile(boolean isVolatile) {
-        Stats.onNativeCall();
-        _nSetVolatile(_ptr, isVolatile);
-        return this;
-    }
-
-    /**
      * <p>Resets to its initial state; all fields are set to zero, as if Bitmap had
      * been initialized by Bitmap().</p>
      *

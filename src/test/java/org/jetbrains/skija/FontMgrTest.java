@@ -77,9 +77,6 @@ public class FontMgrTest implements Executable {
 
         assertEquals(null, fm.matchFamilyStyleCharacter("JetBrains Mono", FontStyle.BOLD, new String[] {"en-US"}, 65 /* A */)); // ?
 
-        assertEquals(null, fm.matchFaceStyle(jbMono, FontStyle.BOLD)); // ?
-        assertEquals(null, fm.matchFaceStyle(jbMonoBold, FontStyle.NORMAL)); // ?
-
         try (var data = Data.makeFromFileName("src/test/resources/fonts/JetBrainsMono-Italic.ttf");
              var face = fm.makeFromData(data);
              var ss = fm.matchFamily("JetBrains Mono"); )
