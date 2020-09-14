@@ -8,6 +8,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jetbrains.skija.*;
 
 public class TestRunner {
     public int asserts   = 0;
@@ -49,6 +50,57 @@ public class TestRunner {
                 runner.fail("Expected '" + expected + "'" + (expected == null ? "" : " (" + expected.getClass() + ")") + " == '" + actual + "'" + (actual == null ? "" : "(" + actual.getClass() + ")"));
             else
                 System.out.print(".");
+        } catch(Exception e) {
+            runner.error(e);
+        }
+    }
+
+    public static void assertClose(float expected, float actual) {
+        assertClose(expected, actual, 0.00001f);
+    }
+
+    public static void assertClose(float expected, float actual, float epsilon) {
+        runner.asserts++;
+        try {
+            if (Math.abs(expected - actual) > epsilon)
+                runner.fail("Expected " + expected + " == " + actual);
+            else
+                System.out.print(".");
+        } catch(Exception e) {
+            runner.error(e);
+        }
+    }
+
+    public static void assertClose(Point expected, Point actual) {
+        assertClose(expected, actual, 0.00001f);
+    }
+
+    public static void assertClose(Point expected, Point actual, float epsilon) {
+        runner.asserts++;
+        try {
+            if (Math.abs(expected._x - actual._x) > epsilon || Math.abs(expected._y - actual._y) > epsilon)
+                runner.fail("Expected " + expected + " == " + actual);
+            else
+                System.out.print(".");
+        } catch(Exception e) {
+            runner.error(e);
+        }
+    }
+
+    public static void assertClose(Matrix33 expected, Matrix33 actual) {
+        assertClose(expected, actual, 0.00001f);
+    }
+
+    public static void assertClose(Matrix33 expected, Matrix33 actual, float epsilon) {
+        runner.asserts++;
+        try {
+            for (int i = 0; i < 9; ++i) {
+                if (Math.abs(expected._mat[i] - actual._mat[i]) > epsilon) {
+                    runner.fail("Expected " + expected + " == " + actual);
+                    return;
+                }
+            }
+            System.out.print(".");
         } catch(Exception e) {
             runner.error(e);
         }

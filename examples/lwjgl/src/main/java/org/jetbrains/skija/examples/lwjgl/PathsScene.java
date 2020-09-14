@@ -14,6 +14,7 @@ public class PathsScene implements Scene {
         drawFillPaths(canvas);
         drawPathsOp(canvas);
         drawInterpolate(canvas);
+        drawMeasure(canvas);
     }
 
     public void drawPaths(Canvas canvas, Paint paint) {
@@ -399,5 +400,31 @@ public class PathsScene implements Scene {
             canvas.restore();
             canvas.translate(0, 50);
         }
+    }
+
+    private void drawMeasure(Canvas canvas) {
+        canvas.save();
+
+        try (var path = new Path().addCircle(20, 20, 20, PathDirection.COUNTER_CLOCKWISE);
+             var measure = new PathMeasure(path, false);
+             var segment = new Path();
+             var arcStroke = new Paint().setColor(0xFF437AA0).setMode(PaintMode.STROKE).setStrokeWidth(1);
+             var tangentStroke = new Paint().setColor(0xFFFAA6B2).setMode(PaintMode.STROKE).setStrokeWidth(1);)
+        {
+            canvas.drawPath(path, arcStroke);
+            canvas.translate(50, 0);
+
+            measure.getSegment(50, 100, segment, true);
+            canvas.drawPath(segment, arcStroke);
+
+            for (float d = 50; d < 100; d += 10) {
+                Point position = measure.getPosition(d);
+                Point tangent = measure.getTangent(d);
+                canvas.drawLine(position.getX(), position.getY(), position.getX() + tangent.getX() * 15f, position.getY() + tangent.getY() * 15f, tangentStroke);
+            }
+        }
+
+        canvas.restore();
+        canvas.translate(0, 50);
     }
 }

@@ -78,6 +78,7 @@ Matrix               ▓▓▓░░░░░░░
 Paint                ▓▓▓▓▓▓▓▓░░
 Path                 ▓▓▓▓▓▓▓▓▓▓
 PathEffects          ▓▓▓▓▓▓▓▓▓▓
+PathMeasure          ▓▓▓▓▓▓▓▓▓▓
 Picture              ▓▓▓▓▓▓▓▓▓░
 PictureRecorder      ▓▓▓▓▓▓▓▓▓▓
 PixelRef             ▓▓▓▓▓▓▓▓▓▓
