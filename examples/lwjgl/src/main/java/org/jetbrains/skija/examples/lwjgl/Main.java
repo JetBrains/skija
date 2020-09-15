@@ -347,6 +347,7 @@ class Window {
         scenes.put("Picture Recorder", new PictureRecorderScene());
         scenes.put("Pythagoras",       new PythagorasScene());
         scenes.put("Shaders",          new ShadersScene());
+        scenes.put("Shadow Utils",     new ShadowUtilsScene());
         scenes.put("Squares",          new SquaresScene());
         scenes.put("Text",             new TextScene());
         scenes.put("Text Blob",        new TextBlobScene());
@@ -354,7 +355,7 @@ class Window {
         // scenes.put("Wall Cached",   new WallOfTextScene(true));
         // scenes.put("Wall of Text",  new WallOfTextScene(false));
         scenes.put("Watches",       new WatchesScene());
-        currentScene = "Paths";
+        currentScene = "Shadow Utils";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();

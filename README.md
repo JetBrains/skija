@@ -86,6 +86,7 @@ Pixmap               ░░░░░░░░░░
 Region               ▓▓▓▓▓▓▓▓▓▓
 ScalerContext        ░░░░░░░░░░
 Shader               ▓▓▓▓▓▓▓▓▓▓
+ShadowUtils          ▓▓▓▓▓▓▓▓▓▓
 Stream               ░░░░░░░░░░
 Surface              ▓░░░░░░░░░
 TextBlob             ▓▓░░░░░░░░
