@@ -234,12 +234,18 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Canvas__1nSave(JNIEnv
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Canvas__1nSaveLayer
-  (JNIEnv* env, jclass jclass, jlong ptr, jfloat left, jfloat top, jfloat right, jfloat bottom, jlong paintPtr) {
-    SkRect bounds {left, top, right, bottom};
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong paintPtr) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(ptr));
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
-    const SkCanvas::SaveLayerRec rec(&bounds, paint, 0);
-    return canvas->saveLayer(rec);
+    return canvas->saveLayer(nullptr, paint);
+}
+
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Canvas__1nSaveLayerRect
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloat left, jfloat top, jfloat right, jfloat bottom, jlong paintPtr) {
+    SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(ptr));
+    SkRect bounds {left, top, right, bottom};
+    SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
+    return canvas->saveLayer(&bounds, paint);
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Canvas__1nGetSaveCount(JNIEnv* env, jclass jclass, jlong ptr) {

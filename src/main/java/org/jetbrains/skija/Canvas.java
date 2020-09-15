@@ -428,7 +428,38 @@ public class Canvas extends Native {
 
     public int saveLayer(float left, float top, float right, float bottom, Paint paint) {
         Stats.onNativeCall();
-        return _nSaveLayer(_ptr, left, top, right, bottom, Native.getPtr(paint));
+        return _nSaveLayerRect(_ptr, left, top, right, bottom, Native.getPtr(paint));
+    }
+
+    /**
+     * <p>Saves Matrix and clip, and allocates a Bitmap for subsequent drawing.
+     * Calling restore() discards changes to Matrix and clip, and draws the Bitmap.</p>
+     * 
+     * <p>Matrix may be changed by translate(), scale(), rotate(), skew(), concat(),
+     * setMatrix(), and resetMatrix(). Clip may be changed by clipRect(), clipRRect(),
+     * clipPath(), clipRegion().</p>
+     * 
+     * <p>Rect bounds suggests but does not define the Bitmap size. To clip drawing to
+     * a specific rectangle, use clipRect().</p>
+     * 
+     * <p>Optional Paint paint applies alpha, ColorFilter, ImageFilter, and
+     * BlendMode when restore() is called.</p>
+     * 
+     * <p>Call restoreToCount() with returned value to restore this and subsequent saves.</p>
+     * 
+     * @param bounds  hint to limit the size of the layer
+     * @param paint   graphics state for layer; may be null
+     * @return        depth of saved stack
+     * 
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_saveLayer">https://fiddle.skia.org/c/@Canvas_saveLayer</a>
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_saveLayer_4">https://fiddle.skia.org/c/@Canvas_saveLayer_4</a>
+    */
+    public int saveLayer(@Nullable Rect bounds, @Nullable Paint paint) {
+        Stats.onNativeCall();
+        if (bounds == null)
+            return _nSaveLayer(_ptr, Native.getPtr(paint));
+        else
+            return _nSaveLayerRect(_ptr, bounds._left, bounds._top, bounds._right, bounds._bottom, Native.getPtr(paint));
     }
 
     public int getSaveCount() {
@@ -476,7 +507,8 @@ public class Canvas extends Native {
     public static native boolean _nReadPixels(long ptr, long bitmapPtr, int srcX, int srcY);
     public static native boolean _nWritePixels(long ptr, long bitmapPtr, int x, int y);
     public static native int  _nSave(long ptr);
-    public static native int  _nSaveLayer(long ptr, float left, float top, float right, float bottom, long paintPtr);
+    public static native int  _nSaveLayer(long ptr, long paintPtr);
+    public static native int  _nSaveLayerRect(long ptr, float left, float top, float right, float bottom, long paintPtr);
     public static native int  _nGetSaveCount(long ptr);
     public static native void _nRestore(long ptr);
     public static native void _nRestoreToCount(long ptr, int saveCount);
