@@ -1,9 +1,11 @@
 package org.jetbrains.skija;
 
 import lombok.Data;
+import org.jetbrains.annotations.*;
 
 @Data
 public class Matrix33 {
+    @ApiStatus.Internal
     public final float[] _mat;
 
     public Matrix33(float... mat) {

@@ -438,6 +438,21 @@ namespace skija {
             }
         }
     }
+
+   namespace RSXform {
+        jclass cls;
+        jmethodID ctor;
+
+        void onLoad(JNIEnv* env) {
+            jclass local = env->FindClass("org/jetbrains/skija/RSXform");
+            cls  = static_cast<jclass>(env->NewGlobalRef(local));
+            ctor = env->GetMethodID(cls, "<init>", "(FFFF)V");
+        }
+
+        void onUnload(JNIEnv* env) {
+            env->DeleteGlobalRef(cls);
+        }
+    }
 }
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
@@ -462,6 +477,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::Point::onLoad(env);
     skija::Rect::onLoad(env);
     skija::RRect::onLoad(env);
+    skija::RSXform::onLoad(env);
 
     skija::paragraph::LineMetrics::onLoad(env);
     skija::paragraph::TextBox::onLoad(env);
@@ -494,6 +510,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::Point::onUnload(env);
     skija::Rect::onUnload(env);
     skija::RRect::onUnload(env);
+    skija::RSXform::onUnload(env);
 
     skija::paragraph::LineMetrics::onUnload(env);
     skija::paragraph::TextBox::onUnload(env);

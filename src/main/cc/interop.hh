@@ -139,6 +139,11 @@ namespace skija {
         SkRRect toSkRRect(JNIEnv* env, jfloat left, jfloat top, jfloat right, jfloat bottom, jfloatArray jradii);
         jobject fromSkRRect(JNIEnv* env, const SkRRect& rect);   
     }
+
+    namespace RSXform {
+        extern jclass cls;
+        extern jmethodID ctor;
+    }
 }
 
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray arr);

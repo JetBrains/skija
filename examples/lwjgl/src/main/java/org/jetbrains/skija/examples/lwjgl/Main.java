@@ -349,13 +349,11 @@ class Window {
         scenes.put("Shaders",          new ShadersScene());
         scenes.put("Shadow Utils",     new ShadowUtilsScene());
         scenes.put("Squares",          new SquaresScene());
-        scenes.put("Text",             new TextScene());
         scenes.put("Text Blob",        new TextBlobScene());
         scenes.put("Text Style",       new TextStyleScene());
-        // scenes.put("Wall Cached",   new WallOfTextScene(true));
-        // scenes.put("Wall of Text",  new WallOfTextScene(false));
-        scenes.put("Watches",       new WatchesScene());
-        currentScene = "Shadow Utils";
+        scenes.put("Wall of Text",     new WallOfTextScene());
+        scenes.put("Watches",          new WatchesScene());
+        currentScene = "Text Blob";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();

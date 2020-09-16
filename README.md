@@ -89,7 +89,8 @@ Shader               ▓▓▓▓▓▓▓▓▓▓
 ShadowUtils          ▓▓▓▓▓▓▓▓▓▓
 Stream               ░░░░░░░░░░
 Surface              ▓░░░░░░░░░
-TextBlob             ▓▓░░░░░░░░
+TextBlob             ▓▓▓▓▓▓▓▓▓▓
+TextBlobBuilder      ░░░░░░░░░░
 Typeface             ▓▓▓▓▓▓▓▓░░
 ```
 

@@ -54,6 +54,17 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_PathMeasure__1nGet
         return nullptr;
 }
 
+extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_PathMeasure__1nGetRSXform
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloat distance) {
+    SkPathMeasure* instance = reinterpret_cast<SkPathMeasure*>(static_cast<uintptr_t>(ptr));
+    SkPoint position;
+    SkVector tangent;
+    if (instance->getPosTan(distance, &position, &tangent))
+        return env->NewObject(skija::RSXform::cls, skija::RSXform::ctor, tangent.fX, tangent.fY, position.fX, position.fY);
+    else
+        return nullptr;
+}
+
 extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_PathMeasure__1nGetMatrix
   (JNIEnv* env, jclass jclass, jlong ptr, jfloat distance, jboolean getPosition, jboolean getTangent) {
     SkPathMeasure* instance = reinterpret_cast<SkPathMeasure*>(static_cast<uintptr_t>(ptr));

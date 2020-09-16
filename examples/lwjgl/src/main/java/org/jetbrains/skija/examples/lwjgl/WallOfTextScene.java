@@ -11,81 +11,38 @@ import org.jetbrains.skija.*;
 
 public class WallOfTextScene implements Scene {
     private Font font;
-    private List<String> words;
-    // private Map<String, TextBuffer> cache;
+    private String text;
     private Paint textColor;
-    private Paint highlightColor;
+    private TextBlob cachedBlob;
+    private int cachedWidth;
 
-    public WallOfTextScene(boolean useCache) {
+    public WallOfTextScene() {
         var face = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf");
         font = new Font(face, 13);
         try {
-            words = Files.readAllLines(Path.of("texts/google-10000-english.txt"));
-            Collections.sort(words);
+            text = Files.lines(Path.of("texts/google-10000-english.txt"))
+                        .sorted()
+                        .limit(2000)
+                        .reduce("2000 words", (a, b) -> a + " " + b);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        if (useCache) {
-            // cache = new HashMap<>();
-            textColor = new Paint().setColor(0xFF487D58);
-            highlightColor = new Paint().setColor(0xFFEEA002);
-        } else {
-            textColor = new Paint().setColor(0xFF454A6F);
-            highlightColor = new Paint().setColor(0xFFE7582A); 
-        }
+
+        textColor = new Paint().setColor(0xFF783245);
     }
     
-    // private TextBuffer getTextBuffer(String s) {
-    //     if (cache == null) 
-    //         return font.hbFont.shape(s);
-    //     else
-    //         return cache.computeIfAbsent(s, w -> font.hbFont.shape(w));
-    // }
-    
-    // private void releaseTextBuffer(TextBuffer b) {
-    //     if (cache == null)
-    //         b.close();
-    // }
-
     @Override
-    public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
-        // FontExtents extents = font.hbFont.getHorizontalExtents();
-        
+    public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {        
         var paddingH = 20f;
         var paddingV = 20f;
-        // TextBuffer b = getTextBuffer(" ");
-        // var wordGap = b.getAdvances()[0];
-        // releaseTextBuffer(b);
-        // var lineGap = extents.lineGap + 0;
-        // TextBuffer countBuffer = getTextBuffer("8888 words");
-        // var x = paddingH + countBuffer.getAdvances()[0] + wordGap;
-        // var y = paddingV;
-        // releaseTextBuffer(countBuffer);
-        
-        var count = 0;
 
-        for (var word: words) {
-            // TextBuffer buffer = getTextBuffer(word);
-            // try {
-            //     float[] advances = buffer.getAdvances();
-            //     if (x + advances[0] > width - paddingH) {
-            //         x = paddingH;
-            //         y = y + extents.getLineHeight();
-            //     }
-
-            //     if (y + extents.getLineHeight() > height - paddingV)
-            //         break;
-
-            //     canvas.drawTextBuffer(buffer, x, y + extents.getAscenderAbs(), font.skFont, textColor);
-            //     x = x + advances[0] + wordGap;
-            // } finally {
-            //     releaseTextBuffer(buffer);
-            // }
-            ++count;
+        if (cachedWidth != width || cachedBlob == null) {
+            if (cachedBlob != null)
+                cachedBlob.close();
+            cachedBlob = font.shape(text, width - paddingH * 2);
+            cachedWidth = width;
         }
-        
-        // try (var buf = font.hbFont.shape(count + " words")) {
-        //     canvas.drawTextBuffer(buf, paddingH, paddingV + extents.getAscenderAbs(), font.skFont, highlightColor);
-        // }
+
+        canvas.drawTextBlob(cachedBlob, 20f, 20f, font, textColor);
     }
 }

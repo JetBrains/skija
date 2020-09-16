@@ -16,19 +16,19 @@ public class ShadowUtilsScene implements Scene {
         {
             canvas.translate(xpos - 400, ypos - 100);
             
-            ShadowUtils.drawShadow(canvas, path, new Point3(0, 0, 10), new Point3(width / 2 * dpi, height / 2 * dpi, 150), 500, 0x80ff0000, 0x800000ff, false, false);
+            ShadowUtils.drawShadow(canvas, path, new Point3(0, 0, 100), new Point3(width / 2 * dpi, height / 2 * dpi, 110), 100, 0x80ff0000, 0x800000ff, false, false);
             canvas.drawPath(path, stroke);
 
             path.offset(200, 0);
-            ShadowUtils.drawShadow(canvas, path, new Point3(0, 0, 10), new Point3(width / 2 * dpi, height / 2 * dpi, 150), 500, 0x80ff0000, 0x800000ff, true, false);
+            ShadowUtils.drawShadow(canvas, path, new Point3(0, 0, 100), new Point3(width / 2 * dpi, height / 2 * dpi, 110), 100, 0x80ff0000, 0x800000ff, true, false);
             canvas.drawPath(path, stroke);
 
             path.offset(200, 0);
-            ShadowUtils.drawShadow(canvas, path, new Point3(0, 0, 10), new Point3(width / 2 * dpi, height / 2 * dpi, 150), 500, 0x80ff0000, 0x800000ff, false, true);
+            ShadowUtils.drawShadow(canvas, path, new Point3(0, 0, 100), new Point3(width / 2 * dpi, height / 2 * dpi, 110), 100, 0x80ff0000, 0x800000ff, false, true);
             canvas.drawPath(path, stroke);
 
             path.offset(200, 0);
-            ShadowUtils.drawShadow(canvas, path, new Point3(0, 0, 10), new Point3(width / 2 * dpi, height / 2 * dpi, 150), 500, 0x80ff0000, 0x800000ff, true, true);
+            ShadowUtils.drawShadow(canvas, path, new Point3(0, 0, 100), new Point3(width / 2 * dpi, height / 2 * dpi, 110), 100, 0x80ff0000, 0x800000ff, true, true);
             canvas.drawPath(path, stroke);
         }
 

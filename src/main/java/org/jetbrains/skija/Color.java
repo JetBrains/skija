@@ -18,4 +18,8 @@ public class Color {
 
         return 0xFF000000 | (r << 16) | (g << 8) | b;
     }
+
+    public static int withAlpha(int color, int alpha) {
+        return (alpha << 24) | (color & 0xFFFFFF);
+    }
 }

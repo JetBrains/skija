@@ -19,6 +19,14 @@ public class PathMeasure extends Managed {
      * Initialize the pathmeasure with the specified path. The parts of the path that are needed
      * are copied, so the client is free to modify/delete the path after this call.
      */
+    public PathMeasure(Path path) {
+        this(path, false, 1f);
+    }
+
+    /**
+     * Initialize the pathmeasure with the specified path. The parts of the path that are needed
+     * are copied, so the client is free to modify/delete the path after this call.
+     */
     public PathMeasure(Path path, boolean forceClosed) {
         this(path, forceClosed, 1f);
     }
@@ -80,6 +88,18 @@ public class PathMeasure extends Managed {
 
     /**
      * Pins distance to 0 <= distance <= getLength(), and then computes
+     * the corresponding RSXform.
+     * 
+     * @return  null if there is no path, or a zero-length path was specified.
+     */
+    @Nullable
+    public RSXform getRSXform(float distance) {
+        Stats.onNativeCall();
+        return _nGetRSXform(_ptr, distance);
+    }
+
+    /**
+     * Pins distance to 0 <= distance <= getLength(), and then computes
      * the corresponding matrix (by calling getPosition/getTangent).
      * 
      * @return  null if there is no path, or a zero-length path was specified.
@@ -129,6 +149,7 @@ public class PathMeasure extends Managed {
     @ApiStatus.Internal public static native float   _nGetLength(long ptr);
     @ApiStatus.Internal public static native Point   _nGetPosition(long ptr, float distance);
     @ApiStatus.Internal public static native Point   _nGetTangent(long ptr, float distance);
+    @ApiStatus.Internal public static native RSXform _nGetRSXform(long ptr, float distance);
     @ApiStatus.Internal public static native float[] _nGetMatrix(long ptr, float distance, boolean getPosition, boolean getTangent);
     @ApiStatus.Internal public static native boolean _nGetSegment(long ptr, float startD, float endD, long dstPtr, boolean startWithMoveTo);
     @ApiStatus.Internal public static native boolean _nIsClosed(long ptr);
