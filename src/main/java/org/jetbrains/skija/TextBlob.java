@@ -116,7 +116,6 @@ public class TextBlob extends Managed {
 
 
     @ApiStatus.Internal public static final long _finalizerPtr = _nGetFinalizer();
-    @ApiStatus.Internal public static native long _nMake();
     @ApiStatus.Internal public static native long _nGetFinalizer();
     @ApiStatus.Internal public static native Rect _nBounds(long ptr);
     @ApiStatus.Internal public static native int  _nGetUniqueId(long ptr);

@@ -79,14 +79,14 @@ public class TextBlobScene implements Scene {
             float distance = relativeOffset * length;
 
             for (int i=0; i < xforms.length; ++i) {
-                // Point p = measure.getPosition(distance);
-                // Point t = measure.getTangent(distance);
-                // xforms[i] = new RSXform(t.getX(), t.getY(), p.getX(), p.getY());
-                xforms[i] = measure.getRSXform(distance);
-                
-                distance += widths[i];
+                float w = widths[i];
+                distance += w / 2;
                 while (distance > length)
                     distance -= length;
+                Point p = measure.getPosition(distance);
+                Point t = measure.getTangent(distance);
+                xforms[i] = new RSXform(t.getX(), t.getY(), p.getX() - w / 2f  * t.getX(), p.getY() - w / 2f  * t.getY());
+                distance += w / 2;
             }
 
             canvas.save();
