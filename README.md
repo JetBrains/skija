@@ -90,7 +90,7 @@ ShadowUtils          ▓▓▓▓▓▓▓▓▓▓
 Stream               ░░░░░░░░░░
 Surface              ▓░░░░░░░░░
 TextBlob             ▓▓▓▓▓▓▓▓▓▓
-TextBlobBuilder      ░░░░░░░░░░
+TextBlobBuilder      ▓▓▓▓▓▓▓▓▓▓
 Typeface             ▓▓▓▓▓▓▓▓░░
 ```
 

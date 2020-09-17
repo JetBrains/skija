@@ -19,6 +19,7 @@ public class TextBlobScene implements Scene {
         drawPosH(canvas);
         drawPos(canvas);
         drawRSXform(canvas);
+        drawBuilder(canvas);
         drawBounds(canvas);
     }
 
@@ -99,6 +100,39 @@ public class TextBlobScene implements Scene {
         canvas.translate(0, (radius + gap) * 2);
     }
 
+    public void drawBuilder(Canvas canvas) {
+        try (var builder = new TextBlobBuilder();) {
+            builder.appendRun(font, "appendRun", 0, 0, Rect.makeXYWH(0, 0, 100, 20));
+
+            short[] glyphs = font.getStringGlyphIds("appendRunPosH");
+            float[] posX = new float[glyphs.length];
+            for (int i = 0; i < posX.length; ++i)
+                posX[i] = i * 20; 
+            builder.appendRunPosH(font, glyphs, posX, gap);
+
+            glyphs = font.getStringGlyphIds("appendRunPos");
+            Point[] pos = new Point[glyphs.length];
+            for (int i = 0; i < pos.length; ++i)
+                pos[i] = new Point(i * 20, 2 * gap + (float) Math.sin(i) * 5f); 
+            builder.appendRunPos(font, glyphs, pos);
+
+            glyphs = font.getStringGlyphIds("appendRSXform");
+            RSXform[] xform = new RSXform[glyphs.length];
+            for (int i = 0; i < xform.length; ++i) {
+                double angle = i * Math.PI / xform.length;
+                xform[i] = new RSXform((float) Math.cos(angle), (float) Math.sin(angle), i * 20, 3 * gap + (float) Math.sin(i) * 5f); 
+            }
+            builder.appendRunRSXform(font, glyphs, xform);
+
+            try (var blob = builder.build();
+                 var fill = new Paint().setColor(0xff454a6f);) {
+                canvas.drawTextBlob(blob, 0, 0, font, fill);
+            }
+        }
+
+        canvas.translate(0, 4 * gap);
+    }
+
     public void drawBounds(Canvas canvas) {
         float percent = Math.abs((System.currentTimeMillis() % 10000) / 33f - 150f) - 25f;
         percent = Math.round(Math.max(0f, Math.min(100f, percent)));
@@ -137,4 +171,6 @@ public class TextBlobScene implements Scene {
             canvas.translate(0, bounds.getHeight() + gap);
         }
     }
+
+
 }

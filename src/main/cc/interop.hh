@@ -119,6 +119,7 @@ namespace skija {
         extern jfieldID right;
         extern jfieldID bottom;
 
+        std::unique_ptr<SkRect> toSkRect(JNIEnv* env, jobject rect);
         jobject fromLTRB(JNIEnv* env, float left, float top, float right, float bottom);
         jobject fromSkRect(JNIEnv* env, const SkRect& rect);
     }

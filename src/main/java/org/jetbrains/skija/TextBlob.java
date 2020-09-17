@@ -78,19 +78,18 @@ public class TextBlob extends Managed {
      */
     public static TextBlob makeFromPos(short[] glyphs, Point[] pos, Font font) {
         assert glyphs.length == pos.length : "glyphs.length " + glyphs.length + " != pos.length " + pos.length;
-        Stats.onNativeCall();
         float[] floatPos = new float[pos.length * 2];
         for (int i = 0; i < pos.length; ++i) {
             floatPos[i * 2]     = pos[i]._x;
             floatPos[i * 2 + 1] = pos[i]._y;
         }
+        Stats.onNativeCall();
         long ptr = _nMakeFromPos(glyphs, floatPos, Native.getPtr(font));
         return ptr == 0 ? null : new TextBlob(ptr);
     }
 
     public static TextBlob makeFromRSXform(short[] glyphs, RSXform[] xform, Font font) {
         assert glyphs.length == xform.length : "glyphs.length " + glyphs.length + " != xform.length " + xform.length;
-        Stats.onNativeCall();
         float[] floatXform = new float[xform.length * 4];
         for (int i = 0; i < xform.length; ++i) {
             floatXform[i * 4]     = xform[i]._scos;
@@ -98,6 +97,7 @@ public class TextBlob extends Managed {
             floatXform[i * 4 + 2] = xform[i]._tx;
             floatXform[i * 4 + 3] = xform[i]._ty;
         }
+        Stats.onNativeCall();
         long ptr = _nMakeFromRSXform(glyphs, floatXform, Native.getPtr(font));
         return ptr == 0 ? null : new TextBlob(ptr);
     }

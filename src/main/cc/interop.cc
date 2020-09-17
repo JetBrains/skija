@@ -330,6 +330,19 @@ namespace skija {
             env->DeleteGlobalRef(cls);
         }
 
+        std::unique_ptr<SkRect> toSkRect(JNIEnv* env, jobject rectObj) {
+            if (rectObj == nullptr)
+                return std::unique_ptr<SkRect>(nullptr);
+            else {
+                SkRect* rect = new SkRect();
+                rect->setLTRB(env->GetFloatField(rectObj, left), 
+                              env->GetFloatField(rectObj, top), 
+                              env->GetFloatField(rectObj, right), 
+                              env->GetFloatField(rectObj, bottom));
+                return std::unique_ptr<SkRect>(rect);
+            }
+        }
+
         jobject fromLTRB(JNIEnv* env, float left, float top, float right, float bottom) {
             return env->CallStaticObjectMethod(cls, makeLTRB, left, top, right, bottom);
         }
