@@ -11,8 +11,10 @@ jobs:
         with:
           java-version: '11.0.8'
       - run: ./script/revision.sh
-      - name: Build shared
-        run: mvn --batch-mode --file pom.shared.xml -DskipTests -Drevision=$(./script/revision.sh)-shared package
+      - name: mvn deploy
+        run: mvn --batch-mode --file pom.shared.xml -DskipTests -Drevision=$(./script/revision.sh)-shared deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # mac:
   #   runs-on: macos-10.15
   #   steps:

@@ -22,4 +22,11 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+    <distributionManagement>
+       <repository>
+            <id>github</id>
+            <name>GitHub JetBrains Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/JetBrains/skija</url>
+        </repository>
+    </distributionManagement>
 </project>
