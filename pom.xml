@@ -31,7 +31,7 @@
                 <includes>
                     <include>libskija.dylib</include>
                     <include>libskija.so</include>
-                    <include>libskija.dll</include>
+                    <include>skija.dll</include>
                 </includes>
             </resource>
         </resources>
