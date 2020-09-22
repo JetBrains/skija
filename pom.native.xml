@@ -8,27 +8,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <repositories>
-        <repository>
-            <id>central</id>
-            <url>https://repo1.maven.org/maven2</url>
-            <releases><enabled>true</enabled></releases>
-            <snapshots><enabled>true</enabled></snapshots>
-        </repository>
-    </repositories>
     <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>19.0.0</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>org.jetbrains.skija</groupId>
             <artifactId>skija</artifactId>
@@ -48,4 +28,16 @@
             </resource>
         </resources>
     </build>
+    <repositories>
+        <repository>
+            <id>space-maven</id>
+            <url>https://packages.jetbrains.team/maven/p/skija/maven</url>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <repository>
+            <id>space-maven</id>
+            <url>https://packages.jetbrains.team/maven/p/skija/maven</url>
+        </repository>
+    </distributionManagement>
 </project>
