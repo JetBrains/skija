@@ -11,6 +11,7 @@
             </activation>
             <properties>
                 <lwjgl.natives>natives-macos</lwjgl.natives>
+                <skija.natives>skija-macos</skija.natives>
             </properties>
         </profile>
         <profile>
@@ -20,6 +21,7 @@
             </activation>
             <properties>
                 <lwjgl.natives>natives-linux</lwjgl.natives>
+                <skija.natives>skija-linux</skija.natives>
             </properties>
         </profile>
         <profile>
@@ -29,6 +31,7 @@
             </activation>
             <properties>
                 <lwjgl.natives>natives-windows</lwjgl.natives>
+                <skija.natives>skija-windows</skija.natives>
             </properties>
         </profile>
     </profiles>
@@ -90,8 +93,8 @@
     <dependencies>
         <dependency>
             <groupId>org.jetbrains.skija</groupId>
-            <artifactId>skija</artifactId>
-            <version>0.0.0-local</version>
+            <artifactId>${skija.natives}</artifactId>
+            <version>0.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -99,7 +102,6 @@
             <version>1.18.12</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
@@ -131,9 +133,8 @@
 
     <repositories>
         <repository>
-            <id>bintray-jetbrains-skija</id>
-            <name>bintray</name>
-            <url>https://jetbrains.bintray.com/skija</url>
+            <id>space-maven</id>
+            <url>https://packages.jetbrains.team/maven/p/skija/maven</url>
         </repository>
     </repositories>
 </project>
