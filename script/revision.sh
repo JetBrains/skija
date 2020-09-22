@@ -1,6 +1,5 @@
 #!/bin/bash
 set -o errexit -o nounset -o pipefail
-
 cd "`dirname $0`/.."
 
 COORD=`git describe --tags --match "*.*.0"`

@@ -2,12 +2,20 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jetbrains.skija</groupId>
     <artifactId>skija</artifactId>
-    <version>${revision}</version>
+    <version>${revision}-${platform}</version>
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -24,7 +32,7 @@
         <dependency>
             <groupId>org.jetbrains.skija</groupId>
             <artifactId>skija</artifactId>
-            <version>${revisionShared}</version>
+            <version>${revision}-shared</version>
         </dependency>
     </dependencies>
     <build>

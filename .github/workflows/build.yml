@@ -10,11 +10,9 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.0.8'
-      - run: ./script/revision.sh
-      - name: mvn deploy
-        run: mvn --batch-mode --file pom.shared.xml -DskipTests -Drevision=$(./script/revision.sh)-shared deploy
+      - run: ./script/ci_deploy_shared.sh
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
   # mac:
   #   runs-on: macos-10.15
   #   steps:
@@ -29,7 +27,9 @@ jobs:
   #     - uses: actions/setup-java@v1
   #       with:
   #         java-version: '11.0.8'
-  #     - name: Build native
+  #     - name: Edit pom
   #       run: |
-  #       REVISION=`./script/revision.sh`
-  #       mvn -f pom.native.xml -DskipTests -DrevisionShared=${REVISION}-shared -DrevisionClassified=${REVISION}-macos-x64 package
+  #       sed -i "" "s/[$][{]revision[}]/$(./script/revision.sh)/g" pom.native.xml
+  #       sed -i "" "s/[$][{]platform[}]/macos-x64/g" pom.native.xml
+  #     - name: Maven deploy
+  #       run: mvn --batch-mode --file pom.native.xml -DskipTests --settings settings.xml -Dspace.username=Nikita.Prokopov -Dspace.password=${{ secrets.SPACE_TOKEN }} deploy
