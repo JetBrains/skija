@@ -13,6 +13,7 @@ jobs:
       - run: ./script/ci_deploy_shared.sh
         env:
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
+
   # mac:
   #   runs-on: macos-10.15
   #   steps:
