@@ -113,10 +113,10 @@ Maven:
 
 ```xml
 <repositories>
-    <repository>
-        <id>space-maven</id>
-        <url>https://packages.jetbrains.team/maven/p/skija/maven</url>
-    </repository>
+  <repository>
+    <id>space-maven</id>
+    <url>https://packages.jetbrains.team/maven/p/skija/maven</url>
+  </repository>
 </repositories>
 
 <dependencies>
