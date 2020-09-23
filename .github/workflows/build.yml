@@ -41,10 +41,10 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: seanmiddleditch/gha-setup-ninja@master
       - uses: actions/setup-java@v1
         with:
           java-version: '11.0.8'
+      - run: sudo apt install -y ninja-build libglu1-mesa-dev
       - name: Download Skia
         run: |
           curl --fail --location --silent --show-error https://bintray.com/api/ui/download/jetbrains/skija/Skia-m86-linux-Release-x64.zip > Skia-m86-linux-Release-x64.zip

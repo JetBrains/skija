@@ -12,6 +12,7 @@
             <properties>
                 <lwjgl.natives>natives-macos</lwjgl.natives>
                 <skija.artifactId>skija-macos</skija.artifactId>
+                <exec.arguments.thread>-XstartOnFirstThread</exec.arguments.thread>
             </properties>
         </profile>
         <profile>
@@ -22,6 +23,7 @@
             <properties>
                 <lwjgl.natives>natives-linux</lwjgl.natives>
                 <skija.artifactId>skija-linux</skija.artifactId>
+                <exec.arguments.thread></exec.arguments.thread>
             </properties>
         </profile>
         <profile>
@@ -32,6 +34,7 @@
             <properties>
                 <lwjgl.natives>natives-windows</lwjgl.natives>
                 <skija.artifactId>skija-windows</skija.artifactId>
+                <exec.arguments.thread></exec.arguments.thread>
             </properties>
         </profile>
     </profiles>
@@ -55,7 +58,7 @@
                     <arguments>
                         <argument>-classpath</argument>
                         <classpath/>
-                        <argument>-XstartOnFirstThread</argument>
+                        <argument>${exec.arguments.thread}</argument>
                         <argument>-Djava.awt.headless=true</argument>
                         <argument>-ea</argument>
                         <!-- <argument>-XX:+UnlockExperimentalVMOptions</argument> -->

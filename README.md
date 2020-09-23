@@ -235,7 +235,7 @@ GLFW (via LWJGL), Java and Maven:
 
 ```sh
 cd examples/lwjgl
-./script/build.sh && ./script/run.sh
+./script/mvn_exec.sh
 ```
 
 ![](extras/tree.png)
