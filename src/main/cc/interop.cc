@@ -449,6 +449,8 @@ namespace skija {
 
                     return env->CallStaticObjectMethod(cls, makeComplexLTRB, r.fLeft, r.fTop, r.fRight, r.fBottom, javaFloatArray(env, radii));
             }
+
+            return nullptr;
         }
     }
 

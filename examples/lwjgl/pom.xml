@@ -11,7 +11,7 @@
             </activation>
             <properties>
                 <lwjgl.natives>natives-macos</lwjgl.natives>
-                <skija.natives>skija-macos</skija.natives>
+                <skija.artifactId>skija-macos</skija.artifactId>
             </properties>
         </profile>
         <profile>
@@ -21,7 +21,7 @@
             </activation>
             <properties>
                 <lwjgl.natives>natives-linux</lwjgl.natives>
-                <skija.natives>skija-linux</skija.natives>
+                <skija.artifactId>skija-linux</skija.artifactId>
             </properties>
         </profile>
         <profile>
@@ -31,7 +31,7 @@
             </activation>
             <properties>
                 <lwjgl.natives>natives-windows</lwjgl.natives>
-                <skija.natives>skija-windows</skija.natives>
+                <skija.artifactId>skija-windows</skija.artifactId>
             </properties>
         </profile>
     </profiles>
@@ -93,8 +93,9 @@
     <dependencies>
         <dependency>
             <groupId>org.jetbrains.skija</groupId>
-            <artifactId>${skija.natives}</artifactId>
-            <version>0.0.0</version>
+            <!-- <artifactId>${skija.artifactId}</artifactId> -->
+            <artifactId>skija-platform</artifactId>
+            <version>0.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

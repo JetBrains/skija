@@ -107,23 +107,23 @@ TextStyle            ▓▓▓▓▓▓▓▓▓▓
 TypefaceFontProvider ▓▓▓▓▓▓▓▓▓▓
 ```
 
-## Using
+## Using Skija
 
 Maven:
 
 ```xml
 <repositories>
-  <repository>
-    <id>Bintray</id>
-    <url>https://jetbrains.bintray.com/skija</url>
-  </repository>
+    <repository>
+        <id>space-maven</id>
+        <url>https://packages.jetbrains.team/maven/p/skija/maven</url>
+    </repository>
 </repositories>
 
 <dependencies>
   <dependency>
     <groupId>org.jetbrains.skija</groupId>
-    <artifactId>skija</artifactId>
-    <version>0.0.0</version>
+    <artifactId>skija-${platform}</artifactId>
+    <version>${version}</version>
   </dependency>
 </dependencies>
 ```
@@ -133,35 +133,45 @@ Gradle:
 ```gradle
 repositories {
   maven {
-    url "https://jetbrains.bintray.com/skija"
+    url "https://packages.jetbrains.team/maven/p/skija/maven"
   }
 }
 
 dependencies {
-  api "org.jetbrains.skija:skija:0.0.0"
+  api "org.jetbrains.skija:skija-${platform}:${version}"
 }
 ```
 
-## Checkout
+Replace `${platform}` and `${version}` with:
+
+Platform | `${platform}` | `${version}`
+---------|---------------|-------------
+macOS    | `macos`       | ![version](https://img.shields.io/maven-metadata/v?label=latest&metadataUrl=https%3A%2F%2Fpackages.jetbrains.team%2Fmaven%2Fp%2Fskija%2Fmaven%2Forg%2Fjetbrains%2Fskija%2Fskija-macos%2Fmaven-metadata.xml)
+Linux    | `linux`       | ![version](https://img.shields.io/maven-metadata/v?label=latest&metadataUrl=https%3A%2F%2Fpackages.jetbrains.team%2Fmaven%2Fp%2Fskija%2Fmaven%2Forg%2Fjetbrains%2Fskija%2Fskija-linux%2Fmaven-metadata.xml)
+Windows  | `windows`     | ![version](https://img.shields.io/maven-metadata/v?label=latest&metadataUrl=https%3A%2F%2Fpackages.jetbrains.team%2Fmaven%2Fp%2Fskija%2Fmaven%2Forg%2Fjetbrains%2Fskija%2Fskija-windows%2Fmaven-metadata.xml)
+
+## Developing Skija
+
+### Checkout
 
 ```sh
 git clone https://github.com/JetBrains/skija.git
 cd skija
 ```
 
-## Using prebuilt Skia
+### Using prebuilt Skia
 
-At the moment Skija is built against `chrome/m85` branch of Skia with `skshaper` and `skparagraph` modules.
+At the moment Skija is built against `chrome/m86` branch of Skia with `skshaper` and `skparagraph` modules.
 
-Prebuilt Skia can be downloaded from [JetBrains Bintray](https://bintray.com/beta/#/jetbrains/skija/Skia?tab=files).
+Prebuilt Skia can be downloaded from [JetBrains Bintray](https://bintray.com/beta/#/jetbrains/skija/Skia?tab=overview).
 
 Download, unpack and set
 
 ```
-export SKIA_DIR=~/Downloads/Skia_m85-macOS-Release-x64
+export SKIA_DIR=~/Downloads/Skia-m86-macos-Release-x64
 ```
 
-## Building Skia from scratch
+### Building Skia from scratch
 
 Install `depot_tools` somewhere:
 
@@ -193,20 +203,27 @@ gn gen out/Release-x64 --args="is_debug=false is_official_build=true skia_use_sy
 ninja -C out/Release-x64 skia modules
 ```
 
-## Building Skija
+### Building Skija
 
 Prerequisites:
 
-- macOS (Windows and Linux planned)
-- cmake
-- ninja
+- CMake
+- Ninja
 - JDK 11+ and JAVA_HOME
+- Maven
 
 ```sh
-./script/build.sh
+./script/install.sh
 ```
 
-## Running examples
+This will install local versions of these Skija artifacts:
+
+```
+org.jetbrains.skija:skija-shared:0.0.0-SNAPSHOT
+org.jetbrains.skija:skija-platform:0.0.0-SNAPSHOT
+```
+
+### Running examples
 
 Examples require latest master build of Skija installed locally in `.m2` (see [Building](#building-skija)).
 

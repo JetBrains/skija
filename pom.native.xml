@@ -1,8 +1,8 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jetbrains.skija</groupId>
-    <artifactId>skija-${platform}</artifactId>
-    <version>${revision}</version>
+    <artifactId>skija-platform</artifactId>
+    <version>0.0.0-SNAPSHOT</version>
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
@@ -12,7 +12,7 @@
         <dependency>
             <groupId>org.jetbrains.skija</groupId>
             <artifactId>skija-shared</artifactId>
-            <version>${revision}</version>
+            <version>0.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
