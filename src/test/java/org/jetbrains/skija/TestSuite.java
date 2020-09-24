@@ -10,6 +10,7 @@ public class TestSuite {
         TestRunner.testClass(BitmapTest.class);
         TestRunner.testClass(DataTest.class);
         TestRunner.testClass(FontMgrTest.class);
+        TestRunner.testClass(ImageTest.class);
         TestRunner.testClass(PathTest.class);
         TestRunner.testClass(PathMeasureTest.class);
         TestRunner.testClass(TypefaceTest.class);

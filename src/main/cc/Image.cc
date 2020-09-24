@@ -23,7 +23,8 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image__1nGetDimensio
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image__1nEncodeToData
-  (JNIEnv* env, jclass jclass, jlong ptr) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jint format, jint quality) {
     SkImage* instance = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(ptr));
-    return reinterpret_cast<jlong>(instance->encodeToData().release());
+    SkData* data = instance->encodeToData(static_cast<SkEncodedImageFormat>(format), quality).release();
+    return reinterpret_cast<jlong>(data);
 }
