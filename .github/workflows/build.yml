@@ -1,4 +1,12 @@
-on: push
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - 'docs/**'
+      - 'examples/**'
+      - 'extras/**'
+      - README.md
 
 jobs:
   shared:
