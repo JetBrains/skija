@@ -9,25 +9,29 @@ set(SKIA_DIR "" CACHE PATH "Skia source code directory")
 if(NOT SKIA_DIR)
   set(SKIA_LIBRARY_DIR "" CACHE PATH "Skia library directory (where libskia.a is located)")
 else()
-  if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+  if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64" OR "${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "AMD64")
     set(SKIA_ARCH "x64")
   else()
     set(SKIA_ARCH "x86")
   endif()
   if(CMAKE_BUILD_TYPE STREQUAL Debug)
-    set(SKIA_LIBRARY_DIR "${SKIA_DIR}/out/Debug-${SKIA_ARCH}" CACHE PATH "Skia library directory")
+    set(SKIA_LIBRARY_DIR "${SKIA_DIR}/out/Debug-${SKIA_ARCH}" CACHE PATH "Skia library directory" FORCE)
   else()
-    set(SKIA_LIBRARY_DIR "${SKIA_DIR}/out/Release-${SKIA_ARCH}" CACHE PATH "Skia library directory")
+    set(SKIA_LIBRARY_DIR "${SKIA_DIR}/out/Release-${SKIA_ARCH}" CACHE PATH "Skia library directory" FORCE)
   endif()
 endif()
 
 # Skia library
 find_library(SKIA_LIBRARY skia PATH "${SKIA_LIBRARY_DIR}")
 if(WIN32)
-  find_library(SKIA_OPENGL_LIBRARY opengl32)
+  set(SKIA_OPENGL_LIBRARY opengl32 CACHE STRING "...")
+elseif(APPLE)
+  find_library(SKIA_OPENGL_LIBRARY OpenGL NAMES GL)
 else()
   find_library(SKIA_OPENGL_LIBRARY opengl NAMES GL)
 endif()
+
+message(STATUS "CMAKE_SYSTEM_PROCESSOR=${CMAKE_SYSTEM_PROCESSOR} SKIA_ARCH=${SKIA_ARCH} SKIA_DIR=${SKIA_DIR} SKIA_LIBRARY_DIR=${SKIA_LIBRARY_DIR} SKIA_OPENGL_LIBRARY=${SKIA_OPENGL_LIBRARY}")
 
 # SkShaper module + freetype + harfbuzz
 find_library(SKSHAPER_LIBRARY skshaper PATH "${SKIA_LIBRARY_DIR}")
@@ -101,13 +105,13 @@ target_compile_definitions(skia INTERFACE
   SK_ALLOW_STATIC_GLOBAL_INITIALIZERS=1
   SK_SUPPORT_OPENCL=0
   SK_FORCE_DISTANCE_FIELD_TEXT=0
-  # GR_GL_FUNCTION_TYPE=__stdcall # enable for Win?
-  SK_SUPPORT_GPU=1) # TODO change this to 1
+  SK_SUPPORT_GPU=1)
 
 if(WIN32)
   target_compile_definitions(skia INTERFACE
     SK_BUILD_FOR_WIN32
-    _CRT_SECURE_NO_WARNINGS)
+    _CRT_SECURE_NO_WARNINGS
+    GR_GL_FUNCTION_TYPE=__stdcall)
 elseif(APPLE)
   target_compile_definitions(skia INTERFACE
     SK_BUILD_FOR_MAC)
