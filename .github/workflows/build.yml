@@ -3,6 +3,7 @@ on:
     branches:
       - master
     paths-ignore:
+      - '.idea/**'
       - 'docs/**'
       - 'examples/**'
       - 'extras/**'
