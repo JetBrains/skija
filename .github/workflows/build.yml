@@ -9,74 +9,74 @@ on:
       - README.md
 
 jobs:
-  # shared:
-  #   runs-on: ubuntu-18.04
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0
-  #     - uses: actions/setup-java@v1
-  #       with:
-  #         java-version: '11.0.8'
-  #     - run: ./script/ci_deploy_shared.sh
-  #       env:
-  #         SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
-  #     - uses: actions/upload-artifact@v2
-  #       with:
-  #         name: skija-shared.jar
-  #         path: target/*.jar
+  shared:
+    runs-on: ubuntu-16.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '11.0.8'
+      - run: ./script/ci_deploy_shared.sh
+        env:
+          SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: skija-shared.jar
+          path: target/*.jar
 
-  # macos:
-  #   runs-on: macos-10.15
-  #   needs: shared
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0
-  #     - uses: seanmiddleditch/gha-setup-ninja@master
-  #     - uses: actions/setup-java@v1
-  #       with:
-  #         java-version: '11.0.8'
-  #     - name: Download Skia
-  #       run: |
-  #         curl --fail --location --silent --show-error https://bintray.com/api/ui/download/jetbrains/skija/Skia-m86-macos-Release-x64.zip > Skia-m86-macos-Release-x64.zip
-  #         unzip -qq Skia-m86-macos-Release-x64.zip -d third_party/skia
-  #     - run: ./script/native.sh
-  #     - run: ./script/ci_deploy_macos.sh
-  #       env:
-  #         SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
-  #     - uses: actions/upload-artifact@v2
-  #       with:
-  #         name: skija-macos.jar
-  #         path: target/*.jar
+  macos:
+    runs-on: macos-10.15
+    needs: shared
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: seanmiddleditch/gha-setup-ninja@master
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '11.0.8'
+      - name: Download Skia
+        run: |
+          curl --fail --location --silent --show-error https://bintray.com/api/ui/download/jetbrains/skija/Skia-m86-macos-Release-x64.zip > Skia-m86-macos-Release-x64.zip
+          unzip -qq Skia-m86-macos-Release-x64.zip -d third_party/skia
+      - run: ./script/native.sh
+      - run: ./script/ci_deploy_macos.sh
+        env:
+          SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: skija-macos.jar
+          path: target/*.jar
 
-  # linux:
-  #   runs-on: ubuntu-20.04
-  #   needs: shared
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0
-  #     - uses: actions/setup-java@v1
-  #       with:
-  #         java-version: '11.0.8'
-  #     - run: sudo apt install -y ninja-build libglu1-mesa-dev
-  #     - name: Download Skia
-  #       run: |
-  #         curl --fail --location --silent --show-error https://bintray.com/api/ui/download/jetbrains/skija/Skia-m86-linux-Release-x64.zip > Skia-m86-linux-Release-x64.zip
-  #         unzip -qq Skia-m86-linux-Release-x64.zip -d third_party/skia
-  #     - run: ./script/native.sh
-  #     - run: ./script/ci_deploy_linux.sh
-  #       env:
-  #         SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
-  #     - uses: actions/upload-artifact@v2
-  #       with:
-  #         name: skija-linux.jar
-  #         path: target/*.jar
+  linux:
+    runs-on: ubuntu-16.04
+    needs: shared
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '11.0.8'
+      - run: sudo apt install -y ninja-build libglu1-mesa-dev
+      - name: Download Skia
+        run: |
+          curl --fail --location --silent --show-error https://bintray.com/api/ui/download/jetbrains/skija/Skia-m86-linux-Release-x64.zip > Skia-m86-linux-Release-x64.zip
+          unzip -qq Skia-m86-linux-Release-x64.zip -d third_party/skia
+      - run: ./script/native.sh
+      - run: ./script/ci_deploy_linux.sh
+        env:
+          SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: skija-linux.jar
+          path: target/*.jar
 
   windows:
     runs-on: windows-2019
-    # needs: shared
+    needs: shared
     steps:
       - uses: actions/checkout@v2
         with:
