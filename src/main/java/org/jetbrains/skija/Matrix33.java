@@ -13,6 +13,8 @@ public class Matrix33 {
         _mat = mat;
     }
 
+    public static final Matrix33 IDENTITY = makeTranslate(0, 0);
+
     public static Matrix33 makeTranslate(float dx, float dy) {
         return new Matrix33(new float[] {1, 0, dx, 0, 1, dy, 0, 0, 1});
     }

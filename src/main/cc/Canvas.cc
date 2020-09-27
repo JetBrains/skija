@@ -182,6 +182,19 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawPaint
     canvas->drawPaint(*paint);
 }
 
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nSetMatrix
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloatArray matrixArr) {
+    SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
+    std::unique_ptr<SkMatrix> matrix = skMatrix(env, matrixArr);
+    canvas->setMatrix(*matrix);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nResetMatrix
+  (JNIEnv* env, jclass jclass, jlong canvasPtr) {
+    SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
+    canvas->resetMatrix();
+}
+
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nClipRect
   (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloat left, jfloat top, jfloat right, jfloat bottom, jint mode, jboolean antiAlias) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));

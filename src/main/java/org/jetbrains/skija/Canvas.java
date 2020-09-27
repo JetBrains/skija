@@ -250,6 +250,32 @@ public class Canvas extends Native {
         return this;
     }
 
+    /**
+     * Replaces Matrix with matrix.
+     * Unlike concat(), any prior matrix state is overwritten.
+     *
+     * @param matrix  matrix to copy, replacing existing Matrix
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_setMatrix">https://fiddle.skia.org/c/@Canvas_setMatrix</a>
+     */
+    public Canvas setMatrix(@NotNull Matrix33 matrix) {
+        Stats.onNativeCall();
+        _nSetMatrix(_ptr, matrix._mat);
+        return this;
+    }
+
+    /**
+     * Sets SkMatrix to the identity matrix.
+     * Any prior matrix state is overwritten.
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_resetMatrix">https://fiddle.skia.org/c/@Canvas_resetMatrix</a>
+     */
+    public Canvas resetMatrix(@NotNull Matrix33 matrix) {
+        Stats.onNativeCall();
+        _nResetMatrix(_ptr);
+        return this;
+    }
+
     public Canvas clipRect(Rect r, ClipMode mode, boolean antiAlias) {
         Stats.onNativeCall();
         _nClipRect(_ptr, r._left, r._top, r._right, r._bottom, mode.ordinal(), antiAlias);
@@ -499,6 +525,8 @@ public class Canvas extends Native {
     public static native void _nDrawPicture(long ptr, long picturePtr, float[] matrix, long paintPtr);
     public static native void _nClear(long ptr, int color);
     public static native void _nDrawPaint(long ptr, long paintPtr);
+    public static native void _nSetMatrix(long ptr, float[] matrix);
+    public static native void _nResetMatrix(long ptr);
     public static native void _nClipRect(long ptr, float left, float top, float right, float bottom, int mode, boolean antiAlias);
     public static native void _nClipRRect(long ptr, float left, float top, float right, float bottom, float[] radii, int mode, boolean antiAlias);
     public static native void _nClipPath(long ptr, long nativePath, int mode, boolean antiAlias);
