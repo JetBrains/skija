@@ -57,7 +57,7 @@ Core progress:
 
 ```
 Bitmap               ▓▓▓▓▓▓▓▓▓▓
-Canvas               ▓▓▓▓▓▓▓░░░
+Canvas               ▓▓▓▓▓▓▓▓░░
 Color                ▓░░░░░░░░░
 ColorFilter          ▓▓▓▓▓▓▓▓▓▓
 ColorInfo            ▓▓▓▓▓▓▓▓▓▓

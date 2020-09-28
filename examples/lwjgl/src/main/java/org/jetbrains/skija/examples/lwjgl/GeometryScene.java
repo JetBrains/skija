@@ -12,6 +12,7 @@ public class GeometryScene implements Scene {
         drawPoints(canvas);
         drawLines(canvas);
         drawArcs(canvas);
+        drawVertices(canvas);
         drawPatch(canvas);
         drawRotate(canvas);
         drawSkew(canvas);
@@ -112,6 +113,48 @@ public class GeometryScene implements Scene {
         canvas.translate(0, 50);
     }
 
+    public void drawVertices(Canvas canvas) {
+        canvas.save();
+
+        Point[] positions = new Point[] {
+            new Point(0, 0), new Point(40, 0), new Point(20, 20), new Point(40, 20), new Point(0, 40), new Point(40, 40)
+        };
+        int[] colors = new int[] { 0xFFFF0000, 0xFF0000FF, 0xFFFFFF00, 0xFF00FFFF, 0xFF00FF00, 0xFFFF00FF,  };
+
+        try (var paint = new Paint();
+             var shader = Shader.makeLinearGradient( 0,  0, 40,  0, new int[] { 0xFF277da1, 0xFFffba08 });)
+        {
+            canvas.drawTriangles(positions, colors, paint);
+            canvas.translate(50, 0);
+
+            canvas.drawTriangleStrip(positions, colors, paint);
+            canvas.translate(50, 0);
+
+            canvas.drawTriangleFan(positions, colors, paint);
+            canvas.translate(50, 0);
+
+            paint.setShader(shader);
+            canvas.drawTriangles(positions, colors, paint);
+            canvas.translate(50, 0);
+
+            canvas.drawTriangleStrip(positions, colors, null, BlendMode.SRC_OVER, paint);
+            canvas.translate(50, 0);
+
+            colors = new int[] {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF};
+            canvas.drawTriangleFan(positions, colors, paint);
+            canvas.translate(50, 0);
+
+            Point[] texCoords = new Point[] {
+                new Point(0, 0), new Point(40, 0), new Point(20, 20), new Point(40, 40), new Point(0, 40), new Point(30, 30)
+            };
+            canvas.drawTriangles(positions, colors, texCoords, paint);
+            canvas.translate(50, 0);            
+        }        
+
+        canvas.restore();
+        canvas.translate(0, 50);
+    }
+
     public void drawPatch(Canvas canvas) {
         canvas.save();
 
@@ -121,7 +164,6 @@ public class GeometryScene implements Scene {
             /* new Point(50, 70), */ new Point(40, 60), new Point(30, 70), new Point(10, 50),
             /* new Point(10, 50), */ new Point(20, 40), new Point(10, 30), /* new Point(30, 10) */
         };
-
         int[] colors = new int[] { 0xFFFF0000, 0xFF0000FF, 0xFFFFFF00, 0xFF00FFFF };
 
         try (var paint = new Paint();
@@ -330,7 +372,7 @@ public class GeometryScene implements Scene {
         Paint stroke1 = new Paint().setColor(0xFF3F80A7).setMode(PaintMode.STROKE).setStrokeWidth(1f);
         Paint stroke2 = new Paint().setColor(0xFFF55E58).setMode(PaintMode.STROKE).setStrokeWidth(1f);
         int xOffset = 30;
-        int yOffset = 620;
+        int yOffset = 670;
 
         canvas.save();
 

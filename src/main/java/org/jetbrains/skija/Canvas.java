@@ -364,7 +364,206 @@ public class Canvas extends Native {
         Stats.onNativeCall();
         _nDrawPicture(_ptr, Native.getPtr(picture), matrix == null ? null : matrix._mat, Native.getPtr(paint));
         return this;
-    }    
+    }   
+
+    /**
+     * <p>Draws a triangle mesh, using clip and Matrix.</p>
+     *
+     * <p>If paint contains an Shader, the shader is mapped using the vertices' positions.</p>
+     *
+     * <p>If vertices colors are defined in vertices, and Paint paint contains Shader,
+     * BlendMode mode combines vertices colors with Shader.</p>
+     *
+     * @param positions  triangle mesh to draw
+     * @param colors     color array, one for each corner; may be null
+     * @param paint      specifies the Shader, used as Vertices texture
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
+     */
+    public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @NotNull Paint paint) { 
+        return drawTriangles(positions, colors, null, BlendMode.MODULATE, paint);
+    }
+
+    /**
+     * <p>Draws a triangle mesh, using clip and Matrix.</p>
+     *
+     * <p>If paint contains an Shader and vertices does not contain texCoords, the shader
+     * is mapped using the vertices' positions.</p>
+     *
+     * <p>If vertices colors are defined in vertices, and Paint paint contains Shader,
+     * BlendMode mode combines vertices colors with Shader.</p>
+     *
+     * @param positions  triangle mesh to draw
+     * @param colors     color array, one for each corner; may be null
+     * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param paint      specifies the Shader, used as Vertices texture
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
+     */
+    public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable Paint paint) { 
+        return drawTriangles(positions, colors, texCoords, BlendMode.MODULATE, paint);
+    }
+
+    /**
+     * <p>Draws a triangle mesh, using clip and Matrix.</p>
+     *
+     * <p>If paint contains an Shader and vertices does not contain texCoords, the shader
+     * is mapped using the vertices' positions.</p>
+     *
+     * <p>If vertices colors are defined in vertices, and Paint paint contains Shader,
+     * BlendMode mode combines vertices colors with Shader.</p>
+     *
+     * @param positions  triangle mesh to draw
+     * @param colors     color array, one for each corner; may be null
+     * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param mode       combines vertices colors with Shader, if both are present
+     * @param paint      specifies the Shader, used as Vertices texture
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
+     */
+    public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @NotNull BlendMode mode, @Nullable Paint paint) { 
+        assert positions.length % 3 == 0 : "Expected positions.length % 3 == 0, got: " + positions.length;
+        assert colors == null || colors.length == positions.length : "Expected colors.length == positions.length, got: " + colors.length + " != " + positions.length;
+        assert texCoords == null || texCoords.length == positions.length : "Expected texCoords.length == positions.length, got: " + texCoords.length + " != " + positions.length;
+        Stats.onNativeCall();
+        _nDrawVertices(_ptr, 0 /* kTriangles_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), mode.ordinal(), Native.getPtr(paint));
+        return this;
+    }
+
+    /**
+     * <p>Draws a triangle strip mesh, using clip and Matrix.</p>
+     *
+     * <p>If paint contains an Shader, the shader is mapped using the vertices' positions.</p>
+     *
+     * <p>If vertices colors are defined in vertices, and Paint paint contains Shader,
+     * BlendMode mode combines vertices colors with Shader.</p>
+     *
+     * @param positions  triangle mesh to draw
+     * @param colors     color array, one for each corner; may be null
+     * @param paint      specifies the Shader, used as Vertices texture
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
+     */
+    public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @NotNull Paint paint) { 
+        return drawTriangleStrip(positions, colors, null, BlendMode.MODULATE, paint);
+    }
+
+    /**
+     * <p>Draws a triangle strip mesh, using clip and Matrix.</p>
+     *
+     * <p>If paint contains an Shader and vertices does not contain texCoords, the shader
+     * is mapped using the vertices' positions.</p>
+     *
+     * <p>If vertices colors are defined in vertices, and Paint paint contains Shader,
+     * BlendMode mode combines vertices colors with Shader.</p>
+     *
+     * @param positions  triangle mesh to draw
+     * @param colors     color array, one for each corner; may be null
+     * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param paint      specifies the Shader, used as Vertices texture
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
+     */
+    public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @NotNull Paint paint) { 
+        return drawTriangleStrip(positions, colors, texCoords, BlendMode.MODULATE, paint);
+    }
+
+    /**
+     * <p>Draws a triangle strip mesh, using clip and Matrix.</p>
+     *
+     * <p>If paint contains an Shader and vertices does not contain texCoords, the shader
+     * is mapped using the vertices' positions.</p>
+     *
+     * <p>If vertices colors are defined in vertices, and Paint paint contains Shader,
+     * BlendMode mode combines vertices colors with Shader.</p>
+     *
+     * @param positions  triangle mesh to draw
+     * @param colors     color array, one for each corner; may be null
+     * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param mode       combines vertices colors with Shader, if both are present
+     * @param paint      specifies the Shader, used as Vertices texture
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
+     */
+    public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @NotNull BlendMode mode, @NotNull Paint paint) { 
+        assert colors == null || colors.length == positions.length : "Expected colors.length == positions.length, got: " + colors.length + " != " + positions.length;
+        assert texCoords == null || texCoords.length == positions.length : "Expected texCoords.length == positions.length, got: " + texCoords.length + " != " + positions.length;
+        Stats.onNativeCall();
+        _nDrawVertices(_ptr, 1 /* kTriangleStrip_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), mode.ordinal(), Native.getPtr(paint));
+        return this;
+    }
+
+    /**
+     * <p>Draws a triangle fan mesh, using clip and Matrix.</p>
+     *
+     * <p>If paint contains an Shader, the shader is mapped using the vertices' positions.</p>
+     *
+     * <p>If vertices colors are defined in vertices, and Paint paint contains Shader,
+     * BlendMode mode combines vertices colors with Shader.</p>
+     *
+     * @param positions  triangle mesh to draw
+     * @param colors     color array, one for each corner; may be null
+     * @param paint      specifies the Shader, used as Vertices texture
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
+     */
+    public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @NotNull Paint paint) { 
+        return drawTriangleFan(positions, colors, null, BlendMode.MODULATE, paint);
+    }
+
+    /**
+     * <p>Draws a triangle fan mesh, using clip and Matrix.</p>
+     *
+     * <p>If paint contains an Shader and vertices does not contain texCoords, the shader
+     * is mapped using the vertices' positions.</p>
+     *
+     * <p>If vertices colors are defined in vertices, and Paint paint contains Shader,
+     * BlendMode mode combines vertices colors with Shader.</p>
+     *
+     * @param positions  triangle mesh to draw
+     * @param colors     color array, one for each corner; may be null
+     * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param paint      specifies the Shader, used as Vertices texture
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
+     */
+    public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @NotNull Paint paint) { 
+        return drawTriangleFan(positions, colors, texCoords, BlendMode.MODULATE, paint);
+    }
+
+    /**
+     * <p>Draws a triangle fan mesh, using clip and Matrix.</p>
+     *
+     * <p>If paint contains an Shader and vertices does not contain texCoords, the shader
+     * is mapped using the vertices' positions.</p>
+     *
+     * <p>If vertices colors are defined in vertices, and Paint paint contains Shader,
+     * BlendMode mode combines vertices colors with Shader.</p>
+     *
+     * @param positions  triangle mesh to draw
+     * @param colors     color array, one for each corner; may be null
+     * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param mode       combines vertices colors with Shader, if both are present
+     * @param paint      specifies the Shader, used as Vertices texture
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
+     */
+    public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @NotNull BlendMode mode, @NotNull Paint paint) { 
+        assert colors == null || colors.length == positions.length : "Expected colors.length == positions.length, got: " + colors.length + " != " + positions.length;
+        assert texCoords == null || texCoords.length == positions.length : "Expected texCoords.length == positions.length, got: " + texCoords.length + " != " + positions.length;
+        Stats.onNativeCall();
+        _nDrawVertices(_ptr, 2 /* kTriangleFan_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), mode.ordinal(), Native.getPtr(paint));
+        return this;
+    }
 
     /** 
      * <p>Draws a Coons patch: the interpolation of four cubics with shared corners,
@@ -749,6 +948,7 @@ public class Canvas extends Native {
     public static native void _nDrawString(long ptr, String string, float x, float y, long font, long paint);
     public static native void _nDrawTextBlob(long ptr, long blob, float x, float y, long font, long paint);
     public static native void _nDrawPicture(long ptr, long picturePtr, float[] matrix, long paintPtr);
+    public static native void _nDrawVertices(long ptr, int verticesMode, float[] cubics, int[] colors, float[] texCoords, int blendMode, long paintPtr);
     public static native void _nDrawPatch(long ptr, float[] cubics, int[] colors, float[] texCoords, int blendMode, long paintPtr);
     public static native void _nClear(long ptr, int color);
     public static native void _nDrawPaint(long ptr, long paintPtr);

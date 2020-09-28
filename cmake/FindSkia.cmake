@@ -31,8 +31,6 @@ else()
   find_library(SKIA_OPENGL_LIBRARY opengl NAMES GL)
 endif()
 
-message(STATUS "CMAKE_SYSTEM_PROCESSOR=${CMAKE_SYSTEM_PROCESSOR} SKIA_ARCH=${SKIA_ARCH} SKIA_DIR=${SKIA_DIR} SKIA_LIBRARY_DIR=${SKIA_LIBRARY_DIR} SKIA_OPENGL_LIBRARY=${SKIA_OPENGL_LIBRARY}")
-
 # SkShaper module + freetype + harfbuzz
 find_library(SKSHAPER_LIBRARY skshaper PATH "${SKIA_LIBRARY_DIR}")
 find_path(SKSHAPER_INCLUDE_DIR SkShaper.h HINTS "${SKIA_DIR}/modules/skshaper/include")

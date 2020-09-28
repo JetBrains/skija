@@ -3,6 +3,7 @@
 #include "SkCanvas.h"
 #include "SkRRect.h"
 #include "SkTextBlob.h"
+#include "SkVertices.h"
 #include "hb.h"
 #include "interop.hh"
 
@@ -170,6 +171,29 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawPicture
     canvas->drawPicture(picture, matrix.get(), paint);
 }
 
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawVertices
+  (JNIEnv* env, jclass jclass, jlong ptr, jint verticesMode, jfloatArray positionsArr, jintArray colorsArr, jfloatArray texCoordsArr, jint blendMode, jlong paintPtr) {
+    SkCanvas* canvas = reinterpret_cast<SkCanvas*>   (static_cast<uintptr_t>(ptr));
+    jfloat* positions = env->GetFloatArrayElements(positionsArr, 0);
+    jint*   colors    = colorsArr == nullptr ? nullptr : env->GetIntArrayElements(colorsArr, 0);
+    jfloat* texCoords = texCoordsArr == nullptr ? nullptr : env->GetFloatArrayElements(texCoordsArr, 0);
+    sk_sp<SkVertices> vertices = SkVertices::MakeCopy(
+        static_cast<SkVertices::VertexMode>(verticesMode),
+        env->GetArrayLength(positionsArr) / 2,
+        reinterpret_cast<SkPoint*>(positions),
+        reinterpret_cast<SkPoint*>(texCoords), 
+        reinterpret_cast<SkColor*>(colors));
+    SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
+
+    canvas->drawVertices(vertices, static_cast<SkBlendMode>(blendMode), *paint);
+    
+    if (texCoords != nullptr)
+        env->ReleaseFloatArrayElements(texCoordsArr, texCoords, 0);
+    if (colors != nullptr)
+        env->ReleaseIntArrayElements(colorsArr, colors, 0);
+    env->ReleaseFloatArrayElements(positionsArr, positions, 0);
+}
+
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawPatch
   (JNIEnv* env, jclass jclass, jlong ptr, jfloatArray cubicsArr, jintArray colorsArr, jfloatArray texCoordsArr, jint blendMode, jlong paintPtr) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>   (static_cast<uintptr_t>(ptr));
@@ -180,8 +204,8 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawPatch
 
     canvas->drawPatch(reinterpret_cast<SkPoint*>(cubics), reinterpret_cast<SkColor*>(colors), reinterpret_cast<SkPoint*>(texCoords), static_cast<SkBlendMode>(blendMode), *paint);
     
-    if (texCoords)
-      env->ReleaseFloatArrayElements(texCoordsArr, texCoords, 0);
+    if (texCoords != nullptr)
+        env->ReleaseFloatArrayElements(texCoordsArr, texCoords, 0);
     env->ReleaseIntArrayElements(colorsArr, colors, 0);
     env->ReleaseFloatArrayElements(cubicsArr, cubics, 0);
 }
