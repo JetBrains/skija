@@ -170,6 +170,22 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawPicture
     canvas->drawPicture(picture, matrix.get(), paint);
 }
 
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawPatch
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloatArray cubicsArr, jintArray colorsArr, jfloatArray texCoordsArr, jint blendMode, jlong paintPtr) {
+    SkCanvas* canvas = reinterpret_cast<SkCanvas*>   (static_cast<uintptr_t>(ptr));
+    jfloat* cubics    = env->GetFloatArrayElements(cubicsArr, 0);
+    jint*   colors    = env->GetIntArrayElements(colorsArr, 0);
+    jfloat* texCoords = texCoordsArr == nullptr ? nullptr : env->GetFloatArrayElements(texCoordsArr, 0);
+    SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
+
+    canvas->drawPatch(reinterpret_cast<SkPoint*>(cubics), reinterpret_cast<SkColor*>(colors), reinterpret_cast<SkPoint*>(texCoords), static_cast<SkBlendMode>(blendMode), *paint);
+    
+    if (texCoords)
+      env->ReleaseFloatArrayElements(texCoordsArr, texCoords, 0);
+    env->ReleaseIntArrayElements(colorsArr, colors, 0);
+    env->ReleaseFloatArrayElements(cubicsArr, cubics, 0);
+}
+
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nClear(JNIEnv* env, jclass jclass, jlong ptr, jint color) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(ptr));
     canvas->clear(color);

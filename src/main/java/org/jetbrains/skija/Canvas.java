@@ -56,18 +56,146 @@ public class Canvas extends Native {
         return this;
     }
 
+    /** 
+     * <p>Draws pts using clip, Matrix and Paint paint.</p>
+     *
+     * <p>The shape of point drawn depends on paint
+     * PaintStrokeCap. If paint is set to {@link PaintStrokeCap#ROUND}, each point draws a
+     * circle of diameter Paint stroke width. If paint is set to {@link PaintStrokeCap#SQUARE}
+     * or {@link PaintStrokeCap#BUTT}, each point draws a square of width and height
+     * Paint stroke width.</p>
+     *
+     * <p>Each line segment respects paint PaintStrokeCap and Paint stroke width.
+     * PaintMode is ignored, as if were set to {@link PaintMode#STROKE}.</p>
+     *
+     * <p>Always draws each element one at a time; is not affected by
+     * PaintStrokeJoin, and unlike drawPath(), does not create a mask from all points
+     * and lines before drawing.</p>
+     *
+     * @param coords array of points to draw
+     * @param paint  stroke, blend, color, and so on, used to draw
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawPoints">https://fiddle.skia.org/c/@Canvas_drawPoints</a>
+     */
+    public Canvas drawPoints(Point[] coords, Paint paint) {
+        return drawPoints(Point.flattenArray(coords), paint);
+    }
+
+    /** 
+     * <p>Draws pts using clip, Matrix and Paint paint.</p>
+     *
+     * <p>The shape of point drawn depends on paint
+     * PaintStrokeCap. If paint is set to {@link PaintStrokeCap#ROUND}, each point draws a
+     * circle of diameter Paint stroke width. If paint is set to {@link PaintStrokeCap#SQUARE}
+     * or {@link PaintStrokeCap#BUTT}, each point draws a square of width and height
+     * Paint stroke width.</p>
+     *
+     * <p>Each line segment respects paint PaintStrokeCap and Paint stroke width.
+     * PaintMode is ignored, as if were set to {@link PaintMode#STROKE}.</p>
+     *
+     * <p>Always draws each element one at a time; is not affected by
+     * PaintStrokeJoin, and unlike drawPath(), does not create a mask from all points
+     * and lines before drawing.</p>
+     *
+     * @param coords array of points to draw
+     * @param paint  stroke, blend, color, and so on, used to draw
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawPoints">https://fiddle.skia.org/c/@Canvas_drawPoints</a>
+     */
     public Canvas drawPoints(float[] coords, Paint paint) {
         Stats.onNativeCall();
         _nDrawPoints(_ptr, 0 /* SkCanvas::PointMode::kPoints_PointMode */, coords, Native.getPtr(paint));
         return this;
     }
 
+    /** 
+     * <p>Draws pts using clip, Matrix and Paint paint.</p>
+     *
+     * <p>Each pair of points draws a line segment.
+     * One line is drawn for every two points; each point is used once. If count is odd,
+     * the final point is ignored.</p>
+     *
+     * <p>Each line segment respects paint PaintStrokeCap and Paint stroke width.
+     * PaintMode is ignored, as if were set to {@link PaintMode#STROKE}.</p>
+     *
+     * <p>Always draws each element one at a time; is not affected by
+     * PaintStrokeJoin, and unlike drawPath(), does not create a mask from all points
+     * and lines before drawing.</p>
+     *
+     * @param coords array of points to draw
+     * @param paint  stroke, blend, color, and so on, used to draw
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawPoints">https://fiddle.skia.org/c/@Canvas_drawPoints</a>
+     */
+    public Canvas drawLines(Point[] coords, Paint paint) {
+        return drawLines(Point.flattenArray(coords), paint);
+    }
+
+    /** 
+     * <p>Draws pts using clip, Matrix and Paint paint.</p>
+     *
+     * <p>Each pair of points draws a line segment.
+     * One line is drawn for every two points; each point is used once. If count is odd,
+     * the final point is ignored.</p>
+     *
+     * <p>Each line segment respects paint PaintStrokeCap and Paint stroke width.
+     * PaintMode is ignored, as if were set to {@link PaintMode#STROKE}.</p>
+     *
+     * <p>Always draws each element one at a time; is not affected by
+     * PaintStrokeJoin, and unlike drawPath(), does not create a mask from all points
+     * and lines before drawing.</p>
+     *
+     * @param coords array of points to draw
+     * @param paint  stroke, blend, color, and so on, used to draw
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawPoints">https://fiddle.skia.org/c/@Canvas_drawPoints</a>
+     */
     public Canvas drawLines(float[] coords, Paint paint) {
         Stats.onNativeCall();
         _nDrawPoints(_ptr, 1 /* SkCanvas::PointMode::kLines_PointMode */, coords, Native.getPtr(paint));
         return this;
     }
 
+    /** 
+     * <p>Draws pts using clip, Matrix and Paint paint.</p>
+     *
+     * <p>Each adjacent pair of points draws a line segment.
+     * count minus one lines are drawn; the first and last point are used once.</p>
+     *
+     * <p>Each line segment respects paint PaintStrokeCap and Paint stroke width.
+     * PaintMode is ignored, as if were set to {@link PaintMode#STROKE}.</p>
+     *
+     * <p>Always draws each element one at a time; is not affected by
+     * PaintStrokeJoin, and unlike drawPath(), does not create a mask from all points
+     * and lines before drawing.</p>
+     *
+     * @param coords array of points to draw
+     * @param paint  stroke, blend, color, and so on, used to draw
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawPoints">https://fiddle.skia.org/c/@Canvas_drawPoints</a>
+     */
+    public Canvas drawPolygon(Point[] coords, Paint paint) {
+        return drawPolygon(Point.flattenArray(coords), paint);
+    }
+
+    /** 
+     * <p>Draws pts using clip, Matrix and Paint paint.</p>
+     *
+     * <p>Each adjacent pair of points draws a line segment.
+     * count minus one lines are drawn; the first and last point are used once.</p>
+     *
+     * <p>Each line segment respects paint PaintStrokeCap and Paint stroke width.
+     * PaintMode is ignored, as if were set to {@link PaintMode#STROKE}.</p>
+     *
+     * <p>Always draws each element one at a time; is not affected by
+     * PaintStrokeJoin, and unlike drawPath(), does not create a mask from all points
+     * and lines before drawing.</p>
+     *
+     * @param coords array of points to draw
+     * @param paint  stroke, blend, color, and so on, used to draw
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawPoints">https://fiddle.skia.org/c/@Canvas_drawPoints</a>
+     */
     public Canvas drawPolygon(float[] coords, Paint paint) {
         Stats.onNativeCall();
         _nDrawPoints(_ptr, 2 /* SkCanvas::PointMode::kPolygon_PointMode */, coords, Native.getPtr(paint));
@@ -237,6 +365,104 @@ public class Canvas extends Native {
         _nDrawPicture(_ptr, Native.getPtr(picture), matrix == null ? null : matrix._mat, Native.getPtr(paint));
         return this;
     }    
+
+    /** 
+     * <p>Draws a Coons patch: the interpolation of four cubics with shared corners,
+     * associating a color, and optionally a texture SkPoint, with each corner.</p>
+     *
+     * <p>Coons patch uses clip and Matrix, paint Shader, ColorFilter,
+     * alpha, ImageFilter, and BlendMode. If Shader is provided it is treated
+     * as Coons patch texture.</p>
+     *
+     * <p>Point array cubics specifies four Path cubic starting at the top-left corner,
+     * in clockwise order, sharing every fourth point. The last Path cubic ends at the
+     * first point.</p>
+     *
+     * <p>Color array color associates colors with corners in top-left, top-right,
+     * bottom-right, bottom-left order.</p>
+     *
+     *
+     * @param cubics     Path cubic array, sharing common points
+     * @param colors     color array, one for each corner
+     * @param paint      Shader, ColorFilter, BlendMode, used to draw
+     * @return           this
+     *
+     * @see <a href="https://fiddle.skia.org/c/4cf70f8d194867d053d7e177e5088445">https://fiddle.skia.org/c/4cf70f8d194867d053d7e177e5088445</a>
+     */
+    public Canvas drawPatch(@NotNull Point[] cubics, @NotNull int[] colors, @NotNull Paint paint) {
+        return drawPatch(cubics, colors, null, paint);
+    }
+
+    /** 
+     * <p>Draws a Coons patch: the interpolation of four cubics with shared corners,
+     * associating a color, and optionally a texture SkPoint, with each corner.</p>
+     *
+     * <p>Coons patch uses clip and Matrix, paint Shader, ColorFilter,
+     * alpha, ImageFilter, and BlendMode. If Shader is provided it is treated
+     * as Coons patch texture.</p>
+     *
+     * <p>Point array cubics specifies four Path cubic starting at the top-left corner,
+     * in clockwise order, sharing every fourth point. The last Path cubic ends at the
+     * first point.</p>
+     *
+     * <p>Color array color associates colors with corners in top-left, top-right,
+     * bottom-right, bottom-left order.</p>
+     * 
+     * <p>If paint contains Shader, Point array texCoords maps Shader as texture to
+     * corners in top-left, top-right, bottom-right, bottom-left order. If texCoords is
+     * nullptr, Shader is mapped using positions (derived from cubics).</p>
+     *
+     * @param cubics     Path cubic array, sharing common points
+     * @param colors     color array, one for each corner
+     * @param texCoords  Point array of texture coordinates, mapping Shader to corners;
+     *                   may be null
+     * @param paint      Shader, ColorFilter, BlendMode, used to draw
+     * @return           this
+     *
+     * @see <a href="https://fiddle.skia.org/c/4cf70f8d194867d053d7e177e5088445">https://fiddle.skia.org/c/4cf70f8d194867d053d7e177e5088445</a>
+     */
+    public Canvas drawPatch(@NotNull Point[] cubics, @NotNull int[] colors, @Nullable Point[] texCoords, @NotNull Paint paint) {
+        return drawPatch(cubics, colors, texCoords, BlendMode.MODULATE, paint);
+    }
+
+    /** 
+     * <p>Draws a Coons patch: the interpolation of four cubics with shared corners,
+     * associating a color, and optionally a texture SkPoint, with each corner.</p>
+     *
+     * <p>Coons patch uses clip and Matrix, paint Shader, ColorFilter,
+     * alpha, ImageFilter, and BlendMode. If Shader is provided it is treated
+     * as Coons patch texture; BlendMode mode combines color colors and Shader if
+     * both are provided.</p>
+     *
+     * <p>Point array cubics specifies four Path cubic starting at the top-left corner,
+     * in clockwise order, sharing every fourth point. The last Path cubic ends at the
+     * first point.</p>
+     *
+     * <p>Color array color associates colors with corners in top-left, top-right,
+     * bottom-right, bottom-left order.</p>
+     * 
+     * <p>If paint contains Shader, Point array texCoords maps Shader as texture to
+     * corners in top-left, top-right, bottom-right, bottom-left order. If texCoords is
+     * nullptr, Shader is mapped using positions (derived from cubics).</p>
+     *
+     * @param cubics     Path cubic array, sharing common points
+     * @param colors     color array, one for each corner
+     * @param texCoords  Point array of texture coordinates, mapping Shader to corners;
+     *                   may be null
+     * @param mode       BlendMode for colors, and for Shader if paint has one
+     * @param paint      Shader, ColorFilter, BlendMode, used to draw
+     * @return           this
+     *
+     * @see <a href="https://fiddle.skia.org/c/4cf70f8d194867d053d7e177e5088445">https://fiddle.skia.org/c/4cf70f8d194867d053d7e177e5088445</a>
+     */
+    public Canvas drawPatch(@NotNull Point[] cubics, @NotNull int[] colors, @Nullable Point[] texCoords, @NotNull BlendMode mode, @NotNull Paint paint) {
+        assert cubics.length == 12 : "Expected cubics.length == 12, got: " + cubics.length;
+        assert colors.length == 4 : "Expected colors.length == 4, got: " + colors.length;
+        assert texCoords == null || texCoords.length == 4 : "Expected texCoords.length == 4, got: " + texCoords.length;
+        Stats.onNativeCall();
+        _nDrawPatch(_ptr, Point.flattenArray(cubics), colors, Point.flattenArray(texCoords), mode.ordinal(), Native.getPtr(paint));
+        return this;
+    }
 
     public Canvas clear(int color) {
         Stats.onNativeCall();
@@ -523,6 +749,7 @@ public class Canvas extends Native {
     public static native void _nDrawString(long ptr, String string, float x, float y, long font, long paint);
     public static native void _nDrawTextBlob(long ptr, long blob, float x, float y, long font, long paint);
     public static native void _nDrawPicture(long ptr, long picturePtr, float[] matrix, long paintPtr);
+    public static native void _nDrawPatch(long ptr, float[] cubics, int[] colors, float[] texCoords, int blendMode, long paintPtr);
     public static native void _nClear(long ptr, int color);
     public static native void _nDrawPaint(long ptr, long paintPtr);
     public static native void _nSetMatrix(long ptr, float[] matrix);

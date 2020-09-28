@@ -12,6 +12,7 @@ public class GeometryScene implements Scene {
         drawPoints(canvas);
         drawLines(canvas);
         drawArcs(canvas);
+        drawPatch(canvas);
         drawRotate(canvas);
         drawSkew(canvas);
         drawRectInscribed(canvas, new Paint().setColor(0xFF1D7AA2).setMode(PaintMode.STROKE).setStrokeWidth(1f));
@@ -109,6 +110,46 @@ public class GeometryScene implements Scene {
 
         canvas.restore();
         canvas.translate(0, 50);
+    }
+
+    public void drawPatch(Canvas canvas) {
+        canvas.save();
+
+        Point[] cubics = new Point[] {
+            new Point(30, 10),       new Point(40, 20), new Point(50, 10), new Point(70, 30),
+            /* new Point(70, 30), */ new Point(60, 40), new Point(70, 50), new Point(50, 70),
+            /* new Point(50, 70), */ new Point(40, 60), new Point(30, 70), new Point(10, 50),
+            /* new Point(10, 50), */ new Point(20, 40), new Point(10, 30), /* new Point(30, 10) */
+        };
+
+        int[] colors = new int[] { 0xFFFF0000, 0xFF0000FF, 0xFFFFFF00, 0xFF00FFFF };
+
+        try (var paint = new Paint();
+             var shader = Shader.makeLinearGradient( 0,  0, 70,  0, new int[] { 0xFF277da1, 0xFFffba08 });)
+        {
+            canvas.drawPatch(cubics, colors, paint);
+            canvas.translate(80, 0);
+
+            paint.setShader(shader);
+            canvas.drawPatch(cubics, colors, paint);
+            canvas.translate(80, 0);
+
+            canvas.drawPatch(cubics, colors, null, BlendMode.SRC_OVER, paint);
+            canvas.translate(80, 0);
+
+            colors = new int[] {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF};
+            canvas.drawPatch(cubics, colors, paint);
+            canvas.translate(80, 0);
+
+            Point[] texCoords = new Point[] {
+                new Point(0, 0), new Point(70, 0), new Point(70, 70), new Point(0, 70)
+            };
+            canvas.drawPatch(cubics, colors, texCoords, paint);
+            canvas.translate(80, 0);            
+        }
+
+        canvas.restore();
+        canvas.translate(0, 80);
     }
 
     public void drawRotate(Canvas canvas) {
@@ -289,7 +330,7 @@ public class GeometryScene implements Scene {
         Paint stroke1 = new Paint().setColor(0xFF3F80A7).setMode(PaintMode.STROKE).setStrokeWidth(1f);
         Paint stroke2 = new Paint().setColor(0xFFF55E58).setMode(PaintMode.STROKE).setStrokeWidth(1f);
         int xOffset = 30;
-        int yOffset = 540;
+        int yOffset = 620;
 
         canvas.save();
 
