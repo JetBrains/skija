@@ -14,4 +14,4 @@ ninja
 popd
 
 mkdir -p target/classes
-cp target/native/libskija.* target/classes
+cp target/native/*skija.* target/classes
