@@ -123,7 +123,7 @@ class Window {
         glfwSetWindowPos(window, left, top);
 
         glfwMakeContextCurrent(window);
-        glfwSwapInterval(1); // Enable v-sync
+        glfwSwapInterval(vsync ? 1 : 0); // Enable v-sync
         glfwShowWindow(window);
     }
 

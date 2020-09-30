@@ -41,28 +41,39 @@ public class SwingScene implements Scene {
 
          for (var lfi : javax.swing.UIManager.getInstalledLookAndFeels()) {
              if (lfi.getName() != "Mac OS X") {
-//             if (lfi.getName() == "Nimbus") {
+//             if (lfi.getName() == "CDE/Motif") {
+//              if (lfi.getName() == "Metal") {
                  javax.swing.UIManager.setLookAndFeel(lfi.getClassName());
                  panels.add(new Pair(lfi.getName(), panel()));
              }
          }
     }
 
+    long startTime = 0;
+    long iters = 0;
+    int columns = 1;
+
     @Override
     @SneakyThrows
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
-        canvas.translate(20, 20);
+        if (startTime == 0)
+            startTime = System.currentTimeMillis();
+//        else if (System.currentTimeMillis() - startTime > 30000) {
+//            System.out.println(String.format("Average paint performance %f ms", (double) (System.currentTimeMillis() - startTime) / iters));
+//            System.exit(0);
+//        }
+        iters++;
         var g = new SkiaGraphics(canvas);
         for (var pair: panels) {
-            System.out.println("\n↓↓↓ " + pair.getFirst());
-            var t0 = System.currentTimeMillis();
+            var panel = pair.getSecond();
+//            ((JLabel) panel.getComponent(0)).setText("iter " + iters);
 
-            canvas.save();
-            pair.getSecond().paint(g);
-            canvas.restore();
-
-            System.out.println("↑↑↑ " + pair.getFirst() + " " + (System.currentTimeMillis() - t0) + "ms");
-            canvas.translate(330, 0);
+            for (int i = 0; i < columns; ++i) {
+                canvas.save();
+                panel.paint(g);
+                canvas.restore();
+                canvas.translate(180, 0);
+            }
         }
         g.dispose();
     }
@@ -72,46 +83,50 @@ public class SwingScene implements Scene {
         panel.setLayout(new javax.swing.BoxLayout(panel, BoxLayout.PAGE_AXIS));
         var y = -25;
 
+        var label = new JLabel("iter 0");
+        label.setBounds(10, y += 35, 160, 25);
+        panel.add(label);
+
         var combobox = new javax.swing.JComboBox<>(new String[]{"javax.swing.JComboBox"});
-        combobox.setBounds(10, y += 35, 280, 25);
+        combobox.setBounds(10, y += 35, 160, 25);
         panel.add(combobox);
 
         var checkbox = new javax.swing.JCheckBox("Checkbox", false);
-        checkbox.setBounds(10, y += 35, 280, 25);
+        checkbox.setBounds(10, y += 35, 160, 25);
         panel.add(checkbox);
 
         checkbox = new javax.swing.JCheckBox("Checkbox", true);
-        checkbox.setBounds(10, y += 35, 280, 25);
+        checkbox.setBounds(10, y += 35, 160, 25);
         panel.add(checkbox);
 
         var radio = new javax.swing.JRadioButton("JRadioButton", false);
-        radio.setBounds(10, y += 35, 280, 25);
+        radio.setBounds(10, y += 35, 160, 25);
         panel.add(radio);
 
         radio = new javax.swing.JRadioButton("JRadioButton", true);
-        radio.setBounds(10, y += 35, 280, 25);
+        radio.setBounds(10, y += 35, 160, 25);
         panel.add(radio);
 
         var slider = new javax.swing.JSlider() {
             @Override public java.awt.Point getMousePosition() throws HeadlessException { return null; }
         };
-        slider.setBounds(10, y += 35, 280, 25);
+        slider.setBounds(10, y += 35, 160, 25);
         panel.add(slider);
 
         var textfield = new javax.swing.JTextField("JTextField");
-        textfield.setBounds(10, y += 35, 280, 25);
+        textfield.setBounds(10, y += 35, 160, 25);
         panel.add(textfield);
 
         var textarea = new javax.swing.JTextArea("JTextArea");
-        textarea.setBounds(10, y += 35, 280, 25);
+        textarea.setBounds(10, y += 35, 160, 25);
         panel.add(textarea);
 
         var progress = new javax.swing.JProgressBar();
         progress.setValue(30);
-        progress.setBounds(10, y += 35, 280, 25);
+        progress.setBounds(10, y += 35, 160, 25);
         panel.add(progress);
 
-        panel.setSize(300, y + 35);
+        panel.setSize(180, y + 35);
         return panel;
     }
 }
@@ -157,32 +172,36 @@ class SkiaGraphics extends java.awt.Graphics2D {
         }
     }
 
+    public void log(String format, Object... args) {
+        System.out.println(indent + String.format(format, args));
+    }
+
     @Override
     public void draw(java.awt.Shape s) {
-        System.out.println(indent + "draw");
+        log("draw");
     }
 
     @Override
     public boolean drawImage(java.awt.Image img, java.awt.geom.AffineTransform xform, java.awt.image.ImageObserver obs) {
-        System.out.println(indent + "drawImage");    
+        log("drawImage");    
         return false;
     }
 
     @Override
     public void drawImage(java.awt.image.BufferedImage img, java.awt.image.BufferedImageOp op, int x, int y) {
-        System.out.println(indent + "drawImage");
+        log("drawImage");
 
     }
 
     @Override
     public void drawRenderedImage(java.awt.image.RenderedImage img, java.awt.geom.AffineTransform xform) {
-        System.out.println(indent + "drawRenderedImage");
+        log("drawRenderedImage");
 
     }
 
     @Override
     public void drawRenderableImage(java.awt.image.renderable.RenderableImage img, java.awt.geom.AffineTransform xform) {
-        System.out.println(indent + "drawRenderableImage");
+        log("drawRenderableImage");
 
     }
 
@@ -193,7 +212,7 @@ class SkiaGraphics extends java.awt.Graphics2D {
 
     @Override
     public void drawString(String str, float x, float y) {
-        System.out.println(indent + "[+] drawString");
+        log("[+] drawString");
         if (font == null)
             setFont(defaultFont);
         beforeDraw();
@@ -202,24 +221,24 @@ class SkiaGraphics extends java.awt.Graphics2D {
 
     @Override
     public void drawString(java.text.AttributedCharacterIterator iterator, int x, int y) {
-        System.out.println(indent + "drawString");
+        log("drawString");
     }
 
     @Override
     public void drawString(java.text.AttributedCharacterIterator iterator, float x, float y) {
-        System.out.println(indent + "drawString");
+        log("drawString");
 
     }
 
     @Override
     public void drawGlyphVector(java.awt.font.GlyphVector g, float x, float y) {
-        System.out.println(indent + "drawGlyphVector");
+        log("drawGlyphVector");
 
     }
 
     @Override
     public void fill(java.awt.Shape s) {
-        System.out.println(indent + "[+] fill " + s);
+        log("[+] fill " + s);
         beforeDraw();
 
         if (s instanceof java.awt.geom.Path2D) {
@@ -266,31 +285,31 @@ class SkiaGraphics extends java.awt.Graphics2D {
 
     @Override
     public boolean hit(java.awt.Rectangle rect, java.awt.Shape s, boolean onStroke) {
-        System.out.println(indent + "hit");    
+        log("hit");    
         return false;
     }
 
     @Override
     public java.awt.GraphicsConfiguration getDeviceConfiguration() {
-        System.out.println(indent + "[+] getDeviceConfiguration");    
+        log("[+] getDeviceConfiguration");    
         return SkiaGraphicsConfig.INSTANCE;
     }
 
     @Override
     public void setComposite(java.awt.Composite comp) {
-        System.out.println(indent + "[/] setComposite " + comp);
+        log("[/] setComposite " + comp);
         if (comp == java.awt.AlphaComposite.Clear)
             paint.setBlendMode(BlendMode.CLEAR);
         else if (comp == java.awt.AlphaComposite.SrcOver)
             paint.setBlendMode(BlendMode.SRC_OVER);
         else if (comp instanceof java.awt.AlphaComposite)
-            System.out.println(indent + " UNKNOWN COMPOSITE MODE " + ((java.awt.AlphaComposite) comp).getRule());
+            log(" UNKNOWN COMPOSITE MODE " + ((java.awt.AlphaComposite) comp).getRule());
     }
 
     @Override
     public void setPaint(java.awt.Paint paint) {
         if (paint instanceof java.awt.Color) {
-            System.out.println(indent + "[+] setPaint " + paint);
+            log("[+] setPaint " + paint);
             setColor((java.awt.Color) paint);
         } else if (paint instanceof java.awt.LinearGradientPaint) {
             var gr = (java.awt.LinearGradientPaint) paint;
@@ -299,7 +318,7 @@ class SkiaGraphics extends java.awt.Graphics2D {
             for (int i = 0; i < colors.length; ++i)
                 colors[i] = gr.getColors()[i].getRGB();
 
-            System.out.println(indent + "[+] setPaint " + gr.getStartPoint() + " " + gr.getEndPoint() + " " + Arrays.toString(colors) + " " + Arrays.toString(gr.getFractions()));
+            log("[+] setPaint " + gr.getStartPoint() + " " + gr.getEndPoint() + " " + Arrays.toString(colors) + " " + Arrays.toString(gr.getFractions()));
 
             var shader = Shader.makeLinearGradient((float) gr.getStartPoint().getX(),
                     (float) gr.getStartPoint().getY(),
@@ -309,7 +328,7 @@ class SkiaGraphics extends java.awt.Graphics2D {
                     gr.getFractions());
             this.paint.setShader(shader);
         } else {
-            System.out.println(indent + "setPaint " + paint);
+            log("setPaint " + paint);
         }
     }
 
@@ -317,40 +336,40 @@ class SkiaGraphics extends java.awt.Graphics2D {
     public void setStroke(java.awt.Stroke s) {
         if (s instanceof java.awt.BasicStroke) {
             var ss = (java.awt.BasicStroke) s;
-            System.out.println(indent + "[+] setStroke " + ss);
+            log("[+] setStroke " + ss);
             paint.setStrokeWidth(ss.getLineWidth());
             // TODO
         } else
-            System.out.println(indent + "setStroke " + s);
+            log("setStroke " + s);
     }
 
     @Override
     public void setRenderingHint(java.awt.RenderingHints.Key hintKey, Object hintValue) {
-        System.out.println(indent + "setRenderingHint " + hintKey + "=" + hintValue);
+        log("setRenderingHint " + hintKey + "=" + hintValue);
 
     }
 
     @Override
     public Object getRenderingHint(java.awt.RenderingHints.Key hintKey) {
-        System.out.println(indent + "getRenderingHint " + hintKey);    
+        log("getRenderingHint " + hintKey);    
         return null;
     }
 
     @Override
     public void setRenderingHints(Map<?, ?> hints) {
-        System.out.println(indent + "setRenderingHints");
+        log("setRenderingHints");
 
     }
 
     @Override
     public void addRenderingHints(Map<?, ?> hints) {
-        System.out.println(indent + "addRenderingHints");
+        log("addRenderingHints");
 
     }
 
     @Override
     public java.awt.RenderingHints getRenderingHints() {
-        System.out.println(indent + "getRenderingHints");    
+        log("getRenderingHints");    
         return null;
     }
 
@@ -361,7 +380,7 @@ class SkiaGraphics extends java.awt.Graphics2D {
 
     @Override
     public void translate(double tx, double ty) {
-        System.out.println(String.format(indent + "[+] translate %f, %f", tx, ty));
+        log("[+] translate %f, %f", tx, ty);
         matrix = matrix.makeConcat(Matrix33.makeTranslate((float) tx, (float) ty));
         if (clip != null) {
             clip = new java.awt.Rectangle(clip.x, clip.y, clip.width, clip.height);
@@ -371,108 +390,108 @@ class SkiaGraphics extends java.awt.Graphics2D {
 
     @Override
     public void rotate(double theta) {
-        System.out.println(indent + "rotate " + theta );
+        log("rotate " + theta );
 
     }
 
     @Override
     public void rotate(double theta, double x, double y) {
-        System.out.println(indent + "rotate");
+        log("rotate");
 
     }
 
     @Override
     public void scale(double sx, double sy) {
-        System.out.println(indent + "scale");
+        log("scale");
 
     }
 
     @Override
     public void shear(double shx, double shy) {
-        System.out.println(indent + "shear");
+        log("shear");
 
     }
 
     @Override
     public void transform(java.awt.geom.AffineTransform Tx) {
-        System.out.println(indent + "transform");
+        log("transform");
 
     }
 
     @Override
     public void setTransform(java.awt.geom.AffineTransform Tx) {
-        System.out.println(indent + "setTransform");
+        log("setTransform");
 
     }
 
     @Override
     public java.awt.geom.AffineTransform getTransform() {
-        System.out.println(indent + "getTransform");    
+        log("getTransform");    
         return AffineTransform.getTranslateInstance(0, 0);
     }
 
     @Override
     public java.awt.Paint getPaint() {
-        System.out.println(indent + "getPaint");    
+        log("getPaint");    
         return null;
     }
 
     @Override
     public java.awt.Composite getComposite() {
-        System.out.println(indent + "getComposite");    
+        log("getComposite");    
         return null;
     }
 
     @Override
     public void setBackground(java.awt.Color color) {
-        System.out.println(indent + "[+] setBackground " + color);
+        log("[+] setBackground " + color);
         this.backgroundColor = color;
         backgroundPaint.setColor(color.getRGB());
     }
 
     @Override
     public java.awt.Color getBackground() {
-        System.out.println(indent + "[+] getBackground");    
+        log("[+] getBackground");    
         return backgroundColor;
     }
 
     @Override
     public java.awt.Stroke getStroke() {
-        System.out.println(indent + "getStroke");    
+        log("getStroke");    
         return null;
     }
 
     @Override
     public void clip(java.awt.Shape s) {
         if (s instanceof java.awt.Rectangle) {
-            System.out.println(indent + "[+] clip " + s);
+            log("[+] clip " + s);
             var r = (java.awt.Rectangle) s;
             clipRect(r.x, r.y, r.width, r.height);
         } else
-            System.out.println(indent + "clip " + s);
+            log("clip " + s);
     }
 
     @Override
     public java.awt.font.FontRenderContext getFontRenderContext() {
-        System.out.println(indent + "getFontRenderContext");    
+        log("getFontRenderContext");    
         return null;
     }
 
     @Override
     public java.awt.Graphics create() {
-        System.out.println(indent + "[+] create");
+        log("[+] create");
         return new SkiaGraphics(canvas, indent + "  ", matrix, clip, font, skiaFont);
     }
 
     @Override
     public java.awt.Color getColor() {
-        System.out.println(indent + "[+] getColor");    
+        log("[+] getColor");    
         return color;
     }
 
     @Override
     public void setColor(java.awt.Color c) {
-        System.out.println(indent + "[+] setColor " + c);
+        log("[+] setColor " + c);
         this.color = c;
         paint.setColor(c == null ? 0xFFFFFFFF : c.getRGB());
         paint.setShader(null);
@@ -480,19 +499,19 @@ class SkiaGraphics extends java.awt.Graphics2D {
 
     @Override
     public void setPaintMode() {
-        System.out.println(indent + "setPaintMode");
+        log("setPaintMode");
 
     }
 
     @Override
     public void setXORMode(java.awt.Color c1) {
-        System.out.println(indent + "setXORMode");
+        log("setXORMode");
 
     }
 
     @Override
     public java.awt.Font getFont() {
-        System.out.println(indent + "[+] getFont");    
+        log("[+] getFont");    
         if (font == null)
             setFont(defaultFont);
         return font;
@@ -500,7 +519,7 @@ class SkiaGraphics extends java.awt.Graphics2D {
 
     @Override
     public void setFont(java.awt.Font font) {
-        System.out.println(indent + "[+] setFont " + font);
+        log("[+] setFont " + font);
         if (this.font != font) {
             this.font = font;
 
@@ -535,19 +554,19 @@ class SkiaGraphics extends java.awt.Graphics2D {
 
     @Override
     public java.awt.FontMetrics getFontMetrics(java.awt.Font f) {
-        System.out.println(indent + "getFontMetrics");    
+        log("getFontMetrics");    
         return null;
     }
 
     @Override
     public java.awt.Rectangle getClipBounds() {
-        System.out.println(indent + "[+] getClipBounds => " + clip);
+        log("[+] getClipBounds => " + clip);
         return clip;
     }
 
     @Override
     public void clipRect(int x, int y, int width, int height) {
-        System.out.println(String.format(indent + "[+] clipRect %d %d %d %d", x, y, width, height));
+        log("[+] clipRect %d %d %d %d", x, y, width, height);
         if (clip == null)
             setClip(x, y, width, height);
         else {
@@ -558,13 +577,13 @@ class SkiaGraphics extends java.awt.Graphics2D {
 
     @Override
     public void setClip(int x, int y, int width, int height) {
-        System.out.println(String.format(indent + "[+] setClip %d %d %d %d", x, y, width, height));
+        log("[+] setClip %d %d %d %d", x, y, width, height);
         clip = new java.awt.Rectangle(x, y, width, height);
     }
 
     @Override
     public java.awt.Shape getClip() {
-        System.out.println(indent + "[+] getClip => " + clip);
+        log("[+] getClip => " + clip);
         return clip;
     }
 
@@ -574,50 +593,50 @@ class SkiaGraphics extends java.awt.Graphics2D {
             var r = (java.awt.Rectangle) clip;
             setClip(r.x, r.y, r.width, r.height);
         } else
-            System.out.println(indent + "setClip " + clip);
+            log("setClip " + clip);
     }
 
     @Override
     public void copyArea(int x, int y, int width, int height, int dx, int dy) {
-        System.out.println(indent + "copyArea");
+        log("copyArea");
 
     }
 
     @Override
     public void drawLine(int x1, int y1, int x2, int y2) {
-        System.out.println(String.format(indent + "[+] drawLine %d, %d -> %d, %d", x1, y1, x2, y2));
+        log("[+] drawLine %d, %d -> %d, %d", x1, y1, x2, y2);
         beforeDraw();
         canvas.drawLine(x1, y1, x2, y2, paint);
     }
 
     @Override
     public void fillRect(int x, int y, int width, int height) {
-        System.out.println(String.format(indent + "[+] fillRect %d, %d, %d, %d", x, y, width, height));
+        log("[+] fillRect %d, %d, %d, %d", x, y, width, height);
         beforeDraw();
         canvas.drawRect(Rect.makeXYWH(x, y, width, height), paint);
     }
 
     @Override
     public void clearRect(int x, int y, int width, int height) {
-        System.out.println(String.format(indent + "clearRect %d, %d, %d, %d", x, y, width, height));
+        log("clearRect %d, %d, %d, %d", x, y, width, height);
 
     }
 
     @Override
     public void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
-        System.out.println(indent + "drawRoundRect");
+        log("drawRoundRect");
 
     }
 
     @Override
     public void fillRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
-        System.out.println(indent + "fillRoundRect");
+        log("fillRoundRect");
 
     }
 
     @Override
     public void drawOval(int x, int y, int width, int height) {
-        System.out.println(indent + "drawOval");
+        log("drawOval");
         paint.setMode(PaintMode.STROKE);
         canvas.drawOval(Rect.makeXYWH(x, y, width, height), paint);
         paint.setMode(PaintMode.FILL);
@@ -625,13 +644,13 @@ class SkiaGraphics extends java.awt.Graphics2D {
 
     @Override
     public void fillOval(int x, int y, int width, int height) {
-        System.out.println(indent + "[+] fillOval");
+        log("[+] fillOval");
         canvas.drawOval(Rect.makeXYWH(x, y, width, height), paint);
     }
 
     @Override
     public void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
-        System.out.println(indent + "[+] drawArc");
+        log("[+] drawArc");
         paint.setMode(PaintMode.STROKE);
         canvas.drawArc(x, y, width, height, startAngle, arcAngle, false, paint);
         paint.setMode(PaintMode.FILL);
@@ -639,25 +658,25 @@ class SkiaGraphics extends java.awt.Graphics2D {
 
     @Override
     public void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
-        System.out.println(indent + "[+] fillArc");
+        log("[+] fillArc");
         canvas.drawArc(x, y, width, height, startAngle, arcAngle, false, paint);
     }
 
     @Override
     public void drawPolyline(int[] xPoints, int[] yPoints, int nPoints) {
-        System.out.println(indent + "drawPolyline");
+        log("drawPolyline");
 
     }
 
     @Override
     public void drawPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-        System.out.println(indent + "drawPolygon");
+        log("drawPolygon");
 
     }
 
     @Override
     public void fillPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-        System.out.println(indent + "[+] fillPolygon " + Arrays.toString(xPoints) + " " + Arrays.toString(yPoints) + " " + nPoints);
+        log("[+] fillPolygon " + Arrays.toString(xPoints) + " " + Arrays.toString(yPoints) + " " + nPoints);
         beforeDraw();
         try (var path = new Path()) {
             path.moveTo(xPoints[0], yPoints[0]);
@@ -697,7 +716,7 @@ class SkiaGraphics extends java.awt.Graphics2D {
     @Override
     public boolean drawImage(java.awt.Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, java.awt.Color bgcolor, java.awt.image.ImageObserver observer) {
         if (img instanceof SkiaVolatileImage) {
-            System.out.println(indent + String.format("[+] drawImage dx1=%d dy1=%d dx2=%d dy2=%d sx1=%d sy1=%d sx2=%d sy2=%d color=%s observer=%s", dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, bgcolor, observer));
+            log("[+] drawImage dx1=%d dy1=%d dx2=%d dy2=%d sx1=%d sy1=%d sx2=%d sy2=%d color=%s observer=%s", dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, bgcolor, observer);
             beforeDraw();
             try (Image image = ((SkiaVolatileImage) img).surface.makeImageSnapshot();) {
                 canvas.drawImageIRect(image, IRect.makeLTRB(sx1, sy1, sx2, sy2), Rect.makeLTRB(dx1, dy1, dx2, dy2));
@@ -706,15 +725,45 @@ class SkiaGraphics extends java.awt.Graphics2D {
 //            try (var paint = new Paint().setColor(0x20FF0000)) {
 //                canvas.drawRect(Rect.makeLTRB(dx1, dy1, dx2, dy2), paint);
 //            }
+        } else if (img instanceof java.awt.image.AbstractMultiResolutionImage) {
+            var variant = ((java.awt.image.AbstractMultiResolutionImage) img).getResolutionVariants().get(0);
+            if (variant instanceof java.awt.image.BufferedImage) {
+                drawImage(variant, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, bgcolor, observer);
+            } else
+                log("drawImage %s dx1=%d dy1=%d dx2=%d dy2=%d sx1=%d sy1=%d sx2=%d sy2=%d color=%s observer=%s", img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, bgcolor, observer);
+        } else if (img instanceof java.awt.image.BufferedImage) {
+            log("[+] drawImage dx1=%d dy1=%d dx2=%d dy2=%d sx1=%d sy1=%d sx2=%d sy2=%d color=%s observer=%s", dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, bgcolor, observer);
+            beforeDraw();
+            java.awt.image.BufferedImage bi = (java.awt.image.BufferedImage) img;
+            canvas.drawBitmapIRect(skBitmap(bi), IRect.makeLTRB(sx1, sy1, sx2, sy2), Rect.makeLTRB(dx1, dy1, dx2, dy2));
         } else {
-            System.out.println(indent + String.format("drawImage %s dx1=%d dy1=%d dx2=%d dy2=%d sx1=%d sy1=%d sx2=%d sy2=%d color=%s observer=%s", img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, bgcolor, observer));
+            log("drawImage %s dx1=%d dy1=%d dx2=%d dy2=%d sx1=%d sy1=%d sx2=%d sy2=%d color=%s observer=%s", img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, bgcolor, observer);
         }
         return false;
     }
 
+    public static final Map<java.awt.image.BufferedImage, Bitmap> rasterCache = new ConcurrentHashMap<>();
+
+    public Bitmap skBitmap(java.awt.image.BufferedImage bi) {
+        Bitmap b = rasterCache.get(bi);
+        if (b != null)
+            return b;
+
+        b = new Bitmap();
+        b.allocN32Pixels(bi.getWidth(), bi.getHeight());
+        for (int x = 0; x < bi.getWidth(); ++x) {
+            for (int y = 0; y < bi.getHeight(); ++y) {
+                int color = bi.getRGB(x, y);
+                b.erase(color, IRect.makeXYWH(x, y, 1, 1));
+            }
+        }
+        rasterCache.put(bi, b);
+        return b;
+    }
+
     @Override
     public void dispose() {
-        System.out.println(indent + "[+] dispose");
+        log("[+] dispose");
         paint.close();
         backgroundPaint.close();
     }
@@ -723,45 +772,49 @@ class SkiaGraphics extends java.awt.Graphics2D {
 class SkiaGraphicsConfig extends java.awt.GraphicsConfiguration {
     public static final SkiaGraphicsConfig INSTANCE = new SkiaGraphicsConfig();
 
+    public void log(String format, String... args) {
+//        System.out.println("GC " + String.format(format, args));
+    }
+
     @Override
     public java.awt.GraphicsDevice getDevice() {
-        System.out.println("GC getDevice");
+        log("getDevice");
         return null;
     }
 
     @Override
     public java.awt.image.ColorModel getColorModel() {
-        System.out.println("GC getColorModel");
+        log("getColorModel");
         return null;
     }
 
     @Override
     public java.awt.image.ColorModel getColorModel(int transparency) {
-        System.out.println("GC getColorModel(int)");
+        log("getColorModel(int)");
         return null;
     }
 
     @Override
     public java.awt.geom.AffineTransform getDefaultTransform() {
-        System.out.println("GC getDefaultTransform");
+        log("getDefaultTransform");
         return null;
     }
 
     @Override
     public java.awt.geom.AffineTransform getNormalizingTransform() {
-        System.out.println("GC getNormalizingTransform");
+        log("getNormalizingTransform");
         return null;
     }
 
     @Override
     public java.awt.Rectangle getBounds() {
-        System.out.println("GC getBounds");
+        log("getBounds");
         return null;
     }
 
     @Override
     public java.awt.image.VolatileImage createCompatibleVolatileImage(int width, int height, java.awt.ImageCapabilities caps, int transparency) throws java.awt.AWTException {
-        System.out.println("GC [+] createCompatibleVolatileImage " + width + "x" + height + " " + caps + " " + transparency);
+        log("[+] createCompatibleVolatileImage " + width + "x" + height + " " + caps + " " + transparency);
         return new SkiaVolatileImage(width, height, caps, transparency);
     }
 }
@@ -772,8 +825,12 @@ class SkiaVolatileImage extends java.awt.image.VolatileImage {
     public final java.awt.ImageCapabilities caps;
     public final Surface surface;
 
+    public void log(String format, Object... args) {
+//        System.out.println("VI " + String.format(format, args));
+    }
+
     public SkiaVolatileImage(int width, int height, java.awt.ImageCapabilities caps, int transparency) {
-        System.out.println(String.format("GC new SkiaVolatileImage(%d, %d, %s, %d)", width, height, caps, transparency));
+        log("new SkiaVolatileImage(%d, %d, %s, %d)", width, height, caps, transparency);
         this.width = width;
         this.height = height;
         this.caps = caps;
@@ -782,61 +839,61 @@ class SkiaVolatileImage extends java.awt.image.VolatileImage {
 
     @Override
     public java.awt.image.BufferedImage getSnapshot() {
-        System.out.println("GC getSnapshot");
+        log("getSnapshot");
         return null;
     }
 
     @Override
     public int getWidth() {
-        System.out.println("GC [+] getWidth => " + width);
+        log("[+] getWidth => " + width);
         return width;
     }
 
     @Override
     public int getHeight() {
-        System.out.println("GC [+] getHeight => " + height);
+        log("[+] getHeight => " + height);
         return height;
     }
 
     @Override
     public java.awt.Graphics2D createGraphics() {
-        System.out.println("GC createGraphics");
+        log("createGraphics");
         return new SkiaGraphics(surface.getCanvas());
     }
 
     @Override
     public int validate(java.awt.GraphicsConfiguration gc) {
-        System.out.println("GC validate");
+        log("validate");
         return 0;
     }
 
     @Override
     public boolean contentsLost() {
-        System.out.println("GC contentLost");
+        log("contentLost");
         return false;
     }
 
     @Override
     public java.awt.ImageCapabilities getCapabilities() {
-        System.out.println("GC [+] getCapabilities");
+        log("[+] getCapabilities");
         return caps;
     }
 
     @Override
     public int getWidth(java.awt.image.ImageObserver observer) {
-        System.out.println("GC [+] getWidth(ImageObserver) => " + width);
+        log("[+] getWidth(ImageObserver) => " + width);
         return width;
     }
 
     @Override
     public int getHeight(java.awt.image.ImageObserver observer) {
-        System.out.println("GC [+] getHeight(ImageObserver) => " + height);
+        log("[+] getHeight(ImageObserver) => " + height);
         return height;
     }
 
     @Override
     public Object getProperty(String name, java.awt.image.ImageObserver observer) {
-        System.out.println("GC getProperty(" + name + ", ImageObserver)");
+        log("getProperty(" + name + ", ImageObserver)");
         return null;
     }
 }
