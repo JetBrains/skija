@@ -9,6 +9,7 @@ import org.jetbrains.skija.*;
 public class FontScene implements Scene {
     public Typeface _inter;
     public Typeface _jbMono;
+    public Typeface _testKern;
     public Paint    _paint;
     public Paint    _stroke;
     public Paint    _boundaryPaint;
@@ -25,6 +26,7 @@ public class FontScene implements Scene {
     public FontScene() {
         _inter          = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         _jbMono         = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf");
+        _testKern       = Typeface.makeFromFile("fonts/TestKERNOne.otf");
         _paint          = new Paint().setColor(0xFF1d3557);
         _stroke         = new Paint().setColor(0xFF2a9d8f).setMode(PaintMode.STROKE).setStrokeWidth(2).setPathEffect(PathEffect.makeDash(new float[] {6, 2}, 0));
         _boundaryPaint  = new Paint().setColor(0xFFe76f51).setMode(PaintMode.STROKE);
@@ -49,7 +51,19 @@ public class FontScene implements Scene {
 
     @Override
     public void draw(Canvas canvas, int windowWidth, int windowHeight, float dpi, int xpos, int ypos) {
+        int layer = canvas.save();
         canvas.translate(30, 30);
+        drawInter(canvas);
+        canvas.restoreToCount(layer);
+
+        layer = canvas.save();
+        canvas.translate(windowWidth / 2, 30);
+        drawTestKern(canvas);
+        canvas.restoreToCount(layer);
+    }
+
+    public void drawInter(Canvas canvas) {
+        
         _drawLine(canvas, "Default", _defaultFont);
         _drawLine(canvas, "Inter size=18", _inter18);
         _drawLine(canvas, "Inter size=13 scaleX=1", _inter13_1_0);
@@ -221,5 +235,15 @@ public class FontScene implements Scene {
 
         canvas.translate(0, _inter13.getSpacing());
         _drawLine(canvas, "FIN", _inter13);
+    }
+
+    public void drawTestKern(Canvas canvas) {
+        for (int size = 9; size < 24; ++size) {
+            _drawLine(canvas, size + " TuTuTuTu", new Font(_testKern, size));
+        }
+
+        for (int size = 9; size < 24; ++size) {
+            _drawLine(canvas, size + " TuTuTuTu", new Font(_testKern, size).setSubpixel(true));
+        }
     }
 }
