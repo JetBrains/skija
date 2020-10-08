@@ -4,7 +4,7 @@ cd `dirname $0`/..
 
 git submodule update --init
 cd third_party/skia
-VER=m86
+VER=m87
 git pull
 git checkout chrome/${VER}
 python2 tools/git-sync-deps
