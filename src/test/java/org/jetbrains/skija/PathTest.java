@@ -66,20 +66,10 @@ public class PathTest implements Executable {
 
     public void convexity() {
         try (Path p = new Path().lineTo(40, 20).lineTo(0, 40).lineTo(0, 0).closePath()) {
-            assertEquals(PathConvexity.UNKNOWN, p.getConvexityOrUnknown());
-            assertEquals(PathConvexity.CONVEX, p.getConvexity());
-            assertEquals(PathConvexity.CONVEX, p.getConvexityOrUnknown());
             assertEquals(true, p.isConvex());
-            p.setConvexity(PathConvexity.CONCAVE);
-            assertEquals(PathConvexity.CONCAVE, p.getConvexityOrUnknown());
-            assertEquals(PathConvexity.CONCAVE, p.getConvexity());
-            assertEquals(false, p.isConvex());
         }
 
         try (Path p = new Path().lineTo(40, 40).lineTo(40, 0).lineTo(0, 40).lineTo(0, 0).closePath()) {
-            assertEquals(PathConvexity.UNKNOWN, p.getConvexityOrUnknown());
-            assertEquals(PathConvexity.CONCAVE, p.getConvexity());
-            assertEquals(PathConvexity.CONCAVE, p.getConvexityOrUnknown());
             assertEquals(false, p.isConvex());
         }
     }

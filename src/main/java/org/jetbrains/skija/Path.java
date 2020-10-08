@@ -106,52 +106,13 @@ public class Path extends Managed implements Iterable<PathSegment> {
     }
 
     /**
-     * Returns the convexity type, computing if needed. Never returns {@link PathConvexity#UNKNOWN}.
-     * 
-     * @return  path's convexity type ({@link PathConvexity#CONVEX} or {@link PathConvexity#CONCAVE})
-     */
-    public PathConvexity getConvexity() {
-        Stats.onNativeCall();
-        return PathConvexity.values()[_nGetConvexity(_ptr)];
-    }
-
-    /**
-     * If the path's convexity is already known, return it, else return {@link PathConvexity#UNKNOWN}.
-     * If you always want to know the convexity, even if that means having to compute it,
-     * call {@link #getConvexity()}.
-     *
-     * @return  known convexity, or {@link PathConvexity#UNKNOWN}
-     */
-    public PathConvexity getConvexityOrUnknown() {
-        Stats.onNativeCall();
-        return PathConvexity.values()[_nGetConvexityOrUnknown(_ptr)];
-    }
-
-    /**
-     * <p>Stores a convexity type for this path.</p>
-     *
-     * <p>This is what will be returned if
-     * {@link #getConvexityOrUnknown()} is called. If you pass {@link PathConvexity#UNKNOWN},
-     * then if {@link #getConvexity()} is called, the real convexity will be computed.</p>
-     *
-     * @param   convexity value to set
-     * @return  this
-     *
-     * @see <a href="https://fiddle.skia.org/c/@Path_setConvexity">https://fiddle.skia.org/c/@Path_setConvexity</a>
-     */
-    public Path setConvexity(PathConvexity convexity) {
-        Stats.onNativeCall();
-        _nSetConvexity(_ptr, convexity.ordinal());
-        return this;
-    }
-
-    /**
      * Returns true if the path is convex. If necessary, it will first compute the convexity.
      *
      * @return  true or false
      */
     public boolean isConvex() {
-        return getConvexity() == PathConvexity.CONVEX;
+        Stats.onNativeCall();
+        return _nIsConvex(_ptr);
     }
 
     /**
@@ -1857,9 +1818,7 @@ public class Path extends Managed implements Iterable<PathSegment> {
     public static native long    _nMakeLerp(long ptr, long endingPtr, float weight);
     public static native int     _nGetFillMode(long ptr);
     public static native void    _nSetFillMode(long ptr, int fillMode);
-    public static native int     _nGetConvexity(long ptr);
-    public static native int     _nGetConvexityOrUnknown(long ptr);
-    public static native void    _nSetConvexity(long ptr, int convexity);
+    public static native boolean _nIsConvex(long ptr);
     public static native Rect    _nIsOval(long ptr);
     public static native RRect _nIsRRect(long ptr);
     public static native void    _nReset(long ptr);

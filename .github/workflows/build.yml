@@ -41,8 +41,8 @@ jobs:
           java-version: '11.0.8'
       - name: Download Skia
         run: |
-          curl --fail --location --silent --show-error https://bintray.com/api/ui/download/jetbrains/skija/Skia-m86-macos-Release-x64.zip > Skia-m86-macos-Release-x64.zip
-          unzip -qq Skia-m86-macos-Release-x64.zip -d third_party/skia
+          curl --fail --location --silent --show-error https://github.com/tonsky/skia-build/releases/download/m87-a0c82f0/Skia-m87-a0c82f0-macos-Release-x64.zip > Skia-m87-a0c82f0-macos-Release-x64.zip.zip
+          unzip -qq Skia-m87-a0c82f0-macos-Release-x64.zip.zip -d third_party/skia
       - run: ./script/native.sh
       - uses: actions/upload-artifact@v2
         with:
@@ -73,8 +73,8 @@ jobs:
           gcc --version
       - name: Download Skia
         run: |
-          curl --fail --location --silent --show-error https://bintray.com/api/ui/download/jetbrains/skija/Skia-m86-linux-Release-x64.zip > Skia-m86-linux-Release-x64.zip
-          unzip -qq Skia-m86-linux-Release-x64.zip -d third_party/skia
+          curl --fail --location --silent --show-error https://github.com/tonsky/skia-build/releases/download/m87-a0c82f0/Skia-m87-a0c82f0-linux-Release-x64.zip > Skia-m87-a0c82f0-linux-Release-x64.zip.zip
+          unzip -qq Skia-m87-a0c82f0-linux-Release-x64.zip.zip -d third_party/skia
       - run: ./script/native.sh
       - uses: actions/upload-artifact@v2
         with:
@@ -100,8 +100,8 @@ jobs:
       - name: Download Skia
         shell: bash
         run: |
-          curl --fail --location --silent --show-error https://bintray.com/api/ui/download/jetbrains/skija/Skia-m86-windows-Release-x64.zip > Skia-m86-windows-Release-x64.zip
-          unzip -qq Skia-m86-windows-Release-x64.zip -d third_party/skia
+          curl --fail --location --silent --show-error https://github.com/tonsky/skia-build/releases/download/m87-a0c82f0/Skia-m87-a0c82f0-windows-Release-x64.zip > Skia-m87-a0c82f0-windows-Release-x64.zip.zip
+          unzip -qq Skia-m87-a0c82f0-windows-Release-x64.zip.zip -d third_party/skia
       - shell: bash
         run: ./script/native.sh
       - uses: actions/upload-artifact@v2

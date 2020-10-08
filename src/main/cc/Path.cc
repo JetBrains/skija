@@ -55,20 +55,9 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nSetFillMode(J
     instance->setFillType(static_cast<SkPathFillType>(fillMode));
 }
 
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Path__1nGetConvexity(JNIEnv* env, jclass jclass, jlong ptr) {
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Path__1nIsConvex(JNIEnv* env, jclass jclass, jlong ptr) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
-    return static_cast<jint>(instance->getConvexityType());
-}
-
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Path__1nGetConvexityOrUnknown(JNIEnv* env, jclass jclass, jlong ptr) {
-    SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
-    return static_cast<jint>(instance->getConvexityTypeOrUnknown());
-}
-
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nSetConvexity(JNIEnv* env, jclass jclass, jlong ptr, jint convexityInt) {
-    SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
-    SkPathConvexityType convexity = static_cast<SkPathConvexityType>(convexityInt);
-    instance->setConvexityType(convexity);
+    return instance->isConvex();
 }
 
 extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Path__1nIsOval(JNIEnv* env, jclass jclass, jlong ptr) {

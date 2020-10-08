@@ -417,7 +417,7 @@ public class Bitmap extends Managed {
      * until the pixels are written to. The actual behavior depends on the platform
      * implementation of calloc().</p>
      *
-     * @param info        contains width, height, ColorAlphaType, ColorType, ColorSpace
+     * @param imageInfo   contains width, height, ColorAlphaType, ColorType, ColorSpace
      * @param zeroPixels  whether pixels should be zeroed
      * @return            true if pixels allocation is successful
      */

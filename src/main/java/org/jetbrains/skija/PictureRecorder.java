@@ -29,24 +29,8 @@ public class PictureRecorder extends Managed {
      * @return the canvas.
     */
     public Canvas beginRecording(Rect bounds) {
-        return beginRecording(bounds, false);
-    }
-
-    /**
-     * Returns the canvas that records the drawing commands.
-     * 
-     * @param bounds the cull rect used when recording this picture. Any drawing the falls outside
-     *               of this rect is undefined, and may be drawn or it may not.
-     * @param playbackDrawPicture  If you call {@link Canvas#drawPicture(Picture)} or
-     *                             {@link Canvas#drawDrawable(Drawable)} on the recording
-     *                             canvas, this flag forces that object to playback its contents 
-     *                             immediately rather than reffing the object.
-     * @return the canvas.
-    */
-    public Canvas beginRecording(Rect bounds, boolean playbackDrawPicture) {
         Stats.onNativeCall();
-        int flags = 0 | (playbackDrawPicture ? 1 : 0);
-        return new Canvas(_nBeginRecording(_ptr, bounds._left, bounds._top, bounds._right, bounds._bottom, flags));
+        return new Canvas(_nBeginRecording(_ptr, bounds._left, bounds._top, bounds._right, bounds._bottom));
     }
 
     /**
@@ -70,7 +54,7 @@ public class PictureRecorder extends Managed {
      */
     public Picture finishRecordingAsPicture() {
         Stats.onNativeCall();
-        return new Picture(_nFinishRecordingAsPicture(_ptr, 0));
+        return new Picture(_nFinishRecordingAsPicture(_ptr));
     }
 
     /**
@@ -85,7 +69,7 @@ public class PictureRecorder extends Managed {
      */
     public Picture finishRecordingAsPicture(@NotNull Rect cull) {
         Stats.onNativeCall();
-        return new Picture(_nFinishRecordingAsPictureWithCull(_ptr, cull._left, cull._top, cull._right, cull._bottom, 0));
+        return new Picture(_nFinishRecordingAsPictureWithCull(_ptr, cull._left, cull._top, cull._right, cull._bottom));
     }
 
     // TODO
@@ -106,9 +90,9 @@ public class PictureRecorder extends Managed {
 
     @ApiStatus.Internal public static native long _nMake();
     @ApiStatus.Internal public static native long _nGetFinalizer();
-    @ApiStatus.Internal public static native long _nBeginRecording(long ptr, float left, float top, float right, float bottom, int flags);
+    @ApiStatus.Internal public static native long _nBeginRecording(long ptr, float left, float top, float right, float bottom);
     @ApiStatus.Internal public static native long _nGetRecordingCanvas(long ptr);
-    @ApiStatus.Internal public static native long _nFinishRecordingAsPicture(long ptr, int flags);
-    @ApiStatus.Internal public static native long _nFinishRecordingAsPictureWithCull(long ptr, float left, float top, float right, float bottom, int flags);
-    @ApiStatus.Internal public static native long _nFinishRecordingAsDrawable(long ptr, int flags);
+    @ApiStatus.Internal public static native long _nFinishRecordingAsPicture(long ptr);
+    @ApiStatus.Internal public static native long _nFinishRecordingAsPictureWithCull(long ptr, float left, float top, float right, float bottom);
+    @ApiStatus.Internal public static native long _nFinishRecordingAsDrawable(long ptr);
 }

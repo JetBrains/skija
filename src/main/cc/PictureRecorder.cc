@@ -21,9 +21,9 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_PictureRecorder__1nG
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_PictureRecorder__1nBeginRecording
-  (JNIEnv* env, jclass jclass, jlong ptr, jfloat left, jfloat top, jfloat right, jfloat bottom, jint flags) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloat left, jfloat top, jfloat right, jfloat bottom) {
     SkPictureRecorder* instance = reinterpret_cast<SkPictureRecorder*>(static_cast<uintptr_t>(ptr));
-    SkCanvas* canvas = instance->beginRecording(SkRect::MakeLTRB(left, top, right, bottom), nullptr, flags);
+    SkCanvas* canvas = instance->beginRecording(SkRect::MakeLTRB(left, top, right, bottom), nullptr);
     return reinterpret_cast<jlong>(canvas);
 }
 
@@ -35,22 +35,22 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_PictureRecorder__1nG
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_PictureRecorder__1nFinishRecordingAsPicture
-  (JNIEnv* env, jclass jclass, jlong ptr, jint flags) {
+  (JNIEnv* env, jclass jclass, jlong ptr) {
     SkPictureRecorder* instance = reinterpret_cast<SkPictureRecorder*>(static_cast<uintptr_t>(ptr));
-    SkPicture* picture = instance->finishRecordingAsPicture(flags).release();
+    SkPicture* picture = instance->finishRecordingAsPicture().release();
     return reinterpret_cast<jlong>(picture);
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_PictureRecorder__1nFinishRecordingAsPictureWithCull
-  (JNIEnv* env, jclass jclass, jlong ptr, jfloat left, jfloat top, jfloat right, jfloat bottom, jint flags) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloat left, jfloat top, jfloat right, jfloat bottom) {
     SkPictureRecorder* instance = reinterpret_cast<SkPictureRecorder*>(static_cast<uintptr_t>(ptr));
-    SkPicture* picture = instance->finishRecordingAsPictureWithCull(SkRect::MakeLTRB(left, top, right, bottom), flags).release();
+    SkPicture* picture = instance->finishRecordingAsPictureWithCull(SkRect::MakeLTRB(left, top, right, bottom)).release();
     return reinterpret_cast<jlong>(picture);
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_PictureRecorder__1nFinishRecordingAsDrawable
-  (JNIEnv* env, jclass jclass, jlong ptr, jint flags) {
+  (JNIEnv* env, jclass jclass, jlong ptr) {
     SkPictureRecorder* instance = reinterpret_cast<SkPictureRecorder*>(static_cast<uintptr_t>(ptr));
-    SkDrawable* drawable = instance->finishRecordingAsDrawable(flags).release();
+    SkDrawable* drawable = instance->finishRecordingAsDrawable().release();
     return reinterpret_cast<jlong>(drawable);
 }
