@@ -120,8 +120,9 @@ endif()
 
 if(APPLE)
   find_library(COCOA_LIBRARY Cocoa)
+  find_library(METAL_LIBRARY Metal)
   target_link_libraries(skia INTERFACE
-    ${COCOA_LIBRARY})
+    ${COCOA_LIBRARY} ${METAL_LIBRARY})
 endif()
 
 if(UNIX AND NOT APPLE)
