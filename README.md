@@ -63,7 +63,7 @@ ColorFilter          ▓▓▓▓▓▓▓▓▓▓
 ColorInfo            ▓▓▓▓▓▓▓▓▓▓
 ColorSpace           ▓▓▓▓░░░░░░
 Data                 ▓▓▓▓▓▓▓▓▓░
-Drawable             ░░░░░░░░░░
+Drawable             ▓▓▓▓▓▓▓▓░░
 Flattenable          ░░░░░░░░░░
 Font                 ▓▓▓▓▓▓▓▓▓▓
 FontData             ░░░░░░░░░░

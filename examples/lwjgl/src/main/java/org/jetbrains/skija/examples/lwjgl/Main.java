@@ -162,13 +162,13 @@ class Window {
         times[timesIdx] = (t1 - t0) / 1000000.0;
         t0 = t1;
         canvas.clear(0xFFFFFFFF);
-        canvas.save();
+        int count = canvas.save();
         scenes.get(currentScene).draw(canvas, width, height, dpi, xpos, ypos);
-        canvas.restore();
-        canvas.save();
+        canvas.restoreToCount(count);
+        count = canvas.save();
         if (stats)
             drawStats();
-        canvas.restore();
+        canvas.restoreToCount(count);
         timesIdx = (timesIdx + 1) % times.length;
         context.flush();
         glfwSwapBuffers(window);
@@ -333,6 +333,7 @@ class Window {
         scenes.put("Bitmap",           new BitmapScene());
         scenes.put("Blends",           new BlendsScene());
         scenes.put("Color Filters",    new ColorFiltersScene());
+        scenes.put("Drawable",         new DrawableScene());
         scenes.put("Empty",            new EmptyScene());
         scenes.put("Figma",            new FigmaScene());
         scenes.put("Font",             new FontScene());
@@ -354,7 +355,7 @@ class Window {
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Font";
+        currentScene = "Drawable";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();

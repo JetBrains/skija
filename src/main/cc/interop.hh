@@ -36,6 +36,12 @@ namespace skija {
         extern jclass cls;
         extern jmethodID ctor;
     }
+
+    namespace Drawable {
+        extern jclass cls;
+        extern jmethodID onDraw;
+        extern jmethodID onGetBounds;
+    }
     
     namespace FontAxisInfo {
         extern jclass cls;

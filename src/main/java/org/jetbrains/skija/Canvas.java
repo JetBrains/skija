@@ -663,6 +663,21 @@ public class Canvas extends Native {
         return this;
     }
 
+    public Canvas drawDrawable(@NotNull Drawable drawable) {
+        drawable.draw(this);
+        return this;
+    }
+
+    public Canvas drawDrawable(@NotNull Drawable drawable, float x, float y) {
+        drawable.draw(this, x, y);
+        return this;
+    }
+
+    public Canvas drawDrawable(@NotNull Drawable drawable, @Nullable Matrix33 matrix) {
+        drawable.draw(this, matrix);
+        return this;
+    }
+
     public Canvas clear(int color) {
         Stats.onNativeCall();
         _nClear(_ptr, color);

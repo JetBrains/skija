@@ -73,6 +73,23 @@ namespace skija {
         }
     }
 
+    namespace Drawable {
+        jclass cls;
+        jmethodID onDraw;
+        jmethodID onGetBounds;
+
+        void onLoad(JNIEnv* env) {
+            jclass local = env->FindClass("org/jetbrains/skija/Drawable");
+            cls = static_cast<jclass>(env->NewGlobalRef(local));
+            onDraw = env->GetMethodID(cls, "_onDraw", "(J)V");
+            onGetBounds = env->GetMethodID(cls, "onGetBounds", "()Lorg/jetbrains/skija/Rect;");
+        }
+
+        void onUnload(JNIEnv* env) {
+            env->DeleteGlobalRef(cls);
+        }
+    }
+
     namespace FontAxisInfo {
         jclass    cls;
         jmethodID ctor;
@@ -480,6 +497,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     java::util::function::BooleanSupplier::onLoad(env);
 
     skija::Color4f::onLoad(env);
+    skija::Drawable::onLoad(env);
     skija::FontAxisInfo::onLoad(env);
     skija::FontFamilyName::onLoad(env);
     skija::FontMetrics::onLoad(env);
@@ -513,6 +531,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     java::util::function::BooleanSupplier::onUnload(env);
 
     skija::Color4f::onUnload(env);
+    skija::Drawable::onUnload(env);
     skija::FontAxisInfo::onUnload(env);
     skija::FontFamilyName::onUnload(env);
     skija::FontMetrics::onUnload(env);
