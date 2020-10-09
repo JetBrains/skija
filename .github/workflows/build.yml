@@ -10,51 +10,55 @@ on:
       - 'script/build_skia_*'
       - README.md
 
-jobs:
-  shared:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '11.0.8'
-      - run: ./script/ci_deploy_shared.sh
-        env:
-          SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
-      - uses: actions/upload-artifact@v2
-        with:
-          name: skija-shared
-          path: target/*.jar
+env:
+  # skia_release: m87-a0c82f0
+  skia_release: m87-container
 
-  macos:
-    runs-on: macos-10.15
-    needs: shared
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - uses: seanmiddleditch/gha-setup-ninja@master
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '11.0.8'
-      - name: Download Skia
-        run: |
-          curl --fail --location --silent --show-error https://github.com/tonsky/skia-build/releases/download/m87-a0c82f0/Skia-m87-a0c82f0-macos-Release-x64.zip > Skia-m87-a0c82f0-macos-Release-x64.zip.zip
-          unzip -qq Skia-m87-a0c82f0-macos-Release-x64.zip.zip -d third_party/skia
-      - run: ./script/native.sh
-      - uses: actions/upload-artifact@v2
-        with:
-          name: skija-macos
-          path: target/native/*.dylib
-      - run: ./script/ci_deploy_macos.sh
-        env:
-          SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
+jobs:
+  # shared:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
+  #     - uses: actions/setup-java@v1
+  #       with:
+  #         java-version: '11.0.8'
+  #     - run: ./script/ci_deploy_shared.sh
+  #       env:
+  #         SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
+  #     - uses: actions/upload-artifact@v2
+  #       with:
+  #         name: skija-shared
+  #         path: target/*.jar
+
+  # macos:
+  #   runs-on: macos-10.15
+  #   needs: shared
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
+  #     - uses: seanmiddleditch/gha-setup-ninja@master
+  #     - uses: actions/setup-java@v1
+  #       with:
+  #         java-version: '11.0.8'
+  #     - name: Download Skia
+  #       run: |
+  #         curl --fail --location --silent --show-error https://github.com/JetBrains/skia-build/releases/download/${{ env.skia_release }}/Skia-${{ env.skia_release }}-macos-Release-x64.zip > Skia-${{ env.skia_release }}-macos-Release-x64.zip.zip
+  #         unzip -qq Skia-${{ env.skia_release }}-macos-Release-x64.zip.zip -d third_party/skia
+  #     - run: ./script/native.sh
+  #     - uses: actions/upload-artifact@v2
+  #       with:
+  #         name: skija-macos
+  #         path: target/native/*.dylib
+  #     - run: ./script/ci_deploy_macos.sh
+  #       env:
+  #         SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
 
   linux:
-    runs-on: ubuntu-16.04
-    needs: shared
+    runs-on: ubuntu-latest
+    # needs: shared
     steps:
       - uses: actions/checkout@v2
         with:
@@ -62,19 +66,11 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.0.8'
-      - name: Install GCC 9
-        run: |
-          sudo apt install -y ninja-build libglu1-mesa-dev
-          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-          sudo apt update -y
-          sudo apt install -y gcc-9 g++-9
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-9
-          sudo update-alternatives --config gcc
-          gcc --version
+      - run: sudo ./script/ci_prepare_linux.sh
       - name: Download Skia
         run: |
-          curl --fail --location --silent --show-error https://github.com/tonsky/skia-build/releases/download/m87-a0c82f0/Skia-m87-a0c82f0-linux-Release-x64.zip > Skia-m87-a0c82f0-linux-Release-x64.zip.zip
-          unzip -qq Skia-m87-a0c82f0-linux-Release-x64.zip.zip -d third_party/skia
+          curl --fail --location --silent --show-error https://github.com/JetBrains/skia-build/releases/download/${{ env.skia_release }}/Skia-${{ env.skia_release }}-linux-Release-x64.zip > Skia-${{ env.skia_release }}-linux-Release-x64.zip.zip
+          unzip -qq Skia-${{ env.skia_release }}-linux-Release-x64.zip.zip -d third_party/skia
       - run: ./script/native.sh
       - uses: actions/upload-artifact@v2
         with:
@@ -84,31 +80,31 @@ jobs:
         env:
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
 
-  windows:
-    runs-on: windows-2019
-    needs: shared
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - uses: microsoft/setup-msbuild@v1.0.1
-      - uses: ilammy/msvc-dev-cmd@v1.3.0
-      - uses: seanmiddleditch/gha-setup-ninja@master
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '11.0.8'
-      - name: Download Skia
-        shell: bash
-        run: |
-          curl --fail --location --silent --show-error https://github.com/tonsky/skia-build/releases/download/m87-a0c82f0/Skia-m87-a0c82f0-windows-Release-x64.zip > Skia-m87-a0c82f0-windows-Release-x64.zip.zip
-          unzip -qq Skia-m87-a0c82f0-windows-Release-x64.zip.zip -d third_party/skia
-      - shell: bash
-        run: ./script/native.sh
-      - uses: actions/upload-artifact@v2
-        with:
-          name: skija-windows
-          path: target/native/*.dll
-      - shell: bash
-        run: ./script/ci_deploy_windows.sh
-        env:
-          SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
+  # windows:
+  #   runs-on: windows-2019
+  #   needs: shared
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
+  #     - uses: microsoft/setup-msbuild@v1.0.1
+  #     - uses: ilammy/msvc-dev-cmd@v1.3.0
+  #     - uses: seanmiddleditch/gha-setup-ninja@master
+  #     - uses: actions/setup-java@v1
+  #       with:
+  #         java-version: '11.0.8'
+  #     - name: Download Skia
+  #       shell: bash
+  #       run: |
+  #         curl --fail --location --silent --show-error https://github.com/JetBrains/skia-build/releases/download/${{ env.skia_release }}/Skia-${{ env.skia_release }}-windows-Release-x64.zip > Skia-${{ env.skia_release }}-windows-Release-x64.zip.zip
+  #         unzip -qq Skia-${{ env.skia_release }}-windows-Release-x64.zip.zip -d third_party/skia
+  #     - shell: bash
+  #       run: ./script/native.sh
+  #     - uses: actions/upload-artifact@v2
+  #       with:
+  #         name: skija-windows
+  #         path: target/native/*.dll
+  #     - shell: bash
+  #       run: ./script/ci_deploy_windows.sh
+  #       env:
+  #         SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
