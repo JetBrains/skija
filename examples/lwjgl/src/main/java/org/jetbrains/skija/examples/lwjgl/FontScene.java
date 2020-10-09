@@ -10,6 +10,7 @@ public class FontScene implements Scene {
     public Typeface _inter;
     public Typeface _jbMono;
     public Typeface _testKern;
+    public Typeface _testSubpixel;
     public Paint    _paint;
     public Paint    _stroke;
     public Paint    _boundaryPaint;
@@ -27,6 +28,7 @@ public class FontScene implements Scene {
         _inter          = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         _jbMono         = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf");
         _testKern       = Typeface.makeFromFile("fonts/TestKERNOne.otf");
+        _testSubpixel   = Typeface.makeFromFile("fonts/TestSubpixel-Regular.otf");
         _paint          = new Paint().setColor(0xFF1d3557);
         _stroke         = new Paint().setColor(0xFF2a9d8f).setMode(PaintMode.STROKE).setStrokeWidth(2).setPathEffect(PathEffect.makeDash(new float[] {6, 2}, 0));
         _boundaryPaint  = new Paint().setColor(0xFFe76f51).setMode(PaintMode.STROKE);
@@ -59,6 +61,11 @@ public class FontScene implements Scene {
         layer = canvas.save();
         canvas.translate(windowWidth / 2, 30);
         drawTestKern(canvas);
+        canvas.restoreToCount(layer);
+
+        layer = canvas.save();
+        canvas.translate(windowWidth / 2 + 100, 30);
+        drawTestSubpixel(canvas);
         canvas.restoreToCount(layer);
     }
 
@@ -245,5 +252,11 @@ public class FontScene implements Scene {
         for (int size = 9; size < 24; ++size) {
             _drawLine(canvas, size + " TuTuTuTu", new Font(_testKern, size).setSubpixel(true));
         }
+    }
+
+    public void drawTestSubpixel(Canvas canvas) {
+        _drawLine(canvas, "AAAAAAAAAAA", new Font(_testSubpixel, 10));
+        canvas.translate(0, 10);
+        _drawLine(canvas, "AAAAAAAAAAA", new Font(_testSubpixel, 10).setSubpixel(true));
     }
 }

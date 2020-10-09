@@ -3,5 +3,38 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third_party/skia" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/buildtools" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/common" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/angle2" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/dawn" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/dng_sdk" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/egl-registry" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/expat" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/freetype" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/glslang" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/harfbuzz" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/icu" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/imgui" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/jinja2" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/libgifcodec" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/libjpeg-turbo" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/libpng" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/libwebp" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/lua" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/markupsafe" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/microhttpd" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/opencl-lib" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/opencl-registry" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/opengl-registry" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/piex" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/sdl" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/sfntly" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/shaderc" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/spirv-cross" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/spirv-headers" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/spirv-tools" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/swiftshader" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/wuffs" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/skia/third_party/externals/zlib" vcs="Git" />
   </component>
 </project>
