@@ -210,6 +210,14 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawPatch
     env->ReleaseFloatArrayElements(cubicsArr, cubics, 0);
 }
 
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawDrawable
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong drawablePtr, jfloatArray matrixArr) {
+    SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(ptr));
+    SkDrawable* drawable = reinterpret_cast<SkDrawable*>(static_cast<uintptr_t>(drawablePtr));
+    std::unique_ptr<SkMatrix> matrix = skMatrix(env, matrixArr);
+    canvas->drawDrawable(drawable, matrix.get());
+}
+
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nClear(JNIEnv* env, jclass jclass, jlong ptr, jint color) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(ptr));
     canvas->clear(color);

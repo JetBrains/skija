@@ -663,18 +663,58 @@ public class Canvas extends Native {
         return this;
     }
 
+    /**
+     * <p>Draws Drawable drawable using clip and matrix.</p>
+     *
+     * <p>If Canvas has an asynchronous implementation, as is the case
+     * when it is recording into Picture, then drawable will be referenced,
+     * so that Drawable::draw() can be called when the operation is finalized. To force
+     * immediate drawing, call Drawable::draw() instead.</p>
+     *
+     * @param drawable  custom struct encapsulating drawing commands
+     * @return          this
+     */
     public Canvas drawDrawable(@NotNull Drawable drawable) {
-        drawable.draw(this);
-        return this;
+        return drawDrawable(drawable, null);
     }
 
+    /**
+     * <p>Draws Drawable drawable using clip and matrix, offset by (x, y).</p>
+     *
+     * <p>If Canvas has an asynchronous implementation, as is the case
+     * when it is recording into Picture, then drawable will be referenced,
+     * so that Drawable::draw() can be called when the operation is finalized. To force
+     * immediate drawing, call Drawable::draw() instead.</p>
+     *
+     * @param drawable  custom struct encapsulating drawing commands
+     * @param x         offset into Canvas writable pixels on x-axis
+     * @param y         offset into Canvas writable pixels on y-axis
+     * @return          this
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawDrawable_2">https://fiddle.skia.org/c/@Canvas_drawDrawable_2</a>
+     */
     public Canvas drawDrawable(@NotNull Drawable drawable, float x, float y) {
-        drawable.draw(this, x, y);
-        return this;
+        return drawDrawable(drawable, Matrix33.makeTranslate(x, y));
     }
 
+    /**
+     * <p>Draws Drawable drawable using clip and matrix, concatenated with
+     * optional matrix.</p>
+     *
+     * <p>If Canvas has an asynchronous implementation, as is the case
+     * when it is recording into Picture, then drawable will be referenced,
+     * so that Drawable::draw() can be called when the operation is finalized. To force
+     * immediate drawing, call Drawable::draw() instead.</p>
+     *
+     * @param drawable  custom struct encapsulating drawing commands
+     * @param matrix    transformation applied to drawing; may be null
+     * @return          this
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Canvas_drawDrawable">https://fiddle.skia.org/c/@Canvas_drawDrawable</a>
+     */
     public Canvas drawDrawable(@NotNull Drawable drawable, @Nullable Matrix33 matrix) {
-        drawable.draw(this, matrix);
+        Stats.onNativeCall();
+        _nDrawDrawable(_ptr, Native.getPtr(drawable), matrix == null ? null : matrix._mat);
         return this;
     }
 
@@ -965,6 +1005,7 @@ public class Canvas extends Native {
     public static native void _nDrawPicture(long ptr, long picturePtr, float[] matrix, long paintPtr);
     public static native void _nDrawVertices(long ptr, int verticesMode, float[] cubics, int[] colors, float[] texCoords, int blendMode, long paintPtr);
     public static native void _nDrawPatch(long ptr, float[] cubics, int[] colors, float[] texCoords, int blendMode, long paintPtr);
+    public static native void _nDrawDrawable(long ptr, long drawablePrt, float[] matrix);
     public static native void _nClear(long ptr, int color);
     public static native void _nDrawPaint(long ptr, long paintPtr);
     public static native void _nSetMatrix(long ptr, float[] matrix);
