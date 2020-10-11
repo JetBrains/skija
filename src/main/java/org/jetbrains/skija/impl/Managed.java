@@ -1,31 +1,36 @@
 package org.jetbrains.skija.impl;
 
+import org.jetbrains.annotations.*;
 import java.lang.ref.Cleaner;
 
 public abstract class Managed extends Native implements AutoCloseable {
-    public final boolean _allowClose;
+    @ApiStatus.Internal
     public Cleaner.Cleanable _cleanable;
 
     public Managed(long ptr, long finalizer) {
         this(ptr, finalizer, true);
     }
 
-    public Managed(long ptr, long finalizer, boolean allowClose) {
+    public Managed(long ptr, long finalizer, boolean managed) {
         super(ptr);
-        String className = getClass().getSimpleName();
-        Stats.onAllocated(className);
-        this._cleanable = _cleaner.register(this, new CleanerThunk(className, ptr, finalizer));
-        this._allowClose = allowClose;
+        if (managed) {
+            String className = getClass().getSimpleName();
+            Stats.onAllocated(className);
+            this._cleanable = _cleaner.register(this, new CleanerThunk(className, ptr, finalizer));
+        }
     }
 
     @Override
     public void close() {
-        if (_allowClose) {
+        if (0 == _ptr)
+            throw new RuntimeException("Object already closed: " + this);
+        else if (null == _cleanable)
+            throw new RuntimeException("Object is not managed in JVM, can't close(): " + this);
+        else {
             _cleanable.clean();
             _cleanable = null;
             _ptr = 0;
-        } else
-            throw new RuntimeException("close() is not allowed on " + this);
+        }
     }
 
     public static Cleaner _cleaner = Cleaner.create();

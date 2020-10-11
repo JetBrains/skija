@@ -15,7 +15,7 @@ public class GeometryScene implements Scene {
         drawVertices(canvas);
         drawPatch(canvas);
         drawRotate(canvas);
-        drawSkew(canvas);
+        drawOtherTransform(canvas);
         drawRectInscribed(canvas, new Paint().setColor(0xFF1D7AA2).setMode(PaintMode.STROKE).setStrokeWidth(1f));
         drawRectInscribed(canvas, new Paint().setColor(0xFF6DC1B3).setMode(PaintMode.STROKE).setStrokeWidth(5f));
         drawRectInscribed(canvas, new Paint().setColor(0xFF9BC730));
@@ -208,7 +208,7 @@ public class GeometryScene implements Scene {
         canvas.translate(0, 50);
     }
 
-    public void drawSkew(Canvas canvas) {
+    public void drawOtherTransform(Canvas canvas) {
         Paint paint = new Paint().setColor(0xFFFFCC66);
 
         canvas.save();
@@ -227,6 +227,19 @@ public class GeometryScene implements Scene {
 
         canvas.save();
         canvas.skew(-0.2F, 0F);
+        canvas.drawOval(Rect.makeXYWH(0, 0, 65, 40), paint);
+        canvas.restore();
+        canvas.translate(75, 0);
+
+        canvas.save();
+        float cos45 = (float) Math.cos(Math.PI / 4);
+        Matrix44 rotateX45 = new Matrix44(
+                1, 0, 0, 0,
+                0, cos45, -cos45, 0,
+                0, cos45, cos45, 0,
+                0, 0, 0, 1
+        );
+        canvas.concat(rotateX45);
         canvas.drawOval(Rect.makeXYWH(0, 0, 65, 40), paint);
         canvas.restore();
         canvas.translate(75, 0);

@@ -44,6 +44,13 @@ public class PictureRecorderScene implements Scene {
                     canvas.translate(80, 0);
                     canvas.drawPicture(picture, null, transparent);
                     canvas.translate(40, 0);
+                    try (
+                            AlmostTransparentFilterCanvas transparentCanvas =
+                                 new AlmostTransparentFilterCanvas(canvas)
+                    ) {
+                        transparentCanvas.drawPicture(picture, null, null);
+                    }
+                    canvas.translate(40, 0);
                     picture.playback(canvas);
                     canvas.translate(40, 0);
 
@@ -121,5 +128,17 @@ public class PictureRecorderScene implements Scene {
             }
             canvas.translate(0, 40);
         }
+    }
+}
+
+class AlmostTransparentFilterCanvas extends PaintFilterCanvas {
+    public AlmostTransparentFilterCanvas(Canvas canvas) {
+        super(canvas, true);
+    }
+
+    @Override
+    public boolean onFilter(Paint paint) {
+        paint.setColor(Color.withAlpha(paint.getColor(), 32));
+        return true;
     }
 }

@@ -325,6 +325,39 @@ namespace skija {
         }
     }
 
+    namespace PaintFilterCanvas {
+        JavaVM* _vm;
+        jmethodID onFilterId;
+
+        void onLoad(JavaVM* vm, JNIEnv* env) {
+            _vm = vm;
+            jclass local = env->FindClass("org/jetbrains/skija/PaintFilterCanvas");
+            onFilterId = env->GetMethodID(local, "onFilter", "(J)Z");
+        }
+
+        void onUnload(JNIEnv* env) {
+        }
+
+        bool onFilter(jobject obj, SkPaint& paint) {
+            JNIEnv *env;
+            _vm->AttachCurrentThread((void **) &env, NULL);
+            jboolean result = env->CallBooleanMethod(obj, onFilterId, reinterpret_cast<jlong>(&paint));
+            _vm->DetachCurrentThread();
+            return result;
+        }
+
+        jobject attach(JNIEnv* env, jobject obj) {
+            return env->NewGlobalRef(obj);
+        }
+
+        void detach(jobject obj) {
+            JNIEnv *env;
+            _vm->AttachCurrentThread((void **) &env, NULL);
+            env->DeleteGlobalRef(obj);
+            _vm->DetachCurrentThread();
+        }
+    }
+
     namespace Rect {
         jclass cls;
         jmethodID makeLTRB;
@@ -508,6 +541,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::Path::onLoad(env);
     skija::PathSegment::onLoad(env);
     skija::Point::onLoad(env);
+    skija::PaintFilterCanvas::onLoad(vm, env);
     skija::Rect::onLoad(env);
     skija::RRect::onLoad(env);
     skija::RSXform::onLoad(env);
@@ -517,7 +551,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::paragraph::DecorationStyle::onLoad(env);
     skija::paragraph::Shadow::onLoad(env);
     skija::paragraph::FontFeature::onLoad(env);
-    
+
     return JNI_VERSION_10;
 }
 
@@ -542,6 +576,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::Path::onUnload(env);
     skija::PathSegment::onUnload(env);
     skija::Point::onUnload(env);
+    skija::PaintFilterCanvas::onUnload(env);
     skija::Rect::onUnload(env);
     skija::RRect::onUnload(env);
     skija::RSXform::onUnload(env);
@@ -562,6 +597,17 @@ std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray matrixArray) {
         ptr->setAll(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
         env->ReleaseFloatArrayElements(matrixArray, m, 0);
         return std::unique_ptr<SkMatrix>(ptr);
+    }
+}
+
+std::unique_ptr<SkM44> skM44(JNIEnv* env, jfloatArray matrixArray) {
+    if (matrixArray == nullptr)
+        return std::unique_ptr<SkM44>(nullptr);
+    else {
+        jfloat* m = env->GetFloatArrayElements(matrixArray, 0);
+        SkM44* ptr = new SkM44(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12], m[13], m[14], m[15]);
+        env->ReleaseFloatArrayElements(matrixArray, m, 0);
+        return std::unique_ptr<SkM44>(ptr);
     }
 }
 

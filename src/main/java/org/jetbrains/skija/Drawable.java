@@ -106,7 +106,7 @@ public abstract class Drawable extends RefCnt {
 
     @ApiStatus.Internal
     public void _onDraw(long canvasPtr) {
-        onDraw(new Canvas(canvasPtr));
+        onDraw(new Canvas(canvasPtr, false));
     }
 
     @ApiStatus.Internal public static native long _nMake();

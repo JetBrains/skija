@@ -5,6 +5,8 @@
 #include "SkFontMetrics.h"
 #include "SkFontStyle.h"
 #include "SkMatrix.h"
+#include "SkM44.h"
+#include "SkPaint.h"
 #include "SkRefCnt.h"
 #include "SkRect.h"
 #include "SkRRect.h"
@@ -117,6 +119,13 @@ namespace skija {
         jobject fromSkPoint(JNIEnv* env, const SkPoint& p);
     }
 
+    namespace PaintFilterCanvas {
+        extern jmethodID onFilterId;
+        bool onFilter(jobject obj, SkPaint& paint);
+        jobject attach(JNIEnv* env, jobject obj);
+        void detach(jobject obj);
+    }
+
     namespace Rect {
         extern jclass cls;
         extern jmethodID makeLTRB;
@@ -154,6 +163,7 @@ namespace skija {
 }
 
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray arr);
+std::unique_ptr<SkM44> skM44(JNIEnv* env, jfloatArray arr);
 
 SkString skString(JNIEnv* env, jstring str);
 jstring javaString(JNIEnv* env, const SkString& str);

@@ -7,6 +7,15 @@
 #include "hb.h"
 #include "interop.hh"
 
+static void deleteCanvas(SkCanvas* canvas) {
+    // std::cout << "Deleting [SkCanvas " << canvas << "]" << std::endl;
+    delete canvas;
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Canvas__1nGetFinalizer(JNIEnv* env, jclass jclass) {
+    return static_cast<jlong>(reinterpret_cast<uintptr_t>(&deleteCanvas));
+}
+
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Canvas__1nMakeFromBitmap
   (JNIEnv* env, jclass jclass, jlong bitmapPtr, jint flags, jint pixelGeometry) {
     SkBitmap* bitmap = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(bitmapPtr));
@@ -273,6 +282,13 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nConcat
   (JNIEnv* env, jclass jclass, jlong ptr, jfloatArray matrixArr) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(ptr));
     std::unique_ptr<SkMatrix> m = skMatrix(env, matrixArr);
+    canvas->concat(*m);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nConcat44
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloatArray matrixArr) {
+    SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(ptr));
+    std::unique_ptr<SkM44> m = skM44(env, matrixArr);
     canvas->concat(*m);
 }
 

@@ -74,11 +74,13 @@ Image                ▓▓░░░░░░░░
 ImageFilters         ▓▓▓▓▓▓▓▓▓▓
 ImageInfo            ▓▓▓▓▓▓▓▓▓▓
 MaskFilter           ▓▓▓▓▓▓▓▓▓▓
-Matrix               ▓▓▓░░░░░░░
+Matrix33             ▓▓▓░░░░░░░
+Matrix44             ▓▓▓░░░░░░░
 Paint                ▓▓▓▓▓▓▓▓░░
 Path                 ▓▓▓▓▓▓▓▓▓▓
 PathEffects          ▓▓▓▓▓▓▓▓▓▓
 PathMeasure          ▓▓▓▓▓▓▓▓▓▓
+PaintFilterCanvas    ▓▓▓▓▓▓▓▓▓▓
 Picture              ▓▓▓▓▓▓▓▓▓░
 PictureRecorder      ▓▓▓▓▓▓▓▓▓▓
 PixelRef             ▓▓▓▓▓▓▓▓▓▓

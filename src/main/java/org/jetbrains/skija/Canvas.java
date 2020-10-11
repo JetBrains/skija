@@ -1,14 +1,15 @@
 package org.jetbrains.skija;
 
 import org.jetbrains.annotations.*;
+import org.jetbrains.skija.impl.Managed;
 import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.Stats;
 
-public class Canvas extends Native {
+public class Canvas extends Managed {
 
     @ApiStatus.Internal
-    public Canvas(long ptr) {
-        super(ptr);
+    public Canvas(long ptr, boolean managed) {
+        super(ptr, _FinalizerHolder.PTR, managed);
     }
 
     /**
@@ -46,7 +47,7 @@ public class Canvas extends Native {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_const_SkBitmap_const_SkSurfaceProps">https://fiddle.skia.org/c/@Canvas_const_SkBitmap_const_SkSurfaceProps</a>
      */
     public Canvas(Bitmap bitmap, SurfaceProps surfaceProps) {
-        this(_nMakeFromBitmap(Native.getPtr(bitmap), surfaceProps.getFlags(), surfaceProps.getPixelGeometry().ordinal()));
+        this(_nMakeFromBitmap(Native.getPtr(bitmap), surfaceProps.getFlags(), surfaceProps.getPixelGeometry().ordinal()), true);
         Stats.onNativeCall();
     }
 
@@ -842,6 +843,12 @@ public class Canvas extends Native {
         return this;
     }
 
+    public Canvas concat(Matrix44 matrix) {
+        Stats.onNativeCall();
+        _nConcat44(_ptr, matrix.getMat());
+        return this;
+    }
+
     /** 
      * <p>Copies Rect of pixels from Canvas into bitmap. Matrix and clip are
      * ignored.</p>
@@ -985,6 +992,13 @@ public class Canvas extends Native {
         return this;
     }
 
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        static { Stats.onNativeCall(); }
+        public static final long PTR = _nGetFinalizer();
+    }
+
+    public static native long _nGetFinalizer();
     public static native long _nMakeFromBitmap(long bitmapPtr, int flags, int pixelGeometry);
     public static native void _nDrawPoint(long ptr, float x, float y, long paintPtr);
     public static native void _nDrawPoints(long ptr, int mode, float[] coords, long paintPtr);
@@ -1015,6 +1029,7 @@ public class Canvas extends Native {
     public static native void _nClipPath(long ptr, long nativePath, int mode, boolean antiAlias);
     public static native void _nClipRegion(long ptr, long nativeRegion, int mode);
     public static native void _nConcat(long ptr, float[] matrix);
+    public static native void _nConcat44(long ptr, float[] matrix);
     public static native boolean _nReadPixels(long ptr, long bitmapPtr, int srcX, int srcY);
     public static native boolean _nWritePixels(long ptr, long bitmapPtr, int x, int y);
     public static native int  _nSave(long ptr);
