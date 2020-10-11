@@ -842,6 +842,12 @@ public class Canvas extends Native {
         return this;
     }
 
+    public Canvas concat(Matrix44 matrix) {
+        Stats.onNativeCall();
+        _nConcat44(_ptr, matrix.getMat());
+        return this;
+    }
+
     /** 
      * <p>Copies Rect of pixels from Canvas into bitmap. Matrix and clip are
      * ignored.</p>
@@ -1015,6 +1021,7 @@ public class Canvas extends Native {
     public static native void _nClipPath(long ptr, long nativePath, int mode, boolean antiAlias);
     public static native void _nClipRegion(long ptr, long nativeRegion, int mode);
     public static native void _nConcat(long ptr, float[] matrix);
+    public static native void _nConcat44(long ptr, float[] matrix);
     public static native boolean _nReadPixels(long ptr, long bitmapPtr, int srcX, int srcY);
     public static native boolean _nWritePixels(long ptr, long bitmapPtr, int x, int y);
     public static native int  _nSave(long ptr);

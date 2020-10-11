@@ -5,6 +5,7 @@
 #include "SkFontMetrics.h"
 #include "SkFontStyle.h"
 #include "SkMatrix.h"
+#include "SkM44.h"
 #include "SkRefCnt.h"
 #include "SkRect.h"
 #include "SkRRect.h"
@@ -154,6 +155,7 @@ namespace skija {
 }
 
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray arr);
+std::unique_ptr<SkM44> skM44(JNIEnv* env, jfloatArray arr);
 
 SkString skString(JNIEnv* env, jstring str);
 jstring javaString(JNIEnv* env, const SkString& str);

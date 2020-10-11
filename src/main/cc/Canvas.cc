@@ -276,6 +276,13 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nConcat
     canvas->concat(*m);
 }
 
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nConcat44
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloatArray matrixArr) {
+    SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(ptr));
+    std::unique_ptr<SkM44> m = skM44(env, matrixArr);
+    canvas->concat(*m);
+}
+
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Canvas__1nReadPixels
   (JNIEnv* env, jclass jclass, jlong ptr, jlong bitmapPtr, jint srcX, jint srcY) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(ptr));
