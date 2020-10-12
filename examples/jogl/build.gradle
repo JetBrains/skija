@@ -36,8 +36,8 @@ kotlin {
                 implementation kotlin('stdlib-jdk8')
                 api files("$joglDir/gluegen-rt.jar")
                 api files("$joglDir/jogl-all.jar")
-                api "org.jetbrains.skija:skija:0.0.0-local"
-                api "org.jetbrains.skija:skija:0.0.0-local:natives-mac-x64"
+                api "org.jetbrains.skija:skija-platform:0.0.0-SNAPSHOT"
+                //api "org.jetbrains.skija:skija-platform:0.0.0-SNAPSHOT:natives-mac-x64"
 
                 implementation files("$joglDir/gluegen-rt-natives-macosx-universal.jar")
                 implementation files("$joglDir/jogl-all-natives-macosx-universal.jar")

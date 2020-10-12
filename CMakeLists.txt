@@ -14,8 +14,9 @@ endif()
 file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/*.cc)
 file(GLOB IMPL_SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/impl/*.cc)
 file(GLOB PARAGRAPH_SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/paragraph/*.cc)
+file(GLOB PDF_SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/pdf/*.cc)
 add_definitions(-DSK_GL)
-add_library(skija SHARED ${SOURCES} ${IMPL_SOURCES} ${PARAGRAPH_SOURCES})
+add_library(skija SHARED ${SOURCES} ${IMPL_SOURCES} ${PARAGRAPH_SOURCES} ${PDF_SOURCES})
 
 # JNI
 if(APPLE)
