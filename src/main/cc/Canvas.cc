@@ -7,6 +7,15 @@
 #include "hb.h"
 #include "interop.hh"
 
+static void deleteCanvas(SkCanvas* canvas) {
+    // std::cout << "Deleting [SkCanvas " << canvas << "]" << std::endl;
+    delete canvas;
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Canvas__1nGetFinalizer(JNIEnv* env, jclass jclass) {
+    return static_cast<jlong>(reinterpret_cast<uintptr_t>(&deleteCanvas));
+}
+
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Canvas__1nMakeFromBitmap
   (JNIEnv* env, jclass jclass, jlong bitmapPtr, jint flags, jint pixelGeometry) {
     SkBitmap* bitmap = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(bitmapPtr));

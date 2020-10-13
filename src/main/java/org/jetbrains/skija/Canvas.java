@@ -1,14 +1,15 @@
 package org.jetbrains.skija;
 
 import org.jetbrains.annotations.*;
+import org.jetbrains.skija.impl.Managed;
 import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.Stats;
 
-public class Canvas extends Native {
+public class Canvas extends Managed {
 
     @ApiStatus.Internal
-    public Canvas(long ptr) {
-        super(ptr);
+    public Canvas(long ptr, boolean isManaged) {
+        super(ptr, CanvasFinalizer.ptr, true, isManaged);
     }
 
     /**
@@ -46,7 +47,7 @@ public class Canvas extends Native {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_const_SkBitmap_const_SkSurfaceProps">https://fiddle.skia.org/c/@Canvas_const_SkBitmap_const_SkSurfaceProps</a>
      */
     public Canvas(Bitmap bitmap, SurfaceProps surfaceProps) {
-        this(_nMakeFromBitmap(Native.getPtr(bitmap), surfaceProps.getFlags(), surfaceProps.getPixelGeometry().ordinal()));
+        this(_nMakeFromBitmap(Native.getPtr(bitmap), surfaceProps.getFlags(), surfaceProps.getPixelGeometry().ordinal()), true);
         Stats.onNativeCall();
     }
 
@@ -991,6 +992,7 @@ public class Canvas extends Native {
         return this;
     }
 
+    public static native long _nGetFinalizer();
     public static native long _nMakeFromBitmap(long bitmapPtr, int flags, int pixelGeometry);
     public static native void _nDrawPoint(long ptr, float x, float y, long paintPtr);
     public static native void _nDrawPoints(long ptr, int mode, float[] coords, long paintPtr);
@@ -1030,4 +1032,16 @@ public class Canvas extends Native {
     public static native int  _nGetSaveCount(long ptr);
     public static native void _nRestore(long ptr);
     public static native void _nRestoreToCount(long ptr, int saveCount);
+}
+
+/**
+ * We define finalizer in a separate class because otherwise there will be a call:
+ *
+ * loadLibrary -> skija::PaintFilterCanvas::onLoad ->
+ * env->FindClass("org/jetbrains/skija/PaintFilterCanvas") -> _finalizerPtr -> _nGetFinalizer
+ *
+ * We can't call native methods in loadLibrary - there will be a native crash.
+ */
+class CanvasFinalizer {
+    static final long ptr = Canvas._nGetFinalizer();
 }

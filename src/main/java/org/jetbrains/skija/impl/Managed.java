@@ -11,11 +11,20 @@ public abstract class Managed extends Native implements AutoCloseable {
     }
 
     public Managed(long ptr, long finalizer, boolean allowClose) {
+        this(ptr, finalizer, allowClose, true);
+    }
+
+    public Managed(long ptr, long finalizer, boolean allowClose, boolean isManaged) {
         super(ptr);
-        String className = getClass().getSimpleName();
-        Stats.onAllocated(className);
-        this._cleanable = _cleaner.register(this, new CleanerThunk(className, ptr, finalizer));
-        this._allowClose = allowClose;
+        if (isManaged) {
+            String className = getClass().getSimpleName();
+            Stats.onAllocated(className);
+            this._cleanable = _cleaner.register(this, new CleanerThunk(className, ptr, finalizer));
+            this._allowClose = allowClose;
+        } else {
+            this._cleanable = null;
+            this._allowClose = false;
+        }
     }
 
     @Override
