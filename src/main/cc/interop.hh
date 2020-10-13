@@ -122,7 +122,8 @@ namespace skija {
     namespace PaintFilterCanvas {
         extern jmethodID onFilterId;
         bool onFilter(jobject obj, SkPaint& paint);
-        void dispose(jobject obj);
+        jobject attach(JNIEnv* env, jobject obj);
+        void detach(jobject obj);
     }
 
     namespace Rect {

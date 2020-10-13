@@ -341,12 +341,16 @@ namespace skija {
         bool onFilter(jobject obj, SkPaint& paint) {
             JNIEnv *env;
             _vm->AttachCurrentThread((void **) &env, NULL);
-            jboolean result = env->CallBooleanMethod(obj, onFilterId, &paint);
+            jboolean result = env->CallBooleanMethod(obj, onFilterId, reinterpret_cast<jlong>(&paint));
             _vm->DetachCurrentThread();
             return result;
         }
 
-        void dispose(jobject obj) {
+        jobject attach(JNIEnv* env, jobject obj) {
+            return env->NewGlobalRef(obj);
+        }
+
+        void detach(jobject obj) {
             JNIEnv *env;
             _vm->AttachCurrentThread((void **) &env, NULL);
             env->DeleteGlobalRef(obj);

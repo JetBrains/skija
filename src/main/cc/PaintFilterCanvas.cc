@@ -13,7 +13,7 @@ public:
     ) : SkPaintFilterCanvas(canvas), unrollDrawable(unrollDrawable) {}
 
     virtual ~SkijaPaintFilterCanvas() {
-        skija::PaintFilterCanvas::dispose(jobj);
+        skija::PaintFilterCanvas::detach(jobj);
     }
 
     jobject jobj;
@@ -38,7 +38,7 @@ private:
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_PaintFilterCanvas__1nAttachToJava
   (JNIEnv* env, jobject jobj, jlong canvasPtr, jboolean unrollDrawable) {
     SkijaPaintFilterCanvas* canvas = reinterpret_cast<SkijaPaintFilterCanvas*>(static_cast<uintptr_t>(canvasPtr));
-    canvas->jobj = env->NewGlobalRef(jobj);
+    canvas->jobj = skija::PaintFilterCanvas::attach(env, jobj);
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_PaintFilterCanvas__1nMake
