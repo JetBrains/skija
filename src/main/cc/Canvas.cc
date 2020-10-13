@@ -181,17 +181,21 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawPicture
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawVertices
-  (JNIEnv* env, jclass jclass, jlong ptr, jint verticesMode, jfloatArray positionsArr, jintArray colorsArr, jfloatArray texCoordsArr, jint blendMode, jlong paintPtr) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jint verticesMode, jfloatArray positionsArr, jintArray colorsArr, jfloatArray texCoordsArr, jshortArray indexArr, jint blendMode, jlong paintPtr) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>   (static_cast<uintptr_t>(ptr));
+    int indexCount = indexArr == nullptr ? 0 : env->GetArrayLength(indexArr);
     jfloat* positions = env->GetFloatArrayElements(positionsArr, 0);
     jint*   colors    = colorsArr == nullptr ? nullptr : env->GetIntArrayElements(colorsArr, 0);
     jfloat* texCoords = texCoordsArr == nullptr ? nullptr : env->GetFloatArrayElements(texCoordsArr, 0);
+    const jshort* indices = indexArr == nullptr ? nullptr : env->GetShortArrayElements(indexArr, 0);
     sk_sp<SkVertices> vertices = SkVertices::MakeCopy(
         static_cast<SkVertices::VertexMode>(verticesMode),
         env->GetArrayLength(positionsArr) / 2,
         reinterpret_cast<SkPoint*>(positions),
         reinterpret_cast<SkPoint*>(texCoords), 
-        reinterpret_cast<SkColor*>(colors));
+        reinterpret_cast<SkColor*>(colors),
+        indexCount,
+        reinterpret_cast<const uint16_t *>(indices));
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
 
     canvas->drawVertices(vertices, static_cast<SkBlendMode>(blendMode), *paint);

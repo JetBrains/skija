@@ -383,7 +383,7 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
     public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @NotNull Paint paint) { 
-        return drawTriangles(positions, colors, null, BlendMode.MODULATE, paint);
+        return drawTriangles(positions, colors, null, null, BlendMode.MODULATE, paint);
     }
 
     /**
@@ -398,13 +398,14 @@ public class Canvas extends Managed {
      * @param positions  triangle mesh to draw
      * @param colors     color array, one for each corner; may be null
      * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param indices    with which indices points should be drawn; may be null
      * @param paint      specifies the Shader, used as Vertices texture
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
-    public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable Paint paint) { 
-        return drawTriangles(positions, colors, texCoords, BlendMode.MODULATE, paint);
+    public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @Nullable Paint paint) {
+        return drawTriangles(positions, colors, texCoords, indices, BlendMode.MODULATE, paint);
     }
 
     /**
@@ -419,18 +420,19 @@ public class Canvas extends Managed {
      * @param positions  triangle mesh to draw
      * @param colors     color array, one for each corner; may be null
      * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param indices    with which indices points should be drawn; may be null
      * @param mode       combines vertices colors with Shader, if both are present
      * @param paint      specifies the Shader, used as Vertices texture
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
-    public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @NotNull BlendMode mode, @Nullable Paint paint) { 
+    public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull BlendMode mode, @Nullable Paint paint) {
         assert positions.length % 3 == 0 : "Expected positions.length % 3 == 0, got: " + positions.length;
         assert colors == null || colors.length == positions.length : "Expected colors.length == positions.length, got: " + colors.length + " != " + positions.length;
         assert texCoords == null || texCoords.length == positions.length : "Expected texCoords.length == positions.length, got: " + texCoords.length + " != " + positions.length;
         Stats.onNativeCall();
-        _nDrawVertices(_ptr, 0 /* kTriangles_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), mode.ordinal(), Native.getPtr(paint));
+        _nDrawVertices(_ptr, 0 /* kTriangles_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), indices, mode.ordinal(), Native.getPtr(paint));
         return this;
     }
 
@@ -450,7 +452,7 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
     public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @NotNull Paint paint) { 
-        return drawTriangleStrip(positions, colors, null, BlendMode.MODULATE, paint);
+        return drawTriangleStrip(positions, colors, null, null, BlendMode.MODULATE, paint);
     }
 
     /**
@@ -465,13 +467,14 @@ public class Canvas extends Managed {
      * @param positions  triangle mesh to draw
      * @param colors     color array, one for each corner; may be null
      * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param indices    with which indices points should be drawn; may be null
      * @param paint      specifies the Shader, used as Vertices texture
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
-    public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @NotNull Paint paint) { 
-        return drawTriangleStrip(positions, colors, texCoords, BlendMode.MODULATE, paint);
+    public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull Paint paint) {
+        return drawTriangleStrip(positions, colors, texCoords, indices, BlendMode.MODULATE, paint);
     }
 
     /**
@@ -486,17 +489,18 @@ public class Canvas extends Managed {
      * @param positions  triangle mesh to draw
      * @param colors     color array, one for each corner; may be null
      * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param indices    with which indices points should be drawn; may be null
      * @param mode       combines vertices colors with Shader, if both are present
      * @param paint      specifies the Shader, used as Vertices texture
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
-    public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @NotNull BlendMode mode, @NotNull Paint paint) { 
+    public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull BlendMode mode, @NotNull Paint paint) {
         assert colors == null || colors.length == positions.length : "Expected colors.length == positions.length, got: " + colors.length + " != " + positions.length;
         assert texCoords == null || texCoords.length == positions.length : "Expected texCoords.length == positions.length, got: " + texCoords.length + " != " + positions.length;
         Stats.onNativeCall();
-        _nDrawVertices(_ptr, 1 /* kTriangleStrip_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), mode.ordinal(), Native.getPtr(paint));
+        _nDrawVertices(_ptr, 1 /* kTriangleStrip_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), indices, mode.ordinal(), Native.getPtr(paint));
         return this;
     }
 
@@ -516,7 +520,7 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
     public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @NotNull Paint paint) { 
-        return drawTriangleFan(positions, colors, null, BlendMode.MODULATE, paint);
+        return drawTriangleFan(positions, colors, null, null, BlendMode.MODULATE, paint);
     }
 
     /**
@@ -531,13 +535,14 @@ public class Canvas extends Managed {
      * @param positions  triangle mesh to draw
      * @param colors     color array, one for each corner; may be null
      * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param indices    with which indices points should be drawn; may be null
      * @param paint      specifies the Shader, used as Vertices texture
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
-    public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @NotNull Paint paint) { 
-        return drawTriangleFan(positions, colors, texCoords, BlendMode.MODULATE, paint);
+    public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull Paint paint) {
+        return drawTriangleFan(positions, colors, texCoords, indices, BlendMode.MODULATE, paint);
     }
 
     /**
@@ -552,17 +557,18 @@ public class Canvas extends Managed {
      * @param positions  triangle mesh to draw
      * @param colors     color array, one for each corner; may be null
      * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param indices    with which indices points should be drawn; may be null
      * @param mode       combines vertices colors with Shader, if both are present
      * @param paint      specifies the Shader, used as Vertices texture
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
-    public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @NotNull BlendMode mode, @NotNull Paint paint) { 
+    public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull BlendMode mode, @NotNull Paint paint) {
         assert colors == null || colors.length == positions.length : "Expected colors.length == positions.length, got: " + colors.length + " != " + positions.length;
         assert texCoords == null || texCoords.length == positions.length : "Expected texCoords.length == positions.length, got: " + texCoords.length + " != " + positions.length;
         Stats.onNativeCall();
-        _nDrawVertices(_ptr, 2 /* kTriangleFan_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), mode.ordinal(), Native.getPtr(paint));
+        _nDrawVertices(_ptr, 2 /* kTriangleFan_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), indices, mode.ordinal(), Native.getPtr(paint));
         return this;
     }
 
@@ -1017,7 +1023,7 @@ public class Canvas extends Managed {
     public static native void _nDrawString(long ptr, String string, float x, float y, long font, long paint);
     public static native void _nDrawTextBlob(long ptr, long blob, float x, float y, long font, long paint);
     public static native void _nDrawPicture(long ptr, long picturePtr, float[] matrix, long paintPtr);
-    public static native void _nDrawVertices(long ptr, int verticesMode, float[] cubics, int[] colors, float[] texCoords, int blendMode, long paintPtr);
+    public static native void _nDrawVertices(long ptr, int verticesMode, float[] cubics, int[] colors, float[] texCoords, short[] indices, int blendMode, long paintPtr);
     public static native void _nDrawPatch(long ptr, float[] cubics, int[] colors, float[] texCoords, int blendMode, long paintPtr);
     public static native void _nDrawDrawable(long ptr, long drawablePrt, float[] matrix);
     public static native void _nClear(long ptr, int color);

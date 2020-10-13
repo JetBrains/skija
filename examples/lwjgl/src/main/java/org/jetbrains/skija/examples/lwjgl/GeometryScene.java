@@ -127,6 +127,12 @@ public class GeometryScene implements Scene {
             canvas.drawTriangles(positions, colors, paint);
             canvas.translate(50, 0);
 
+            short[] indices = new short[] {
+                    0, 1, 4
+            };
+            canvas.drawTriangles(positions, colors, null, indices, paint);
+            canvas.translate(50, 0);
+
             canvas.drawTriangleStrip(positions, colors, paint);
             canvas.translate(50, 0);
 
@@ -137,7 +143,7 @@ public class GeometryScene implements Scene {
             canvas.drawTriangles(positions, colors, paint);
             canvas.translate(50, 0);
 
-            canvas.drawTriangleStrip(positions, colors, null, BlendMode.SRC_OVER, paint);
+            canvas.drawTriangleStrip(positions, colors, null, null, BlendMode.SRC_OVER, paint);
             canvas.translate(50, 0);
 
             colors = new int[] {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF};
@@ -147,7 +153,7 @@ public class GeometryScene implements Scene {
             Point[] texCoords = new Point[] {
                 new Point(0, 0), new Point(40, 0), new Point(20, 20), new Point(40, 40), new Point(0, 40), new Point(30, 30)
             };
-            canvas.drawTriangles(positions, colors, texCoords, paint);
+            canvas.drawTriangles(positions, colors, texCoords, null, paint);
             canvas.translate(50, 0);            
         }        
 
