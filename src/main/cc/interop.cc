@@ -325,6 +325,35 @@ namespace skija {
         }
     }
 
+    namespace PaintFilterCanvas {
+        JavaVM* _vm;
+        jmethodID onFilterId;
+
+        void onLoad(JavaVM* vm, JNIEnv* env) {
+            _vm = vm;
+            jclass local = env->FindClass("org/jetbrains/skija/PaintFilterCanvas");
+            onFilterId = env->GetMethodID(local, "onFilter", "(J)Z");
+        }
+
+        void onUnload(JNIEnv* env) {
+        }
+
+        bool onFilter(jobject obj, SkPaint& paint) {
+            JNIEnv *env;
+            _vm->AttachCurrentThread((void **) &env, NULL);
+            jboolean result = env->CallBooleanMethod(obj, onFilterId, &paint);
+            _vm->DetachCurrentThread();
+            return result;
+        }
+
+        void dispose(jobject obj) {
+            JNIEnv *env;
+            _vm->AttachCurrentThread((void **) &env, NULL);
+            env->DeleteGlobalRef(obj);
+            _vm->DetachCurrentThread();
+        }
+    }
+
     namespace Rect {
         jclass cls;
         jmethodID makeLTRB;
@@ -508,6 +537,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::Path::onLoad(env);
     skija::PathSegment::onLoad(env);
     skija::Point::onLoad(env);
+    skija::PaintFilterCanvas::onLoad(vm, env);
     skija::Rect::onLoad(env);
     skija::RRect::onLoad(env);
     skija::RSXform::onLoad(env);
@@ -517,7 +547,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::paragraph::DecorationStyle::onLoad(env);
     skija::paragraph::Shadow::onLoad(env);
     skija::paragraph::FontFeature::onLoad(env);
-    
+
     return JNI_VERSION_10;
 }
 
@@ -542,6 +572,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::Path::onUnload(env);
     skija::PathSegment::onUnload(env);
     skija::Point::onUnload(env);
+    skija::PaintFilterCanvas::onUnload(env);
     skija::Rect::onUnload(env);
     skija::RRect::onUnload(env);
     skija::RSXform::onUnload(env);

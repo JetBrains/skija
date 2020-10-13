@@ -10,8 +10,8 @@ public class Paint extends Managed {
     }
 
     @ApiStatus.Internal
-    public Paint(long ptr) {
-        super(ptr, _finalizerPtr);
+    public Paint(long ptr, boolean isManaged) {
+        super(ptr, _finalizerPtr, true, isManaged);
     }
 
     @ApiStatus.Internal @Override

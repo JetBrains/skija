@@ -6,6 +6,7 @@
 #include "SkFontStyle.h"
 #include "SkMatrix.h"
 #include "SkM44.h"
+#include "SkPaint.h"
 #include "SkRefCnt.h"
 #include "SkRect.h"
 #include "SkRRect.h"
@@ -116,6 +117,12 @@ namespace skija {
         extern jmethodID ctor;
         jobject make(JNIEnv* env, float x, float y);
         jobject fromSkPoint(JNIEnv* env, const SkPoint& p);
+    }
+
+    namespace PaintFilterCanvas {
+        extern jmethodID onFilterId;
+        bool onFilter(jobject obj, SkPaint& paint);
+        void dispose(jobject obj);
     }
 
     namespace Rect {
