@@ -13,12 +13,14 @@ endif()
 # Sources
 file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/*.cc)
 file(GLOB IMPL_SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/impl/*.cc)
+file(GLOB SHAPER_SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/shaper/*.cc)
 file(GLOB PARAGRAPH_SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/paragraph/*.cc)
-add_definitions(-DSK_GL)
-add_library(skija SHARED ${SOURCES} ${IMPL_SOURCES} ${PARAGRAPH_SOURCES})
+add_definitions(-DSK_GL -DSK_SHAPER_HARFBUZZ_AVAILABLE)
+add_library(skija SHARED ${SOURCES} ${IMPL_SOURCES} ${SHAPER_SOURCES} ${PARAGRAPH_SOURCES})
 
 # JNI
 if(APPLE)
+add_definitions(-DSK_SHAPER_CORETEXT_AVAILABLE)
 target_include_directories(skija PRIVATE $ENV{JAVA_HOME}/include $ENV{JAVA_HOME}/include/darwin)
 elseif(UNIX)
 target_include_directories(skija PRIVATE $ENV{JAVA_HOME}/include $ENV{JAVA_HOME}/include/linux)

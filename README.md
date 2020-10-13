@@ -96,6 +96,12 @@ TextBlobBuilder      ▓▓▓▓▓▓▓▓▓▓
 Typeface             ▓▓▓▓▓▓▓▓░░
 ```
 
+Shaper progress:
+
+```
+Shaper               ▓░░░░░░░░░
+```
+
 Paragraph progress:
 
 ```
