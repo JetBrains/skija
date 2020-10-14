@@ -14,6 +14,8 @@ public abstract class Managed extends Native implements AutoCloseable {
     public Managed(long ptr, long finalizer, boolean managed) {
         super(ptr);
         if (managed) {
+            assert ptr != 0 : "Managed ptr is 0";
+            assert finalizer != 0 : "Managed finalizer is 0";
             String className = getClass().getSimpleName();
             Stats.onAllocated(className);
             this._cleanable = _cleaner.register(this, new CleanerThunk(className, ptr, finalizer));

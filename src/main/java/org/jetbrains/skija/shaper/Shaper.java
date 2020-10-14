@@ -69,9 +69,12 @@ public class Shaper extends Managed {
     }
 
     @NotNull @Contract("_ -> new")
-    public TextBlob shape(String text, Font font, boolean leftToRight, float width, @NotNull Point offset) {
+    public TextBlob shape(String text, Font font, @Nullable FontFeature[] features, boolean leftToRight, float width, @NotNull Point offset) {
         Stats.onNativeCall();
-        return new TextBlob(_nShapeToTextBlob(_ptr, text, Native.getPtr(font), leftToRight, width, offset._x, offset._y));
+        long ptr = _nShapeToTextBlob(_ptr, text, Native.getPtr(font), features, leftToRight, width, offset._x, offset._y);
+        if (0 == ptr)
+            throw new RuntimeException("Failed to shape: " + text);
+        return new TextBlob(ptr);
     }
 
     @ApiStatus.Internal
@@ -88,5 +91,5 @@ public class Shaper extends Managed {
     public static native long _nMakeCoreText();
     public static native long _nMake(long fontMgrPtr);
 
-    public static native long _nShapeToTextBlob(long ptr, String text, long fontPtr, boolean leftToRight, float width, float offsetX, float offsetY);
+    public static native long _nShapeToTextBlob(long ptr, String text, long fontPtr, FontFeature[] features, boolean leftToRight, float width, float offsetX, float offsetY);
 }

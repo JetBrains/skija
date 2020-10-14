@@ -120,6 +120,23 @@ namespace skija {
         }
     }
 
+    namespace FontFeature {
+        jfieldID tag;
+        jfieldID value;
+        jfieldID start;
+        jfieldID end;
+
+        void onLoad(JNIEnv* env) {
+            jclass cls = env->FindClass("org/jetbrains/skija/FontFeature");
+            tag   = env->GetFieldID(cls, "_tag",   "I");
+            value = env->GetFieldID(cls, "_value", "I");
+            start = env->GetFieldID(cls, "_start", "J");
+            end   = env->GetFieldID(cls, "_end",   "J");
+        }
+
+        void onUnload(JNIEnv* env) {}
+    }
+
     namespace FontMetrics {
         jclass cls;
         jmethodID ctor;
@@ -533,6 +550,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::Drawable::onLoad(env);
     skija::FontAxisInfo::onLoad(env);
     skija::FontFamilyName::onLoad(env);
+    skija::FontFeature::onLoad(env);
     skija::FontMetrics::onLoad(env);
     skija::FontVariation::onLoad(env);
     skija::ImageInfo::onLoad(env);
@@ -568,6 +586,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::Drawable::onUnload(env);
     skija::FontAxisInfo::onUnload(env);
     skija::FontFamilyName::onUnload(env);
+    skija::FontFeature::onUnload(env);
     skija::FontMetrics::onUnload(env);
     skija::FontVariation::onUnload(env);
     skija::ImageInfo::onUnload(env);

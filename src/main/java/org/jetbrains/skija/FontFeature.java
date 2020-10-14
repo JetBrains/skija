@@ -15,12 +15,12 @@ public class FontFeature {
     @Getter
     public final int _value;
     @Getter
-    public final int _start;
+    public final long _start;
     @Getter
-    public final int _end;
+    public final long _end;
 
-    public static final int GLOBAL_START = 0;
-    public static final int GLOBAL_END = Integer.MAX_VALUE;
+    public static final long GLOBAL_START = 0;
+    public static final long GLOBAL_END = Long.MAX_VALUE;
     public static final FontFeature[] EMPTY = new FontFeature[0];
 
     public static int tag(String name) {
@@ -38,7 +38,7 @@ public class FontFeature {
                                        (byte) (tag & 0xFF) });
     }
 
-    public FontFeature(String feature, int value, int start, int end) {
+    public FontFeature(String feature, int value, long start, long end) {
         this(tag(feature), value, start, end);
     }
 

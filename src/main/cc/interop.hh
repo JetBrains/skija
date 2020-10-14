@@ -55,6 +55,13 @@ namespace skija {
         extern jmethodID ctor;
     }
 
+    namespace FontFeature {
+        extern jfieldID tag;
+        extern jfieldID value;
+        extern jfieldID start;
+        extern jfieldID end;
+    }
+
     namespace FontMetrics {
         extern jclass cls;
         extern jmethodID ctor;
@@ -175,6 +182,8 @@ jshortArray  javaShortArray (JNIEnv* env, const std::vector<jshort>& shorts);
 jintArray    javaIntArray   (JNIEnv* env, const std::vector<jint>& ints);
 jlongArray   javaLongArray  (JNIEnv* env, const std::vector<jlong>& longs);
 jfloatArray  javaFloatArray (JNIEnv* env, const std::vector<float>& floats);
+
+
 
 std::vector<SkString> skStringVector(JNIEnv* env, jobjectArray arr);
 jobjectArray javaStringArray(JNIEnv* env, const std::vector<SkString>& strings);
