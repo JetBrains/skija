@@ -369,6 +369,16 @@ public class Font extends Managed {
         return _nMeasureText(_ptr, s, Native.getPtr(p));
     }
 
+    public float measureTextWidth(String s) {
+        Stats.onNativeCall();
+        return measureTextWidth(s, null);
+    }
+
+    public float measureTextWidth(String s, Paint p) {
+        Stats.onNativeCall();
+        return _nMeasureTextWidth(_ptr, s, Native.getPtr(p));
+    }
+
     /**
      * Retrieves the advances for each glyph
      */
@@ -502,6 +512,7 @@ public class Font extends Managed {
     @ApiStatus.Internal public static native short[] _nGetUTF32GlyphIds(long ptr, int[] uni);
     @ApiStatus.Internal public static native int     _nGetStringGlyphsCount(long ptr, String str);
     @ApiStatus.Internal public static native Rect    _nMeasureText(long ptr, String str, long paintPtr);
+    @ApiStatus.Internal public static native float   _nMeasureTextWidth(long ptr, String str, long paintPtr);
     @ApiStatus.Internal public static native float[] _nGetWidths(long ptr, short[] glyphs);
     @ApiStatus.Internal public static native Rect[]  _nGetBounds(long ptr, short[] glyphs, long paintPtr);
     @ApiStatus.Internal public static native Point[] _nGetPositions(long ptr, short[] glyphs, float x, float y);

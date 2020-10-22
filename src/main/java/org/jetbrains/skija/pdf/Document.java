@@ -5,28 +5,18 @@ import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.Stats;
 
 public class Document extends Native {
+    public Document() {
+        this(_nMake());
+        Stats.onNativeCall();
+    }
 
     public Document(long ptr) {
         super(ptr);
     }
 
-    public static Document createPDF() {
-        Stats.onNativeCall();
-        long ptr = _nMake();
-        return new Document(ptr);
-    }
-
-    public static class _FinalizerHolder {
-        static {
-            Stats.onNativeCall();
-        }
-
-        //public static final long PTR = _nGetFinalizer();
-    }
-
     public Canvas beginPage(float width, float height) {
         Stats.onNativeCall();
-        return new Canvas(_nBeginPage(_ptr, width, height, 0f, 0f, width, height));
+        return new Canvas(_nBeginPage(_ptr, width, height));
     }
 
     public void endPage() {
@@ -34,7 +24,7 @@ public class Document extends Native {
         _nEndPage(_ptr);
     }
 
-    public void write(String path) {
+    public void writeTo(String path) {
         Stats.onNativeCall();
         _nWrite(_ptr, path);
     }
@@ -48,7 +38,7 @@ public class Document extends Native {
 
     public static native long _nGetFinalizer();
 
-    public static native long _nBeginPage(long ptr, float width, float height, float left, float top, float right, float bottom);
+    public static native long _nBeginPage(long ptr, float width, float height);
 
     public static native void _nEndPage(long ptr);
 

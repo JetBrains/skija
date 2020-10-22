@@ -253,6 +253,17 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Font__1nMeasureTex
     return skija::Rect::fromSkRect(env, bounds);
 }
 
+extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_Font__1nMeasureTextWidth
+  (JNIEnv* env, jclass jclass, jlong ptr, jstring str, jlong paintPtr) {
+    SkFont* instance = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(ptr));
+    SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
+    jsize len = env->GetStringLength(str);
+    const jchar* chars = env->GetStringChars(str, nullptr);
+    float width = instance->measureText(chars, len * sizeof(jchar), SkTextEncoding::kUTF16, nullptr, paint);
+    env->ReleaseStringChars(str, chars);
+    return width;
+}
+
 extern "C" JNIEXPORT jfloatArray JNICALL Java_org_jetbrains_skija_Font__1nGetWidths
   (JNIEnv* env, jclass jclass, jlong ptr, jshortArray glyphsArr) {
     SkFont* instance = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(ptr));

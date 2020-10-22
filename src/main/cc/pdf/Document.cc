@@ -27,16 +27,16 @@ struct PageRecord {
     SkRect mContentRect;
 };
 
-class PdfDocument {
+class Document {
 public:
-    PdfDocument() {
+    Document() {
         mCurrentPage = NULL;
     }
     SkCanvas* startPage(int width, int height,
-            int left, int top, int right, int bottom) {
+            int contentLeft, int contentTop, int contentRight, int contentBottom) {
         assert(mCurrentPage == NULL);
         SkRect contentRect = SkRect::MakeLTRB(
-                left, top, right, bottom);
+                contentLeft, contentTop, contentRight, contentBottom);
         PageRecord* page = new PageRecord(width, height, contentRect);
         mPages.push_back(page);
         mCurrentPage = page;
@@ -71,7 +71,7 @@ public:
         }
     }
 private:
-    ~PdfDocument() {
+    ~Document() {
         close();
     }
     std::vector<PageRecord*> mPages;
@@ -79,19 +79,18 @@ private:
 };
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_pdf_Document__1nMake(JNIEnv* env, jclass jclass) {
-    return reinterpret_cast<jlong>(new PdfDocument());
+    return reinterpret_cast<jlong>(new Document());
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_pdf_Document__1nBeginPage
-  (JNIEnv* env, jclass jclass, jlong ptr, jfloat width, jfloat height, jfloat left, jfloat top, jfloat right, jfloat bottom) {
-    PdfDocument* instance = reinterpret_cast<PdfDocument*>(static_cast<uintptr_t>(ptr));
-    SkCanvas* canvas = instance->startPage(width, height,
-                left, top, right, bottom);
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloat width, jfloat height/*, jfloat left, jfloat top, jfloat right, jfloat bottom*/) {
+    Document* instance = reinterpret_cast<Document*>(static_cast<uintptr_t>(ptr));
+    SkCanvas* canvas = instance->startPage(width, height, 0, 0, width, height);
     return reinterpret_cast<jlong>(canvas);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_pdf_Document__1nWrite(JNIEnv* env, jclass jclass, jlong ptr, jstring pathStr) {
-    PdfDocument* document = reinterpret_cast<PdfDocument*>(ptr);
+    Document* document = reinterpret_cast<Document*>(ptr);
     const char* path = env->GetStringUTFChars(pathStr, nullptr);
     SkFILEWStream out(path);
     env->ReleaseStringUTFChars(pathStr, path);
@@ -99,11 +98,11 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_pdf_Document__1nWrite
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_pdf_Document__1nEndPage(JNIEnv* env, jclass jclass, jlong ptr) {
-    PdfDocument* document = reinterpret_cast<PdfDocument*>(ptr);
+    Document* document = reinterpret_cast<Document*>(ptr);
     document->finishPage();
 }
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_pdf_Document__1nClose(JNIEnv* env, jclass jclass, jlong ptr) {
-    PdfDocument* document = reinterpret_cast<PdfDocument*>(ptr);
+    Document* document = reinterpret_cast<Document*>(ptr);
     document->close();
 }
 
