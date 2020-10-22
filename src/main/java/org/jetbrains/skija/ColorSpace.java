@@ -6,6 +6,8 @@ import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.Stats;
 
 public class ColorSpace extends Managed {
+    static { Library.load(); }
+    
     public static class _SRGBHolder {
         static { Stats.onNativeCall(); }
         public static final ColorSpace INSTANCE = new ColorSpace(_nMakeSRGB(), false);

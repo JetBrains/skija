@@ -5,6 +5,8 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class PixelRef extends RefCnt {
+    static { Library.load(); }
+    
     @ApiStatus.Internal
     public PixelRef(long ptr) {
         super(ptr);

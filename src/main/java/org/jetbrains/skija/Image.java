@@ -5,6 +5,8 @@ import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
 
 public class Image extends RefCnt {
+    static { Library.load(); }
+    
     public int _width = -1;
     public int _height = -1;
 

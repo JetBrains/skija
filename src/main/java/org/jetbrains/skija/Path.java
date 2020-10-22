@@ -25,6 +25,8 @@ import org.jetbrains.skija.impl.Stats;
  * {@link #updateBoundsCache()} to make Path thread safe.</p>
  */
 public class Path extends Managed implements Iterable<PathSegment> {
+    static { Library.load(); }
+    
     /**
      * Constructs an empty Path. By default, Path has no verbs, no {@link Point}, and no weights.
      * FillMode is set to {@link PathFillMode#WINDING}.

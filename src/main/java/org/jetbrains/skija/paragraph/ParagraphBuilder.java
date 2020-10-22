@@ -1,10 +1,12 @@
 package org.jetbrains.skija.paragraph;
 
-import org.jetbrains.skija.impl.Managed;
-import org.jetbrains.skija.impl.Native;
-import org.jetbrains.skija.impl.Stats;
+import org.jetbrains.annotations.*;
+import org.jetbrains.skija.*;
+import org.jetbrains.skija.impl.*;
 
 public class ParagraphBuilder extends Managed {
+    static { Library.load(); }
+    
     public ParagraphBuilder(ParagraphStyle style, FontCollection fc) {
         super(_nMake(Native.getPtr(style), Native.getPtr(fc)), _finalizerPtr);
         Stats.onNativeCall();

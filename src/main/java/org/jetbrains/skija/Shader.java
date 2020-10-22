@@ -6,7 +6,8 @@ import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
 
 public class Shader extends RefCnt {
-
+    static { Library.load(); }
+    
     public Shader makeWithColorFilter(ColorFilter f) {
         return new Shader(_nMakeWithColorFilter(_ptr, Native.getPtr(f)));
     }

@@ -42,12 +42,6 @@ class SkiaWindow(
     height: Int,
     fps: Int = 0
 ) : JFrame() {
-    companion object {
-        init {
-            Library.load()
-        }
-    }
-
     val glCanvas: GLCanvas
     var animator: FPSAnimator? = null
     var renderer: SkiaRenderer? = null

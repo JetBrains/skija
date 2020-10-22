@@ -6,6 +6,8 @@ import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.Stats;
 
 public class Canvas extends Managed {
+    static { Library.load(); }
+    
 
     @ApiStatus.Internal
     public Canvas(long ptr, boolean managed) {

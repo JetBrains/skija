@@ -1,10 +1,12 @@
 package org.jetbrains.skija.paragraph;
 
 import org.jetbrains.annotations.*;
+import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
 public class ParagraphStyle extends Managed {
-
+    static { Library.load(); }
+    
     public ParagraphStyle() {
         super(_nMake(), _finalizerPtr);
         Stats.onNativeCall();

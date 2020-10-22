@@ -6,6 +6,8 @@ import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
 
 public class ColorFilter extends RefCnt {
+    static { Library.load(); }
+    
     public static ColorFilter makeComposed(ColorFilter outer, ColorFilter inner) {
         Stats.onNativeCall();
         return new ColorFilter(_nMakeComposed(Native.getPtr(outer), Native.getPtr(inner)));

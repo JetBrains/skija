@@ -5,6 +5,8 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class PictureRecorder extends Managed {
+    static { Library.load(); }
+    
     public PictureRecorder() {
         this(_nMake());
         Stats.onNativeCall();

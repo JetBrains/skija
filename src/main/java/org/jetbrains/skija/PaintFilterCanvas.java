@@ -9,6 +9,8 @@ import org.jetbrains.skija.impl.Stats;
  * A utility proxy base class for implementing draw/paint filters.
  */
 public abstract class PaintFilterCanvas extends Canvas {
+    static { Library.load(); }
+    
     /**
      * @param unrollDrawable if needed to filter nested drawable content using this canvas (for drawables there is no paint to filter)
      */

@@ -4,6 +4,8 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class TextBlob extends Managed {
+    static { Library.load(); }
+    
     @ApiStatus.Internal
     public TextBlob(long ptr) {
         super(ptr, _finalizerPtr);

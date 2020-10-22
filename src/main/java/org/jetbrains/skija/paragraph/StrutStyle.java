@@ -5,6 +5,8 @@ import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
 public class StrutStyle extends Managed {
+    static { Library.load(); }
+    
     @ApiStatus.Internal
     public StrutStyle(long ptr) {
         super(ptr, _finalizerPtr);

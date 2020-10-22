@@ -5,6 +5,8 @@ import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.Stats;
 
 public class Region extends Managed {
+    static { Library.load(); }
+    
     public enum Op {
         DIFFERENCE,
         INTERSECT,

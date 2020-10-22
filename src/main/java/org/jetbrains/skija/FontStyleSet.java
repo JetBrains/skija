@@ -5,6 +5,8 @@ import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
 
 public class FontStyleSet extends RefCnt {
+    static { Library.load(); }
+    
     public static FontStyleSet makeEmpty() {
         Stats.onNativeCall();
         return new FontStyleSet(_nMakeEmpty());

@@ -5,6 +5,8 @@ import org.jetbrains.skija.impl.Managed;
 import org.jetbrains.skija.impl.Stats;
 
 public class BackendRenderTarget extends Managed {
+    static { Library.load(); }
+    
     public static BackendRenderTarget makeGL(int width, int height, int sampleCnt, int stencilBits, int fbId, int fbFormat) {
         Stats.onNativeCall();
         return new BackendRenderTarget(_nMakeGL(width, height, sampleCnt, stencilBits, fbId, fbFormat));

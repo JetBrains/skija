@@ -5,6 +5,8 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class PathMeasure extends Managed {
+    static { Library.load(); }
+    
     @ApiStatus.Internal
     public PathMeasure(long ptr) {
         super(ptr, _finalizerPtr);

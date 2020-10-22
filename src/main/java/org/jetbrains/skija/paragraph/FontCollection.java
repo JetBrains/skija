@@ -5,6 +5,8 @@ import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
 public class FontCollection extends RefCnt {
+    static { Library.load(); }
+    
     public FontCollection() {
         this(_nMake());
         Stats.onNativeCall();

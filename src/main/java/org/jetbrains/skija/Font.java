@@ -6,6 +6,8 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class Font extends Managed {
+    static { Library.load(); }
+    
     @ApiStatus.Internal
     public Font(long ptr) {
         super(ptr, _finalizerPtr);

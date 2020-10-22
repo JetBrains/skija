@@ -6,6 +6,8 @@ import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
 
 public class FontMgr extends RefCnt {
+    static { Library.load(); }
+    
     public int getFamiliesCount() {
         Stats.onNativeCall();
         return _nGetFamiliesCount(_ptr);

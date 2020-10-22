@@ -10,6 +10,8 @@ import java.util.NoSuchElementException;
 
 @ApiStatus.Internal
 public class PathSegmentIterator extends Managed implements Iterator<PathSegment> {
+    static { Library.load(); }
+    
     public final Path _path;
     public PathSegment _nextSegment;
 

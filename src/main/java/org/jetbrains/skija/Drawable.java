@@ -12,6 +12,8 @@ import org.jetbrains.annotations.*;
  * change its generation id whenever its internal state changes such that it will draw differently.</p>
  */
 public abstract class Drawable extends RefCnt {
+    static { Library.load(); }
+    
     @ApiStatus.Internal
     public Rect _bounds = null;
 

@@ -5,6 +5,8 @@ import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
 
 public class Context extends RefCnt {
+    static { Library.load(); }
+    
     public static Context makeGL() {
         Stats.onNativeCall();
         return new Context(_nMakeGL());

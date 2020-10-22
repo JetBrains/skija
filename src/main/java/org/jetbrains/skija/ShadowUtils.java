@@ -5,6 +5,8 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class ShadowUtils {
+    static { Library.load(); }
+    
     /**
      * Draw an offset spot shadow and outlining ambient shadow for the given path using a disc
      * light. The shadow may be cached, depending on the path type and canvas matrix. If the

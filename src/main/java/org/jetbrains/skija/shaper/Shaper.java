@@ -9,6 +9,8 @@ import org.jetbrains.skija.impl.*;
  * client-managed buffer.
  */
 public class Shaper extends Managed {
+    static { Library.load(); }
+    
     @NotNull @Contract("-> new")
     public static Shaper makePrimitive() {
         Stats.onNativeCall();

@@ -275,7 +275,6 @@ class Window {
 
     private void loop() {
         GL.createCapabilities();
-        Library.load();
         context = Context.makeGL();
 
         GLFW.glfwSetWindowSizeCallback(window, (window, width, height) -> {

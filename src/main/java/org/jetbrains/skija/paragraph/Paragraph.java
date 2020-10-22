@@ -2,12 +2,11 @@ package org.jetbrains.skija.paragraph;
 
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
-import org.jetbrains.skija.impl.Managed;
-import org.jetbrains.skija.impl.Native;
-import org.jetbrains.skija.impl.Stats;
+import org.jetbrains.skija.impl.*;
 
 public class Paragraph extends Managed {
-
+    static { Library.load(); }
+    
     public float getMaxWidth() {
         Stats.onNativeCall();
         return _nGetMaxWidth(_ptr);

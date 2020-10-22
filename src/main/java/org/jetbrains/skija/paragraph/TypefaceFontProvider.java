@@ -1,11 +1,12 @@
 package org.jetbrains.skija.paragraph;
 
-import org.jetbrains.skija.FontMgr;
-import org.jetbrains.skija.impl.Native;
-import org.jetbrains.skija.impl.Stats;
-import org.jetbrains.skija.Typeface;
+import org.jetbrains.annotations.*;
+import org.jetbrains.skija.*;
+import org.jetbrains.skija.impl.*;
 
 public class TypefaceFontProvider extends FontMgr {
+    static { Library.load(); }
+    
     public TypefaceFontProvider() {
         super(_nMake());
         Stats.onNativeCall();

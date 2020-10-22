@@ -5,6 +5,8 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class Picture extends RefCnt {
+    static { Library.load(); }
+    
     @ApiStatus.Internal
     public Picture(long ptr) {
         super(ptr);

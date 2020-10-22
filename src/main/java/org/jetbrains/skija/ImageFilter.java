@@ -8,6 +8,8 @@ import org.jetbrains.skija.impl.Stats;
 import java.util.Arrays;
 
 public class ImageFilter extends RefCnt {
+    static { Library.load(); }
+    
     public static ImageFilter makeAlphaThreshold(Region r, float innerMin, float outerMax, ImageFilter input, IRect crop) {
         Stats.onNativeCall();
         return new ImageFilter(_nMakeAlphaThreshold(Native.getPtr(r), innerMin, outerMax, Native.getPtr(input), crop));

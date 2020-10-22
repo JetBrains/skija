@@ -6,6 +6,8 @@ import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
 
 public class PathEffect extends RefCnt {
+    static { Library.load(); }
+    
     public enum Style {
         /** translate the shape to each position */
         TRANSLATE,

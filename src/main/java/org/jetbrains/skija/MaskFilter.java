@@ -6,6 +6,8 @@ import org.jetbrains.skija.impl.RefCnt;
 import org.jetbrains.skija.impl.Stats;
 
 public class MaskFilter extends RefCnt {
+    static { Library.load(); }
+    
     public static MaskFilter makeBlur(FilterBlurMode mode, float sigma) {
         return makeBlur(mode, sigma, true);
     }
