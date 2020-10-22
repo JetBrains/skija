@@ -41,7 +41,7 @@ public class TextStyle extends Managed {
     public Paint getForeground() {
         Stats.onNativeCall();
         long ptr = _nGetForeground(_ptr);
-        return ptr == 0 ? null : new Paint(ptr);
+        return ptr == 0 ? null : new Paint(ptr, true);
     }
 
     public TextStyle setForeground(@Nullable Paint paint) {
@@ -54,7 +54,7 @@ public class TextStyle extends Managed {
     public Paint getBackground() {
         Stats.onNativeCall();
         long ptr = _nGetBackground(_ptr);
-        return ptr == 0 ? null : new Paint(ptr);
+        return ptr == 0 ? null : new Paint(ptr, true);
     }
 
     public TextStyle setBackground(@Nullable Paint paint) {

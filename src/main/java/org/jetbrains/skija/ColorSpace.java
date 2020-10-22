@@ -39,12 +39,12 @@ public class ColorSpace extends Managed {
 
     @ApiStatus.Internal
     public ColorSpace(long ptr) {
-        super(ptr, _finalizerPtr);
+        super(ptr, _finalizerPtr, true);
     }
 
     @ApiStatus.Internal
-    public ColorSpace(long ptr, boolean allowClose) {
-        super(ptr, _finalizerPtr, allowClose);
+    public ColorSpace(long ptr, boolean managed) {
+        super(ptr, _finalizerPtr, managed);
     }
 
     /**

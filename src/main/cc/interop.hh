@@ -5,6 +5,8 @@
 #include "SkFontMetrics.h"
 #include "SkFontStyle.h"
 #include "SkMatrix.h"
+#include "SkM44.h"
+#include "SkPaint.h"
 #include "SkRefCnt.h"
 #include "SkRect.h"
 #include "SkRRect.h"
@@ -51,6 +53,13 @@ namespace skija {
     namespace FontFamilyName {
         extern jclass cls;
         extern jmethodID ctor;
+    }
+
+    namespace FontFeature {
+        extern jfieldID tag;
+        extern jfieldID value;
+        extern jfieldID start;
+        extern jfieldID end;
     }
 
     namespace FontMetrics {
@@ -117,6 +126,13 @@ namespace skija {
         jobject fromSkPoint(JNIEnv* env, const SkPoint& p);
     }
 
+    namespace PaintFilterCanvas {
+        extern jmethodID onFilterId;
+        bool onFilter(jobject obj, SkPaint& paint);
+        jobject attach(JNIEnv* env, jobject obj);
+        void detach(jobject obj);
+    }
+
     namespace Rect {
         extern jclass cls;
         extern jmethodID makeLTRB;
@@ -154,6 +170,7 @@ namespace skija {
 }
 
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray arr);
+std::unique_ptr<SkM44> skM44(JNIEnv* env, jfloatArray arr);
 
 SkString skString(JNIEnv* env, jstring str);
 jstring javaString(JNIEnv* env, const SkString& str);
@@ -165,6 +182,8 @@ jshortArray  javaShortArray (JNIEnv* env, const std::vector<jshort>& shorts);
 jintArray    javaIntArray   (JNIEnv* env, const std::vector<jint>& ints);
 jlongArray   javaLongArray  (JNIEnv* env, const std::vector<jlong>& longs);
 jfloatArray  javaFloatArray (JNIEnv* env, const std::vector<float>& floats);
+
+
 
 std::vector<SkString> skStringVector(JNIEnv* env, jobjectArray arr);
 jobjectArray javaStringArray(JNIEnv* env, const std::vector<SkString>& strings);

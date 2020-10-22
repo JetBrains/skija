@@ -349,13 +349,14 @@ class Window {
         scenes.put("Pythagoras",       new PythagorasScene());
         scenes.put("Shaders",          new ShadersScene());
         scenes.put("Shadow Utils",     new ShadowUtilsScene());
+        scenes.put("Shaper",           new ShaperScene());
         scenes.put("Squares",          new SquaresScene());
         scenes.put("Swing",            new SwingScene());
         scenes.put("Text Blob",        new TextBlobScene());
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Drawable";
+        currentScene = "Shaper";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();

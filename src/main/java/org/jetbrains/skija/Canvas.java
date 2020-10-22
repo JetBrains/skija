@@ -1,14 +1,15 @@
 package org.jetbrains.skija;
 
 import org.jetbrains.annotations.*;
+import org.jetbrains.skija.impl.Managed;
 import org.jetbrains.skija.impl.Native;
 import org.jetbrains.skija.impl.Stats;
 
-public class Canvas extends Native {
+public class Canvas extends Managed {
 
     @ApiStatus.Internal
-    public Canvas(long ptr) {
-        super(ptr);
+    public Canvas(long ptr, boolean managed) {
+        super(ptr, _FinalizerHolder.PTR, managed);
     }
 
     /**
@@ -46,7 +47,7 @@ public class Canvas extends Native {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_const_SkBitmap_const_SkSurfaceProps">https://fiddle.skia.org/c/@Canvas_const_SkBitmap_const_SkSurfaceProps</a>
      */
     public Canvas(Bitmap bitmap, SurfaceProps surfaceProps) {
-        this(_nMakeFromBitmap(Native.getPtr(bitmap), surfaceProps.getFlags(), surfaceProps.getPixelGeometry().ordinal()));
+        this(_nMakeFromBitmap(Native.getPtr(bitmap), surfaceProps.getFlags(), surfaceProps.getPixelGeometry().ordinal()), true);
         Stats.onNativeCall();
     }
 
@@ -382,7 +383,7 @@ public class Canvas extends Native {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
     public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @NotNull Paint paint) { 
-        return drawTriangles(positions, colors, null, BlendMode.MODULATE, paint);
+        return drawTriangles(positions, colors, null, null, BlendMode.MODULATE, paint);
     }
 
     /**
@@ -397,13 +398,14 @@ public class Canvas extends Native {
      * @param positions  triangle mesh to draw
      * @param colors     color array, one for each corner; may be null
      * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param indices    with which indices points should be drawn; may be null
      * @param paint      specifies the Shader, used as Vertices texture
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
-    public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable Paint paint) { 
-        return drawTriangles(positions, colors, texCoords, BlendMode.MODULATE, paint);
+    public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @Nullable Paint paint) {
+        return drawTriangles(positions, colors, texCoords, indices, BlendMode.MODULATE, paint);
     }
 
     /**
@@ -418,18 +420,19 @@ public class Canvas extends Native {
      * @param positions  triangle mesh to draw
      * @param colors     color array, one for each corner; may be null
      * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param indices    with which indices points should be drawn; may be null
      * @param mode       combines vertices colors with Shader, if both are present
      * @param paint      specifies the Shader, used as Vertices texture
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
-    public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @NotNull BlendMode mode, @Nullable Paint paint) { 
+    public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull BlendMode mode, @Nullable Paint paint) {
         assert positions.length % 3 == 0 : "Expected positions.length % 3 == 0, got: " + positions.length;
         assert colors == null || colors.length == positions.length : "Expected colors.length == positions.length, got: " + colors.length + " != " + positions.length;
         assert texCoords == null || texCoords.length == positions.length : "Expected texCoords.length == positions.length, got: " + texCoords.length + " != " + positions.length;
         Stats.onNativeCall();
-        _nDrawVertices(_ptr, 0 /* kTriangles_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), mode.ordinal(), Native.getPtr(paint));
+        _nDrawVertices(_ptr, 0 /* kTriangles_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), indices, mode.ordinal(), Native.getPtr(paint));
         return this;
     }
 
@@ -449,7 +452,7 @@ public class Canvas extends Native {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
     public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @NotNull Paint paint) { 
-        return drawTriangleStrip(positions, colors, null, BlendMode.MODULATE, paint);
+        return drawTriangleStrip(positions, colors, null, null, BlendMode.MODULATE, paint);
     }
 
     /**
@@ -464,13 +467,14 @@ public class Canvas extends Native {
      * @param positions  triangle mesh to draw
      * @param colors     color array, one for each corner; may be null
      * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param indices    with which indices points should be drawn; may be null
      * @param paint      specifies the Shader, used as Vertices texture
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
-    public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @NotNull Paint paint) { 
-        return drawTriangleStrip(positions, colors, texCoords, BlendMode.MODULATE, paint);
+    public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull Paint paint) {
+        return drawTriangleStrip(positions, colors, texCoords, indices, BlendMode.MODULATE, paint);
     }
 
     /**
@@ -485,17 +489,18 @@ public class Canvas extends Native {
      * @param positions  triangle mesh to draw
      * @param colors     color array, one for each corner; may be null
      * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param indices    with which indices points should be drawn; may be null
      * @param mode       combines vertices colors with Shader, if both are present
      * @param paint      specifies the Shader, used as Vertices texture
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
-    public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @NotNull BlendMode mode, @NotNull Paint paint) { 
+    public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull BlendMode mode, @NotNull Paint paint) {
         assert colors == null || colors.length == positions.length : "Expected colors.length == positions.length, got: " + colors.length + " != " + positions.length;
         assert texCoords == null || texCoords.length == positions.length : "Expected texCoords.length == positions.length, got: " + texCoords.length + " != " + positions.length;
         Stats.onNativeCall();
-        _nDrawVertices(_ptr, 1 /* kTriangleStrip_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), mode.ordinal(), Native.getPtr(paint));
+        _nDrawVertices(_ptr, 1 /* kTriangleStrip_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), indices, mode.ordinal(), Native.getPtr(paint));
         return this;
     }
 
@@ -515,7 +520,7 @@ public class Canvas extends Native {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
     public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @NotNull Paint paint) { 
-        return drawTriangleFan(positions, colors, null, BlendMode.MODULATE, paint);
+        return drawTriangleFan(positions, colors, null, null, BlendMode.MODULATE, paint);
     }
 
     /**
@@ -530,13 +535,14 @@ public class Canvas extends Native {
      * @param positions  triangle mesh to draw
      * @param colors     color array, one for each corner; may be null
      * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param indices    with which indices points should be drawn; may be null
      * @param paint      specifies the Shader, used as Vertices texture
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
-    public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @NotNull Paint paint) { 
-        return drawTriangleFan(positions, colors, texCoords, BlendMode.MODULATE, paint);
+    public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull Paint paint) {
+        return drawTriangleFan(positions, colors, texCoords, indices, BlendMode.MODULATE, paint);
     }
 
     /**
@@ -551,17 +557,18 @@ public class Canvas extends Native {
      * @param positions  triangle mesh to draw
      * @param colors     color array, one for each corner; may be null
      * @param texCoords  Point array of texture coordinates, mapping Shader to corners; may be null
+     * @param indices    with which indices points should be drawn; may be null
      * @param mode       combines vertices colors with Shader, if both are present
      * @param paint      specifies the Shader, used as Vertices texture
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
-    public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @NotNull BlendMode mode, @NotNull Paint paint) { 
+    public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull BlendMode mode, @NotNull Paint paint) {
         assert colors == null || colors.length == positions.length : "Expected colors.length == positions.length, got: " + colors.length + " != " + positions.length;
         assert texCoords == null || texCoords.length == positions.length : "Expected texCoords.length == positions.length, got: " + texCoords.length + " != " + positions.length;
         Stats.onNativeCall();
-        _nDrawVertices(_ptr, 2 /* kTriangleFan_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), mode.ordinal(), Native.getPtr(paint));
+        _nDrawVertices(_ptr, 2 /* kTriangleFan_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), indices, mode.ordinal(), Native.getPtr(paint));
         return this;
     }
 
@@ -842,6 +849,12 @@ public class Canvas extends Native {
         return this;
     }
 
+    public Canvas concat(Matrix44 matrix) {
+        Stats.onNativeCall();
+        _nConcat44(_ptr, matrix.getMat());
+        return this;
+    }
+
     /** 
      * <p>Copies Rect of pixels from Canvas into bitmap. Matrix and clip are
      * ignored.</p>
@@ -985,6 +998,13 @@ public class Canvas extends Native {
         return this;
     }
 
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        static { Stats.onNativeCall(); }
+        public static final long PTR = _nGetFinalizer();
+    }
+
+    public static native long _nGetFinalizer();
     public static native long _nMakeFromBitmap(long bitmapPtr, int flags, int pixelGeometry);
     public static native void _nDrawPoint(long ptr, float x, float y, long paintPtr);
     public static native void _nDrawPoints(long ptr, int mode, float[] coords, long paintPtr);
@@ -1003,7 +1023,7 @@ public class Canvas extends Native {
     public static native void _nDrawString(long ptr, String string, float x, float y, long font, long paint);
     public static native void _nDrawTextBlob(long ptr, long blob, float x, float y, long font, long paint);
     public static native void _nDrawPicture(long ptr, long picturePtr, float[] matrix, long paintPtr);
-    public static native void _nDrawVertices(long ptr, int verticesMode, float[] cubics, int[] colors, float[] texCoords, int blendMode, long paintPtr);
+    public static native void _nDrawVertices(long ptr, int verticesMode, float[] cubics, int[] colors, float[] texCoords, short[] indices, int blendMode, long paintPtr);
     public static native void _nDrawPatch(long ptr, float[] cubics, int[] colors, float[] texCoords, int blendMode, long paintPtr);
     public static native void _nDrawDrawable(long ptr, long drawablePrt, float[] matrix);
     public static native void _nClear(long ptr, int color);
@@ -1015,6 +1035,7 @@ public class Canvas extends Native {
     public static native void _nClipPath(long ptr, long nativePath, int mode, boolean antiAlias);
     public static native void _nClipRegion(long ptr, long nativeRegion, int mode);
     public static native void _nConcat(long ptr, float[] matrix);
+    public static native void _nConcat44(long ptr, float[] matrix);
     public static native boolean _nReadPixels(long ptr, long bitmapPtr, int srcX, int srcY);
     public static native boolean _nWritePixels(long ptr, long bitmapPtr, int x, int y);
     public static native int  _nSave(long ptr);

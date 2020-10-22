@@ -25,6 +25,10 @@ find src -name "*.java" -newer target/build_timestamp | xargs javac --release 11
 mkdir -p target/classes/org/jetbrains/skija/impl
 find src/main/java/org/jetbrains/skija/impl -name '*.class' | xargs -I '{}' mv '{}' target/classes/org/jetbrains/skija/impl
 
+# move shaper
+mkdir -p target/classes/org/jetbrains/skija/shaper
+find src/main/java/org/jetbrains/skija/shaper -name '*.class' | xargs -I '{}' mv '{}' target/classes/org/jetbrains/skija/shaper
+
 # move paragraph
 mkdir -p target/classes/org/jetbrains/skija/paragraph
 find src/main/java/org/jetbrains/skija/paragraph -name '*.class' | xargs -I '{}' mv '{}' target/classes/org/jetbrains/skija/paragraph
