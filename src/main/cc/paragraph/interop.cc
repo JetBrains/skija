@@ -62,20 +62,5 @@ namespace skija {
                 env->DeleteGlobalRef(cls);
             }
         }
-
-        namespace FontFeature {
-            jclass cls;
-            jmethodID ctor;
-
-            void onLoad(JNIEnv* env) {
-                jclass local = env->FindClass("org/jetbrains/skija/paragraph/FontFeature");
-                cls  = static_cast<jclass>(env->NewGlobalRef(local));
-                ctor = env->GetMethodID(cls, "<init>", "(Ljava/lang/String;I)V");
-            }
-
-            void onUnload(JNIEnv* env) {
-                env->DeleteGlobalRef(cls);
-            }
-        }
     }
 }

@@ -41,14 +41,14 @@ public class ShaperScene implements Scene {
                 canvas.translate(0, blob.getBounds().getHeight());
             }
 
-            FontFeature[] features = new FontFeature[] { new FontFeature("ss01"), new FontFeature("cv01"), new FontFeature("onum"), new FontFeature("calt", 0) };
-            try (var blob = shaper.shape(text + " ss01 cv01 onum -calt", firaCode11, features, true, Float.POSITIVE_INFINITY, new Point(0, 0)); ) {
+            String features = "ss01 cv01 onum -calt";
+            try (var blob = shaper.shape(text + " " + features, firaCode11, FontFeature.parse(features), true, Float.POSITIVE_INFINITY, new Point(0, 0)); ) {
                 canvas.drawTextBlob(blob, 0, 0, firaCode11, fill);
                 canvas.translate(0, blob.getBounds().getHeight());
             }
 
-            features = new FontFeature[] { new FontFeature("ss01", 1, 22, 25), new FontFeature("cv01", 1, 22, 25), new FontFeature("onum", 1, 28, 31), new FontFeature("calt", 0, 43, 44) };
-            try (var blob = shaper.shape(text + " ss01[22:25] cv01[22:25] onum[28:31] -calt[43:44]", firaCode11, features, true, Float.POSITIVE_INFINITY, new Point(0, 0)); ) {
+            features = "ss01[22:25] cv01[22:25] onum[28:31] calt[43:44]=0";
+            try (var blob = shaper.shape(text + " " + features, firaCode11, FontFeature.parse(features), true, Float.POSITIVE_INFINITY, new Point(0, 0)); ) {
                 canvas.drawTextBlob(blob, 0, 0, firaCode11, fill);
                 canvas.translate(0, blob.getBounds().getHeight());
             }

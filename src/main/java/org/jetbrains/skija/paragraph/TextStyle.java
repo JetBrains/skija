@@ -117,7 +117,7 @@ public class TextStyle extends Managed {
 
     public TextStyle addFontFeature(FontFeature f) {
         Stats.onNativeCall();
-        _nAddFontFeature(_ptr, f._name, f._value);
+        _nAddFontFeature(_ptr, f.getTag(), f._value);
         return this;
     }
 

@@ -1,14 +1,7 @@
 package org.jetbrains.skija.examples.lwjgl;
 
 import java.util.Arrays;
-import org.jetbrains.skija.Canvas;
-import org.jetbrains.skija.FontMetrics;
-import org.jetbrains.skija.FontMgr;
-import org.jetbrains.skija.FontStyle;
-import org.jetbrains.skija.Paint;
-import org.jetbrains.skija.Shader;
-import org.jetbrains.skija.Typeface;
-
+import org.jetbrains.skija.*;
 import org.jetbrains.skija.paragraph.*;
 
 public class TextStyleScene implements Scene {
@@ -101,11 +94,7 @@ public class TextStyleScene implements Scene {
             assert Arrays.equals(new Shadow[0], ts.getShadows());
         }
 
-        var fontFeatures = new FontFeature[] {
-            new FontFeature("cv06", 1),
-            new FontFeature("cv07", 1),
-        };
-
+        var fontFeatures = FontFeature.parse("cv06 cv07");
         var fontFamilies = new String[] { "System Font", "Apple Color Emoji" };
 
         try (var ts = new TextStyle().setColor(0xFF000000).setFontFamilies(fontFamilies).addFontFeatures(fontFeatures)) {
@@ -113,7 +102,7 @@ public class TextStyleScene implements Scene {
             assert Arrays.equals(fontFeatures, ts.getFontFeatures());
             drawLine(canvas, "Nor lose possession of that fair thou 🧑🏿‍🦰 ow’st;", ts);
             ts.clearFontFeatures();
-            assert Arrays.equals(new FontFeature[0], ts.getFontFeatures());
+            assert Arrays.equals(FontFeature.EMPTY, ts.getFontFeatures());
 
             FontMetrics m = ts.getFontMetrics();
             assert m.getTop() < m.getAscent() && m.getAscent() < m.getDescent() && m.getDescent() < m.getBottom();

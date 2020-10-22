@@ -30,12 +30,5 @@ namespace skija {
             void onLoad(JNIEnv* env);
             void onUnload(JNIEnv* env);   
         }
-
-        namespace FontFeature {
-            extern jclass cls;
-            extern jmethodID ctor;
-            void onLoad(JNIEnv* env);
-            void onUnload(JNIEnv* env);   
-        }
     }
 }

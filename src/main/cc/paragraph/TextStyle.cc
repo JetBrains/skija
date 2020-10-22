@@ -154,10 +154,10 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Tex
   (JNIEnv* env, jclass jclass, jlong ptr) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
     std::vector<FontFeature> fontFeatures = instance->getFontFeatures();
-    jobjectArray fontFeaturesArr = env->NewObjectArray(fontFeatures.size(), skija::paragraph::FontFeature::cls, nullptr);
+    jobjectArray fontFeaturesArr = env->NewObjectArray(fontFeatures.size(), skija::FontFeature::cls, nullptr);
     for (int i = 0; i < fontFeatures.size(); ++i) {
         const FontFeature& ff = fontFeatures[i];
-        env->SetObjectArrayElement(fontFeaturesArr, i, env->NewObject(skija::paragraph::FontFeature::cls, skija::paragraph::FontFeature::ctor, javaString(env, ff.fName), ff.fValue));
+        env->SetObjectArrayElement(fontFeaturesArr, i, env->NewObject(skija::FontFeature::cls, skija::FontFeature::ctor, javaString(env, ff.fName), ff.fValue));
     }
     return fontFeaturesArr;
 }
@@ -291,5 +291,3 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_TextStyle__
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
     instance->setPlaceholder();
 }
-
-

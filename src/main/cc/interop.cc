@@ -121,20 +121,26 @@ namespace skija {
     }
 
     namespace FontFeature {
+        jclass cls;
+        jmethodID ctor;
         jfieldID tag;
         jfieldID value;
         jfieldID start;
         jfieldID end;
 
         void onLoad(JNIEnv* env) {
-            jclass cls = env->FindClass("org/jetbrains/skija/FontFeature");
+            jclass local = env->FindClass("org/jetbrains/skija/FontFeature");
+            cls  = static_cast<jclass>(env->NewGlobalRef(local));
+            ctor = env->GetMethodID(cls, "<init>", "(Ljava/lang/String;I)V");
             tag   = env->GetFieldID(cls, "_tag",   "I");
             value = env->GetFieldID(cls, "_value", "I");
             start = env->GetFieldID(cls, "_start", "J");
             end   = env->GetFieldID(cls, "_end",   "J");
         }
 
-        void onUnload(JNIEnv* env) {}
+        void onUnload(JNIEnv* env) {
+            env->DeleteGlobalRef(cls);
+        }
     }
 
     namespace FontMetrics {
@@ -568,7 +574,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::paragraph::TextBox::onLoad(env);
     skija::paragraph::DecorationStyle::onLoad(env);
     skija::paragraph::Shadow::onLoad(env);
-    skija::paragraph::FontFeature::onLoad(env);
 
     return JNI_VERSION_10;
 }
@@ -604,7 +609,6 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::paragraph::TextBox::onUnload(env);
     skija::paragraph::DecorationStyle::onUnload(env);
     skija::paragraph::Shadow::onUnload(env);
-    skija::paragraph::FontFeature::onUnload(env);
 }
 
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray matrixArray) {

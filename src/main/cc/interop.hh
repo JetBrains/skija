@@ -56,6 +56,8 @@ namespace skija {
     }
 
     namespace FontFeature {
+        extern jclass cls;
+        extern jmethodID ctor;
         extern jfieldID tag;
         extern jfieldID value;
         extern jfieldID start;
