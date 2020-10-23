@@ -12,13 +12,10 @@ import java.util.regex.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class FontFeature {
-    public final int _tag;
-    @Getter
-    public final int _value;
-    @Getter
-    public final long _start;
-    @Getter
-    public final long _end;
+            public final int _tag;
+    @Getter public final int _value;
+    @Getter public final long _start;
+    @Getter public final long _end;
 
     public static final long GLOBAL_START = 0;
     public static final long GLOBAL_END = Long.MAX_VALUE;
@@ -76,8 +73,8 @@ public class FontFeature {
         return "FontFeature(" + valuePrefix + getTag() + range + valueSuffix + ")";
     }
 
-    public static Pattern _splitPattern = Pattern.compile("\\s+");
-    public static Pattern _featurePattern = Pattern.compile("(?<sign>[-+])?(?<tag>[a-z0-9]{4})(?:\\[(?<start>\\d+)?:(?<end>\\d+)?\\])?(?:=(?<value>\\d+))?");
+    public static final Pattern _splitPattern = Pattern.compile("\\s+");
+    public static final Pattern _featurePattern = Pattern.compile("(?<sign>[-+])?(?<tag>[a-z0-9]{4})(?:\\[(?<start>\\d+)?:(?<end>\\d+)?\\])?(?:=(?<value>\\d+))?");
 
     public static FontFeature parseOne(String s) {
         Matcher m = _featurePattern.matcher(s);

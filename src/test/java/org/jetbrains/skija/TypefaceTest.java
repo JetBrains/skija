@@ -29,12 +29,17 @@ public class TypefaceTest implements Executable {
         assertEquals(false, inter.isFixedPitch());
         assertEquals(true, jbMono.isFixedPitch());
 
-        assertArrayEquals(null, inter.getVariationPosition());
-        assertArrayEquals(new FontVariation[] { new FontVariation("wght", 400), new FontVariation("slnt", 0) }, interV.getVariationPosition());
+        assertArrayEquals(null, inter.getVariationAxes());
+        assertArrayEquals(null, inter.getVariations());
+
+        var axes = new FontVariationAxis[] { new FontVariationAxis("wght", 100f, 400f, 900f),
+                                             new FontVariationAxis("slnt", -10f, 0f, 0f) };
+        assertArrayEquals(axes, interV.getVariationAxes());
+        assertArrayEquals(FontVariation.parse("wght=400 slnt=0"), interV.getVariations());
         
         Typeface inter500 = interV.makeClone(new FontVariation("wght", 500));
         assertNotEquals(inter500, interV);
-        assertArrayEquals(new FontVariation[] { new FontVariation("wght", 500), new FontVariation("slnt", 0) }, inter500.getVariationPosition());
+        assertArrayEquals(FontVariation.parse("wght=500 slnt=0"), inter500.getVariations());
 
         Typeface inter400 = interV.makeClone(new FontVariation("wght", 400));
         // assertEquals(inter400, interV);

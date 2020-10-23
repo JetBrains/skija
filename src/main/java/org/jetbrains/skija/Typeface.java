@@ -43,9 +43,19 @@ public class Typeface extends RefCnt {
      * @return  the variation coordinates describing the position of this typeface in design variation space, null if there’s no variations
      */
     @Nullable
-    public FontVariation[] getVariationPosition() {
+    public FontVariation[] getVariations() {
         Stats.onNativeCall();
-        return _nGetVariationPosition(_ptr);
+        return _nGetVariations(_ptr);
+    }
+
+        /**
+     * It is possible the number of axes can be retrieved but actual position cannot.
+     * @return  the variation coordinates describing the position of this typeface in design variation space, null if there’s no variations
+     */
+    @Nullable
+    public FontVariationAxis[] getVariationAxes() {
+        Stats.onNativeCall();
+        return _nGetVariationAxes(_ptr);
     }
 
     /**
@@ -303,7 +313,8 @@ public class Typeface extends RefCnt {
 
     @ApiStatus.Internal public static native int      _nGetFontStyle(long ptr);
     @ApiStatus.Internal public static native boolean  _nIsFixedPitch(long ptr);
-    @ApiStatus.Internal public static native FontVariation[] _nGetVariationPosition(long ptr);
+    @ApiStatus.Internal public static native FontVariation[] _nGetVariations(long ptr);
+    @ApiStatus.Internal public static native FontVariationAxis[] _nGetVariationAxes(long ptr);
     @ApiStatus.Internal public static native int      _nGetUniqueId(long ptr);
     @ApiStatus.Internal public static native boolean  _nEquals(long ptr, long otherPtr);
     @ApiStatus.Internal public static native long     _nMakeDefault();

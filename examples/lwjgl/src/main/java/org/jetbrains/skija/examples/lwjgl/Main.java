@@ -336,6 +336,7 @@ class Window {
         scenes.put("Empty",            new EmptyScene());
         scenes.put("Figma",            new FigmaScene());
         scenes.put("Font",             new FontScene());
+        scenes.put("Font Variations",  new FontVariationsScene());
         scenes.put("Geometry",         new GeometryScene());
         scenes.put("Images",           new ImagesScene());
         scenes.put("Image Filters",    new ImageFiltersScene());
@@ -355,7 +356,7 @@ class Window {
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Shaper";
+        currentScene = "Font Variations";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();

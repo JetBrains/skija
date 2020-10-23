@@ -16,7 +16,7 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Typeface__1nIsFix
     return instance->isFixedPitch();
 }
 
-extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_Typeface__1nGetVariationPosition
+extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_Typeface__1nGetVariations
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkTypeface* instance = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(ptr));
     int count = instance->getVariationDesignPosition(nullptr, 0);
@@ -26,6 +26,23 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_Typeface__1nG
         jobjectArray res = env->NewObjectArray(count, skija::FontVariation::cls, nullptr);
         for (int i=0; i < count; ++i) {
             jobject var = env->NewObject(skija::FontVariation::cls, skija::FontVariation::ctor, coords[i].axis, coords[i].value);
+            env->SetObjectArrayElement(res, i, var);
+        }
+        return res;
+    } else
+        return nullptr;
+}
+
+extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_Typeface__1nGetVariationAxes
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkTypeface* instance = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(ptr));
+    int count = instance->getVariationDesignParameters(nullptr, 0);
+    if (count > 0) {
+        std::vector<SkFontParameters::Variation::Axis> params(count);
+        instance->getVariationDesignParameters(params.data(), count);
+        jobjectArray res = env->NewObjectArray(count, skija::FontVariationAxis::cls, nullptr);
+        for (int i=0; i < count; ++i) {
+            jobject var = env->NewObject(skija::FontVariationAxis::cls, skija::FontVariationAxis::ctor, params[i].tag, params[i].min, params[i].def, params[i].max, params[i].isHidden());
             env->SetObjectArrayElement(res, i, var);
         }
         return res;

@@ -45,11 +45,6 @@ namespace skija {
         extern jmethodID onGetBounds;
     }
     
-    namespace FontAxisInfo {
-        extern jclass cls;
-        extern jmethodID ctor;
-    }
-
     namespace FontFamilyName {
         extern jclass cls;
         extern jmethodID ctor;
@@ -80,6 +75,11 @@ namespace skija {
         extern jmethodID ctor;
         extern jfieldID tag;
         extern jfieldID value;
+    }
+
+    namespace FontVariationAxis {
+        extern jclass cls;
+        extern jmethodID ctor;
     }
 
     namespace ImageInfo {

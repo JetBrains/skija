@@ -90,21 +90,6 @@ namespace skija {
         }
     }
 
-    namespace FontAxisInfo {
-        jclass    cls;
-        jmethodID ctor;
-
-        void onLoad(JNIEnv* env) {
-            jclass local = env->FindClass("org/jetbrains/skija/FontAxisInfo");
-            cls  = static_cast<jclass>(env->NewGlobalRef(local));
-            ctor = env->GetMethodID(cls, "<init>", "(IILjava/lang/String;IFFF)V");
-        }
-
-        void onUnload(JNIEnv* env) {
-            env->DeleteGlobalRef(cls);
-        }
-    }
-
     namespace FontFamilyName {
         jclass cls;
         jmethodID ctor;
@@ -200,6 +185,21 @@ namespace skija {
             ctor = env->GetMethodID(cls, "<init>", "(IF)V");
             tag   = env->GetFieldID(cls, "_tag", "I");
             value = env->GetFieldID(cls, "_value", "F");
+        }
+
+        void onUnload(JNIEnv* env) {
+            env->DeleteGlobalRef(cls);
+        }
+    }
+
+    namespace FontVariationAxis {
+        jclass    cls;
+        jmethodID ctor;
+
+        void onLoad(JNIEnv* env) {
+            jclass local = env->FindClass("org/jetbrains/skija/FontVariationAxis");
+            cls  = static_cast<jclass>(env->NewGlobalRef(local));
+            ctor = env->GetMethodID(cls, "<init>", "(IFFFZ)V");
         }
 
         void onUnload(JNIEnv* env) {
@@ -554,11 +554,11 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 
     skija::Color4f::onLoad(env);
     skija::Drawable::onLoad(env);
-    skija::FontAxisInfo::onLoad(env);
     skija::FontFamilyName::onLoad(env);
     skija::FontFeature::onLoad(env);
     skija::FontMetrics::onLoad(env);
     skija::FontVariation::onLoad(env);
+    skija::FontVariationAxis::onLoad(env);
     skija::ImageInfo::onLoad(env);
     skija::IPoint::onLoad(env);
     skija::IRect::onLoad(env);
@@ -589,11 +589,11 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
 
     skija::Color4f::onUnload(env);
     skija::Drawable::onUnload(env);
-    skija::FontAxisInfo::onUnload(env);
     skija::FontFamilyName::onUnload(env);
     skija::FontFeature::onUnload(env);
     skija::FontMetrics::onUnload(env);
     skija::FontVariation::onUnload(env);
+    skija::FontVariationAxis::onUnload(env);
     skija::ImageInfo::onUnload(env);
     skija::IPoint::onUnload(env);
     skija::IRect::onUnload(env);
