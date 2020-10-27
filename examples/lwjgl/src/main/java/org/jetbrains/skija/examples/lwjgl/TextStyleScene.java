@@ -161,7 +161,7 @@ public class TextStyleScene implements Scene {
 
         try (var ts = new TextStyle().setColor(0xFF000000).setPlaceholder()) {
             assert ts.isPlaceholder();
-            drawLine(canvas, "Placeholder", ts);
+            // drawLine(canvas, "Placeholder", ts);
         }
     }
 }

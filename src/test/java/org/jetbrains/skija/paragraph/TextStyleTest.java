@@ -12,10 +12,8 @@ public class TextStyleTest implements Executable {
         assertEquals(new TextStyle(), new TextStyle());
 
         try (var ts1 = new TextStyle();
-             var ts2 = new TextStyle();) {
-            assertEquals(false, ts1.equals(TextStyleAttribute.NONE, ts2));
-            assertEquals(false, ts2.equals(TextStyleAttribute.NONE, ts1));
-
+             var ts2 = new TextStyle();)
+        {
             for (var attr: new TextStyleAttribute[] {
                 TextStyleAttribute.ALL_ATTRIBUTES,
                 TextStyleAttribute.FONT,

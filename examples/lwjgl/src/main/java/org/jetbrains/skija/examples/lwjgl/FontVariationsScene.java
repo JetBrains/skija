@@ -26,13 +26,13 @@ public class FontVariationsScene implements Scene {
                     var font = fontCache.get(variation);
                     if (font == null) {
                         var face = _interV.makeClone(variation);
-                        font = new Font(face, 13);
+                        font = new Font(face, 16);
                         fontCache.put(variation, font);
                     }
 
                     fill.setColor(Color.makeLerp(0xFFf72585, 0xFF4361ee, percent / 100f));
-                    canvas.drawString("Inter Variable 13px " + axis.getTag() + "=" + value, 0, 0, font, fill);
-                    canvas.translate(0, 24);
+                    canvas.drawString("Inter Variable 16px " + axis.getTag() + "=" + value, 0, 0, font, fill);
+                    canvas.translate(0, 28);
                 }
                 canvas.restore();
                 canvas.translate((windowWidth - 48) / axes.length, 0);

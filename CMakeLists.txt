@@ -20,7 +20,7 @@ add_library(skija SHARED ${SOURCES} ${IMPL_SOURCES} ${SHAPER_SOURCES} ${PARAGRAP
 
 # JNI
 if(APPLE)
-add_definitions(-DSK_SHAPER_CORETEXT_AVAILABLE)
+add_definitions(-DSK_SHAPER_CORETEXT_AVAILABLE -DSK_METAL)
 target_include_directories(skija PRIVATE $ENV{JAVA_HOME}/include $ENV{JAVA_HOME}/include/darwin)
 elseif(UNIX)
 target_include_directories(skija PRIVATE $ENV{JAVA_HOME}/include $ENV{JAVA_HOME}/include/linux)
