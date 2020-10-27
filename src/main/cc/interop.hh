@@ -10,6 +10,7 @@
 #include "SkRefCnt.h"
 #include "SkRect.h"
 #include "SkRRect.h"
+#include "SkShaper.h"
 #include "SkString.h"
 
 namespace java {
@@ -57,6 +58,8 @@ namespace skija {
         extern jfieldID value;
         extern jfieldID start;
         extern jfieldID end;
+
+        std::vector<SkShaper::Feature> fromJavaArray(JNIEnv* env, jobjectArray featuresArr);
     }
 
     namespace FontMetrics {
@@ -124,8 +127,11 @@ namespace skija {
     namespace Point {
         extern jclass cls;
         extern jmethodID ctor;
+        extern jfieldID x;
+        extern jfieldID y;
         jobject make(JNIEnv* env, float x, float y);
         jobject fromSkPoint(JNIEnv* env, const SkPoint& p);
+        jobjectArray fromSkPoints(JNIEnv* env, const std::vector<SkPoint>& ps);
     }
 
     namespace PaintFilterCanvas {

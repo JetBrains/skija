@@ -3,6 +3,7 @@
 #include <memory>
 #include <jni.h>
 #include "interop.hh"
+#include "shaper/interop.hh"
 #include "paragraph/interop.hh"
 
 namespace java {
@@ -125,6 +126,19 @@ namespace skija {
 
         void onUnload(JNIEnv* env) {
             env->DeleteGlobalRef(cls);
+        }
+
+        std::vector<SkShaper::Feature> fromJavaArray(JNIEnv* env, jobjectArray featuresArr) {
+            jsize featuresLen = featuresArr == nullptr ? 0 : env->GetArrayLength(featuresArr);
+            std::vector<SkShaper::Feature> features(featuresLen);
+            for (int i = 0; i < featuresLen; ++i) {
+                jobject featureObj = env->GetObjectArrayElement(featuresArr, i);
+                features[i] = {static_cast<SkFourByteTag>(env->GetIntField(featureObj, skija::FontFeature::tag)),
+                               static_cast<uint32_t>(env->GetIntField(featureObj, skija::FontFeature::value)),
+                               static_cast<size_t>(env->GetLongField(featureObj, skija::FontFeature::start)),
+                               static_cast<size_t>(env->GetLongField(featureObj, skija::FontFeature::end))};
+            }
+            return features;
         }
     }
 
@@ -328,11 +342,15 @@ namespace skija {
     namespace Point {
         jclass    cls;
         jmethodID ctor;
+        jfieldID x;
+        jfieldID y;
 
         void onLoad(JNIEnv* env) {
             jclass local = env->FindClass("org/jetbrains/skija/Point");
             cls  = static_cast<jclass>(env->NewGlobalRef(local));
             ctor = env->GetMethodID(cls, "<init>", "(FF)V");
+            x = env->GetFieldID(cls, "_x", "F");
+            y = env->GetFieldID(cls, "_y", "F");
         }
 
         void onUnload(JNIEnv* env) {
@@ -345,6 +363,14 @@ namespace skija {
 
         jobject fromSkPoint(JNIEnv* env, const SkPoint& p) {
             return env->NewObject(cls, ctor, p.fX, p.fY);
+        }
+
+        jobjectArray fromSkPoints(JNIEnv* env, const std::vector<SkPoint>& ps) {
+            jobjectArray res = env->NewObjectArray(ps.size(), cls, nullptr);
+            for (int i = 0; i < ps.size(); ++i) {
+                env->SetObjectArrayElement(res, i, fromSkPoint(env, ps[i]));
+            }
+            return res;
         }
     }
 
@@ -570,6 +596,9 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::RRect::onLoad(env);
     skija::RSXform::onLoad(env);
 
+    skija::shaper::RunHandler::onLoad(env);
+    skija::shaper::RunInfo::onLoad(env);
+
     skija::paragraph::LineMetrics::onLoad(env);
     skija::paragraph::TextBox::onLoad(env);
     skija::paragraph::DecorationStyle::onLoad(env);
@@ -604,6 +633,9 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::Rect::onUnload(env);
     skija::RRect::onUnload(env);
     skija::RSXform::onUnload(env);
+
+    skija::shaper::RunHandler::onUnload(env);
+    skija::shaper::RunInfo::onUnload(env);
 
     skija::paragraph::LineMetrics::onUnload(env);
     skija::paragraph::TextBox::onUnload(env);

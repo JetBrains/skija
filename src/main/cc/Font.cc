@@ -303,12 +303,7 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_Font__1nGetPo
     instance->getPos(reinterpret_cast<SkGlyphID*>(glyphs), count, positions.data(), {dx, dy});
     env->ReleaseShortArrayElements(glyphsArr, glyphs, 0);
 
-    jobjectArray res = env->NewObjectArray(count, skija::Point::cls, nullptr);
-    for (int i = 0; i < count; ++i) {
-        env->SetObjectArrayElement(res, i, skija::Point::fromSkPoint(env, positions[i]));
-    }
-
-    return res;
+    return skija::Point::fromSkPoints(env, positions);
 }
 
 extern "C" JNIEXPORT jfloatArray JNICALL Java_org_jetbrains_skija_Font__1nGetXPositions

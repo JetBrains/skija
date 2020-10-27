@@ -19,4 +19,7 @@ public class Point {
         return arr;
     }
 
+    public Point offset(float dx, float dy) {
+        return new Point(_x + dx, _y + dy);
+    }
 }

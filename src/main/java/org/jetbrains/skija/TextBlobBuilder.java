@@ -38,7 +38,8 @@ public class TextBlobBuilder extends Managed {
     @Nullable
     public TextBlob build() {
         Stats.onNativeCall();
-        return new TextBlob(_nBuild(_ptr));
+        long ptr = _nBuild(_ptr);
+        return ptr == 0 ? null : new TextBlob(ptr);
     }
 
     /** 

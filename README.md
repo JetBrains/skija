@@ -99,7 +99,13 @@ Typeface             ▓▓▓▓▓▓▓▓░░
 Shaper progress:
 
 ```
-Shaper               ▓░░░░░░░░░
+BiDiRunIterator      ░░░░░░░░░░
+FontRunIterator      ░░░░░░░░░░
+LanguageRunIterator  ░░░░░░░░░░
+RunHandler           ▓▓▓▓▓▓▓▓▓▓
+RunInfo              ▓▓▓▓▓▓▓▓░░
+ScriptRunIterator    ░░░░░░░░░░
+Shaper               ▓▓▓▓▓░░░░░
 ```
 
 Paragraph progress:
