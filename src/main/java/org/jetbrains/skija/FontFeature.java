@@ -21,39 +21,24 @@ public class FontFeature {
     public static final long GLOBAL_END = Long.MAX_VALUE;
     public static final FontFeature[] EMPTY = new FontFeature[0];
 
-    public static int tag(String name) {
-        assert name.length() == 4 : "Name must be exactly 4 symbols, got: '" + name + "'";
-        return (name.charAt(0) & 0xFF) << 24
-             | (name.charAt(1) & 0xFF) << 16
-             | (name.charAt(2) & 0xFF) << 8
-             | (name.charAt(3) & 0xFF);
-    }
-
-    public static String untag(int tag) {
-        return new String(new byte[] { (byte) (tag >> 24 & 0xFF),
-                                       (byte) (tag >> 16 & 0xFF),
-                                       (byte) (tag >> 8 & 0xFF),
-                                       (byte) (tag & 0xFF) });
-    }
-
     public FontFeature(String feature, int value, long start, long end) {
-        this(tag(feature), value, start, end);
+        this(FourByteTag.fromString(feature), value, start, end);
     }
 
     public FontFeature(String feature, int value) {
-        this(tag(feature), value, GLOBAL_START, GLOBAL_END);
+        this(FourByteTag.fromString(feature), value, GLOBAL_START, GLOBAL_END);
     }
 
     public FontFeature(String feature, boolean value) {
-        this(tag(feature), value ? 1 : 0, GLOBAL_START, GLOBAL_END);
+        this(FourByteTag.fromString(feature), value ? 1 : 0, GLOBAL_START, GLOBAL_END);
     }
 
     public FontFeature(String feature) {
-        this(tag(feature), 1, GLOBAL_START, GLOBAL_END);
+        this(FourByteTag.fromString(feature), 1, GLOBAL_START, GLOBAL_END);
     }
 
     public String getTag() {
-        return untag(_tag);
+        return FourByteTag.toString(_tag);
     }
 
     @Override

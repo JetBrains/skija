@@ -14,14 +14,14 @@ public class FontVariationAxis {
     @ApiStatus.Internal public final boolean _hidden;
 
     public String getTag() {
-        return FontFeature.untag(_tag);
+        return FourByteTag.toString(_tag);
     }
 
     public FontVariationAxis(String tag, float min, float def, float max, boolean hidden) {
-        this(FontFeature.tag(tag), min, def, max, hidden);
+        this(FourByteTag.fromString(tag), min, def, max, hidden);
     }
 
     public FontVariationAxis(String tag, float min, float def, float max) {
-        this(FontFeature.tag(tag), min, def, max, false);
+        this(FourByteTag.fromString(tag), min, def, max, false);
     }
 }

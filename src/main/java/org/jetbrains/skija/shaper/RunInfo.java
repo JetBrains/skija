@@ -8,7 +8,7 @@ import org.jetbrains.skija.impl.*;
 @lombok.Data
 public class RunInfo implements AutoCloseable {
     public final Font  _font;
-    public final int   _bidiLevel;
+    public final int   _biDiLevel;
     public final float _advanceX;
     public final float _advanceY;
     public final long  _glyphCount;
@@ -16,9 +16,9 @@ public class RunInfo implements AutoCloseable {
     public final long  _utf8RangeBegin;
     public final long  _utf8RangeSize;
 
-    public RunInfo(long fontPtr, int bidiLevel, float advanceX, float advanceY, long glyphCount, long utf8RangeBegin, long utf8RangeSize) {
+    public RunInfo(long fontPtr, int biDiLevel, float advanceX, float advanceY, long glyphCount, long utf8RangeBegin, long utf8RangeSize) {
         _font = new Font(fontPtr);
-        _bidiLevel = bidiLevel;
+        _biDiLevel = biDiLevel;
         _advanceX = advanceX;
         _advanceY = advanceY;
         _glyphCount = glyphCount;

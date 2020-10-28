@@ -103,7 +103,7 @@ class Window {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
-        window = glfwCreateWindow(width, height, "Lightweight Java Game Library", NULL, NULL);
+        window = glfwCreateWindow(width, height, "Skija LWJGL Demo", NULL, NULL);
         if (window == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
 
@@ -349,14 +349,15 @@ class Window {
         scenes.put("Pythagoras",       new PythagorasScene());
         scenes.put("Shaders",          new ShadersScene());
         scenes.put("Shadow Utils",     new ShadowUtilsScene());
-        scenes.put("Shaper",           new ShaperScene());
+        scenes.put("Shapers",          new ShapersScene());
+        scenes.put("Shaping",          new ShapingScene());
         scenes.put("Squares",          new SquaresScene());
         scenes.put("Swing",            new SwingScene());
         scenes.put("Text Blob",        new TextBlobScene());
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Shaper";
+        currentScene = "Shaping";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();

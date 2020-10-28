@@ -229,7 +229,7 @@ public class Typeface extends RefCnt {
      */
     public String[] getTableTags() {
         Stats.onNativeCall();
-        return Arrays.stream(_nGetTableTags(_ptr)).mapToObj(FontFeature::untag).toArray(String[]::new);
+        return Arrays.stream(_nGetTableTags(_ptr)).mapToObj(FourByteTag::toString).toArray(String[]::new);
     }
 
     /**
@@ -237,7 +237,7 @@ public class Typeface extends RefCnt {
      */
     public long getTableSize(String tag) {
         Stats.onNativeCall();
-        return _nGetTableSize(_ptr, FontFeature.tag(tag));
+        return _nGetTableSize(_ptr, FourByteTag.fromString(tag));
     }
 
     /**
@@ -250,7 +250,7 @@ public class Typeface extends RefCnt {
     @Nullable
     public Data getTableData(String tag) {
         Stats.onNativeCall();
-        long ptr = _nGetTableData(_ptr, FontFeature.tag(tag));
+        long ptr = _nGetTableData(_ptr, FourByteTag.fromString(tag));
         return ptr == 0 ? null : new Data(ptr);
     }
 

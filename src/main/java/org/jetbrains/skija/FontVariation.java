@@ -14,11 +14,11 @@ public class FontVariation {
     public final float _value;
 
     public FontVariation(String feature, float value) {
-        this(FontFeature.tag(feature), value);
+        this(FourByteTag.fromString(feature), value);
     }
 
     public String getTag() {
-        return FontFeature.untag(_tag);
+        return FourByteTag.toString(_tag);
     }
 
     public String toString() {

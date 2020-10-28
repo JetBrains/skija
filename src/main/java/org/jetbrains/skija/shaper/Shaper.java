@@ -79,10 +79,10 @@ public class Shaper extends Managed {
         return new TextBlob(ptr);
     }
 
-    @NotNull @Contract("_, _, _, _, _, _ -> this")
-    public Shaper shape(String text, Font font, @Nullable FontFeature[] features, boolean leftToRight, float width, RunHandler runHandler) {
+    @NotNull @Contract("_, _, _, _, _, _, _ -> this")
+    public Shaper shape(String text, Font font, @Nullable FontMgr fontMgr, @Nullable FontFeature[] features, boolean leftToRight, float width, RunHandler runHandler) {
         Stats.onNativeCall();
-        _nShape(_ptr, text, Native.getPtr(font), features, leftToRight, width, runHandler);
+        _nShape(_ptr, text, Native.getPtr(font), Native.getPtr(fontMgr), features, leftToRight, width, runHandler);
         return this;
     }
 
@@ -101,5 +101,5 @@ public class Shaper extends Managed {
     public static native long _nMake(long fontMgrPtr);
 
     public static native long _nShapeToTextBlob(long ptr, String text, long fontPtr, FontFeature[] features, boolean leftToRight, float width, float offsetX, float offsetY);
-    public static native void _nShape(long ptr, String text, long fontPtr, FontFeature[] features, boolean leftToRight, float width, RunHandler runHandler);
+    public static native void _nShape(long ptr, String text, long fontPtr, long fontMgrPtr, FontFeature[] features, boolean leftToRight, float width, RunHandler runHandler);
 }

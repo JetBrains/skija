@@ -133,13 +133,14 @@ private:
 };
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_shaper_Shaper__1nShape
-  (JNIEnv* env, jclass jclass, jlong ptr, jstring textObj, jlong fontPtr, jobjectArray featuresArr, jboolean leftToRight, jfloat width, jobject runHandler) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jstring textObj, jlong fontPtr, jlong fontMgrPtr, jobjectArray featuresArr, jboolean leftToRight, jfloat width, jobject runHandler) {
     SkShaper* instance = reinterpret_cast<SkShaper*>(static_cast<uintptr_t>(ptr));
     SkString text = skString(env, textObj);
     SkFont* font = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(fontPtr));
+    sk_sp<SkFontMgr> fontMgr = fontMgrPtr == 0 ? SkFontMgr::RefDefault() : sk_ref_sp(reinterpret_cast<SkFontMgr*>(static_cast<uintptr_t>(fontMgrPtr)));
     std::vector<SkShaper::Feature> features = skija::FontFeature::fromJavaArray(env, featuresArr);
 
-    std::unique_ptr<SkShaper::FontRunIterator> fontRunIter(SkShaper::MakeFontMgrRunIterator(text.c_str(), text.size(), *font, SkFontMgr::RefDefault()));
+    std::unique_ptr<SkShaper::FontRunIterator> fontRunIter(SkShaper::MakeFontMgrRunIterator(text.c_str(), text.size(), *font, fontMgr));
     if (!fontRunIter) return;
 
     uint8_t defaultBiDiLevel = leftToRight ? 0xfe /* UBIDI_DEFAULT_LTR */ : 0xff /* UBIDI_DEFAULT_RTL */; // unicode/ubidi.h
