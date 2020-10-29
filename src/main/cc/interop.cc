@@ -5,6 +5,7 @@
 #include "interop.hh"
 #include "shaper/interop.hh"
 #include "paragraph/interop.hh"
+#include "src/utils/SkUTF.h"
 
 namespace java {
     namespace lang {
@@ -667,25 +668,22 @@ std::unique_ptr<SkM44> skM44(JNIEnv* env, jfloatArray matrixArray) {
 }
 
 SkString skString(JNIEnv* env, jstring s) {
-    // TODO fix UTF-8
+    jsize utf16Units = env->GetStringLength(s);
+    const jchar* utf16 = env->GetStringChars(s, nullptr);
 
-    // void ParagraphStyle::setEllipsis(const std::u16string& ellipsis) {
-    //     icu::UnicodeString unicode;
-    //     unicode.setTo((UChar*)ellipsis.data());
-    //     std::string str;
-    //     unicode.toUTF8String(str);
-    //     fEllipsis = SkString(str.c_str());
-    // }
+    int utf8Units = SkUTF::UTF16ToUTF8(nullptr, 0, utf16, utf16Units);
+    SkString utf8(utf8Units);
+    SkUTF::UTF16ToUTF8(utf8.writable_str(), utf8Units, utf16, utf16Units);
+    env->ReleaseStringChars(s, utf16);
 
-    jsize       len   = env->GetStringUTFLength(s);
-    const char* chars = env->GetStringUTFChars(s, nullptr);
-    SkString res(chars, len);
-    env->ReleaseStringUTFChars(s, chars);
-    return res;
+    return utf8;
 }
 
 jstring javaString(JNIEnv* env, const SkString& str) {
-    return env->NewStringUTF(str.c_str());
+    int utf16Units = SkUTF::UTF8ToUTF16(nullptr, 0, str.c_str(), str.size());
+    auto utf16 = std::unique_ptr<uint16_t[]>(new uint16_t[utf16Units]);
+    SkUTF::UTF8ToUTF16(utf16.get(), utf16Units, str.c_str(), str.size());
+    return env->NewString(utf16.get(), utf16Units);
 }
 
 jobject javaFloat(JNIEnv* env, float val) {

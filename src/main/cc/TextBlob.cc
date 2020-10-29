@@ -28,7 +28,7 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_TextBlob__1nGetUnique
 }
 
 extern "C" JNIEXPORT jfloatArray JNICALL Java_org_jetbrains_skija_TextBlob__1nGetIntercepts
-  (JNIEnv* env, jclass jclass, jlong ptr, float lower, float upper, long paintPtr) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloat lower, jfloat upper, jlong paintPtr) {
     SkTextBlob* instance = reinterpret_cast<SkTextBlob*>(static_cast<uintptr_t>(ptr));
     std::vector<float> bounds {lower, upper};
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
@@ -39,7 +39,7 @@ extern "C" JNIEXPORT jfloatArray JNICALL Java_org_jetbrains_skija_TextBlob__1nGe
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_TextBlob__1nMakeFromPosH
-  (JNIEnv* env, jclass jclass, jshortArray glyphsArr, jfloatArray xposArr, jfloat ypos, jlong fontPtr ) {
+  (JNIEnv* env, jclass jclass, jshortArray glyphsArr, jfloatArray xposArr, jfloat ypos, jlong fontPtr) {
     jsize len = env->GetArrayLength(glyphsArr);
     jshort* glyphs = env->GetShortArrayElements(glyphsArr, nullptr);
     jfloat* xpos = env->GetFloatArrayElements(xposArr, nullptr);
