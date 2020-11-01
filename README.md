@@ -29,6 +29,23 @@ Skia has a proven track record of industrial-scale project relying on it for all
 - Firefox Canvas,
 - Xamarin.
 
+## Built with Skija
+
+[Robert Feckler](https://twitter.com/BlueAquilae/status/1322696020329902082):
+
+|![](extras/Elso-W-XYAEKmFg.jpg)|![](extras/Elso-WKXgAUK-zU.jpg)|
+|---|---|
+|![](extras/Elso-WsWoAExiUF.jpg)|![](extras/Elso-WfWMAED8dc.jpg)|
+
+[Skija LWJGL demo app](examples/lwjgl):
+
+|![](extras/geometry.png)|![](extras/text.png)|
+|---|---|
+|![](extras/bitmap.png)|![](extras/pythagoras.png)|
+|![](extras/filters.png)|![](extras/shaders.png)|
+
+[Skiko](https://github.com/JetBrains/Skiko), Kotlin buildings for Skija
+
 ## Why hand-crafted bindings
 
 Automatically generated bindings for Skia exist, but don’t seem to have high adoption:
@@ -219,14 +236,6 @@ GLFW (via LWJGL), Java and Maven:
 cd examples/lwjgl
 ./script/mvn_exec.sh
 ```
-
-![](extras/tree.png)
-
-![](extras/gradients.png)
-
-![](extras/paths.png)
-
-![](extras/text.png)
 
 JOGL, Kotlin and Gradle:
 
