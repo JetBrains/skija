@@ -50,6 +50,13 @@ public class Shaper extends Managed {
         return new Shaper(_nMakeShapeDontWrapOrReorder(Native.getPtr(fontMgr)));
     }
 
+    /**
+     * <p>Only works on macOS</p>
+     * 
+     * <p>WARN broken in m87 https://bugs.chromium.org/p/skia/issues/detail?id=10897</p>
+     * 
+     * @return  Shaper on macOS, throws UnsupportedOperationException elsewhere
+     */
     @NotNull @Contract("-> new")
     public static Shaper makeCoreText() {
         Stats.onNativeCall();
