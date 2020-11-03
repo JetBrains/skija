@@ -48,10 +48,8 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_FontCollect
     if (defaultFamilyNameStr == nullptr)
         instance->setDefaultFontManager(sk_ref_sp(fontManager));
     else {
-        jsize       len   = env->GetStringUTFLength(defaultFamilyNameStr);
-        const char* chars = env->GetStringUTFChars(defaultFamilyNameStr, nullptr);
-        instance->setDefaultFontManager(sk_ref_sp(fontManager), chars);
-        env->ReleaseStringUTFChars(defaultFamilyNameStr, chars);
+        SkString defaultFamilyName = skString(env, defaultFamilyNameStr);
+        instance->setDefaultFontManager(sk_ref_sp(fontManager), defaultFamilyName.c_str());
     }
 }
 

@@ -1,7 +1,8 @@
 package org.jetbrains.skija.examples.lwjgl;
 
-import java.util.Arrays;
+import java.util.*;
 import org.jetbrains.skija.*;
+import org.jetbrains.skija.shaper.*;
 
 public class TextBlobScene implements Scene {
     private Font font;
@@ -139,7 +140,8 @@ public class TextBlobScene implements Scene {
         float width = 100 + percent * 3;
         int color = 0xFF454A6F;
 
-        try (var blob   = font.shape("This TextBlob here is going to span multiple lines. If it doesn’t, please contact application administrator", width);
+        try (var shaper = Shaper.make();
+             var blob   = shaper.shape("This TextBlob here is going to span multiple lines. If it doesn’t, please contact application administrator", font, width);
              var bg     = new Paint().setColor(Color.withAlpha(color, 32));
              var stroke = new Paint().setColor(Color.withAlpha(color, 64)).setMode(PaintMode.STROKE).setStrokeWidth(1);
              var fill   = new Paint().setColor(color);)

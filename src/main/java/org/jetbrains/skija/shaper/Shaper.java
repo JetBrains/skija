@@ -77,6 +77,26 @@ public class Shaper extends Managed {
         return new Shaper(_nMake(Native.getPtr(fontMgr)));
     }
 
+    @NotNull @Contract("_, _ -> new")
+    public TextBlob shape(String text, Font font) {
+        return shape(text, font, null, true, Float.POSITIVE_INFINITY, Point.ZERO);
+    }
+
+    @NotNull @Contract("_, _, _ -> new")
+    public TextBlob shape(String text, Font font, float width) {
+        return shape(text, font, null, true, width, Point.ZERO);
+    }
+
+    @NotNull @Contract("_, _, _, _ -> new")
+    public TextBlob shape(String text, Font font, float width, @NotNull Point offset) {
+        return shape(text, font, null, true, width, offset);
+    }
+
+    @NotNull @Contract("_, _, _, _, _ -> new")
+    public TextBlob shape(String text, Font font, boolean leftToRight, float width, @NotNull Point offset) {
+        return shape(text, font, null, leftToRight, width, offset);
+    }
+
     @NotNull @Contract("_, _, _, _, _, _ -> new")
     public TextBlob shape(String text, Font font, @Nullable FontFeature[] features, boolean leftToRight, float width, @NotNull Point offset) {
         Stats.onNativeCall();

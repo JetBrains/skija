@@ -5,6 +5,8 @@ import org.jetbrains.annotations.*;
 
 @Data
 public class Point {
+    public static final Point ZERO = new Point(0, 0);
+
     public final float _x;
     public final float _y;
 

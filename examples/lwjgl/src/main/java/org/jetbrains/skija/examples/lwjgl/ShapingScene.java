@@ -22,7 +22,8 @@ public class ShapingScene implements Scene {
         canvas.translate(20, 20);
 
         var shapers = new Shaper[] { Shaper.makeShapeThenWrap(),
-                                     Shaper.makeCoreText() };
+                                     // Shaper.makeCoreText() // uncomment after https://bugs.chromium.org/p/skia/issues/detail?id=10897
+                                   };
         for (var shaper: shapers) {
             // System.out.println(shaper == shapers[0] ? "\nMakeShapeThenWrap" : "\nMakeCoreText");
             try (var handler = new TextBlobHandler();

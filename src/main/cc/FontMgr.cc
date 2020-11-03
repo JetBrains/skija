@@ -29,18 +29,16 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_FontMgr__1nMakeStyle
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_FontMgr__1nMatchFamily
   (JNIEnv* env, jclass jclass, jlong ptr, jstring familyNameStr) {
     SkFontMgr* instance = reinterpret_cast<SkFontMgr*>(static_cast<uintptr_t>(ptr));
-    const char* familyName = env->GetStringUTFChars(familyNameStr, nullptr);
-    SkFontStyleSet* styleSet = instance->matchFamily(familyName);
-    env->ReleaseStringUTFChars(familyNameStr, familyName);
+    SkString familyName = skString(env, familyNameStr);
+    SkFontStyleSet* styleSet = instance->matchFamily(familyName.c_str());
     return reinterpret_cast<jlong>(styleSet);
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_FontMgr__1nMatchFamilyStyle
   (JNIEnv* env, jclass jclass, jlong ptr, jstring familyNameStr, jint fontStyle) {
     SkFontMgr* instance = reinterpret_cast<SkFontMgr*>(static_cast<uintptr_t>(ptr));
-    const char* familyName = env->GetStringUTFChars(familyNameStr, nullptr);
-    SkTypeface* typeface = instance->matchFamilyStyle(familyName, skija::FontStyle::fromJava(fontStyle));
-    env->ReleaseStringUTFChars(familyNameStr, familyName);
+    SkString familyName = skString(env, familyNameStr);
+    SkTypeface* typeface = instance->matchFamilyStyle(familyName.c_str(), skija::FontStyle::fromJava(fontStyle));
     return reinterpret_cast<jlong>(typeface);
 }
 
@@ -48,23 +46,14 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_FontMgr__1nMatchFami
   (JNIEnv* env, jclass jclass, jlong ptr, jstring familyNameStr, jint fontStyle, jobjectArray bcp47Array, jint character) {
     SkFontMgr* instance = reinterpret_cast<SkFontMgr*>(static_cast<uintptr_t>(ptr));
 
-    const char* familyName = env->GetStringUTFChars(familyNameStr, nullptr);
+    SkString familyName = skString(env, familyNameStr);
     
-    jsize bcp47Count = env->GetArrayLength(bcp47Array);
-    const char** bcp47 = new const char*[bcp47Count];
-    for (int i = 0; i < bcp47Count; ++i) {
-        jstring bcp47String = reinterpret_cast<jstring>(env->GetObjectArrayElement(bcp47Array, i));
-        bcp47[i] = env->GetStringUTFChars(bcp47String, nullptr);
-    }
+    std::vector<SkString> bcp47Strings = skStringVector(env, bcp47Array);
+    std::vector<const char*> bcp47(bcp47Strings.size());
+    for (int i = 0; i < bcp47.size(); ++i)
+        bcp47[i] = bcp47Strings[i].c_str();
     
-    SkTypeface* typeface = instance->matchFamilyStyleCharacter(familyName, skija::FontStyle::fromJava(fontStyle), bcp47, bcp47Count, character);
-    
-    for (int i = 0; i < bcp47Count; ++i) {
-        jstring bcp47String = reinterpret_cast<jstring>(env->GetObjectArrayElement(bcp47Array, i));
-        env->ReleaseStringUTFChars(bcp47String, bcp47[i]);
-    }
-
-    env->ReleaseStringUTFChars(familyNameStr, familyName);
+    SkTypeface* typeface = instance->matchFamilyStyleCharacter(familyName.c_str(), skija::FontStyle::fromJava(fontStyle), bcp47.data(), bcp47.size(), character);
     
     return reinterpret_cast<jlong>(typeface);
 }

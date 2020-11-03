@@ -44,9 +44,8 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Data__1nMakeFromByte
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Data__1nMakeFromFileName
   (JNIEnv* env, jclass jclass, jstring pathStr) {
-    const char* path = env->GetStringUTFChars(pathStr, nullptr);
-    SkData* instance = SkData::MakeFromFileName(path).release();
-    env->ReleaseStringUTFChars(pathStr, path);
+    SkString path = skString(env, pathStr);
+    SkData* instance = SkData::MakeFromFileName(path.c_str()).release();
     return reinterpret_cast<jlong>(instance);
 }
 

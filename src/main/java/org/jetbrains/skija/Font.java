@@ -473,10 +473,6 @@ public class Font extends Managed {
         return _nGetSpacing(_ptr);
     }
 
-    public TextBlob shape(String str, float width) {
-        return new TextBlob(_nShape(_ptr, str, width));
-    }
-
     @ApiStatus.Internal public static final  long    _finalizerPtr = _nGetFinalizer();
     @ApiStatus.Internal public static native long    _nGetFinalizer();
     @ApiStatus.Internal public static native long    _nMakeDefault();
@@ -523,6 +519,4 @@ public class Font extends Managed {
     @ApiStatus.Internal public static native Path[]  _nGetPaths(long ptr, short[] glyphIds);
     @ApiStatus.Internal public static native FontMetrics _nGetMetrics(long ptr);
     @ApiStatus.Internal public static native float   _nGetSpacing(long ptr);
-
-    @ApiStatus.Internal public static native long    _nShape(long ptr, String str, float width);
 }

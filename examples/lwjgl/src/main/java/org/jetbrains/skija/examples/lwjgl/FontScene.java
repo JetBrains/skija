@@ -1,10 +1,8 @@
 package org.jetbrains.skija.examples.lwjgl;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import org.jetbrains.skija.*;
+import org.jetbrains.skija.shaper.*;
 
 public class FontScene implements Scene {
     public Typeface _inter;
@@ -44,7 +42,7 @@ public class FontScene implements Scene {
     }
 
     public float _drawLine(Canvas canvas, String text, Font font) {
-        var blob = font.shape(text, Float.POSITIVE_INFINITY);
+        var blob = Shaper.make().shape(text, font);
         var bounds = blob.getBounds();
         canvas.drawTextBlob(blob, 0, 0, font, _paint);
         canvas.translate(0, bounds.getHeight());

@@ -1,13 +1,10 @@
 package org.jetbrains.skija.examples.lwjgl;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.*;
+import java.io.*;
+import java.nio.file.*;
 import org.jetbrains.skija.*;
+import org.jetbrains.skija.shaper.*;
 
 public class WallOfTextScene implements Scene {
     private Font font;
@@ -20,7 +17,7 @@ public class WallOfTextScene implements Scene {
         var face = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf");
         font = new Font(face, 13);
         try {
-            text = Files.lines(Path.of("texts/google-10000-english.txt"))
+            text = Files.lines(java.nio.file.Path.of("texts/google-10000-english.txt"))
                         .sorted()
                         .limit(2000)
                         .reduce("2000 words", (a, b) -> a + " " + b);
@@ -39,8 +36,10 @@ public class WallOfTextScene implements Scene {
         if (cachedWidth != width || cachedBlob == null) {
             if (cachedBlob != null)
                 cachedBlob.close();
-            cachedBlob = font.shape(text, width - paddingH * 2);
-            cachedWidth = width;
+            try (var shaper = Shaper.make()) {
+                cachedBlob = shaper.shape(text, font, width - paddingH * 2);
+                cachedWidth = width;
+            }
         }
 
         canvas.drawTextBlob(cachedBlob, 20f, 20f, font, textColor);

@@ -1,6 +1,7 @@
 package org.jetbrains.skija.examples.lwjgl;
 
 import org.jetbrains.skija.*;
+import org.jetbrains.skija.shaper.*;
 import org.jetbrains.skija.paragraph.*;
 
 public class ParagraphScene implements Scene {
@@ -242,9 +243,11 @@ public class ParagraphScene implements Scene {
                 canvas.translate(0, p.getHeight());
 
                 try (var typeface = fc.defaultFallback();
-                     var font = new Font(typeface, 16);
-                     var blob = font.shape("idx: " + glyphIdx, Float.POSITIVE_INFINITY);
-                     var paint = new Paint().setColor(0xFFcc3333)) {
+                     var font     = new Font(typeface, 16);
+                     var shaper   = Shaper.make();
+                     var blob     = shaper.shape("idx: " + glyphIdx, font);
+                     var paint    = new Paint().setColor(0xFFcc3333))
+                {
                     canvas.drawTextBlob(blob, 0, 0, font, paint);
                     canvas.translate(0, blob.getBounds().getHeight());
                 }
