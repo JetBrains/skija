@@ -31,7 +31,7 @@ Skia has a proven track record of industrial-scale project relying on it for all
 
 ## Built with Skija
 
-[Robert Feckler](https://twitter.com/BlueAquilae/status/1322696020329902082):
+[Robert Felker](https://twitter.com/BlueAquilae/status/1322696020329902082):
 
 |![](extras/Elso-W-XYAEKmFg.jpg)|![](extras/Elso-WKXgAUK-zU.jpg)|
 |---|---|
