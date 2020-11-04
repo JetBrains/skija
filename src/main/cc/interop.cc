@@ -667,16 +667,113 @@ std::unique_ptr<SkM44> skM44(JNIEnv* env, jfloatArray matrixArray) {
     }
 }
 
+// bytes  range             bits  byte 1      byte 2      byte 3      byte 4      byte 5      byte 6
+//
+// Normal UTF-8:
+//
+// 1      U+     0..    7F  7     0xxxxxxx                     
+// 2      U+    80..   7FF  11    110xxxxx    10xxxxxx                 
+// 3      U+   800..  FFFF  16    1110xxxx    10xxxxxx    10xxxxxx             
+// 4      U+ 10000..10FFFF  21    11110xxx    10xxxxxx    10xxxxxx    10xxxxxx             
+//
+// Modified UTF-8 (Java):
+//
+// 1      U+     1..    7F  7     0xxxxxxx                     
+// 2      U+     0                11000000    10000000                 
+// 2      U+    80..   7FF  11    110xxxxx    10xxxxxx                 
+// 3      U+   800..  FFFF  16    1110xxxx    10xxxxxx    10xxxxxx             
+// 6      U+ 10000..10FFFF  20    11101101    1010xxxx    10xxxxxx    11101101    1011xxxx    10xxxxxx  (+ 0x10000)
+
+size_t utfToUtf8(unsigned char *data, size_t len) {
+    size_t read_offset = 0;
+    size_t write_offset = 0;
+    while (read_offset < len) {
+        unsigned char byte1 = data[read_offset];
+
+        // single-byte U+0001..007F
+        if ((byte1 & 0b10000000) == 0) {
+            data[write_offset] = byte1;
+            read_offset += 1;
+            write_offset += 1;
+            continue;
+        }
+
+        SkASSERT(read_offset + 1 < len);
+        unsigned char byte2 = data[read_offset + 1];
+
+        // two-byte U+0000
+        if (byte1 == 0b11000000 && byte2 == 0b10000000) {
+            data[write_offset] = 0;
+            read_offset += 2;
+            write_offset += 1;
+            continue;
+        }
+
+        // two-byte U+0080..07FF
+        if ((byte1 & 0b11100000) == 0b11000000) {
+            SkASSERT((byte2 & 0b11000000) == 0b10000000);
+            data[write_offset] = byte1;
+            data[write_offset + 1] = byte2;
+            read_offset += 2;
+            write_offset += 2;
+            continue;
+        }
+
+        SkASSERT(read_offset + 2 < len);
+        unsigned char byte3 = data[read_offset + 2];
+
+        // Six-byte modified UTF-8
+        // 11101101    1010xxxx    10xxxxxx    11101101    1011xxxx    10xxxxxx
+        if (byte1 == 0b11101101 && (byte2 & 0b11110000) == 0b10100000) {
+            SkASSERT(read_offset + 5 < len);
+            unsigned char byte4 = data[read_offset + 3];
+            unsigned char byte5 = data[read_offset + 4];
+            unsigned char byte6 = data[read_offset + 5];
+            SkASSERT((byte3 & 0b11000000) == 0b10000000);
+            SkASSERT(byte4 == 0b11101101);
+            SkASSERT((byte5 & 0b11110000) == 0b10110000);
+            SkASSERT((byte6 & 0b11000000) == 0b10000000);
+            uint32_t codepoint = (((byte2 & 0b00001111) << 16) |
+                                  ((byte3 & 0b00111111) << 10) | 
+                                  ((byte5 & 0b00001111) << 6) | 
+                                   (byte6 & 0b00111111))
+                                 + 0x10000;
+            // Four-byte UTF-8
+            // 11110xxx    10xxxxxx    10xxxxxx    10xxxxxx
+            data[write_offset]     = 0b11110000 | ((codepoint >> 18) & 0b00000111);
+            data[write_offset + 1] = 0b10000000 | ((codepoint >> 12) & 0b00111111);
+            data[write_offset + 2] = 0b10000000 | ((codepoint >> 6) & 0b00111111);
+            data[write_offset + 3] = 0b10000000 | (codepoint & 0b00111111);
+
+            read_offset += 6;
+            write_offset += 4;
+            continue;
+        }
+
+        // three-byte U+0800..FFFF
+        if ((byte1 & 0b11110000) == 0b11100000) {
+            SkASSERT((byte2 & 0b11000000) == 0b10000000);
+            SkASSERT((byte3 & 0b11000000) == 0b10000000);
+            data[write_offset] = byte1;
+            data[write_offset + 1] = byte2;
+            data[write_offset + 2] = byte3;
+            read_offset += 3;
+            write_offset += 3;
+            continue;
+        }
+    }
+
+    return write_offset;
+}
+
 SkString skString(JNIEnv* env, jstring s) {
+    jsize utfUnits = env->GetStringUTFLength(s);
     jsize utf16Units = env->GetStringLength(s);
-    const jchar* utf16 = env->GetStringChars(s, nullptr);
-
-    int utf8Units = SkUTF::UTF16ToUTF8(nullptr, 0, utf16, utf16Units);
-    SkString utf8(utf8Units);
-    SkUTF::UTF16ToUTF8(utf8.writable_str(), utf8Units, utf16, utf16Units);
-    env->ReleaseStringChars(s, utf16);
-
-    return utf8;
+    SkString res(utfUnits);
+    env->GetStringUTFRegion(s, 0, utf16Units, res.writable_str());
+    size_t utf8Units = utfToUtf8((unsigned char *) res.writable_str(), utfUnits);
+    res.resize(utf8Units);
+    return res;
 }
 
 jstring javaString(JNIEnv* env, const SkString& str) {
