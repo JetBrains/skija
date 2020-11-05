@@ -2,6 +2,7 @@
 #include <jni.h>
 #include <string>
 #include "ParagraphBuilder.h"
+#include "../interop.hh"
 
 using namespace std;
 using namespace skia::textlayout;
@@ -39,11 +40,8 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_ParagraphBu
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_ParagraphBuilder__1nAddText
   (JNIEnv* env, jclass jclass, jlong ptr, jstring textString) {
     ParagraphBuilder* instance = reinterpret_cast<ParagraphBuilder*>(static_cast<uintptr_t>(ptr));
-    const unsigned short* textChars = env->GetStringChars(textString, nullptr);
-    size_t textLen = env->GetStringLength(textString);
-    std::u16string text(reinterpret_cast<const char16_t*>(textChars), 0, textLen);
-    env->ReleaseStringChars(textString, textChars);
-    instance->addText(text);
+    SkString text = skString(env, textString);
+    instance->addText(text.c_str(), text.size());
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_ParagraphBuilder__1nAddPlaceholder

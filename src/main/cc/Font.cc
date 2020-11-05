@@ -206,11 +206,11 @@ extern "C" JNIEXPORT jshortArray JNICALL Java_org_jetbrains_skija_Font__1nGetStr
   (JNIEnv* env, jclass jclass, jlong ptr, jstring str) {
     SkFont* instance = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(ptr));
     jsize len = env->GetStringLength(str);
-    const jchar* chars = env->GetStringChars(str, nullptr);
+    const jchar* chars = env->GetStringCritical(str, nullptr);
     int count = instance->textToGlyphs(chars, len * sizeof(jchar), SkTextEncoding::kUTF16, nullptr, 0);
     std::vector<short> glyphs(count);
     instance->textToGlyphs(chars, len * sizeof(jchar), SkTextEncoding::kUTF16, reinterpret_cast<SkGlyphID*>(glyphs.data()), count);
-    env->ReleaseStringChars(str, chars);
+    env->ReleaseStringCritical(str, chars);
     return javaShortArray(env, glyphs);
 }
 
@@ -235,9 +235,9 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Font__1nGetStringGlyp
   (JNIEnv* env, jclass jclass, jlong ptr, jstring str) {
     SkFont* instance = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(ptr));
     jsize len = env->GetStringLength(str);
-    const jchar* chars = env->GetStringChars(str, nullptr);
+    const jchar* chars = env->GetStringCritical(str, nullptr);
     int count = instance->countText(chars, len * sizeof(jchar), SkTextEncoding::kUTF16);
-    env->ReleaseStringChars(str, chars);
+    env->ReleaseStringCritical(str, chars);
     return count;
 }
 
@@ -246,10 +246,10 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Font__1nMeasureTex
     SkFont* instance = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(ptr));
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
     jsize len = env->GetStringLength(str);
-    const jchar* chars = env->GetStringChars(str, nullptr);
+    const jchar* chars = env->GetStringCritical(str, nullptr);
     SkRect bounds;
     int count = instance->measureText(chars, len * sizeof(jchar), SkTextEncoding::kUTF16, &bounds, paint);
-    env->ReleaseStringChars(str, chars);
+    env->ReleaseStringCritical(str, chars);
     return skija::Rect::fromSkRect(env, bounds);
 }
 
@@ -258,9 +258,9 @@ extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_Font__1nMeasureText
     SkFont* instance = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(ptr));
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
     jsize len = env->GetStringLength(str);
-    const jchar* chars = env->GetStringChars(str, nullptr);
+    const jchar* chars = env->GetStringCritical(str, nullptr);
     float width = instance->measureText(chars, len * sizeof(jchar), SkTextEncoding::kUTF16, nullptr, paint);
-    env->ReleaseStringChars(str, chars);
+    env->ReleaseStringCritical(str, chars);
     return width;
 }
 
