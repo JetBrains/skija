@@ -175,6 +175,14 @@ namespace skija {
         extern jclass cls;
         extern jmethodID ctor;
     }
+
+    namespace impl {
+        namespace Native {
+            extern jfieldID _ptr;
+
+            void* fromJava(JNIEnv* env, jobject obj, jclass cls);
+        }
+    }
 }
 
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray arr);
@@ -182,6 +190,8 @@ std::unique_ptr<SkM44> skM44(JNIEnv* env, jfloatArray arr);
 
 SkString skString(JNIEnv* env, jstring str);
 jstring javaString(JNIEnv* env, const SkString& str);
+jstring javaString(JNIEnv* env, const char* chars, size_t len);
+jstring javaString(JNIEnv* env, const char* chars);
 
 jobject javaFloat(JNIEnv* env, float val);
 
@@ -190,8 +200,6 @@ jshortArray  javaShortArray (JNIEnv* env, const std::vector<jshort>& shorts);
 jintArray    javaIntArray   (JNIEnv* env, const std::vector<jint>& ints);
 jlongArray   javaLongArray  (JNIEnv* env, const std::vector<jlong>& longs);
 jfloatArray  javaFloatArray (JNIEnv* env, const std::vector<float>& floats);
-
-
 
 std::vector<SkString> skStringVector(JNIEnv* env, jobjectArray arr);
 jobjectArray javaStringArray(JNIEnv* env, const std::vector<SkString>& strings);

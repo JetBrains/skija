@@ -118,13 +118,16 @@ Typeface             ▓▓▓▓▓▓▓▓░░
 Shaper progress:
 
 ```
-BiDiRunIterator      ░░░░░░░░░░
-FontRunIterator      ░░░░░░░░░░
-LanguageRunIterator  ░░░░░░░░░░
+BiDiRunIterator      ▓▓▓▓▓▓▓▓▓▓
+FontMgrRunIterator   ▓▓▓▓▓▓▓▓▓▓
+FontRunIterator      ▓▓▓▓▓▓▓▓▓▓
+HbIcuScriptRunIter   ▓▓▓▓▓▓▓▓▓▓
+IcuBidiRunIterator   ▓▓▓▓▓▓▓▓▓▓
+LanguageRunIterator  ▓▓▓▓▓▓▓▓▓▓
 RunHandler           ▓▓▓▓▓▓▓▓▓▓
 RunInfo              ▓▓▓▓▓▓▓▓░░
-ScriptRunIterator    ░░░░░░░░░░
-Shaper               ▓▓▓▓▓░░░░░
+ScriptRunIterator    ▓▓▓▓▓▓▓▓▓▓
+Shaper               ▓▓▓▓▓▓▓▓▓▓
 ```
 
 Paragraph progress:

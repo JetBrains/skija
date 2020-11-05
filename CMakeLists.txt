@@ -15,7 +15,7 @@ file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/*.cc)
 file(GLOB IMPL_SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/impl/*.cc)
 file(GLOB SHAPER_SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/shaper/*.cc)
 file(GLOB PARAGRAPH_SOURCES ${CMAKE_SOURCE_DIR}/src/main/cc/paragraph/*.cc)
-add_definitions(-DSK_GL -DSK_SHAPER_HARFBUZZ_AVAILABLE)
+add_definitions(-DSK_GL -DSK_SHAPER_HARFBUZZ_AVAILABLE -DSK_UNICODE_AVAILABLE)
 add_library(skija SHARED ${SOURCES} ${IMPL_SOURCES} ${SHAPER_SOURCES} ${PARAGRAPH_SOURCES})
 
 # JNI

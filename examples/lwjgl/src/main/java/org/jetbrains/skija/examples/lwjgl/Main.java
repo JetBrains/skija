@@ -350,14 +350,15 @@ class Window {
         scenes.put("Shaders",          new ShadersScene());
         scenes.put("Shadow Utils",     new ShadowUtilsScene());
         scenes.put("Shapers",          new ShapersScene());
-        scenes.put("Shaping",          new ShapingScene());
+        scenes.put("RunHandler",       new RunHandlerScene());
+        scenes.put("RunIterator",      new RunIteratorScene());
         scenes.put("Squares",          new SquaresScene());
         scenes.put("Swing",            new SwingScene());
         scenes.put("Text Blob",        new TextBlobScene());
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Shaping";
+        currentScene = "RunIterator";
         interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();

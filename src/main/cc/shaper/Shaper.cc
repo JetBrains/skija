@@ -4,6 +4,7 @@
 #include "../interop.hh"
 #include "interop.hh"
 #include "SkShaper.h"
+#include "src/utils/SkUTF.h"
 
 static void deleteShaper(SkShaper* instance) {
     // std::cout << "Deleting [SkShaper " << instance << "]" << std::endl;
@@ -82,6 +83,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_shaper_Shaper__1nSha
 class SkijaRunHandler: public SkShaper::RunHandler {
 public:
     SkijaRunHandler(JNIEnv* env, jobject runHandler): fEnv(env), fRunHandler(runHandler) {}
+
     void beginLine() {
         fEnv->CallVoidMethod(fRunHandler, skija::shaper::RunHandler::beginLine);
     }
@@ -155,4 +157,129 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_shaper_Shaper__1nShap
 
     SkijaRunHandler rh(env, runHandler);
     instance->shape(text.c_str(), text.size(), *fontRunIter, *bidiRunIter, *scriptRunIter, *languageRunIter, features.data(), features.size(), width, &rh);
+}
+
+template <typename RunIteratorSubclass>
+class SkijaRunIterator: public RunIteratorSubclass {
+public:
+    SkijaRunIterator(JNIEnv* env, jobject obj, SkString text): fEnv(env), fObj(obj), fText(text), fPtr8(text.c_str()), fPos16(0) {}
+
+    void consume() override {
+        fEnv->CallVoidMethod(fObj, skija::shaper::RunIterator::consume);
+    }
+
+    size_t endOfCurrentRun() const override {
+        size_t i16 = fEnv->CallLongMethod(fObj, skija::shaper::RunIterator::getEndOfCurrentRun);
+        return idx16To8(i16);
+    }
+    
+    bool atEnd() const override {
+        return fEnv->CallBooleanMethod(fObj, skija::shaper::RunIterator::isAtEnd);
+    }
+
+protected:
+    JNIEnv* fEnv;
+    jobject fObj;
+    SkString fText;
+
+    mutable const char* fPtr8;
+    mutable size_t fPos16;
+
+    size_t idx16To8(size_t i16) const {
+        const char* start8 = fText.c_str();
+        const char* end8 = fText.c_str() + fText.size();
+
+        // if new i16 >= last fPos16, continue from where we started
+        if (i16 < fPos16) {
+            fPtr8 = start8;
+            fPos16 = 0;
+        }
+
+        while (fPtr8 < end8 && fPos16 < i16) {
+            SkUnichar u = SkUTF::NextUTF8(&fPtr8, end8);
+            fPos16 += SkUTF::ToUTF16(u);
+        }
+
+        return fPtr8 - start8;
+    }
+};
+
+class SkijaFontRunIterator: public SkijaRunIterator<SkShaper::FontRunIterator> {
+public:
+    SkijaFontRunIterator(JNIEnv* env, jobject obj, SkString text): SkijaRunIterator<SkShaper::FontRunIterator>(env, obj, text) {}
+
+    const SkFont& currentFont() const override {
+        jlong fontPtr = fEnv->CallLongMethod(fObj, skija::shaper::FontRunIterator::_getCurrentFontPtr);
+        SkFont* font = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(fontPtr));
+        return *font;
+    }
+};
+
+class SkijaBidiRunIterator: public SkijaRunIterator<SkShaper::BiDiRunIterator> {
+public:
+    SkijaBidiRunIterator(JNIEnv* env, jobject obj, SkString text): SkijaRunIterator<SkShaper::BiDiRunIterator>(env, obj, text) {}
+
+    uint8_t currentLevel() const override {
+        return fEnv->CallByteMethod(fObj, skija::shaper::BidiRunIterator::getCurrentLevel);
+    }
+};
+
+class SkijaScriptRunIterator: public SkijaRunIterator<SkShaper::ScriptRunIterator> {
+public:
+    SkijaScriptRunIterator(JNIEnv* env, jobject obj, SkString text): SkijaRunIterator<SkShaper::ScriptRunIterator>(env, obj, text) {}
+
+    SkFourByteTag currentScript() const override {
+        return fEnv->CallIntMethod(fObj, skija::shaper::ScriptRunIterator::_getCurrentScriptTag);
+    }
+};
+
+class SkijaLanguageRunIterator: public SkijaRunIterator<SkShaper::LanguageRunIterator> {
+public:
+    SkijaLanguageRunIterator(JNIEnv* env, jobject obj, SkString text): SkijaRunIterator<SkShaper::LanguageRunIterator>(env, obj, text) {}
+
+    const char* currentLanguage() const override {
+        jstring langObj = (jstring) fEnv->CallObjectMethod(fObj, skija::shaper::LanguageRunIterator::getCurrentLanguage);
+        fLang = skString(fEnv, langObj);
+        return fLang.c_str();
+    }
+private:
+    mutable SkString fLang;
+};
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_shaper_Shaper__1nShapeRunIters
+  (JNIEnv* env, jclass jclass, jlong ptr, jstring textObj, jobject fontRunIterObj, jobject bidiRunIterObj, jobject scriptRunIterObj, jobject languageRunIterObj,
+   jobjectArray featuresArr, jfloat width, jobject runHandler)
+{
+    SkShaper* instance = reinterpret_cast<SkShaper*>(static_cast<uintptr_t>(ptr));
+    SkString text = skString(env, textObj);
+
+    auto nativeFontRunIter = (SkShaper::FontRunIterator*) skija::impl::Native::fromJava(env, fontRunIterObj, skija::shaper::FontMgrRunIterator::cls);
+    std::unique_ptr<SkijaFontRunIterator> localFontRunIter;
+    if (nativeFontRunIter == nullptr)
+        localFontRunIter.reset(new SkijaFontRunIterator(env, fontRunIterObj, text));
+
+    auto nativeBidiRunIter = (SkShaper::BiDiRunIterator*) skija::impl::Native::fromJava(env, bidiRunIterObj, skija::shaper::IcuBidiRunIterator::cls);
+    std::unique_ptr<SkijaBidiRunIterator> localBidiRunIter;
+    if (nativeBidiRunIter == nullptr)
+        localBidiRunIter.reset(new SkijaBidiRunIterator(env, bidiRunIterObj, text));
+
+    auto nativeScriptRunIter = (SkShaper::ScriptRunIterator*) skija::impl::Native::fromJava(env, scriptRunIterObj, skija::shaper::HbIcuScriptRunIterator::cls);
+    std::unique_ptr<SkijaScriptRunIterator> localScriptRunIter;
+    if (nativeScriptRunIter == nullptr)
+        localScriptRunIter.reset(new SkijaScriptRunIterator(env, scriptRunIterObj, text));
+    
+    auto languageRunIter = SkijaLanguageRunIterator(env, languageRunIterObj, text);
+
+    std::vector<SkShaper::Feature> features = skija::FontFeature::fromJavaArray(env, featuresArr);
+    SkijaRunHandler rh(env, runHandler);
+
+    instance->shape(text.c_str(), text.size(),
+        nativeFontRunIter != nullptr ? *nativeFontRunIter : *localFontRunIter,
+        nativeBidiRunIter != nullptr ? *nativeBidiRunIter : *localBidiRunIter,
+        nativeScriptRunIter != nullptr ? *nativeScriptRunIter : *localScriptRunIter,
+        languageRunIter,
+        features.data(),
+        features.size(),
+        width,
+        &rh);
 }

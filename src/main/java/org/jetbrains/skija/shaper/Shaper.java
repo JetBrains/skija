@@ -113,6 +113,18 @@ public class Shaper extends Managed {
         return this;
     }
 
+    @NotNull @Contract("_, _, _, _, _, _, _ -> this")
+    public Shaper shape(String text, @NotNull FontRunIterator fontIter, @NotNull BidiRunIterator bidiIter, @NotNull ScriptRunIterator scriptIter, @NotNull LanguageRunIterator langIter,
+                        @Nullable FontFeature[] features,float width, RunHandler runHandler) {
+        assert fontIter != null : "FontRunIterator == null";
+        assert bidiIter != null : "BidiRunIterator == null";
+        assert scriptIter != null : "ScriptRunIterator == null";
+        assert langIter != null : "LanguageRunIterator == null";
+        Stats.onNativeCall();
+        _nShapeRunIters(_ptr, text, fontIter, bidiIter, scriptIter, langIter, features, width, runHandler);
+        return this;
+    }
+
     @ApiStatus.Internal
     public Shaper(long ptr) {
         super(ptr, _finalizerPtr);
@@ -129,4 +141,6 @@ public class Shaper extends Managed {
 
     public static native long _nShapeToTextBlob(long ptr, String text, long fontPtr, FontFeature[] features, boolean leftToRight, float width, float offsetX, float offsetY);
     public static native void _nShape(long ptr, String text, long fontPtr, long fontMgrPtr, FontFeature[] features, boolean leftToRight, float width, RunHandler runHandler);
+    public static native void _nShapeRunIters(long ptr, String text, FontRunIterator fontIter, BidiRunIterator bidiIter, ScriptRunIterator scriptIter, LanguageRunIterator langIter,
+                                              FontFeature[] features, float width, RunHandler runHandler);
 }

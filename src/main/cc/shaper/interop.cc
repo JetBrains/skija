@@ -5,6 +5,74 @@
 
 namespace skija {
     namespace shaper {
+        namespace BidiRunIterator {
+            jmethodID getCurrentLevel;
+
+            void onLoad(JNIEnv* env) {
+                jclass cls = env->FindClass("org/jetbrains/skija/shaper/BidiRunIterator");
+                getCurrentLevel = env->GetMethodID(cls, "getCurrentLevel", "()I");
+            }
+        }
+
+        namespace FontMgrRunIterator {
+            jclass cls;
+
+            void onLoad(JNIEnv* env) {
+                jclass local = env->FindClass("org/jetbrains/skija/shaper/FontMgrRunIterator");
+                cls  = static_cast<jclass>(env->NewGlobalRef(local));
+            }
+
+            void onUnload(JNIEnv* env) {
+                env->DeleteGlobalRef(cls);
+            }
+        }
+
+        namespace FontRunIterator {
+            jmethodID _getCurrentFontPtr;
+
+            void onLoad(JNIEnv* env) {
+                jclass cls = env->FindClass("org/jetbrains/skija/shaper/FontRunIterator");
+                _getCurrentFontPtr = env->GetMethodID(cls, "_getCurrentFontPtr", "()J");
+            }
+        }
+
+        namespace HbIcuScriptRunIterator {
+            jclass cls;
+
+            void onLoad(JNIEnv* env) {
+                jclass local = env->FindClass("org/jetbrains/skija/shaper/HbIcuScriptRunIterator");
+                cls  = static_cast<jclass>(env->NewGlobalRef(local));            
+            }
+
+            void onUnload(JNIEnv* env) {
+                env->DeleteGlobalRef(cls);
+            }
+
+        }
+
+        namespace IcuBidiRunIterator {
+            jclass cls;
+
+            void onLoad(JNIEnv* env) {
+                jclass local = env->FindClass("org/jetbrains/skija/shaper/IcuBidiRunIterator");
+                cls  = static_cast<jclass>(env->NewGlobalRef(local));            
+            }
+
+            void onUnload(JNIEnv* env) {
+                env->DeleteGlobalRef(cls);
+            }
+
+        }
+
+        namespace LanguageRunIterator {
+            jmethodID getCurrentLanguage;
+
+            void onLoad(JNIEnv* env) {
+                jclass cls = env->FindClass("org/jetbrains/skija/shaper/LanguageRunIterator");
+                getCurrentLanguage = env->GetMethodID(cls, "getCurrentLanguage", "()Ljava/lang/String;");
+            }
+        }
+
         namespace RunHandler {
             jclass cls;
             jmethodID beginLine;
@@ -57,6 +125,28 @@ namespace skija {
                     info.glyphCount,
                     info.utf8Range.fBegin,
                     info.utf8Range.fSize);
+            }
+        }
+
+        namespace RunIterator {
+            jmethodID consume;
+            jmethodID getEndOfCurrentRun;
+            jmethodID isAtEnd;
+
+            void onLoad(JNIEnv* env) {
+                jclass cls = env->FindClass("org/jetbrains/skija/shaper/RunIterator");
+                consume = env->GetMethodID(cls, "consume", "()V");
+                getEndOfCurrentRun = env->GetMethodID(cls, "getEndOfCurrentRun", "()J");
+                isAtEnd = env->GetMethodID(cls, "isAtEnd", "()Z");
+            }
+        }
+
+        namespace ScriptRunIterator {
+            jmethodID _getCurrentScriptTag;
+
+            void onLoad(JNIEnv* env) {
+                jclass cls = env->FindClass("org/jetbrains/skija/shaper/ScriptRunIterator");
+                _getCurrentScriptTag = env->GetMethodID(cls, "_getCurrentScriptTag", "()I");
             }
         }
     }

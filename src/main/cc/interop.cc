@@ -1,11 +1,12 @@
-#include <iostream>
 #include <array>
-#include <memory>
-#include <jni.h>
+#include <cstring>
 #include "interop.hh"
+#include <iostream>
+#include <jni.h>
+#include <memory>
 #include "shaper/interop.hh"
-#include "paragraph/interop.hh"
 #include "src/utils/SkUTF.h"
+#include "paragraph/interop.hh"
 
 namespace java {
     namespace lang {
@@ -568,6 +569,25 @@ namespace skija {
             env->DeleteGlobalRef(cls);
         }
     }
+
+    namespace impl {
+        namespace Native {
+            jfieldID _ptr;
+
+            void onLoad(JNIEnv* env) {
+                jclass cls = env->FindClass("org/jetbrains/skija/impl/Native");
+                _ptr = env->GetFieldID(cls, "_ptr", "J");
+            }
+
+            void* fromJava(JNIEnv* env, jobject obj, jclass cls) {
+                if (env->IsInstanceOf(obj, cls)) {
+                    jlong ptr = env->GetLongField(obj, skija::impl::Native::_ptr);
+                    return reinterpret_cast<void*>(static_cast<uintptr_t>(ptr));
+                }
+                return nullptr;
+            }
+        }
+    }
 }
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
@@ -597,8 +617,18 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::RRect::onLoad(env);
     skija::RSXform::onLoad(env);
 
+    skija::impl::Native::onLoad(env);
+
+    skija::shaper::BidiRunIterator::onLoad(env);
+    skija::shaper::FontMgrRunIterator::onLoad(env);
+    skija::shaper::FontRunIterator::onLoad(env);
+    skija::shaper::HbIcuScriptRunIterator::onLoad(env);
+    skija::shaper::IcuBidiRunIterator::onLoad(env);
+    skija::shaper::LanguageRunIterator::onLoad(env);
     skija::shaper::RunHandler::onLoad(env);
     skija::shaper::RunInfo::onLoad(env);
+    skija::shaper::RunIterator::onLoad(env);
+    skija::shaper::ScriptRunIterator::onLoad(env);
 
     skija::paragraph::LineMetrics::onLoad(env);
     skija::paragraph::TextBox::onLoad(env);
@@ -635,6 +665,9 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::RRect::onUnload(env);
     skija::RSXform::onUnload(env);
 
+    skija::shaper::FontMgrRunIterator::onUnload(env);
+    skija::shaper::HbIcuScriptRunIterator::onUnload(env);
+    skija::shaper::IcuBidiRunIterator::onUnload(env);
     skija::shaper::RunHandler::onUnload(env);
     skija::shaper::RunInfo::onUnload(env);
 
@@ -777,10 +810,18 @@ SkString skString(JNIEnv* env, jstring s) {
 }
 
 jstring javaString(JNIEnv* env, const SkString& str) {
-    int utf16Units = SkUTF::UTF8ToUTF16(nullptr, 0, str.c_str(), str.size());
+    return javaString(env, str.c_str(), str.size());
+}
+
+jstring javaString(JNIEnv* env, const char* chars, size_t len) {
+    int utf16Units = SkUTF::UTF8ToUTF16(nullptr, 0, chars, len);
     auto utf16 = std::unique_ptr<uint16_t[]>(new uint16_t[utf16Units]);
-    SkUTF::UTF8ToUTF16(utf16.get(), utf16Units, str.c_str(), str.size());
+    SkUTF::UTF8ToUTF16(utf16.get(), utf16Units, chars, len);
     return env->NewString(utf16.get(), utf16Units);
+}
+
+jstring javaString(JNIEnv* env, const char* chars) {
+    return javaString(env, chars, strlen(chars));
 }
 
 jobject javaFloat(JNIEnv* env, float val) {
