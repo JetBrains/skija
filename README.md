@@ -31,20 +31,22 @@ Skia has a proven track record of industrial-scale project relying on it for all
 
 ## Built with Skija
 
-[Robert Felker](https://twitter.com/BlueAquilae/status/1322696020329902082):
+[Compose for Desktop](https://www.jetbrains.com/lp/compose/), declarative UI toolkit for Kotlin:
+
+![](extras/compose-apps.png)
+
+[Robert Felker](https://twitter.com/BlueAquilae/status/1322696020329902082) demos:
 
 |![](extras/Elso-W-XYAEKmFg.jpg)|![](extras/Elso-WKXgAUK-zU.jpg)|
 |---|---|
 |![](extras/Elso-WsWoAExiUF.jpg)|![](extras/Elso-WfWMAED8dc.jpg)|
 
-[Skija LWJGL demo app](examples/lwjgl):
+[Skija demo app](examples/lwjgl):
 
 |![](extras/geometry.png)|![](extras/text.png)|
 |---|---|
 |![](extras/bitmap.png)|![](extras/pythagoras.png)|
 |![](extras/filters.png)|![](extras/shaders.png)|
-
-[Skiko](https://github.com/JetBrains/Skiko), Kotlin buildings for Skija
 
 ## Why hand-crafted bindings
 
