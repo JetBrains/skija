@@ -7,7 +7,7 @@ public class TrivialFontRunIterator extends TrivialRunIterator implements FontRu
     @ApiStatus.Internal
     public final Font _font;
 
-    public TrivialFontRunIterator(long length, Font font) {
+    public TrivialFontRunIterator(int length, Font font) {
         super(length);
         _font   = font;
     }

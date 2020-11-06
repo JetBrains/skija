@@ -800,13 +800,17 @@ size_t utfToUtf8(unsigned char *data, size_t len) {
 }
 
 SkString skString(JNIEnv* env, jstring s) {
-    jsize utfUnits = env->GetStringUTFLength(s);
-    jsize utf16Units = env->GetStringLength(s);
-    SkString res(utfUnits);
-    env->GetStringUTFRegion(s, 0, utf16Units, res.writable_str());
-    size_t utf8Units = utfToUtf8((unsigned char *) res.writable_str(), utfUnits);
-    res.resize(utf8Units);
-    return res;
+    if (s == nullptr) {
+        return SkString();
+    } else {
+        jsize utfUnits = env->GetStringUTFLength(s);
+        jsize utf16Units = env->GetStringLength(s);
+        SkString res(utfUnits);
+        env->GetStringUTFRegion(s, 0, utf16Units, res.writable_str());
+        size_t utf8Units = utfToUtf8((unsigned char *) res.writable_str(), utfUnits);
+        res.resize(utf8Units);
+        return res;
+    }
 }
 
 jstring javaString(JNIEnv* env, const SkString& str) {
@@ -859,13 +863,17 @@ jfloatArray javaFloatArray(JNIEnv* env, const std::vector<jfloat>& floats) {
 }
 
 std::vector<SkString> skStringVector(JNIEnv* env, jobjectArray arr) {
-    size_t len = env->GetArrayLength(arr);
-    std::vector<SkString> res(len);
-    for (int i = 0; i < len; ++i) {
-        jstring str = static_cast<jstring>(env->GetObjectArrayElement(arr, i));
-        res[i] = skString(env, str);
+    if (arr == nullptr) {
+        return std::vector<SkString>(0);
+    } else {
+        size_t len = env->GetArrayLength(arr);
+        std::vector<SkString> res(len);
+        for (int i = 0; i < len; ++i) {
+            jstring str = static_cast<jstring>(env->GetObjectArrayElement(arr, i));
+            res[i] = skString(env, str);
+        }
+        return res;
     }
-    return res;
 }
 
 jobjectArray javaStringArray(JNIEnv* env, const std::vector<SkString>& strings) {

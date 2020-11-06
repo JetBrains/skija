@@ -17,7 +17,7 @@ public class JavaTextBidiRunIterator implements BidiRunIterator {
 
     public JavaTextBidiRunIterator(String text, int flags) {
         _bidi = new Bidi(text, flags);
-        _run = 0;
+        _run = -1;
     }
 
     @Override
@@ -26,13 +26,13 @@ public class JavaTextBidiRunIterator implements BidiRunIterator {
     }
 
     @Override
-    public long getEndOfCurrentRun() {
-        return _bidi.getRunLimit(_run);
+    public int getEndOfCurrentRun() {
+        return _run >= 0 ? _bidi.getRunLimit(_run) : 0;
     }
 
     @Override
     public boolean isAtEnd() {
-        return _run >= _bidi.getRunCount();
+        return _run >= (_bidi.getRunCount() - 1);
     }
 
     @Override

@@ -122,6 +122,7 @@ public class LineMetrics {
 
 Types correspondence:
 
+- string indices -> jint
 - size_t -> jlong
 - SkColor -> jint
 - SkScalar -> jfloat

@@ -7,7 +7,7 @@ public class TrivialBidiRunIterator extends TrivialRunIterator implements BidiRu
     @ApiStatus.Internal
     public final int _level;
 
-    public TrivialBidiRunIterator(long length, int level) {
+    public TrivialBidiRunIterator(int length, int level) {
         super(length);
         _level = level;
     }

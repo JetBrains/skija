@@ -2,6 +2,6 @@ package org.jetbrains.skija.shaper;
 
 public interface RunIterator {
     void consume();
-    long getEndOfCurrentRun();
+    int getEndOfCurrentRun();
     boolean isAtEnd();
 }

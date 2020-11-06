@@ -7,7 +7,7 @@ public class TrivialLanguageRunIterator extends TrivialRunIterator implements La
     @ApiStatus.Internal
     public final String _language;
 
-    public TrivialLanguageRunIterator(long length, String Language) {
+    public TrivialLanguageRunIterator(int length, String Language) {
         super(length);
         _language = Language;
     }

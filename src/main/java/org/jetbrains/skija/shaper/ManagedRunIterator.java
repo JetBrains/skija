@@ -23,7 +23,7 @@ public abstract class ManagedRunIterator extends Managed implements RunIterator 
     }
 
     @Override
-    public long getEndOfCurrentRun() {
+    public int getEndOfCurrentRun() {
         Stats.onNativeCall();
         return _nGetEndOfCurrentRun(_ptr);
     }
@@ -42,6 +42,6 @@ public abstract class ManagedRunIterator extends Managed implements RunIterator 
 
     @ApiStatus.Internal public static native long _nGetFinalizer();
     @ApiStatus.Internal public static native void _nConsume(long ptr);
-    @ApiStatus.Internal public static native long _nGetEndOfCurrentRun(long ptr);
+    @ApiStatus.Internal public static native int _nGetEndOfCurrentRun(long ptr);
     @ApiStatus.Internal public static native boolean _nIsAtEnd(long ptr);
 }

@@ -8,21 +8,27 @@ import org.jetbrains.skija.shaper.*;
 
 public class RunIteratorScene implements Scene {
     public final Font lato36;
+    public final Font fira36;
     public final Font inter36;
     public final Font inter11;
     public final FontMetrics inter11Metrics;
     public final Font geeza36;
+    public final Font emoji36;
     public final Paint boundsStroke = new Paint().setColor(0x403333CC).setMode(PaintMode.STROKE).setStrokeWidth(1);
     public final Paint boundsFill = new Paint().setColor(0x403333CC);
     public final Paint textFill = new Paint().setColor(0xFF000000);
 
     public RunIteratorScene() {
         lato36  = new Font(Typeface.makeFromFile("fonts/Lato-Regular.ttf"), 36);
+        fira36  = new Font(Typeface.makeFromFile("fonts/FiraCode-Regular.ttf"), 36);
         var inter = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         inter36 = new Font(inter, 36);
         inter11 = new Font(inter, 11);
         inter11Metrics = inter11.getMetrics();
         geeza36 = new Font(Typeface.makeFromFile("fonts/Geeza Pro Regular.ttf"), 36);
+
+        Typeface emoji = FontMgr.getDefault().matchFamilyStyleCharacter(null, FontStyle.NORMAL, null, "😀".codePointAt(0));
+        emoji36 = emoji == null ? null : new Font(emoji, 36);
     }
 
     @Override
@@ -49,6 +55,23 @@ public class RunIteratorScene implements Scene {
                 var langIter = new TrivialLanguageRunIterator(text.length(), "en-US");
                 shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, null, width - 40, handler);
                 drawBlob(canvas, handler, "FontMgrRunIterator");
+            }
+
+            try (var handler = new DebugTextBlobHandler();)
+            {
+                Map<Pair<Integer, Integer>, Font> fonts = new HashMap(Map.of(
+                    new Pair(0, 0x7F), lato36,
+                    new Pair(0x400, 0x4FF), fira36,
+                    new Pair(0x600, 0x6FF), geeza36));
+                if (emoji36 != null)
+                    fonts.put(new Pair(0x1F300, 0x1FADF), emoji36);
+
+                var fontIter = new CustomFontRunIterator(text, fonts, inter36);
+                var bidiIter = new TrivialBidiRunIterator(text.length(), Bidi.DIRECTION_LEFT_TO_RIGHT);
+                var scriptIter = new TrivialScriptRunIterator(text.length(), "latn");
+                var langIter = new TrivialLanguageRunIterator(text.length(), "en-US");
+                shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, null, width - 40, handler);
+                drawBlob(canvas, handler, "CustomFontRunIterator");
             }
 
             try (var handler = new DebugTextBlobHandler();
@@ -107,5 +130,58 @@ public class RunIteratorScene implements Scene {
 
             canvas.translate(0, blob.getBounds().getBottom() + 20);
         }
+    }
+}
+
+class CustomFontRunIterator implements FontRunIterator {
+    public String _text;
+    public Map<Pair<Integer, Integer>, Font> _fonts;
+    public Font _fallbackFont;
+    public int _pos;
+    public Pair<Integer, Integer> _range;
+
+    public CustomFontRunIterator(String text, Map<Pair<Integer, Integer>, Font> fonts, Font fallbackFont) {
+        _text = text;
+        _fonts = fonts;
+        _fallbackFont = fallbackFont;
+    }
+
+    public Pair<Integer, Integer> getRange(int ch) {
+        return _fonts.keySet().stream().filter(pair -> pair.getFirst() <= ch && ch < pair.getSecond()).findFirst().orElse(null);
+    }
+
+    @Override
+    public void consume() {
+        int codePoint = _text.codePointAt(_pos);
+        _range = getRange(codePoint);
+
+        while (true) {
+            _pos += codePoint > 0x10000 ? 2 : 1;
+
+            if (_pos >= _text.length())
+                break;
+
+            codePoint = _text.codePointAt(_pos);
+            if (_range != getRange(codePoint))
+                break;
+        }
+    }
+
+    @Override
+    public int getEndOfCurrentRun() {
+        return _pos;
+    }
+
+    @Override
+    public boolean isAtEnd() {
+        return _pos == _text.length();
+    }
+
+    @Override
+    public Font getCurrentFont() {
+        if (_range == null)
+            return _fallbackFont;
+        Font res = _fonts.get(_range);
+        return res == null ? _fallbackFont : res;
     }
 }

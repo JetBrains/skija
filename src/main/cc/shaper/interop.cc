@@ -137,7 +137,7 @@ namespace skija {
             void onLoad(JNIEnv* env) {
                 jclass cls = env->FindClass("org/jetbrains/skija/shaper/RunIterator");
                 consume = env->GetMethodID(cls, "consume", "()V");
-                getEndOfCurrentRun = env->GetMethodID(cls, "getEndOfCurrentRun", "()J");
+                getEndOfCurrentRun = env->GetMethodID(cls, "getEndOfCurrentRun", "()I");
                 isAtEnd = env->GetMethodID(cls, "isAtEnd", "()Z");
             }
         }

@@ -36,12 +36,9 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawPoints
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
     SkCanvas::PointMode skMode = static_cast<SkCanvas::PointMode>(mode);
     jsize len = env->GetArrayLength(coords);
-    jfloat* arr = env->GetFloatArrayElements(coords, 0);
-    std::vector<SkPoint> points(len / 2);
-    for (int i = 0; i < len / 2; i++)
-        points[i] = SkPoint { arr[i * 2], arr[i * 2 + 1] };
-    env->ReleaseFloatArrayElements(coords, arr, 0);
-    canvas->drawPoints(skMode, len / 2, points.data(), *paint);
+    jfloat* arr = static_cast<jfloat*>(env->GetPrimitiveArrayCritical(coords, 0));
+    canvas->drawPoints(skMode, len / 2, reinterpret_cast<SkPoint*>(arr), *paint);
+    env->ReleasePrimitiveArrayCritical(coords, arr, 0);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawLine

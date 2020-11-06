@@ -8,9 +8,9 @@ public class TrivialRunIterator implements RunIterator {
     public boolean _atEnd;
 
     @ApiStatus.Internal
-    public final long _length;
+    public final int _length;
 
-    public TrivialRunIterator(long length) {
+    public TrivialRunIterator(int length) {
         _atEnd = false;
         _length = length;
     }
@@ -21,7 +21,7 @@ public class TrivialRunIterator implements RunIterator {
     }
 
     @Override
-    public long getEndOfCurrentRun() {
+    public int getEndOfCurrentRun() {
         return _atEnd ? _length : 0;
     }
 

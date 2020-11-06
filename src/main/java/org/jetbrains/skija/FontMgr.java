@@ -73,7 +73,7 @@ public class FontMgr extends RefCnt {
      * most significant. If no specified bcp47 codes match, any font with the
      * requested character will be matched.
      */
-    public Typeface matchFamilyStyleCharacter(String familyName, FontStyle style, String[] bcp47, int character) {
+    public Typeface matchFamilyStyleCharacter(@Nullable String familyName, FontStyle style, @Nullable String[] bcp47, int character) {
         Stats.onNativeCall();
         long ptr = _nMatchFamilyStyleCharacter(_ptr, familyName, style._value, bcp47, character);
         return ptr == 0 ? null : new Typeface(ptr);

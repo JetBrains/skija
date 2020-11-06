@@ -4,7 +4,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
-interface FontRunIterator extends RunIterator {
+public interface FontRunIterator extends RunIterator {
     Font getCurrentFont();
 
     @ApiStatus.Internal

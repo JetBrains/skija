@@ -16,7 +16,7 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_shaper_ManagedRunIter
     instance->consume();
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_shaper_ManagedRunIterator__1nGetEndOfCurrentRun
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_shaper_ManagedRunIterator__1nGetEndOfCurrentRun
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkShaper::RunIterator* instance = reinterpret_cast<SkShaper::RunIterator*>(static_cast<uintptr_t>(ptr));
     return instance->endOfCurrentRun(); // FIXME convert to UTF-16

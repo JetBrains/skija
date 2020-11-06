@@ -7,7 +7,7 @@ public class TrivialScriptRunIterator extends TrivialRunIterator implements Scri
     @ApiStatus.Internal
     public final String _script;
 
-    public TrivialScriptRunIterator(long length, String script) {
+    public TrivialScriptRunIterator(int length, String script) {
         super(length);
         _script = script;
     }
