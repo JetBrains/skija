@@ -1,4 +1,5 @@
 #include <jni.h>
+#include "../interop.hh"
 #include "SkShaper.h"
 
 static void deleteRunIterator(SkShaper::RunIterator* instance) {
@@ -17,9 +18,11 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_shaper_ManagedRunIter
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_shaper_ManagedRunIterator__1nGetEndOfCurrentRun
-  (JNIEnv* env, jclass jclass, jlong ptr) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong textPtr) {
     SkShaper::RunIterator* instance = reinterpret_cast<SkShaper::RunIterator*>(static_cast<uintptr_t>(ptr));
-    return instance->endOfCurrentRun(); // FIXME convert to UTF-16
+    SkString* text = reinterpret_cast<SkString*>(static_cast<uintptr_t>(textPtr));
+    size_t end8 = instance->endOfCurrentRun();
+    return skija::UtfIndicesConverter(*text).from8To16(end8);
 }
 
 extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_shaper_ManagedRunIterator__1nIsAtEnd

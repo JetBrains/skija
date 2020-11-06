@@ -4,7 +4,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
-public class FontMgrRunIterator extends ManagedRunIterator implements FontRunIterator {
+public class FontMgrRunIterator extends ManagedRunIterator<FontRun> {
     static { Library.load(); }
 
     @ApiStatus.Internal
@@ -18,9 +18,9 @@ public class FontMgrRunIterator extends ManagedRunIterator implements FontRunIte
     }
 
     @Override
-    public Font getCurrentFont() {
-        Stats.onNativeCall();
-        return new Font(_nGetCurrentFont(_ptr));
+    public FontRun next() {
+        _nConsume(_ptr);
+        return new FontRun(_getEndOfCurrentRun(), new Font(_nGetCurrentFont(_ptr)));
     }
 
     @ApiStatus.Internal public static native long _nMake(long textPtr, long fontPtr, long fontMgrPtr);

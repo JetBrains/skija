@@ -1,10 +1,11 @@
 package org.jetbrains.skija.shaper;
 
+import java.util.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
-public abstract class ManagedRunIterator extends Managed implements RunIterator {
+public abstract class ManagedRunIterator<T> extends Managed implements Iterator<T> {
     static { Library.load(); }
 
     @ApiStatus.Internal
@@ -16,22 +17,14 @@ public abstract class ManagedRunIterator extends Managed implements RunIterator 
         _text = text;
     }
 
-    @Override
-    public void consume() {
-        Stats.onNativeCall();
-        _nConsume(_ptr);
+    @ApiStatus.Internal
+    public int _getEndOfCurrentRun() {
+        return _nGetEndOfCurrentRun(_ptr, Native.getPtr(_text));
     }
 
     @Override
-    public int getEndOfCurrentRun() {
-        Stats.onNativeCall();
-        return _nGetEndOfCurrentRun(_ptr);
-    }
-
-    @Override
-    public boolean isAtEnd() {
-        Stats.onNativeCall();
-        return _nIsAtEnd(_ptr);
+    public boolean hasNext() {
+        return !_nIsAtEnd(_ptr);
     }
 
     @ApiStatus.Internal
@@ -42,6 +35,6 @@ public abstract class ManagedRunIterator extends Managed implements RunIterator 
 
     @ApiStatus.Internal public static native long _nGetFinalizer();
     @ApiStatus.Internal public static native void _nConsume(long ptr);
-    @ApiStatus.Internal public static native int _nGetEndOfCurrentRun(long ptr);
+    @ApiStatus.Internal public static native int  _nGetEndOfCurrentRun(long ptr, long textPtr);
     @ApiStatus.Internal public static native boolean _nIsAtEnd(long ptr);
 }

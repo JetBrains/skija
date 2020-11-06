@@ -4,7 +4,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
-public class HbIcuScriptRunIterator extends ManagedRunIterator implements ScriptRunIterator {
+public class HbIcuScriptRunIterator extends ManagedRunIterator<ScriptRun> {
     static { Library.load(); }
 
     @ApiStatus.Internal
@@ -18,14 +18,9 @@ public class HbIcuScriptRunIterator extends ManagedRunIterator implements Script
     }
 
     @Override
-    public String getCurrentScript() {
-        return FourByteTag.toString(_getCurrentScriptTag());
-    }
-
-    @Override
-    public int _getCurrentScriptTag() {
-        Stats.onNativeCall();
-        return _nGetCurrentScriptTag(_ptr);
+    public ScriptRun next() {
+        _nConsume(_ptr);
+        return new ScriptRun(_getEndOfCurrentRun(), _nGetCurrentScriptTag(_ptr));
     }
 
     @ApiStatus.Internal public static native long _nMake(long textPtr);

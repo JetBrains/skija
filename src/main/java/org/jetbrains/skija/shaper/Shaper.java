@@ -1,5 +1,6 @@
 package org.jetbrains.skija.shaper;
 
+import java.util.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
@@ -114,7 +115,7 @@ public class Shaper extends Managed {
     }
 
     @NotNull @Contract("_, _, _, _, _, _, _ -> this")
-    public Shaper shape(String text, @NotNull FontRunIterator fontIter, @NotNull BidiRunIterator bidiIter, @NotNull ScriptRunIterator scriptIter, @NotNull LanguageRunIterator langIter,
+    public Shaper shape(String text, @NotNull Iterator<FontRun> fontIter, @NotNull Iterator<BidiRun> bidiIter, @NotNull Iterator<ScriptRun> scriptIter, @NotNull Iterator<LanguageRun> langIter,
                         @Nullable FontFeature[] features,float width, RunHandler runHandler) {
         assert fontIter != null : "FontRunIterator == null";
         assert bidiIter != null : "BidiRunIterator == null";
@@ -141,6 +142,6 @@ public class Shaper extends Managed {
 
     public static native long _nShapeToTextBlob(long ptr, String text, long fontPtr, FontFeature[] features, boolean leftToRight, float width, float offsetX, float offsetY);
     public static native void _nShape(long ptr, String text, long fontPtr, long fontMgrPtr, FontFeature[] features, boolean leftToRight, float width, RunHandler runHandler);
-    public static native void _nShapeRunIters(long ptr, String text, FontRunIterator fontIter, BidiRunIterator bidiIter, ScriptRunIterator scriptIter, LanguageRunIterator langIter,
+    public static native void _nShapeRunIters(long ptr, String text, Iterator<FontRun> fontIter, Iterator<BidiRun> bidiIter, Iterator<ScriptRun> scriptIter, Iterator<LanguageRun> langIter,
                                               FontFeature[] features, float width, RunHandler runHandler);
 }

@@ -5,12 +5,14 @@
 
 namespace skija {
     namespace shaper {
-        namespace BidiRunIterator {
-            jmethodID getCurrentLevel;
+        namespace BidiRun {
+            jfieldID _end;
+            jfieldID _level;
 
             void onLoad(JNIEnv* env) {
-                jclass cls = env->FindClass("org/jetbrains/skija/shaper/BidiRunIterator");
-                getCurrentLevel = env->GetMethodID(cls, "getCurrentLevel", "()I");
+                jclass cls = env->FindClass("org/jetbrains/skija/shaper/BidiRun");
+                _end = env->GetFieldID(cls, "_end", "I");
+                _level = env->GetFieldID(cls, "_level", "I");
             }
         }
 
@@ -27,12 +29,14 @@ namespace skija {
             }
         }
 
-        namespace FontRunIterator {
-            jmethodID _getCurrentFontPtr;
+        namespace FontRun {
+            jfieldID _end;
+            jmethodID _getFontPtr;
 
             void onLoad(JNIEnv* env) {
-                jclass cls = env->FindClass("org/jetbrains/skija/shaper/FontRunIterator");
-                _getCurrentFontPtr = env->GetMethodID(cls, "_getCurrentFontPtr", "()J");
+                jclass cls = env->FindClass("org/jetbrains/skija/shaper/FontRun");
+                _end = env->GetFieldID(cls, "_end", "I");
+                _getFontPtr = env->GetMethodID(cls, "_getFontPtr", "()J");
             }
         }
 
@@ -64,12 +68,14 @@ namespace skija {
 
         }
 
-        namespace LanguageRunIterator {
-            jmethodID getCurrentLanguage;
+        namespace LanguageRun {
+            jfieldID _end;
+            jfieldID _language;
 
             void onLoad(JNIEnv* env) {
-                jclass cls = env->FindClass("org/jetbrains/skija/shaper/LanguageRunIterator");
-                getCurrentLanguage = env->GetMethodID(cls, "getCurrentLanguage", "()Ljava/lang/String;");
+                jclass cls = env->FindClass("org/jetbrains/skija/shaper/LanguageRun");
+                _end = env->GetFieldID(cls, "_end", "I");
+                _language = env->GetFieldID(cls, "_language", "Ljava/lang/String;");
             }
         }
 
@@ -129,25 +135,14 @@ namespace skija {
             }
         }
 
-        namespace RunIterator {
-            jmethodID consume;
-            jmethodID getEndOfCurrentRun;
-            jmethodID isAtEnd;
+        namespace ScriptRun {
+            jfieldID _end;
+            jfieldID _scriptTag;
 
             void onLoad(JNIEnv* env) {
-                jclass cls = env->FindClass("org/jetbrains/skija/shaper/RunIterator");
-                consume = env->GetMethodID(cls, "consume", "()V");
-                getEndOfCurrentRun = env->GetMethodID(cls, "getEndOfCurrentRun", "()I");
-                isAtEnd = env->GetMethodID(cls, "isAtEnd", "()Z");
-            }
-        }
-
-        namespace ScriptRunIterator {
-            jmethodID _getCurrentScriptTag;
-
-            void onLoad(JNIEnv* env) {
-                jclass cls = env->FindClass("org/jetbrains/skija/shaper/ScriptRunIterator");
-                _getCurrentScriptTag = env->GetMethodID(cls, "_getCurrentScriptTag", "()I");
+                jclass cls = env->FindClass("org/jetbrains/skija/shaper/ScriptRun");
+                _end = env->GetFieldID(cls, "_end", "I");
+                _scriptTag = env->GetFieldID(cls, "_scriptTag", "I");
             }
         }
     }

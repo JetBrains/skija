@@ -167,18 +167,21 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_shaper_Shaper__1nShap
 template <typename RunIteratorSubclass>
 class SkijaRunIterator: public RunIteratorSubclass {
 public:
-    SkijaRunIterator(JNIEnv* env, jobject obj, SkString text):
+    SkijaRunIterator(JNIEnv* env, jobject obj, SkString& text):
       fEnv(env),
-      fObj(obj),
-      fText(text),
-      fIndicesConverter(text.c_str(), text.size())
+      fIteratorObj(obj),
+      fIndicesConverter(text.c_str(), text.size()),
+      fEndOfRun(0)
     {
-        cacheValues();
+        fHasNext = fEnv->CallBooleanMethod(fIteratorObj, java::util::Iterator::hasNext);
     }
 
     void consume() override {
-        fEnv->CallVoidMethod(fObj, skija::shaper::RunIterator::consume);
-        cacheValues();
+        SkASSERT(fHasNext);
+        jobject runObj = fEnv->CallObjectMethod(fIteratorObj, java::util::Iterator::next);
+        jint endOfRun16 = onConsume(runObj);
+        fEndOfRun = fIndicesConverter.from16To8(endOfRun16);
+        fHasNext = fEnv->CallBooleanMethod(fIteratorObj, java::util::Iterator::hasNext);
     }
 
     size_t endOfCurrentRun() const override {
@@ -186,22 +189,17 @@ public:
     }
     
     bool atEnd() const override {
-        return fAtEnd;
+        return !fHasNext;
     }
 
 protected:
     JNIEnv* fEnv;
-    jobject fObj;
-    SkString fText;
+    jobject fIteratorObj;
     skija::UtfIndicesConverter fIndicesConverter;
     size_t fEndOfRun;
-    bool fAtEnd;
+    bool fHasNext;
 
-    virtual void cacheValues() {
-        size_t i16 = fEnv->CallIntMethod(fObj, skija::shaper::RunIterator::getEndOfCurrentRun);
-        fEndOfRun = fIndicesConverter.from16To8(i16);
-        fAtEnd = fEnv->CallBooleanMethod(fObj, skija::shaper::RunIterator::isAtEnd);
-    }
+    virtual jint onConsume(jobject) = 0;
 };
 
 class SkijaFontRunIterator: public SkijaRunIterator<SkShaper::FontRunIterator> {
@@ -214,10 +212,10 @@ public:
         return *fFont;
     }
 
-    void cacheValues() override {
-        SkijaRunIterator<SkShaper::FontRunIterator>::cacheValues();
-        jlong fontPtr = fEnv->CallLongMethod(fObj, skija::shaper::FontRunIterator::_getCurrentFontPtr);
+    jint onConsume(jobject runObj) override {
+        long fontPtr = fEnv->CallLongMethod(runObj, skija::shaper::FontRun::_getFontPtr);
         fFont = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(fontPtr));
+        return fEnv->GetIntField(runObj, skija::shaper::FontRun::_end);
     }
 
 protected:
@@ -226,7 +224,7 @@ protected:
 
 class SkijaBidiRunIterator: public SkijaRunIterator<SkShaper::BiDiRunIterator> {
 public:
-    SkijaBidiRunIterator(JNIEnv* env, jobject obj, SkString text): 
+    SkijaBidiRunIterator(JNIEnv* env, jobject obj, SkString& text): 
       SkijaRunIterator<SkShaper::BiDiRunIterator>(env, obj, text)
     {}
 
@@ -234,9 +232,9 @@ public:
         return fLevel;
     }
 
-    void cacheValues() override {
-        SkijaRunIterator<SkShaper::BiDiRunIterator>::cacheValues();
-        fLevel = fEnv->CallByteMethod(fObj, skija::shaper::BidiRunIterator::getCurrentLevel);
+    jint onConsume(jobject runObj) override {
+        fLevel = fEnv->GetIntField(runObj, skija::shaper::BidiRun::_level);
+        return fEnv->GetIntField(runObj, skija::shaper::BidiRun::_end);
     }
     
 protected:
@@ -253,9 +251,9 @@ public:
         return fScript;
     }
 
-    void cacheValues() override {
-        SkijaRunIterator<SkShaper::ScriptRunIterator>::cacheValues();
-        fScript = fEnv->CallIntMethod(fObj, skija::shaper::ScriptRunIterator::_getCurrentScriptTag);
+    jint onConsume(jobject runObj) override {
+        fScript = fEnv->GetIntField(runObj, skija::shaper::ScriptRun::_scriptTag);
+        return fEnv->GetIntField(runObj, skija::shaper::ScriptRun::_end);
     }
     
 protected:
@@ -272,10 +270,10 @@ public:
         return fLang.c_str();
     }
 
-    void cacheValues() override {
-        SkijaRunIterator<SkShaper::LanguageRunIterator>::cacheValues();
-        jstring langObj = (jstring) fEnv->CallObjectMethod(fObj, skija::shaper::LanguageRunIterator::getCurrentLanguage);
+    jint onConsume(jobject runObj) override {
+        jstring langObj = static_cast<jstring>(fEnv->GetObjectField(runObj, skija::shaper::LanguageRun::_language));
         fLang = skString(fEnv, langObj);
+        return fEnv->GetIntField(runObj, skija::shaper::LanguageRun::_end);
     }
     
 protected:

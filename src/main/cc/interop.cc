@@ -40,6 +40,23 @@ namespace java {
     }
 
     namespace util {
+        namespace Iterator {
+            jclass cls;
+            jmethodID next;
+            jmethodID hasNext;
+
+            void onLoad(JNIEnv* env) {
+                jclass local = env->FindClass("java/util/Iterator");
+                cls  = static_cast<jclass>(env->NewGlobalRef(local));
+                next = env->GetMethodID(cls, "next", "()Ljava/lang/Object;");
+                hasNext = env->GetMethodID(cls, "hasNext", "()Z");
+            }
+
+            void onUnload(JNIEnv* env) {
+                env->DeleteGlobalRef(cls);
+            }
+        }
+
         namespace function {
             namespace BooleanSupplier {
                 jclass cls;
@@ -597,6 +614,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 
     java::lang::Float::onLoad(env);
     java::lang::String::onLoad(env);
+    java::util::Iterator::onLoad(env);
     java::util::function::BooleanSupplier::onLoad(env);
 
     skija::Color4f::onLoad(env);
@@ -619,16 +637,15 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 
     skija::impl::Native::onLoad(env);
 
-    skija::shaper::BidiRunIterator::onLoad(env);
+    skija::shaper::BidiRun::onLoad(env);
     skija::shaper::FontMgrRunIterator::onLoad(env);
-    skija::shaper::FontRunIterator::onLoad(env);
+    skija::shaper::FontRun::onLoad(env);
     skija::shaper::HbIcuScriptRunIterator::onLoad(env);
     skija::shaper::IcuBidiRunIterator::onLoad(env);
-    skija::shaper::LanguageRunIterator::onLoad(env);
+    skija::shaper::LanguageRun::onLoad(env);
     skija::shaper::RunHandler::onLoad(env);
     skija::shaper::RunInfo::onLoad(env);
-    skija::shaper::RunIterator::onLoad(env);
-    skija::shaper::ScriptRunIterator::onLoad(env);
+    skija::shaper::ScriptRun::onLoad(env);
 
     skija::paragraph::LineMetrics::onLoad(env);
     skija::paragraph::TextBox::onLoad(env);
@@ -645,6 +662,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
 
     java::lang::Float::onUnload(env);
     java::lang::String::onUnload(env);
+    java::util::Iterator::onUnload(env);
     java::util::function::BooleanSupplier::onUnload(env);
 
     skija::Color4f::onUnload(env);
@@ -887,7 +905,16 @@ void deleteJBytes(void* addr, void*) {
     delete[] (jbyte*) addr;
 }
 
-skija::UtfIndicesConverter::UtfIndicesConverter(const char* chars8, size_t len8): fStart8(chars8), fPtr8(chars8), fEnd8(chars8 + len8), fPos16(0) {}
+skija::UtfIndicesConverter::UtfIndicesConverter(const char* chars8, size_t len8):
+  fStart8(chars8),
+  fPtr8(chars8),
+  fEnd8(chars8 + len8),
+  fPos16(0)
+{}
+
+skija::UtfIndicesConverter::UtfIndicesConverter(const SkString& str):
+  skija::UtfIndicesConverter::UtfIndicesConverter(str.c_str(), str.size())
+{}
 
 size_t skija::UtfIndicesConverter::from16To8(size_t i16) {
     if (i16 >= fPos16) {

@@ -24,7 +24,14 @@ namespace java {
             extern jclass cls;
         }
     }
+
     namespace util {
+        namespace Iterator {
+            extern jclass cls;
+            extern jmethodID next;
+            extern jmethodID hasNext;
+        }
+
         namespace function {
             namespace BooleanSupplier {
                 extern jclass cls;
@@ -187,6 +194,7 @@ namespace skija {
     class UtfIndicesConverter {
     public:
         UtfIndicesConverter(const char* chars8, size_t len8);
+        UtfIndicesConverter(const SkString& s);
 
         const char* fStart8;
         const char* fPtr8;

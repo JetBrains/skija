@@ -5,8 +5,9 @@
 
 namespace skija {
     namespace shaper {
-        namespace BidiRunIterator {
-            extern jmethodID getCurrentLevel;
+        namespace BidiRun {
+            extern jfieldID _end;
+            extern jfieldID _level;
 
             void onLoad(JNIEnv* env);
         }
@@ -18,8 +19,9 @@ namespace skija {
             void onUnload(JNIEnv* env);
         }
 
-        namespace FontRunIterator {
-            extern jmethodID _getCurrentFontPtr;
+        namespace FontRun {
+            extern jfieldID _end;
+            extern jmethodID _getFontPtr;
 
             void onLoad(JNIEnv* env);
         }
@@ -38,8 +40,9 @@ namespace skija {
             void onUnload(JNIEnv* env);
         }
 
-        namespace LanguageRunIterator {
-            extern jmethodID getCurrentLanguage;
+        namespace LanguageRun {
+            extern jfieldID _end;
+            extern jfieldID _language;
 
             void onLoad(JNIEnv* env);
         }
@@ -66,18 +69,11 @@ namespace skija {
             jobject toJava(JNIEnv* env, const SkShaper::RunHandler::RunInfo& info, skija::UtfIndicesConverter& indicesConverter);
         }
 
-        namespace RunIterator {
-            extern jmethodID consume;
-            extern jmethodID getEndOfCurrentRun;
-            extern jmethodID isAtEnd;
+        namespace ScriptRun {
+            extern jfieldID _end;
+            extern jfieldID _scriptTag;
 
             void onLoad(JNIEnv* env);
         }
- 
-        namespace ScriptRunIterator {
-            extern jmethodID _getCurrentScriptTag;
-
-            void onLoad(JNIEnv* env);
-        }
-  }
+    }
 }
