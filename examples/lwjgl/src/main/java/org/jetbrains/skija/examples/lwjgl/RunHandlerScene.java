@@ -51,7 +51,7 @@ public class RunHandlerScene implements Scene {
                     builder.appendRun(inter9, "bidi " + info.getBidiLevel(), 0, yPos + lh);
                     builder.appendRun(inter9, "adv (" + info.getAdvanceX() + ", " + info.getAdvanceY() + ")", 0, yPos + lh * 2);
                     builder.appendRun(inter9, "glyphs " + info.getGlyphCount(), 0, yPos + lh * 3);
-                    builder.appendRun(inter9, "range " + info.getUtf8RangeBegin() + ".." + info.getUtf8RangeEnd(), 0, yPos + lh * 4);
+                    builder.appendRun(inter9, "range " + info.getRangeBegin() + ".." + info.getRangeEnd() + " “" + text.substring(info.getRangeBegin(), info.getRangeEnd()) + "”", 0, yPos + lh * 4);
 
                     try (var detailsBlob = builder.build(); ) {
 

@@ -125,7 +125,7 @@ HbIcuScriptRunIter   ▓▓▓▓▓▓▓▓▓▓
 IcuBidiRunIterator   ▓▓▓▓▓▓▓▓▓▓
 LanguageRunIterator  ▓▓▓▓▓▓▓▓▓▓
 RunHandler           ▓▓▓▓▓▓▓▓▓▓
-RunInfo              ▓▓▓▓▓▓▓▓░░
+RunInfo              ▓▓▓▓▓▓▓▓▓▓
 ScriptRunIterator    ▓▓▓▓▓▓▓▓▓▓
 Shaper               ▓▓▓▓▓▓▓▓▓▓
 ```

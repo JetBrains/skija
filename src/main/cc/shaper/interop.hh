@@ -1,5 +1,6 @@
 #pragma once
 #include <jni.h>
+#include "../interop.hh"
 #include "SkShaper.h"
 
 namespace skija {
@@ -62,7 +63,7 @@ namespace skija {
 
             void onLoad(JNIEnv* env);
             void onUnload(JNIEnv* env);
-            jobject toJava(JNIEnv* env, const SkShaper::RunHandler::RunInfo& info);
+            jobject toJava(JNIEnv* env, const SkShaper::RunHandler::RunInfo& info, skija::UtfIndicesConverter& indicesConverter);
         }
 
         namespace RunIterator {

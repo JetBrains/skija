@@ -98,7 +98,6 @@ namespace skija {
             }
         }
 
-
         namespace RunInfo {
             jclass cls;
             jmethodID ctor;
@@ -106,15 +105,17 @@ namespace skija {
             void onLoad(JNIEnv* env) {
                 jclass local = env->FindClass("org/jetbrains/skija/shaper/RunInfo");
                 cls  = static_cast<jclass>(env->NewGlobalRef(local));
-                ctor = env->GetMethodID(cls, "<init>", "(JIFFJJJ)V");
+                ctor = env->GetMethodID(cls, "<init>", "(JIFFJII)V");
             }
 
             void onUnload(JNIEnv* env) {
                 env->DeleteGlobalRef(cls);
             }
 
-            jobject toJava(JNIEnv* env, const SkShaper::RunHandler::RunInfo& info) {
+            jobject toJava(JNIEnv* env, const SkShaper::RunHandler::RunInfo& info, skija::UtfIndicesConverter& indicesConverter) {
                 SkFont* font = new SkFont(info.fFont);
+                size_t begin = indicesConverter.from8To16(info.utf8Range.fBegin);
+                size_t end = indicesConverter.from8To16(info.utf8Range.fBegin + info.utf8Range.fSize);
                 return env->NewObject(
                     skija::shaper::RunInfo::cls, 
                     skija::shaper::RunInfo::ctor,
@@ -123,8 +124,8 @@ namespace skija {
                     info.fAdvance.fX,
                     info.fAdvance.fY,
                     info.glyphCount,
-                    info.utf8Range.fBegin,
-                    info.utf8Range.fSize);
+                    begin,
+                    end - begin);
             }
         }
 

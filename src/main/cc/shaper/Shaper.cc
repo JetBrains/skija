@@ -82,14 +82,18 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_shaper_Shaper__1nSha
 
 class SkijaRunHandler: public SkShaper::RunHandler {
 public:
-    SkijaRunHandler(JNIEnv* env, jobject runHandler): fEnv(env), fRunHandler(runHandler) {}
+    SkijaRunHandler(JNIEnv* env, jobject runHandler, const SkString& text):
+        fEnv(env),
+        fRunHandler(runHandler),
+        fIndicesConverter(text.c_str(), text.size())
+    {}
 
     void beginLine() {
         fEnv->CallVoidMethod(fRunHandler, skija::shaper::RunHandler::beginLine);
     }
 
     void runInfo(const SkShaper::RunHandler::RunInfo& info) {
-        fEnv->CallVoidMethod(fRunHandler, skija::shaper::RunHandler::runInfo, skija::shaper::RunInfo::toJava(fEnv, info));
+        fEnv->CallVoidMethod(fRunHandler, skija::shaper::RunHandler::runInfo, skija::shaper::RunInfo::toJava(fEnv, info, fIndicesConverter));
     }
 
     void commitRunInfo() {
@@ -101,7 +105,7 @@ public:
         fPositions = std::vector<SkPoint>(info.glyphCount);
         fClusters  = std::vector<jint>(info.glyphCount);
 
-        jobject point = fEnv->CallObjectMethod(fRunHandler, skija::shaper::RunHandler::runOffset, skija::shaper::RunInfo::toJava(fEnv, info));
+        jobject point = fEnv->CallObjectMethod(fRunHandler, skija::shaper::RunHandler::runOffset, skija::shaper::RunInfo::toJava(fEnv, info, fIndicesConverter));
         jfloat x = fEnv->GetFloatField(point, skija::Point::x);
         jfloat y = fEnv->GetFloatField(point, skija::Point::y);
 
@@ -114,7 +118,7 @@ public:
     }
 
     void commitRunBuffer(const SkShaper::RunHandler::RunInfo& info) {
-        jobject runInfo = skija::shaper::RunInfo::toJava(fEnv, info);
+        jobject runInfo = skija::shaper::RunInfo::toJava(fEnv, info, fIndicesConverter);
         jshortArray glyphs = javaShortArray(fEnv, fGlyphs);
         jobjectArray positions = skija::Point::fromSkPoints(fEnv, fPositions);
         jintArray clusters = javaIntArray(fEnv, fClusters);
@@ -129,6 +133,7 @@ public:
 private:
     JNIEnv* fEnv;
     jobject fRunHandler;
+    skija::UtfIndicesConverter fIndicesConverter;
     std::vector<jshort> fGlyphs;
     std::vector<SkPoint> fPositions;
     std::vector<jint> fClusters;
@@ -155,14 +160,19 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_shaper_Shaper__1nShap
     std::unique_ptr<SkShaper::LanguageRunIterator> languageRunIter(SkShaper::MakeStdLanguageRunIterator(text.c_str(), text.size()));
     if (!languageRunIter) return;
 
-    SkijaRunHandler rh(env, runHandler);
+    SkijaRunHandler rh(env, runHandler, text);
     instance->shape(text.c_str(), text.size(), *fontRunIter, *bidiRunIter, *scriptRunIter, *languageRunIter, features.data(), features.size(), width, &rh);
 }
 
 template <typename RunIteratorSubclass>
 class SkijaRunIterator: public RunIteratorSubclass {
 public:
-    SkijaRunIterator(JNIEnv* env, jobject obj, SkString text): fEnv(env), fObj(obj), fText(text), fPtr8(text.c_str()), fPos16(0) {}
+    SkijaRunIterator(JNIEnv* env, jobject obj, SkString text):
+      fEnv(env),
+      fObj(obj),
+      fText(text),
+      fIndicesConverter(text.c_str(), text.size())
+    {}
 
     void consume() override {
         fEnv->CallVoidMethod(fObj, skija::shaper::RunIterator::consume);
@@ -170,7 +180,7 @@ public:
 
     size_t endOfCurrentRun() const override {
         size_t i16 = fEnv->CallLongMethod(fObj, skija::shaper::RunIterator::getEndOfCurrentRun);
-        return idx16To8(i16);
+        return fIndicesConverter.from16To8(i16);
     }
     
     bool atEnd() const override {
@@ -181,32 +191,14 @@ protected:
     JNIEnv* fEnv;
     jobject fObj;
     SkString fText;
-
-    mutable const char* fPtr8;
-    mutable size_t fPos16;
-
-    size_t idx16To8(size_t i16) const {
-        const char* start8 = fText.c_str();
-        const char* end8 = fText.c_str() + fText.size();
-
-        // if new i16 >= last fPos16, continue from where we started
-        if (i16 < fPos16) {
-            fPtr8 = start8;
-            fPos16 = 0;
-        }
-
-        while (fPtr8 < end8 && fPos16 < i16) {
-            SkUnichar u = SkUTF::NextUTF8(&fPtr8, end8);
-            fPos16 += SkUTF::ToUTF16(u);
-        }
-
-        return fPtr8 - start8;
-    }
+    mutable skija::UtfIndicesConverter fIndicesConverter;
 };
 
 class SkijaFontRunIterator: public SkijaRunIterator<SkShaper::FontRunIterator> {
 public:
-    SkijaFontRunIterator(JNIEnv* env, jobject obj, SkString text): SkijaRunIterator<SkShaper::FontRunIterator>(env, obj, text) {}
+    SkijaFontRunIterator(JNIEnv* env, jobject obj, SkString text): 
+      SkijaRunIterator<SkShaper::FontRunIterator>(env, obj, text)
+    {}
 
     const SkFont& currentFont() const override {
         jlong fontPtr = fEnv->CallLongMethod(fObj, skija::shaper::FontRunIterator::_getCurrentFontPtr);
@@ -217,7 +209,9 @@ public:
 
 class SkijaBidiRunIterator: public SkijaRunIterator<SkShaper::BiDiRunIterator> {
 public:
-    SkijaBidiRunIterator(JNIEnv* env, jobject obj, SkString text): SkijaRunIterator<SkShaper::BiDiRunIterator>(env, obj, text) {}
+    SkijaBidiRunIterator(JNIEnv* env, jobject obj, SkString text): 
+      SkijaRunIterator<SkShaper::BiDiRunIterator>(env, obj, text)
+    {}
 
     uint8_t currentLevel() const override {
         return fEnv->CallByteMethod(fObj, skija::shaper::BidiRunIterator::getCurrentLevel);
@@ -226,7 +220,9 @@ public:
 
 class SkijaScriptRunIterator: public SkijaRunIterator<SkShaper::ScriptRunIterator> {
 public:
-    SkijaScriptRunIterator(JNIEnv* env, jobject obj, SkString text): SkijaRunIterator<SkShaper::ScriptRunIterator>(env, obj, text) {}
+    SkijaScriptRunIterator(JNIEnv* env, jobject obj, SkString text):
+      SkijaRunIterator<SkShaper::ScriptRunIterator>(env, obj, text)
+    {}
 
     SkFourByteTag currentScript() const override {
         return fEnv->CallIntMethod(fObj, skija::shaper::ScriptRunIterator::_getCurrentScriptTag);
@@ -235,7 +231,9 @@ public:
 
 class SkijaLanguageRunIterator: public SkijaRunIterator<SkShaper::LanguageRunIterator> {
 public:
-    SkijaLanguageRunIterator(JNIEnv* env, jobject obj, SkString text): SkijaRunIterator<SkShaper::LanguageRunIterator>(env, obj, text) {}
+    SkijaLanguageRunIterator(JNIEnv* env, jobject obj, SkString text):
+      SkijaRunIterator<SkShaper::LanguageRunIterator>(env, obj, text)
+    {}
 
     const char* currentLanguage() const override {
         jstring langObj = (jstring) fEnv->CallObjectMethod(fObj, skija::shaper::LanguageRunIterator::getCurrentLanguage);
@@ -271,7 +269,7 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_shaper_Shaper__1nShap
     auto languageRunIter = SkijaLanguageRunIterator(env, languageRunIterObj, text);
 
     std::vector<SkShaper::Feature> features = skija::FontFeature::fromJavaArray(env, featuresArr);
-    SkijaRunHandler rh(env, runHandler);
+    SkijaRunHandler rh(env, runHandler, text);
 
     instance->shape(text.c_str(), text.size(),
         nativeFontRunIter != nullptr ? *nativeFontRunIter : *localFontRunIter,

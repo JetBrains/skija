@@ -183,6 +183,19 @@ namespace skija {
             void* fromJava(JNIEnv* env, jobject obj, jclass cls);
         }
     }
+
+    class UtfIndicesConverter {
+    public:
+        UtfIndicesConverter(const char* chars8, size_t len8);
+
+        const char* fStart8;
+        const char* fPtr8;
+        const char* fEnd8;
+        size_t fPos16;
+
+        size_t from16To8(size_t i16);
+        size_t from8To16(size_t i8);
+    };
 }
 
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray arr);

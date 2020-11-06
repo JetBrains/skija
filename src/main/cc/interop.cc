@@ -878,3 +878,37 @@ jobjectArray javaStringArray(JNIEnv* env, const std::vector<SkString>& strings) 
 void deleteJBytes(void* addr, void*) {
     delete[] (jbyte*) addr;
 }
+
+skija::UtfIndicesConverter::UtfIndicesConverter(const char* chars8, size_t len8): fStart8(chars8), fPtr8(chars8), fEnd8(chars8 + len8), fPos16(0) {}
+
+size_t skija::UtfIndicesConverter::from16To8(size_t i16) {
+    if (i16 >= fPos16) {
+        // if new i16 >= last fPos16, continue from where we started
+    } else {
+        fPtr8 = fStart8;
+        fPos16 = 0;
+    }
+
+    while (fPtr8 < fEnd8 && fPos16 < i16) {
+        SkUnichar u = SkUTF::NextUTF8(&fPtr8, fEnd8);
+        fPos16 += SkUTF::ToUTF16(u);
+    }
+
+    return fPtr8 - fStart8;
+}
+
+size_t skija::UtfIndicesConverter::from8To16(size_t i8) {
+    if (i8 >= fPtr8 - fStart8) {
+        // if new i8 >= last fPtr8, continue from where we started
+    } else {
+        fPtr8 = fStart8;
+        fPos16 = 0;
+    }
+
+    while (fPtr8 - fStart8 < i8) {
+        SkUnichar u = SkUTF::NextUTF8(&fPtr8, fEnd8);
+        fPos16 += SkUTF::ToUTF16(u);
+    }
+
+    return fPos16;
+}
