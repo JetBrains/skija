@@ -646,6 +646,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     skija::shaper::RunHandler::onLoad(env);
     skija::shaper::RunInfo::onLoad(env);
     skija::shaper::ScriptRun::onLoad(env);
+    skija::shaper::TextBlobBuilderRunHandler::onLoad(env);
 
     skija::paragraph::LineMetrics::onLoad(env);
     skija::paragraph::TextBox::onLoad(env);
@@ -688,6 +689,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
     skija::shaper::IcuBidiRunIterator::onUnload(env);
     skija::shaper::RunHandler::onUnload(env);
     skija::shaper::RunInfo::onUnload(env);
+    skija::shaper::TextBlobBuilderRunHandler::onUnload(env);
 
     skija::paragraph::LineMetrics::onUnload(env);
     skija::paragraph::TextBox::onUnload(env);

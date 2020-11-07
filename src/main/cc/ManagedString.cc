@@ -17,3 +17,9 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ManagedString__1nMak
     SkString* text = new SkString(skString(env, textStr));
     return reinterpret_cast<jlong>(text);
 }
+
+extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_ManagedString__1nToString
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkString* instance = reinterpret_cast<SkString*>(static_cast<uintptr_t>(ptr));
+    return javaString(env, *instance);
+}

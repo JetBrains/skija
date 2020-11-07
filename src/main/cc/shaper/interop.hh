@@ -75,5 +75,12 @@ namespace skija {
 
             void onLoad(JNIEnv* env);
         }
+
+        namespace TextBlobBuilderRunHandler {
+             extern jclass cls;
+
+            void onLoad(JNIEnv* env);
+            void onUnload(JNIEnv* env);
+       }
     }
 }

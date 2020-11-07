@@ -7,8 +7,7 @@
 [v] Try GetStringCritical
 [v] Remove all utf16 strings
 [v] Migrate RunIterators to Iterator
-[ ] TextBlobHandler.java
-[ ] Implement Shaper.shape() with java iterators
+[v] TextBlobBuilderRunHandler
 [ ] Lazy Font construction in RunInfo
 [ ] GetPrimitiveArrayCritical
 [ ] Fix icudtl.dat on Windows

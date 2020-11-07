@@ -20,11 +20,20 @@ public class RunHandlerScene implements Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         canvas.translate(20, 20);
+        var text = "hello мир дружба fi fl 👃 one two ثلاثة 12 👂 34 خمسة";
 
         try (var shaper  = Shaper.makeShapeThenWrap(); // Shaper.makeCoreText();
+             var tbHandler = new TextBlobBuilderRunHandler(text, new Point(0, 0));
              var handler = new DebugTextBlobHandler();)
         {
-            var text = "hello мир дружба fi fl 👃 one two ثلاثة 12 👂 34 خمسة";
+            // TextBlobBuilderRunHandler
+            shaper.shape(text, lato36, FontMgr.getDefault(), null, true, width - 40, tbHandler);
+            try (var blob = tbHandler.makeBlob()) {
+                canvas.drawTextBlob(blob, 0, 0, lato36, textFill);
+                canvas.translate(0, blob.getBounds().getBottom() + 20);
+            }
+
+            // DebugTextBlobHandler
             shaper.shape(text, lato36, FontMgr.getDefault(), null, true, width - 40, handler);
             
             try (var blob = handler._builder.build()) {

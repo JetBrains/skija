@@ -100,38 +100,48 @@ public class Shaper extends Managed {
 
     @NotNull @Contract("_, _, _, _, _, _ -> new")
     public TextBlob shape(String text, Font font, @Nullable FontFeature[] features, boolean leftToRight, float width, @NotNull Point offset) {
-        Stats.onNativeCall();
-        long ptr = _nShapeToTextBlob(_ptr, text, Native.getPtr(font), features, leftToRight, width, offset._x, offset._y);
-        if (0 == ptr)
-            throw new RuntimeException("Failed to shape: " + text);
-        return new TextBlob(ptr);
+        var handler = new TextBlobBuilderRunHandler(text, offset);
+        shape(text, font, null, features, leftToRight, width, handler);
+        return handler.makeBlob();
     }
 
     @NotNull @Contract("_, _, _, _, _, _, _ -> this")
     public Shaper shape(String text, Font font, @Nullable FontMgr fontMgr, @Nullable FontFeature[] features, boolean leftToRight, float width, RunHandler runHandler) {
-        Stats.onNativeCall();
-        _nShape(_ptr, text, Native.getPtr(font), Native.getPtr(fontMgr), features, leftToRight, width, runHandler);
+        shape(text,
+            new FontMgrRunIterator(text, font, fontMgr),
+            new IcuBidiRunIterator(text, leftToRight ? java.text.Bidi.DIRECTION_LEFT_TO_RIGHT : java.text.Bidi.DIRECTION_RIGHT_TO_LEFT),
+            new HbIcuScriptRunIterator(text),
+            new TrivialLanguageRunIterator(text, Locale.getDefault().toLanguageTag()),
+            features,
+            width,
+            runHandler);
+
         return this;
     }
 
     @NotNull @Contract("_, _, _, _, _, _, _ -> this")
     public Shaper shape(String text, @NotNull Iterator<FontRun> fontIter, @NotNull Iterator<BidiRun> bidiIter, @NotNull Iterator<ScriptRun> scriptIter, @NotNull Iterator<LanguageRun> langIter,
-                        @Nullable FontFeature[] features,float width, RunHandler runHandler) {
+                        @Nullable FontFeature[] features, float width, RunHandler runHandler) {
         assert fontIter != null : "FontRunIterator == null";
         assert bidiIter != null : "BidiRunIterator == null";
         assert scriptIter != null : "ScriptRunIterator == null";
         assert langIter != null : "LanguageRunIterator == null";
         Stats.onNativeCall();
-        _nShapeRunIters(_ptr, text, fontIter, bidiIter, scriptIter, langIter, features, width, runHandler);
+        _nShape(_ptr, text, fontIter, bidiIter, scriptIter, langIter, features, width, runHandler);
         return this;
     }
 
     @ApiStatus.Internal
     public Shaper(long ptr) {
-        super(ptr, _finalizerPtr);
+        super(ptr, _FinalizerHolder.PTR);
     }
 
-    public static final  long _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        static { Stats.onNativeCall(); }
+        public static final long PTR = _nGetFinalizer();
+    }
+
     public static native long _nGetFinalizer();
     public static native long _nMakePrimitive();
     public static native long _nMakeShaperDrivenWrapper(long fontMgrPtr);
@@ -139,9 +149,6 @@ public class Shaper extends Managed {
     public static native long _nMakeShapeDontWrapOrReorder(long fontMgrPtr);
     public static native long _nMakeCoreText();
     public static native long _nMake(long fontMgrPtr);
-
-    public static native long _nShapeToTextBlob(long ptr, String text, long fontPtr, FontFeature[] features, boolean leftToRight, float width, float offsetX, float offsetY);
-    public static native void _nShape(long ptr, String text, long fontPtr, long fontMgrPtr, FontFeature[] features, boolean leftToRight, float width, RunHandler runHandler);
-    public static native void _nShapeRunIters(long ptr, String text, Iterator<FontRun> fontIter, Iterator<BidiRun> bidiIter, Iterator<ScriptRun> scriptIter, Iterator<LanguageRun> langIter,
-                                              FontFeature[] features, float width, RunHandler runHandler);
+    public static native void _nShape(long ptr, String text, Iterator<FontRun> fontIter, Iterator<BidiRun> bidiIter, Iterator<ScriptRun> scriptIter, Iterator<LanguageRun> langIter,
+                                      FontFeature[] features, float width, RunHandler runHandler);
 }

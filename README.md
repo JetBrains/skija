@@ -109,6 +109,7 @@ ScalerContext        ░░░░░░░░░░
 Shader               ▓▓▓▓▓▓▓▓▓▓
 ShadowUtils          ▓▓▓▓▓▓▓▓▓▓
 Stream               ░░░░░░░░░░
+String               ▓░░░░░░░░░
 Surface              ▓░░░░░░░░░
 TextBlob             ▓▓▓▓▓▓▓▓▓▓
 TextBlobBuilder      ▓▓▓▓▓▓▓▓▓▓
@@ -128,6 +129,7 @@ RunHandler           ▓▓▓▓▓▓▓▓▓▓
 RunInfo              ▓▓▓▓▓▓▓▓▓▓
 ScriptRunIterator    ▓▓▓▓▓▓▓▓▓▓
 Shaper               ▓▓▓▓▓▓▓▓▓▓
+TextBlobBldRunHndlr  ▓▓▓▓▓▓▓▓▓▓
 ```
 
 Paragraph progress:

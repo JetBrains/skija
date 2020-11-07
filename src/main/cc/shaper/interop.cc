@@ -145,5 +145,18 @@ namespace skija {
                 _scriptTag = env->GetFieldID(cls, "_scriptTag", "I");
             }
         }
-    }
+
+        namespace TextBlobBuilderRunHandler {
+            jclass cls;
+
+            void onLoad(JNIEnv* env) {
+                jclass local = env->FindClass("org/jetbrains/skija/shaper/TextBlobBuilderRunHandler");
+                cls  = static_cast<jclass>(env->NewGlobalRef(local));
+            }
+
+            void onUnload(JNIEnv* env) {
+                env->DeleteGlobalRef(cls);
+            }
+       }
+   }
 }

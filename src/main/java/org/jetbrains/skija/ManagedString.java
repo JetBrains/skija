@@ -17,6 +17,12 @@ public class ManagedString extends Managed {
         Stats.onNativeCall();
     }
 
+    @Override
+    public String toString() {
+        Stats.onNativeCall();
+        return _nToString(_ptr);
+    }
+
     @ApiStatus.Internal
     public static class _FinalizerHolder {
         static { Stats.onNativeCall(); }
@@ -25,4 +31,5 @@ public class ManagedString extends Managed {
 
     @ApiStatus.Internal public static native long _nMake(String s);
     @ApiStatus.Internal public static native long _nGetFinalizer();
+    @ApiStatus.Internal public static native String _nToString(long ptr);
 }

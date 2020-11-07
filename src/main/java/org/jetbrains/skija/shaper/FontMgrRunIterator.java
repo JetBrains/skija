@@ -13,7 +13,7 @@ public class FontMgrRunIterator extends ManagedRunIterator<FontRun> {
         Stats.onNativeCall();
     }
 
-    public FontMgrRunIterator(String text, Font font, FontMgr fontMgr) {
+    public FontMgrRunIterator(String text, Font font, @Nullable FontMgr fontMgr) {
         this(new ManagedString(text), font, fontMgr);
     }
 
