@@ -12,7 +12,7 @@ public class DebugTextBlobHandler implements RunHandler, AutoCloseable {
     public float _maxRunLeading = 0;
     public float _xPos = 0;
     public float _yPos = 0;
-    public List<Pair<RunInfo, Rect>> _infos = new ArrayList<>();
+    public List<Triple<RunInfo, Font, Rect>> _infos = new ArrayList<>();
 
     public DebugTextBlobHandler() {
         _builder = new TextBlobBuilder();
@@ -25,6 +25,9 @@ public class DebugTextBlobHandler implements RunHandler, AutoCloseable {
 
     @Override
     public void close() {
+        for (var info: _infos)
+            info.getSecond().close();
+
         _builder.close();
     }
 
@@ -38,7 +41,8 @@ public class DebugTextBlobHandler implements RunHandler, AutoCloseable {
 
     @Override
     public void runInfo(RunInfo info) {
-        var metrics   = info.getFont().getMetrics();
+        var font = new Font(info._fontPtr, false);
+        var metrics   = font.getMetrics();
         _maxRunAscent  = Math.min(_maxRunAscent,  metrics.getAscent());
         _maxRunDescent = Math.max(_maxRunDescent, metrics.getDescent());
         _maxRunLeading = Math.max(_maxRunLeading, metrics.getLeading());
@@ -60,8 +64,9 @@ public class DebugTextBlobHandler implements RunHandler, AutoCloseable {
         //                    + " glyphCount=" + info._glyphCount
         //                    + " utf8Range=" + info._utf8RangeBegin + ".." + info.getUtf8RangeEnd() 
         //                    + " positions=" + Arrays.stream(positions).map(Point::getX).collect(Collectors.toList()));
-        _builder.appendRunPos(info.getFont(), glyphs, positions);
-        _infos.add(new Pair(info, Rect.makeXYWH(_xPos, _yPos - (-_maxRunAscent), info.getAdvance().getX(), (-_maxRunAscent) + _maxRunDescent)));
+        var font = new Font(info._fontPtr, false);
+        _builder.appendRunPos(font, glyphs, positions);
+        _infos.add(new Triple(info, info.getFont(), Rect.makeXYWH(_xPos, _yPos - (-_maxRunAscent), info.getAdvance().getX(), (-_maxRunAscent) + _maxRunDescent)));
         _xPos += info.getAdvance().getX();
     }
 

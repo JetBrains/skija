@@ -63,6 +63,7 @@ namespace skija {
         namespace RunInfo {
             extern jclass cls;
             extern jmethodID ctor;
+            extern jfieldID _fontPtr;
 
             void onLoad(JNIEnv* env);
             void onUnload(JNIEnv* env);

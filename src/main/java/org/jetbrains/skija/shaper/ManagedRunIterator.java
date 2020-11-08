@@ -12,9 +12,16 @@ public abstract class ManagedRunIterator<T> extends Managed implements Iterator<
     public final ManagedString _text;
 
     @ApiStatus.Internal
-    public ManagedRunIterator(long ptr, ManagedString text) {
+    public ManagedRunIterator(long ptr, ManagedString text, boolean manageText) {
         super(ptr, _FinalizerHolder.PTR);
-        _text = text;
+        _text = manageText ? text : null;
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        if (_text != null)
+            _text.close();
     }
 
     @ApiStatus.Internal

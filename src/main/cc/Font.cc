@@ -42,6 +42,13 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Font__1nMakeTypeface
     return reinterpret_cast<jlong>(obj);
 }
 
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Font__1nMakeClone
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkFont* instance = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(ptr));
+    SkFont* clone = new SkFont(*instance);
+    return reinterpret_cast<jlong>(clone);
+}
+
 extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Font__1nEquals
   (JNIEnv* env, jclass jclass, jlong ptr, jlong otherPtr) {
     SkFont* instance = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(ptr));

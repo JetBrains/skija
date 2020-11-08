@@ -44,19 +44,22 @@ public class RunHandlerScene implements Scene {
             FontMetrics interMetrics = inter9.getMetrics();
             float maxBottom = 0;
 
-            for (var pair: handler._infos) {
-                var runBounds = pair.getSecond();
+            for (var triple: handler._infos) {
+                var runBounds = triple.getThird();
                 canvas.drawRect(runBounds, boundsStroke);
 
-                var info = pair.getFirst();
-                try (var builder = new TextBlobBuilder(); ) {
+                var info = triple.getFirst();
+                try (var builder = new TextBlobBuilder();) {
                     float lh = interMetrics.getHeight();
                     float yPos = -interMetrics.getAscent();
                     float padding = 6;
                     float margin = 6;
+                    var font = triple.getSecond();
 
                     // build details blob
-                    builder.appendRun(inter9, info.getFont().getTypeface().getFamilyName() + " " + info.getFont().getSize() + "px", 0, yPos);
+                    try (var typeface = font.getTypeface();) {
+                        builder.appendRun(inter9, typeface.getFamilyName() + " " + font.getSize() + "px", 0, yPos);
+                    }
                     builder.appendRun(inter9, "bidi " + info.getBidiLevel(), 0, yPos + lh);
                     builder.appendRun(inter9, "adv (" + info.getAdvanceX() + ", " + info.getAdvanceY() + ")", 0, yPos + lh * 2);
                     builder.appendRun(inter9, "glyphs " + info.getGlyphCount(), 0, yPos + lh * 3);

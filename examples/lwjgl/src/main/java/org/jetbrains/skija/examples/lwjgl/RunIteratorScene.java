@@ -123,8 +123,8 @@ public class RunIteratorScene implements Scene {
         try (var blob = handler._builder.build()) {
             canvas.drawTextBlob(blob, 0, 0, lato36, textFill);
         
-            for (var pair: handler._infos) {
-                var runBounds = pair.getSecond();
+            for (var triple: handler._infos) {
+                var runBounds = triple.getThird();
                 canvas.drawRect(runBounds, boundsStroke);
             }
 

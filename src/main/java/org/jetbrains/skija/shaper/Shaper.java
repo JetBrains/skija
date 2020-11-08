@@ -100,9 +100,16 @@ public class Shaper extends Managed {
 
     @NotNull @Contract("_, _, _, _, _, _ -> new")
     public TextBlob shape(String text, Font font, @Nullable FontFeature[] features, boolean leftToRight, float width, @NotNull Point offset) {
-        var handler = new TextBlobBuilderRunHandler(text, offset);
-        shape(text, font, null, features, leftToRight, width, handler);
-        return handler.makeBlob();
+        try (var textUtf8 = new ManagedString(text);
+             var fontIter = new FontMgrRunIterator(textUtf8, false, font, null);
+             var bidiIter = new IcuBidiRunIterator(textUtf8, false, leftToRight ? java.text.Bidi.DIRECTION_LEFT_TO_RIGHT : java.text.Bidi.DIRECTION_RIGHT_TO_LEFT);
+             var scriptIter = new HbIcuScriptRunIterator(textUtf8, false);
+             var handler = new TextBlobBuilderRunHandler(textUtf8, false, offset._x, offset._y);)
+        {
+            var langIter = new TrivialLanguageRunIterator(text, Locale.getDefault().toLanguageTag());
+            shape(textUtf8, fontIter, bidiIter, scriptIter, langIter, features, width, handler);
+            return handler.makeBlob();
+        }
     }
 
     @NotNull @Contract("_, _, _, _, _, _, _ -> this")
@@ -114,17 +121,13 @@ public class Shaper extends Managed {
                         float width,
                         RunHandler runHandler)
     {
-        try (ManagedString textUtf8 = new ManagedString(text);) {
-            return shape(
-                textUtf8,
-                new FontMgrRunIterator(textUtf8, font, fontMgr),
-                new IcuBidiRunIterator(textUtf8, leftToRight ? java.text.Bidi.DIRECTION_LEFT_TO_RIGHT : java.text.Bidi.DIRECTION_RIGHT_TO_LEFT),
-                new HbIcuScriptRunIterator(textUtf8),
-                new TrivialLanguageRunIterator(text, Locale.getDefault().toLanguageTag()),
-                features,
-                width,
-                runHandler
-            );
+        try (var textUtf8 = new ManagedString(text);
+             var fontIter = new FontMgrRunIterator(textUtf8, false, font, fontMgr);
+             var bidiIter = new IcuBidiRunIterator(textUtf8, false, leftToRight ? java.text.Bidi.DIRECTION_LEFT_TO_RIGHT : java.text.Bidi.DIRECTION_RIGHT_TO_LEFT);
+             var scriptIter = new HbIcuScriptRunIterator(textUtf8, false);)
+        {
+            var langIter = new TrivialLanguageRunIterator(text, Locale.getDefault().toLanguageTag());
+            return shape(textUtf8, fontIter, bidiIter, scriptIter, langIter, features, width, runHandler);
         }
     }
 

@@ -182,7 +182,9 @@ public:
     }
 
     void runInfo(const SkShaper::RunHandler::RunInfo& info) {
-        fEnv->CallVoidMethod(fRunHandler, skija::shaper::RunHandler::runInfo, skija::shaper::RunInfo::toJava(fEnv, info, fIndicesConverter));
+        jobject runInfoObj = skija::shaper::RunInfo::toJava(fEnv, info, fIndicesConverter);
+        fEnv->CallVoidMethod(fRunHandler, skija::shaper::RunHandler::runInfo, runInfoObj);
+        fEnv->SetLongField(runInfoObj, skija::shaper::RunInfo::_fontPtr, 0);
     }
 
     void commitRunInfo() {
@@ -194,7 +196,10 @@ public:
         fPositions = std::vector<SkPoint>(info.glyphCount);
         fClusters  = std::vector<jint>(info.glyphCount);
 
-        jobject point = fEnv->CallObjectMethod(fRunHandler, skija::shaper::RunHandler::runOffset, skija::shaper::RunInfo::toJava(fEnv, info, fIndicesConverter));
+        jobject runInfoObj = skija::shaper::RunInfo::toJava(fEnv, info, fIndicesConverter);
+        jobject point = fEnv->CallObjectMethod(fRunHandler, skija::shaper::RunHandler::runOffset, runInfoObj);
+        fEnv->SetLongField(runInfoObj, skija::shaper::RunInfo::_fontPtr, 0);
+
         jfloat x = fEnv->GetFloatField(point, skija::Point::x);
         jfloat y = fEnv->GetFloatField(point, skija::Point::y);
 
@@ -207,12 +212,13 @@ public:
     }
 
     void commitRunBuffer(const SkShaper::RunHandler::RunInfo& info) {
-        jobject runInfo = skija::shaper::RunInfo::toJava(fEnv, info, fIndicesConverter);
+        jobject runInfoObj = skija::shaper::RunInfo::toJava(fEnv, info, fIndicesConverter);
         jshortArray glyphs = javaShortArray(fEnv, fGlyphs);
         jobjectArray positions = skija::Point::fromSkPoints(fEnv, fPositions);
         jintArray clusters = javaIntArray(fEnv, fClusters);
 
-        fEnv->CallObjectMethod(fRunHandler, skija::shaper::RunHandler::commitRun, runInfo, glyphs, positions, clusters);
+        fEnv->CallObjectMethod(fRunHandler, skija::shaper::RunHandler::commitRun, runInfoObj, glyphs, positions, clusters);
+        fEnv->SetLongField(runInfoObj, skija::shaper::RunInfo::_fontPtr, 0);
     }
 
     void commitLine() {

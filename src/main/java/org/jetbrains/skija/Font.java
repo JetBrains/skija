@@ -11,7 +11,11 @@ public class Font extends Managed {
     @ApiStatus.Internal
     public Font(long ptr) {
         super(ptr, _finalizerPtr);
-        Stats.onNativeCall();
+    }
+
+    @ApiStatus.Internal
+    public Font(long ptr, boolean managed) {
+        super(ptr, _finalizerPtr, managed);
     }
 
     /**
@@ -64,6 +68,11 @@ public class Font extends Managed {
     @ApiStatus.Internal @Override
     public boolean _nativeEquals(Native other) {
         return _nEquals(_ptr, Native.getPtr(other));
+    }
+
+    public static Font makeClone(long ptr) {
+        Stats.onNativeCall();
+        return new Font(_nMakeClone(ptr));
     }
 
     /**
@@ -479,6 +488,7 @@ public class Font extends Managed {
     @ApiStatus.Internal public static native long    _nMakeTypeface(long typefacePtr);
     @ApiStatus.Internal public static native long    _nMakeTypefaceSize(long typefacePtr, float size);
     @ApiStatus.Internal public static native long    _nMakeTypefaceSizeScaleSkew(long typefacePtr, float size, float scaleX, float skewX);
+    @ApiStatus.Internal public static native long    _nMakeClone(long ptr);
     @ApiStatus.Internal public static native boolean _nEquals(long ptr, long otherPtr);
     @ApiStatus.Internal public static native boolean _nIsAutoHintingForced(long ptr);
     @ApiStatus.Internal public static native boolean _nAreBitmapsEmbedded(long ptr);

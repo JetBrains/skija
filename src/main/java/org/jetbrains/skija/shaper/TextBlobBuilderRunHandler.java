@@ -11,17 +11,24 @@ public class TextBlobBuilderRunHandler<T> extends Managed implements RunHandler 
     public final ManagedString _text;
 
     @ApiStatus.Internal
-    public TextBlobBuilderRunHandler(ManagedString text, float offsetX, float offsetY) {
+    public TextBlobBuilderRunHandler(ManagedString text, boolean manageText, float offsetX, float offsetY) {
         super(_nMake(Native.getPtr(text), offsetX, offsetY), _FinalizerHolder.PTR);
-        _text = text;
+        _text = manageText ? text : null;
     }
 
     public TextBlobBuilderRunHandler(String text) {
-        this(new ManagedString(text), 0, 0);
+        this(new ManagedString(text), true, 0, 0);
     }
 
     public TextBlobBuilderRunHandler(String text, Point offset) {
-        this(new ManagedString(text), offset._x, offset._y);
+        this(new ManagedString(text), true, offset._x, offset._y);
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        if (_text != null)
+            _text.close();
     }
 
     @Override
