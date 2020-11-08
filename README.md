@@ -199,7 +199,7 @@ cd skija
 
 ### Using prebuilt Skia
 
-Download prebuilt Skia from [this repository](https://github.com/tonsky/skia-build/releases).
+Download prebuilt Skia from [this repository](https://github.com/JetBrains/skia-build/releases).
 
 Unpack and set
 
@@ -207,7 +207,7 @@ Unpack and set
 export SKIA_DIR=~/Downloads/Skia-m87-a0c82f0-macos-Release-x64
 ```
 
-To build Skia from scratch, consult [tonsky/skia-build](https://github.com/tonsky/skia-build).
+To build Skia from scratch, consult [JetBrains/skia-build](https://github.com/JetBrains/skia-build).
 
 ### Building Skija
 
