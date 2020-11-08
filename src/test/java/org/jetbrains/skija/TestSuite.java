@@ -5,7 +5,6 @@ import org.jetbrains.skija.paragraph.*;
 
 public class TestSuite {
     public static void main(String[] args) {
-        Library.load();
         TestRunner.startTesting();
         TestRunner.testClass(BitmapTest.class);
         TestRunner.testClass(DataTest.class);

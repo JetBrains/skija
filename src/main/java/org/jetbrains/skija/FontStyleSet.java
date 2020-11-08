@@ -1,8 +1,7 @@
 package org.jetbrains.skija;
 
 import org.jetbrains.annotations.*;
-import org.jetbrains.skija.impl.RefCnt;
-import org.jetbrains.skija.impl.Stats;
+import org.jetbrains.skija.impl.*;
 
 public class FontStyleSet extends RefCnt {
     static { Library.load(); }

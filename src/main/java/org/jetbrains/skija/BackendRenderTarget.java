@@ -1,8 +1,7 @@
 package org.jetbrains.skija;
 
 import org.jetbrains.annotations.*;
-import org.jetbrains.skija.impl.Managed;
-import org.jetbrains.skija.impl.Stats;
+import org.jetbrains.skija.impl.*;
 
 public class BackendRenderTarget extends Managed {
     static { Library.load(); }

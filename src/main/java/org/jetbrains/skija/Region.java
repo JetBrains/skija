@@ -1,8 +1,6 @@
 package org.jetbrains.skija;
 
-import org.jetbrains.skija.impl.Managed;
-import org.jetbrains.skija.impl.Native;
-import org.jetbrains.skija.impl.Stats;
+import org.jetbrains.skija.impl.*;
 
 public class Region extends Managed {
     static { Library.load(); }

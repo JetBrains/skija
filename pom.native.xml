@@ -24,6 +24,7 @@
                     <include>libskija.dylib</include>
                     <include>libskija.so</include>
                     <include>skija.dll</include>
+                    <include>icudtl.dat</include>
                 </includes>
             </resource>
         </resources>

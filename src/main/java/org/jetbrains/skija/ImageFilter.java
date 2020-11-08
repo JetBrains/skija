@@ -1,9 +1,7 @@
 package org.jetbrains.skija;
 
 import org.jetbrains.annotations.*;
-import org.jetbrains.skija.impl.Native;
-import org.jetbrains.skija.impl.RefCnt;
-import org.jetbrains.skija.impl.Stats;
+import org.jetbrains.skija.impl.*;
 
 import java.util.Arrays;
 

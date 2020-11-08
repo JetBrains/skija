@@ -1,12 +1,8 @@
 package org.jetbrains.skija;
 
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.skija.impl.Managed;
-import org.jetbrains.skija.impl.Native;
-import org.jetbrains.skija.impl.Stats;
-
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
+import org.jetbrains.annotations.*;
+import org.jetbrains.skija.impl.*;
 
 @ApiStatus.Internal
 public class PathSegmentIterator extends Managed implements Iterator<PathSegment> {
