@@ -8,6 +8,7 @@
 [v] Remove all utf16 strings
 [v] Migrate RunIterators to Iterator
 [v] TextBlobBuilderRunHandler
+[v] Share ManagedString between all Iterators in Shaper
 [ ] Lazy Font construction in RunInfo
 [ ] GetPrimitiveArrayCritical
 [ ] Fix icudtl.dat on Windows

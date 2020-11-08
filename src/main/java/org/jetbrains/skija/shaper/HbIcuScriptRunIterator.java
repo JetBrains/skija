@@ -7,7 +7,6 @@ import org.jetbrains.skija.impl.*;
 public class HbIcuScriptRunIterator extends ManagedRunIterator<ScriptRun> {
     static { Library.load(); }
 
-    @ApiStatus.Internal
     public HbIcuScriptRunIterator(ManagedString text) {
         super(_nMake(Native.getPtr(text)), text);
         Stats.onNativeCall();

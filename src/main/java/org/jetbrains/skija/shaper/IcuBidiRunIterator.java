@@ -8,7 +8,6 @@ import org.jetbrains.skija.impl.*;
 public class IcuBidiRunIterator extends ManagedRunIterator<BidiRun> {
     static { Library.load(); }
 
-    @ApiStatus.Internal
     public IcuBidiRunIterator(ManagedString text, int bidiLevel) {
         super(_nMake(Native.getPtr(text), bidiLevel), text);
         Stats.onNativeCall();

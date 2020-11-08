@@ -229,37 +229,37 @@ private:
 };
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_shaper_Shaper__1nShape
-  (JNIEnv* env, jclass jclass, jlong ptr, jstring textObj, jobject fontRunIterObj, jobject bidiRunIterObj, jobject scriptRunIterObj, jobject languageRunIterObj,
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong textPtr, jobject fontRunIterObj, jobject bidiRunIterObj, jobject scriptRunIterObj, jobject languageRunIterObj,
    jobjectArray featuresArr, jfloat width, jobject runHandlerObj)
 {
     SkShaper* instance = reinterpret_cast<SkShaper*>(static_cast<uintptr_t>(ptr));
-    SkString text = skString(env, textObj);
+    SkString* text = reinterpret_cast<SkString*>(static_cast<uintptr_t>(textPtr));
 
     auto nativeFontRunIter = (SkShaper::FontRunIterator*) skija::impl::Native::fromJava(env, fontRunIterObj, skija::shaper::FontMgrRunIterator::cls);
     std::unique_ptr<SkijaFontRunIterator> localFontRunIter;
     if (nativeFontRunIter == nullptr)
-        localFontRunIter.reset(new SkijaFontRunIterator(env, fontRunIterObj, text));
+        localFontRunIter.reset(new SkijaFontRunIterator(env, fontRunIterObj, *text));
 
     auto nativeBidiRunIter = (SkShaper::BiDiRunIterator*) skija::impl::Native::fromJava(env, bidiRunIterObj, skija::shaper::IcuBidiRunIterator::cls);
     std::unique_ptr<SkijaBidiRunIterator> localBidiRunIter;
     if (nativeBidiRunIter == nullptr)
-        localBidiRunIter.reset(new SkijaBidiRunIterator(env, bidiRunIterObj, text));
+        localBidiRunIter.reset(new SkijaBidiRunIterator(env, bidiRunIterObj, *text));
 
     auto nativeScriptRunIter = (SkShaper::ScriptRunIterator*) skija::impl::Native::fromJava(env, scriptRunIterObj, skija::shaper::HbIcuScriptRunIterator::cls);
     std::unique_ptr<SkijaScriptRunIterator> localScriptRunIter;
     if (nativeScriptRunIter == nullptr)
-        localScriptRunIter.reset(new SkijaScriptRunIterator(env, scriptRunIterObj, text));
+        localScriptRunIter.reset(new SkijaScriptRunIterator(env, scriptRunIterObj, *text));
     
-    auto languageRunIter = SkijaLanguageRunIterator(env, languageRunIterObj, text);
+    auto languageRunIter = SkijaLanguageRunIterator(env, languageRunIterObj, *text);
 
     std::vector<SkShaper::Feature> features = skija::FontFeature::fromJavaArray(env, featuresArr);
     
     auto nativeRunHandler = (SkShaper::RunHandler*) skija::impl::Native::fromJava(env, runHandlerObj, skija::shaper::TextBlobBuilderRunHandler::cls);
     std::unique_ptr<SkijaRunHandler> localRunHandler;
     if (nativeRunHandler == nullptr)
-        localRunHandler.reset(new SkijaRunHandler(env, runHandlerObj, text));
+        localRunHandler.reset(new SkijaRunHandler(env, runHandlerObj, *text));
 
-    instance->shape(text.c_str(), text.size(),
+    instance->shape(text->c_str(), text->size(),
         nativeFontRunIter != nullptr ? *nativeFontRunIter : *localFontRunIter,
         nativeBidiRunIter != nullptr ? *nativeBidiRunIter : *localBidiRunIter,
         nativeScriptRunIter != nullptr ? *nativeScriptRunIter : *localScriptRunIter,
