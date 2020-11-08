@@ -82,6 +82,9 @@ namespace skija {
 
             void onLoad(JNIEnv* env);
             void onUnload(JNIEnv* env);
-       }
+        }
+       
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);        
     }
 }

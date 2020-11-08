@@ -4,7 +4,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class MaskFilter extends RefCnt {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public static MaskFilter makeBlur(FilterBlurMode mode, float sigma) {
         return makeBlur(mode, sigma, true);

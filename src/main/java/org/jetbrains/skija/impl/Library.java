@@ -10,6 +10,11 @@ public class Library {
     @ApiStatus.Internal
     public static volatile boolean _loaded = false;
 
+    public static void staticLoad() {
+        if (!_loaded && !"false".equals(System.getProperty("skija.staticLoad")))
+            load();
+    }
+
     public static synchronized void load() {
         if (_loaded) return;
 
@@ -29,6 +34,8 @@ public class Library {
         } else
             throw new RuntimeException("Unknown operation system");
         
+        _nAfterLoad();
+
         _loaded = true;
     }
 
@@ -56,4 +63,6 @@ public class Library {
             }
         return file;
     }
+
+    @ApiStatus.Internal public static native void _nAfterLoad();
 }

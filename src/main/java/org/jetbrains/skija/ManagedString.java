@@ -5,7 +5,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class ManagedString extends Managed {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     @ApiStatus.Internal
     public ManagedString(long ptr) {

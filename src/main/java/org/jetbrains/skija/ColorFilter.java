@@ -4,7 +4,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class ColorFilter extends RefCnt {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public static ColorFilter makeComposed(ColorFilter outer, ColorFilter inner) {
         Stats.onNativeCall();

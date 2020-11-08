@@ -12,7 +12,7 @@ public class DrawableScene implements Scene {
 
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
-        System.out.println("\n--- new frame ---");
+        // System.out.println("\n--- new frame ---");
         canvas.translate(20, 40);
         
         // default
@@ -87,7 +87,7 @@ class SomeDrawable extends Drawable {
 
     @Override
     public void onDraw(Canvas canvas) {
-        System.out.println(getGenerationId() + " Drawable::onDraw(color = " + color + ", text = \"" + text + "\")");
+        // System.out.println(getGenerationId() + " Drawable::onDraw(color = " + color + ", text = \"" + text + "\")");
         try (var p = new Paint().setColor(color);) {
             canvas.drawString(text, 0, 0, font, p);
         }
@@ -95,7 +95,7 @@ class SomeDrawable extends Drawable {
 
     @Override
     public Rect onGetBounds() {
-        System.out.println(getGenerationId() + " Drawable::onGetBounds(color = " + color + ", text = \"" + text + "\")");
+        // System.out.println(getGenerationId() + " Drawable::onGetBounds(color = " + color + ", text = \"" + text + "\")");
         return font.measureText(text);
     }
 
@@ -103,13 +103,13 @@ class SomeDrawable extends Drawable {
         this.color = color;
         var prevGen =getGenerationId();
         notifyDrawingChanged();
-        System.out.println(prevGen + " -> " + getGenerationId() + " Drawable::notifyDrawingChanged");
+        // System.out.println(prevGen + " -> " + getGenerationId() + " Drawable::notifyDrawingChanged");
     }
 
     public void setText(String text) {
         this.text = text;
         var prevGen = getGenerationId();
         notifyDrawingChanged();
-        System.out.println(prevGen + " -> " + getGenerationId() + " Drawable::notifyDrawingChanged");
+        // System.out.println(prevGen + " -> " + getGenerationId() + " Drawable::notifyDrawingChanged");
     }
 }

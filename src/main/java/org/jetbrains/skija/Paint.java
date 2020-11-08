@@ -4,7 +4,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class Paint extends Managed {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public Paint() {
         super(_nMake(), _finalizerPtr);

@@ -5,7 +5,7 @@ import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
 public class ParagraphCache extends Native {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public void abandon() {
         _validate();

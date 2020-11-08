@@ -5,7 +5,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class Typeface extends RefCnt {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     /**
      * @return  the typeface’s intrinsic style attributes

@@ -125,8 +125,8 @@ namespace skija {
                 size_t begin = indicesConverter.from8To16(info.utf8Range.fBegin);
                 size_t end = indicesConverter.from8To16(info.utf8Range.fBegin + info.utf8Range.fSize);
                 return env->NewObject(
-                    skija::shaper::RunInfo::cls, 
-                    skija::shaper::RunInfo::ctor,
+                    cls, 
+                    ctor,
                     reinterpret_cast<jlong>(font),
                     info.fBidiLevel,
                     info.fAdvance.fX,
@@ -160,5 +160,27 @@ namespace skija {
                 env->DeleteGlobalRef(cls);
             }
        }
+       
+       void onLoad(JNIEnv* env) {
+            BidiRun::onLoad(env);
+            FontMgrRunIterator::onLoad(env);
+            FontRun::onLoad(env);
+            HbIcuScriptRunIterator::onLoad(env);
+            IcuBidiRunIterator::onLoad(env);
+            LanguageRun::onLoad(env);
+            RunHandler::onLoad(env);
+            RunInfo::onLoad(env);
+            ScriptRun::onLoad(env);
+            TextBlobBuilderRunHandler::onLoad(env);
+        }
+
+        void onUnload(JNIEnv* env) {
+            TextBlobBuilderRunHandler::onUnload(env);
+            RunInfo::onUnload(env);
+            RunHandler::onUnload(env);
+            IcuBidiRunIterator::onUnload(env);
+            HbIcuScriptRunIterator::onUnload(env);
+            FontMgrRunIterator::onUnload(env);
+        }
    }
 }

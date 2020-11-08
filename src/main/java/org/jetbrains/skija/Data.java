@@ -7,7 +7,7 @@ import org.jetbrains.skija.impl.*;
  *  Data holds an immutable data buffer.
  */
 public class Data extends Managed {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public long getSize() {
         Stats.onNativeCall();

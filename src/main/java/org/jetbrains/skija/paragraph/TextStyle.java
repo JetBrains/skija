@@ -5,7 +5,7 @@ import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
 public class TextStyle extends Managed {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     @ApiStatus.Internal
     public TextStyle(long ptr) {

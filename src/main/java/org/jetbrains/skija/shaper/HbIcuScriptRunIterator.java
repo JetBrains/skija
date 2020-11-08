@@ -5,7 +5,7 @@ import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
 public class HbIcuScriptRunIterator extends ManagedRunIterator<ScriptRun> {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
 
     public HbIcuScriptRunIterator(ManagedString text, boolean manageText) {
         super(_nMake(Native.getPtr(text)), text, manageText);

@@ -4,7 +4,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class PathEffect extends RefCnt {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public enum Style {
         /** translate the shape to each position */

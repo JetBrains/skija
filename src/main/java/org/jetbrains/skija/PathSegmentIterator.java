@@ -6,7 +6,7 @@ import org.jetbrains.skija.impl.*;
 
 @ApiStatus.Internal
 public class PathSegmentIterator extends Managed implements Iterator<PathSegment> {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public final Path _path;
     public PathSegment _nextSegment;

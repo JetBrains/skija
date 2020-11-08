@@ -71,9 +71,22 @@ namespace java {
                 void onUnload(JNIEnv* env) {
                     env->DeleteGlobalRef(cls);
                 }
-
             }
         }
+    }
+
+    void onLoad(JNIEnv* env) {
+        lang::Float::onLoad(env);
+        lang::String::onLoad(env);
+        util::Iterator::onLoad(env);
+        util::function::BooleanSupplier::onLoad(env);
+    }
+
+    void onUnload(JNIEnv* env) {
+        util::function::BooleanSupplier::onUnload(env);
+        util::Iterator::onUnload(env);
+        lang::String::onUnload(env);
+        lang::Float::onUnload(env);
     }
 }
 
@@ -397,8 +410,8 @@ namespace skija {
         JavaVM* _vm;
         jmethodID onFilterId;
 
-        void onLoad(JavaVM* vm, JNIEnv* env) {
-            _vm = vm;
+        void onLoad(JNIEnv* env) {
+            env->GetJavaVM(&_vm);
             jclass local = env->FindClass("org/jetbrains/skija/PaintFilterCanvas");
             onFilterId = env->GetMethodID(local, "onFilter", "(J)Z");
         }
@@ -605,98 +618,49 @@ namespace skija {
             }
         }
     }
+
+    void onLoad(JNIEnv* env) {
+        Color4f::onLoad(env);
+        Drawable::onLoad(env);
+        FontFamilyName::onLoad(env);
+        FontFeature::onLoad(env);
+        FontMetrics::onLoad(env);
+        FontVariation::onLoad(env);
+        FontVariationAxis::onLoad(env);
+        ImageInfo::onLoad(env);
+        IPoint::onLoad(env);
+        IRect::onLoad(env);
+        Path::onLoad(env);
+        PathSegment::onLoad(env);
+        Point::onLoad(env);
+        PaintFilterCanvas::onLoad(env);
+        Rect::onLoad(env);
+        RRect::onLoad(env);
+        RSXform::onLoad(env);
+
+        impl::Native::onLoad(env);
+    }
+
+    void onUnload(JNIEnv* env) {
+        RSXform::onUnload(env);
+        RRect::onUnload(env);
+        Rect::onUnload(env);
+        PaintFilterCanvas::onUnload(env);
+        Point::onUnload(env);
+        PathSegment::onUnload(env);
+        Path::onUnload(env);
+        IRect::onUnload(env);
+        IPoint::onUnload(env);
+        ImageInfo::onUnload(env);
+        FontVariationAxis::onUnload(env);
+        FontVariation::onUnload(env);
+        FontMetrics::onUnload(env);
+        FontFeature::onUnload(env);
+        FontFamilyName::onUnload(env);
+        Drawable::onUnload(env);
+        Color4f::onUnload(env);
+    }
 }
-
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
-    JNIEnv* env;
-    if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_10) != JNI_OK)
-        return JNI_ERR;
-
-    java::lang::Float::onLoad(env);
-    java::lang::String::onLoad(env);
-    java::util::Iterator::onLoad(env);
-    java::util::function::BooleanSupplier::onLoad(env);
-
-    skija::Color4f::onLoad(env);
-    skija::Drawable::onLoad(env);
-    skija::FontFamilyName::onLoad(env);
-    skija::FontFeature::onLoad(env);
-    skija::FontMetrics::onLoad(env);
-    skija::FontVariation::onLoad(env);
-    skija::FontVariationAxis::onLoad(env);
-    skija::ImageInfo::onLoad(env);
-    skija::IPoint::onLoad(env);
-    skija::IRect::onLoad(env);
-    skija::Path::onLoad(env);
-    skija::PathSegment::onLoad(env);
-    skija::Point::onLoad(env);
-    skija::PaintFilterCanvas::onLoad(vm, env);
-    skija::Rect::onLoad(env);
-    skija::RRect::onLoad(env);
-    skija::RSXform::onLoad(env);
-
-    skija::impl::Native::onLoad(env);
-
-    skija::shaper::BidiRun::onLoad(env);
-    skija::shaper::FontMgrRunIterator::onLoad(env);
-    skija::shaper::FontRun::onLoad(env);
-    skija::shaper::HbIcuScriptRunIterator::onLoad(env);
-    skija::shaper::IcuBidiRunIterator::onLoad(env);
-    skija::shaper::LanguageRun::onLoad(env);
-    skija::shaper::RunHandler::onLoad(env);
-    skija::shaper::RunInfo::onLoad(env);
-    skija::shaper::ScriptRun::onLoad(env);
-    skija::shaper::TextBlobBuilderRunHandler::onLoad(env);
-
-    skija::paragraph::LineMetrics::onLoad(env);
-    skija::paragraph::TextBox::onLoad(env);
-    skija::paragraph::DecorationStyle::onLoad(env);
-    skija::paragraph::Shadow::onLoad(env);
-
-    return JNI_VERSION_10;
-}
-
-JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
-    JNIEnv* env;
-    if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_10) != JNI_OK)
-        return;
-
-    java::lang::Float::onUnload(env);
-    java::lang::String::onUnload(env);
-    java::util::Iterator::onUnload(env);
-    java::util::function::BooleanSupplier::onUnload(env);
-
-    skija::Color4f::onUnload(env);
-    skija::Drawable::onUnload(env);
-    skija::FontFamilyName::onUnload(env);
-    skija::FontFeature::onUnload(env);
-    skija::FontMetrics::onUnload(env);
-    skija::FontVariation::onUnload(env);
-    skija::FontVariationAxis::onUnload(env);
-    skija::ImageInfo::onUnload(env);
-    skija::IPoint::onUnload(env);
-    skija::IRect::onUnload(env);
-    skija::Path::onUnload(env);
-    skija::PathSegment::onUnload(env);
-    skija::Point::onUnload(env);
-    skija::PaintFilterCanvas::onUnload(env);
-    skija::Rect::onUnload(env);
-    skija::RRect::onUnload(env);
-    skija::RSXform::onUnload(env);
-
-    skija::shaper::FontMgrRunIterator::onUnload(env);
-    skija::shaper::HbIcuScriptRunIterator::onUnload(env);
-    skija::shaper::IcuBidiRunIterator::onUnload(env);
-    skija::shaper::RunHandler::onUnload(env);
-    skija::shaper::RunInfo::onUnload(env);
-    skija::shaper::TextBlobBuilderRunHandler::onUnload(env);
-
-    skija::paragraph::LineMetrics::onUnload(env);
-    skija::paragraph::TextBox::onUnload(env);
-    skija::paragraph::DecorationStyle::onUnload(env);
-    skija::paragraph::Shadow::onUnload(env);
-}
-
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray matrixArray) {
     if (matrixArray == nullptr)
         return std::unique_ptr<SkMatrix>(nullptr);

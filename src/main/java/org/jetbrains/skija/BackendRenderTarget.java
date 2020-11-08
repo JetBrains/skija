@@ -4,7 +4,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class BackendRenderTarget extends Managed {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public static BackendRenderTarget makeGL(int width, int height, int sampleCnt, int stencilBits, int fbId, int fbFormat) {
         Stats.onNativeCall();

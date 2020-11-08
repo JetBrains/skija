@@ -7,7 +7,7 @@ import org.jetbrains.skija.impl.*;
 
 @Data @With @AllArgsConstructor
 public class SurfaceProps {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public boolean _deviceIndependentFonts;
     public PixelGeometry _pixelGeometry;

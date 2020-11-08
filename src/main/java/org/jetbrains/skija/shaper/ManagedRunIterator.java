@@ -6,7 +6,7 @@ import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
 public abstract class ManagedRunIterator<T> extends Managed implements Iterator<T> {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
 
     @ApiStatus.Internal
     public final ManagedString _text;

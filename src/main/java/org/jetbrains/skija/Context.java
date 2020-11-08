@@ -4,7 +4,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class Context extends RefCnt {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public static Context makeGL() {
         Stats.onNativeCall();

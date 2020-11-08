@@ -3,7 +3,6 @@ package org.jetbrains.skija.examples.lwjgl;
 import java.nio.IntBuffer;
 import java.util.*;
 
-import org.jetbrains.skija.impl.Stats;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.MemoryStack;
@@ -13,6 +12,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import org.jetbrains.skija.*;
+import org.jetbrains.skija.impl.*;
 
 public class Main {
     public static void main(String [] args) throws Exception {
@@ -275,6 +275,8 @@ class Window {
 
     private void loop() {
         GL.createCapabilities();
+        if ("false".equals(System.getProperty("skija.staticLoad")))
+            Library.load();
         context = Context.makeGL();
 
         GLFW.glfwSetWindowSizeCallback(window, (window, width, height) -> {

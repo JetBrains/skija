@@ -4,7 +4,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class ColorSpace extends Managed {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public static class _SRGBHolder {
         static { Stats.onNativeCall(); }

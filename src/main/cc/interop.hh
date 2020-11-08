@@ -18,10 +18,14 @@ namespace java {
         namespace Float {
             extern jclass cls;
             extern jmethodID ctor;
+            void onLoad(JNIEnv* env);
+            void onUnload(JNIEnv* env);
         }
 
         namespace String {
             extern jclass cls;
+            void onLoad(JNIEnv* env);
+            void onUnload(JNIEnv* env);
         }
     }
 
@@ -30,32 +34,45 @@ namespace java {
             extern jclass cls;
             extern jmethodID next;
             extern jmethodID hasNext;
+            void onLoad(JNIEnv* env);
+            void onUnload(JNIEnv* env);
         }
 
         namespace function {
             namespace BooleanSupplier {
                 extern jclass cls;
                 extern jmethodID apply;
+                void onLoad(JNIEnv* env);
+                void onUnload(JNIEnv* env);
             }
         }
     }
+
+    void onLoad(JNIEnv* env);
+    void onUnload(JNIEnv* env);
 }
 
 namespace skija {
     namespace Color4f {
         extern jclass cls;
         extern jmethodID ctor;
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
     }
 
     namespace Drawable {
         extern jclass cls;
         extern jmethodID onDraw;
         extern jmethodID onGetBounds;
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
     }
     
     namespace FontFamilyName {
         extern jclass cls;
         extern jmethodID ctor;
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
     }
 
     namespace FontFeature {
@@ -66,12 +83,16 @@ namespace skija {
         extern jfieldID start;
         extern jfieldID end;
 
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
         std::vector<SkShaper::Feature> fromJavaArray(JNIEnv* env, jobjectArray featuresArr);
     }
 
     namespace FontMetrics {
         extern jclass cls;
         extern jmethodID ctor;
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
         jobject toJava(JNIEnv* env, const SkFontMetrics& m);
     }
 
@@ -85,21 +106,29 @@ namespace skija {
         extern jmethodID ctor;
         extern jfieldID tag;
         extern jfieldID value;
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
     }
 
     namespace FontVariationAxis {
         extern jclass cls;
         extern jmethodID ctor;
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
     }
 
     namespace ImageInfo {
         extern jclass cls;
         extern jmethodID ctor;
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
     }
 
     namespace IPoint {
         extern jclass cls;
         extern jmethodID ctor;
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
         jobject make(JNIEnv* env, float x, float y);
         jobject fromSkIPoint(JNIEnv* env, const SkIPoint& p);
     }
@@ -111,7 +140,8 @@ namespace skija {
         extern jfieldID top;
         extern jfieldID right;
         extern jfieldID bottom;
-
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
         jobject fromSkIRect(JNIEnv* env, const SkIRect& rect);
         std::unique_ptr<SkIRect> toSkIRect(JNIEnv* env, jobject obj);
     }
@@ -119,6 +149,8 @@ namespace skija {
     namespace Path {
         extern jclass cls;
         extern jmethodID ctor;
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
     }
 
     namespace PathSegment {
@@ -129,6 +161,8 @@ namespace skija {
         extern jmethodID ctorQuad;
         extern jmethodID ctorConic;
         extern jmethodID ctorCubic;
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
     }
 
     namespace Point {
@@ -136,6 +170,8 @@ namespace skija {
         extern jmethodID ctor;
         extern jfieldID x;
         extern jfieldID y;
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
         jobject make(JNIEnv* env, float x, float y);
         jobject fromSkPoint(JNIEnv* env, const SkPoint& p);
         jobjectArray fromSkPoints(JNIEnv* env, const std::vector<SkPoint>& ps);
@@ -143,6 +179,8 @@ namespace skija {
 
     namespace PaintFilterCanvas {
         extern jmethodID onFilterId;
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
         bool onFilter(jobject obj, SkPaint& paint);
         jobject attach(JNIEnv* env, jobject obj);
         void detach(jobject obj);
@@ -155,7 +193,8 @@ namespace skija {
         extern jfieldID top;
         extern jfieldID right;
         extern jfieldID bottom;
-
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
         std::unique_ptr<SkRect> toSkRect(JNIEnv* env, jobject rect);
         jobject fromLTRB(JNIEnv* env, float left, float top, float right, float bottom);
         jobject fromSkRect(JNIEnv* env, const SkRect& rect);
@@ -173,7 +212,8 @@ namespace skija {
         extern jfieldID right;
         extern jfieldID bottom;
         extern jfieldID radii;
-
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
         SkRRect toSkRRect(JNIEnv* env, jfloat left, jfloat top, jfloat right, jfloat bottom, jfloatArray jradii);
         jobject fromSkRRect(JNIEnv* env, const SkRRect& rect);   
     }
@@ -181,15 +221,21 @@ namespace skija {
     namespace RSXform {
         extern jclass cls;
         extern jmethodID ctor;
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
     }
 
     namespace impl {
         namespace Native {
             extern jfieldID _ptr;
-
+            void onLoad(JNIEnv* env);
+            void onUnload(JNIEnv* env);
             void* fromJava(JNIEnv* env, jobject obj, jclass cls);
         }
     }
+
+    void onLoad(JNIEnv* env);
+    void onUnload(JNIEnv* env);
 
     class UtfIndicesConverter {
     public:

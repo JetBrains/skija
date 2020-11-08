@@ -6,7 +6,7 @@ import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
 public class IcuBidiRunIterator extends ManagedRunIterator<BidiRun> {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
 
     public IcuBidiRunIterator(ManagedString text, boolean manageText, int bidiLevel) {
         super(_nMake(Native.getPtr(text), bidiLevel), text, manageText);

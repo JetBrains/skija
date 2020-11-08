@@ -5,7 +5,7 @@ import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
 public class TypefaceFontProvider extends FontMgr {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public TypefaceFontProvider() {
         super(_nMake());

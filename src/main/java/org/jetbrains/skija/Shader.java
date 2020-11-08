@@ -4,7 +4,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class Shader extends RefCnt {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public Shader makeWithColorFilter(ColorFilter f) {
         return new Shader(_nMakeWithColorFilter(_ptr, Native.getPtr(f)));

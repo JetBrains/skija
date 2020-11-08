@@ -173,7 +173,7 @@ class SkiaGraphics extends java.awt.Graphics2D {
     }
 
     public void log(String format, Object... args) {
-        System.out.println(indent + String.format(format, args));
+        // System.out.println(indent + String.format(format, args));
     }
 
     @Override

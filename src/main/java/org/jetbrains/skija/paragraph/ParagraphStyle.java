@@ -5,7 +5,7 @@ import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
 public class ParagraphStyle extends Managed {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public ParagraphStyle() {
         super(_nMake(), _finalizerPtr);

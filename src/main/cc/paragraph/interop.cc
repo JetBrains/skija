@@ -62,5 +62,19 @@ namespace skija {
                 env->DeleteGlobalRef(cls);
             }
         }
+
+        void onLoad(JNIEnv* env) {
+            LineMetrics::onLoad(env);
+            TextBox::onLoad(env);
+            DecorationStyle::onLoad(env);
+            Shadow::onLoad(env);
+        }
+
+        void onUnload(JNIEnv* env) {
+            Shadow::onUnload(env);
+            DecorationStyle::onUnload(env);
+            TextBox::onUnload(env);
+            LineMetrics::onUnload(env);
+        } 
     }
 }

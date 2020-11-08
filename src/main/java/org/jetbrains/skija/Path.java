@@ -23,7 +23,7 @@ import org.jetbrains.skija.impl.*;
  * {@link #updateBoundsCache()} to make Path thread safe.</p>
  */
 public class Path extends Managed implements Iterable<PathSegment> {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     /**
      * Constructs an empty Path. By default, Path has no verbs, no {@link Point}, and no weights.

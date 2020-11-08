@@ -5,7 +5,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class ShadowUtils {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     /**
      * Draw an offset spot shadow and outlining ambient shadow for the given path using a disc

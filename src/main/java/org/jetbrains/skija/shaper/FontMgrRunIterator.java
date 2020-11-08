@@ -5,7 +5,7 @@ import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
 public class FontMgrRunIterator extends ManagedRunIterator<FontRun> {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
 
     public FontMgrRunIterator(ManagedString text, boolean manageText, Font font, FontMgr fontMgr) {
         super(_nMake(Native.getPtr(text), Native.getPtr(font), Native.getPtr(fontMgr)), text, manageText);

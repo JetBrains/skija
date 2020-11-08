@@ -5,7 +5,7 @@ import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
 public class TextBlobBuilderRunHandler<T> extends Managed implements RunHandler {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
 
     @ApiStatus.Internal
     public final ManagedString _text;

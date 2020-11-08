@@ -5,7 +5,7 @@ import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
 public class ParagraphBuilder extends Managed {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public ParagraphBuilder(ParagraphStyle style, FontCollection fc) {
         super(_nMake(Native.getPtr(style), Native.getPtr(fc)), _finalizerPtr);

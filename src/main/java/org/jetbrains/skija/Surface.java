@@ -4,7 +4,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class Surface extends RefCnt {
-    static { Library.load(); }
+    static { Library.staticLoad(); }
     
     public static Surface makeFromBackendRenderTarget(Context context, BackendRenderTarget rt, SurfaceOrigin origin, SurfaceColorFormat colorFormat, ColorSpace colorSpace) {
         Stats.onNativeCall();
