@@ -9,7 +9,7 @@ public class TextStyle extends Managed {
     
     @ApiStatus.Internal
     public TextStyle(long ptr) {
-        super(ptr, _finalizerPtr);
+        super(ptr, _FinalizerHolder.PTR);
     }
 
     public TextStyle() {
@@ -246,9 +246,13 @@ public class TextStyle extends Managed {
         return this;
     }
 
-    public static native long  _nMake();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
+
     public static native long  _nGetFinalizer();
-    public static final  long  _finalizerPtr = _nGetFinalizer();
+    public static native long  _nMake();
     public static native boolean _nEquals(long ptr, long otherPtr);
     public static native boolean _nAttributeEquals(long ptr, int attribute, long otherPtr);
     public static native int   _nGetColor(long ptr);

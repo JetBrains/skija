@@ -8,7 +8,7 @@ public class ParagraphStyle extends Managed {
     static { Library.staticLoad(); }
     
     public ParagraphStyle() {
-        super(_nMake(), _finalizerPtr);
+        super(_nMake(), _FinalizerHolder.PTR);
         Stats.onNativeCall();
     }
 
@@ -122,7 +122,11 @@ public class ParagraphStyle extends Managed {
         return this;
     }
 
-    @ApiStatus.Internal public static final  long    _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
+
     @ApiStatus.Internal public static native long    _nGetFinalizer();
     @ApiStatus.Internal public static native long    _nMake();
     @ApiStatus.Internal public static native boolean _nEquals(long ptr, long otherPtr);

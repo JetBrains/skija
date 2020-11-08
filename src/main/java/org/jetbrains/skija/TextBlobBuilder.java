@@ -8,7 +8,7 @@ public class TextBlobBuilder extends Managed {
     
     @ApiStatus.Internal
     public TextBlobBuilder(long ptr) {
-        super(ptr, _finalizerPtr);
+        super(ptr, _FinalizerHolder.PTR);
     }
 
     /**
@@ -181,7 +181,11 @@ public class TextBlobBuilder extends Managed {
         return this;
     }
 
-    @ApiStatus.Internal public static final long _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
+
     @ApiStatus.Internal public static native long _nGetFinalizer();
     @ApiStatus.Internal public static native long _nMake();
     @ApiStatus.Internal public static native long _nBuild(long ptr);

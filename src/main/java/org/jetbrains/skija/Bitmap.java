@@ -9,7 +9,7 @@ public class Bitmap extends Managed {
     
     @ApiStatus.Internal
     public Bitmap(long ptr) {
-        super(ptr, _finalizerPtr);
+        super(ptr, _FinalizerHolder.PTR);
     }
 
     /**
@@ -860,7 +860,11 @@ public class Bitmap extends Managed {
         return new Shader(_nMakeShader(_ptr, tmx.ordinal(), tmy.ordinal(), localMatrix == null ? null : localMatrix._mat));
     }
 
-    @ApiStatus.Internal public static final  long    _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
+
     @ApiStatus.Internal public static native long    _nGetFinalizer();
     @ApiStatus.Internal public static native long    _nMake();
     @ApiStatus.Internal public static native long    _nMakeClone(long ptr);

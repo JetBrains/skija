@@ -76,10 +76,14 @@ public class Data extends Managed {
 
     @ApiStatus.Internal
     public Data(long ptr) {
-        super(ptr, _finalizerPtr);
+        super(ptr, _FinalizerHolder.PTR);
     }
 
-    public static final  long    _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
+
     public static native long    _nGetFinalizer();
     public static native long    _nSize(long ptr);
     public static native byte[]  _nBytes(long ptr, long offset, long length);

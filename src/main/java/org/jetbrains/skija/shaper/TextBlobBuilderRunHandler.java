@@ -71,7 +71,6 @@ public class TextBlobBuilderRunHandler<T> extends Managed implements RunHandler 
 
     @ApiStatus.Internal
     public static class _FinalizerHolder {
-        static { Stats.onNativeCall(); }
         public static final long PTR = _nGetFinalizer();
     }
 

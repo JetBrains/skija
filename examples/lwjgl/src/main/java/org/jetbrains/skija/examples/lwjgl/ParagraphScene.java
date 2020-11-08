@@ -23,16 +23,16 @@ public class ParagraphScene implements Scene {
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         if (System.currentTimeMillis() - lastUpdate > 1000) {
             ParagraphCache cache = fc.getParagraphCache();
-            if ((System.currentTimeMillis() / 1000) % 2 == 0) {
-                System.out.println("ParagrapCache.enabled = true");
-                cache.reset();
-                cache.setEnabled(true);
-            } else {
-                System.out.println("ParagrapCache.enabled = false");
-                // cache.abandon();
-                cache.setEnabled(false);
-            }
-            cache.printStatistics();
+            // if ((System.currentTimeMillis() / 1000) % 2 == 0) {
+            //     System.out.println("ParagrapCache.enabled = true");
+            //     cache.reset();
+            //     cache.setEnabled(true);
+            // } else {
+            //     System.out.println("ParagrapCache.enabled = false");
+            //     // cache.abandon();
+            //     cache.setEnabled(false);
+            // }
+            // cache.printStatistics();
             lastUpdate = System.currentTimeMillis();
         }
 

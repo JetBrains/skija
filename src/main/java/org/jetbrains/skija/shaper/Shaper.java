@@ -172,7 +172,6 @@ public class Shaper extends Managed {
 
     @ApiStatus.Internal
     public static class _FinalizerHolder {
-        static { Stats.onNativeCall(); }
         public static final long PTR = _nGetFinalizer();
     }
 

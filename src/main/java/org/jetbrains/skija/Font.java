@@ -10,12 +10,12 @@ public class Font extends Managed {
     
     @ApiStatus.Internal
     public Font(long ptr) {
-        super(ptr, _finalizerPtr);
+        super(ptr, _FinalizerHolder.PTR);
     }
 
     @ApiStatus.Internal
     public Font(long ptr, boolean managed) {
-        super(ptr, _finalizerPtr, managed);
+        super(ptr, _FinalizerHolder.PTR, managed);
     }
 
     /**
@@ -482,7 +482,11 @@ public class Font extends Managed {
         return _nGetSpacing(_ptr);
     }
 
-    @ApiStatus.Internal public static final  long    _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
+
     @ApiStatus.Internal public static native long    _nGetFinalizer();
     @ApiStatus.Internal public static native long    _nMakeDefault();
     @ApiStatus.Internal public static native long    _nMakeTypeface(long typefacePtr);

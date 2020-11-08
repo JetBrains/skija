@@ -9,7 +9,7 @@ public class PathMeasure extends Managed {
     
     @ApiStatus.Internal
     public PathMeasure(long ptr) {
-        super(ptr, _finalizerPtr);
+        super(ptr, _FinalizerHolder.PTR);
     }
 
     public PathMeasure() {
@@ -143,7 +143,11 @@ public class PathMeasure extends Managed {
         return _nNextContour(_ptr);
     }
 
-    @ApiStatus.Internal public static final  long    _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
+
     @ApiStatus.Internal public static native long    _nGetFinalizer();
     @ApiStatus.Internal public static native long    _nMake();
     @ApiStatus.Internal public static native long    _nMakePath(long pathPtr, boolean forceClosed, float resScale);

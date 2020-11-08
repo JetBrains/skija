@@ -141,10 +141,14 @@ public class Paragraph extends Managed {
 
     @ApiStatus.Internal
     public Paragraph(long ptr) {
-        super(ptr, _finalizerPtr); Stats.onNativeCall();
+        super(ptr, _FinalizerHolder.PTR); Stats.onNativeCall();
     }
 
-    public static final  long  _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
+
     public static native long  _nGetFinalizer();
     public static native float _nGetMaxWidth(long ptr);
     public static native float _nGetHeight(long ptr);

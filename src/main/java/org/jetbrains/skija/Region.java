@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
 public class Region extends Managed {
@@ -15,7 +16,7 @@ public class Region extends Managed {
     }
 
     public Region() {
-        super(_nMake(), _finalizerPtr);
+        super(_nMake(), _FinalizerHolder.PTR);
         Stats.onNativeCall();
     }
 
@@ -156,7 +157,11 @@ public class Region extends Managed {
         return _nOpRegionRegion(_ptr, Native.getPtr(a), Native.getPtr(b), op.ordinal());
     }
 
-    public static final  long    _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
+
     public static native long    _nMake();
     public static native long    _nGetFinalizer();
     public static native boolean _nSet(long ptr, long regoinPtr);

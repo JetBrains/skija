@@ -36,7 +36,6 @@ public abstract class ManagedRunIterator<T> extends Managed implements Iterator<
 
     @ApiStatus.Internal
     public static class _FinalizerHolder {
-        static { Stats.onNativeCall(); }
         public static final long PTR = _nGetFinalizer();
     }
 

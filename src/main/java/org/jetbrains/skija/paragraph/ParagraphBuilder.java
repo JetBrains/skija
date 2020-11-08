@@ -8,7 +8,7 @@ public class ParagraphBuilder extends Managed {
     static { Library.staticLoad(); }
     
     public ParagraphBuilder(ParagraphStyle style, FontCollection fc) {
-        super(_nMake(Native.getPtr(style), Native.getPtr(fc)), _finalizerPtr);
+        super(_nMake(Native.getPtr(style), Native.getPtr(fc)), _FinalizerHolder.PTR);
         Stats.onNativeCall();
     }
 
@@ -47,7 +47,11 @@ public class ParagraphBuilder extends Managed {
         return new Paragraph(_nBuild(_ptr));
     }
 
-    public static final long  _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
+
     public static native long _nMake(long paragraphStylePtr, long fontCollectionPtr);
     public static native long _nGetFinalizer();
     public static native void _nPushStyle(long ptr, long textStylePtr);

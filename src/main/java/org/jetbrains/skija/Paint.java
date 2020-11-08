@@ -7,13 +7,13 @@ public class Paint extends Managed {
     static { Library.staticLoad(); }
     
     public Paint() {
-        super(_nMake(), _finalizerPtr);
+        super(_nMake(), _FinalizerHolder.PTR);
         Stats.onNativeCall();
     }
 
     @ApiStatus.Internal
     public Paint(long ptr, boolean managed) {
-        super(ptr, _finalizerPtr, managed);
+        super(ptr, _FinalizerHolder.PTR, managed);
     }
 
     @ApiStatus.Internal @Override
@@ -281,7 +281,11 @@ public class Paint extends Managed {
         return this;
     }
 
-    public static final  long  _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
+
     public static native long  _nMake();
     public static native long  _nGetFinalizer();
     public static native boolean _nEquals(long ptr, long otherPtr);

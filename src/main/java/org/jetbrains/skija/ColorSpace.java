@@ -39,12 +39,12 @@ public class ColorSpace extends Managed {
 
     @ApiStatus.Internal
     public ColorSpace(long ptr) {
-        super(ptr, _finalizerPtr, true);
+        super(ptr, _FinalizerHolder.PTR, true);
     }
 
     @ApiStatus.Internal
     public ColorSpace(long ptr, boolean managed) {
-        super(ptr, _finalizerPtr, managed);
+        super(ptr, _FinalizerHolder.PTR, managed);
     }
 
     /**
@@ -79,7 +79,11 @@ public class ColorSpace extends Managed {
         return _nIsSRGB(_ptr);
     }
     
-    public static final long _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
+
     public static native long _nGetFinalizer();
     public static native long _nMakeSRGB();
     public static native long _nMakeDisplayP3();

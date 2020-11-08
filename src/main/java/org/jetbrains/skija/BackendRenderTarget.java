@@ -13,10 +13,14 @@ public class BackendRenderTarget extends Managed {
 
     @ApiStatus.Internal
     public BackendRenderTarget(long ptr) {
-        super(ptr, _finalizerPtr);
+        super(ptr, _FinalizerHolder.PTR);
     }
 
-    public static final long _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
+
     public static native long _nGetFinalizer();
     public static native long _nMakeGL(int width, int height, int sampleCnt, int stencilBits, int fbId, int fbFormat);
 }

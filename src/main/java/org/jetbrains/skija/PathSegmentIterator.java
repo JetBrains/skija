@@ -39,7 +39,11 @@ public class PathSegmentIterator extends Managed implements Iterator<PathSegment
         return i;
     }
 
-    public static final  long _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
+
     public static native long _nMake(long pathPtr, boolean forceClose);
     public static native long _nGetFinalizer();
     public static native PathSegment _nNext(long ptr);

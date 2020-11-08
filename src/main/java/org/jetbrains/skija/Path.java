@@ -1807,7 +1807,6 @@ public class Path extends Managed implements Iterable<PathSegment> {
 
     @ApiStatus.Internal
     public static class _FinalizerHolder {
-        static { Stats.onNativeCall(); }
         public static final long PTR = _nGetFinalizer();
     }
 

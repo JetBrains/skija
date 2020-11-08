@@ -8,7 +8,7 @@ public class TextBlob extends Managed {
     
     @ApiStatus.Internal
     public TextBlob(long ptr) {
-        super(ptr, _finalizerPtr);
+        super(ptr, _FinalizerHolder.PTR);
     }
 
     /** 
@@ -117,7 +117,11 @@ public class TextBlob extends Managed {
     }
 
 
-    @ApiStatus.Internal public static final long _finalizerPtr = _nGetFinalizer();
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
+
     @ApiStatus.Internal public static native long _nGetFinalizer();
     @ApiStatus.Internal public static native Rect _nBounds(long ptr);
     @ApiStatus.Internal public static native int  _nGetUniqueId(long ptr);
