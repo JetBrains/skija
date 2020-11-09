@@ -94,7 +94,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader__1nMakeTwoPoi
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader__1nMakeSweepGradient
-  (JNIEnv* env, jclass jclass, jfloat x, jfloat y, jfloat start, jfloat end, jfloat y1, jfloat r1, jintArray colorsArray, jfloatArray posArray, jint tileModeInt, jint flags, jfloatArray matrixArray) {
+  (JNIEnv* env, jclass jclass, jfloat x, jfloat y, jfloat start, jfloat end, jintArray colorsArray, jfloatArray posArray, jint tileModeInt, jint flags, jfloatArray matrixArray) {
     jint* colors = env->GetIntArrayElements(colorsArray, nullptr);
     float* pos = posArray == nullptr ? nullptr : env->GetFloatArrayElements(posArray, nullptr);
     SkTileMode tileMode = static_cast<SkTileMode>(tileModeInt);
@@ -107,7 +107,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader__1nMakeSweepG
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader__1nMakeSweepGradientCS
-  (JNIEnv* env, jclass jclass, jfloat x, jfloat y, jfloat start, jfloat end, jfloat y1, jfloat r1, jfloatArray colorsArray, jlong colorSpacePtr, jfloatArray posArray, jint tileModeInt, jint flags, jfloatArray matrixArray) {
+  (JNIEnv* env, jclass jclass, jfloat x, jfloat y, jfloat start, jfloat end, jfloatArray colorsArray, jlong colorSpacePtr, jfloatArray posArray, jint tileModeInt, jint flags, jfloatArray matrixArray) {
     float* colors = env->GetFloatArrayElements(colorsArray, nullptr);
     sk_sp<SkColorSpace> colorSpace = sk_ref_sp<SkColorSpace>(reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr)));
     float* pos = env->GetFloatArrayElements(posArray, nullptr);
