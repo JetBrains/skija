@@ -34,9 +34,8 @@ public class Library {
         } else
             throw new RuntimeException("Unknown operation system");
         
-        _nAfterLoad();
-
         _loaded = true;
+        _nAfterLoad();
     }
 
     // https://github.com/adamheinrich/native-utils/blob/e6a39489662846a77504634b6fafa4995ede3b1d/src/main/java/cz/adamh/utils/NativeUtils.java
