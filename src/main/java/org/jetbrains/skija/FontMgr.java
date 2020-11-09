@@ -50,10 +50,21 @@ public class FontMgr extends RefCnt {
      * {@link #makeStyleSet(int)} or {@link #matchFamily(String)} due to hidden or
      * auto-activated fonts.
      */
+    @Nullable
     public Typeface matchFamilyStyle(String familyName, FontStyle style) {
         Stats.onNativeCall();
         long ptr = _nMatchFamilyStyle(_ptr, familyName, style._value);
         return ptr == 0 ? null : new Typeface(ptr);
+    }
+
+    @Nullable
+    public Typeface matchFamiliesStyle(String[] families, FontStyle style) {
+        for (String family: families) {
+            var typeface = matchFamilyStyle(family, style);
+            if (typeface != null)
+                return typeface;
+        }
+        return null;
     }
 
     /**
@@ -75,6 +86,16 @@ public class FontMgr extends RefCnt {
         Stats.onNativeCall();
         long ptr = _nMatchFamilyStyleCharacter(_ptr, familyName, style._value, bcp47, character);
         return ptr == 0 ? null : new Typeface(ptr);
+    }
+
+    @Nullable
+    public Typeface matchFamiliesStyleCharacter(String[] families, FontStyle style, @Nullable String[] bcp47, int character) {
+        for (String family: families) {
+            var typeface = matchFamilyStyleCharacter(family, style, bcp47, character);
+            if (typeface != null)
+                return typeface;
+        }
+        return null;
     }
 
     /**
