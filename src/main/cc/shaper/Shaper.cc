@@ -102,7 +102,7 @@ public:
     }
 
     jint onConsume(jobject runObj) override {
-        long fontPtr = fEnv->CallLongMethod(runObj, skija::shaper::FontRun::_getFontPtr);
+        jlong fontPtr = fEnv->CallLongMethod(runObj, skija::shaper::FontRun::_getFontPtr);
         fFont = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(fontPtr));
         return fEnv->GetIntField(runObj, skija::shaper::FontRun::_end);
     }

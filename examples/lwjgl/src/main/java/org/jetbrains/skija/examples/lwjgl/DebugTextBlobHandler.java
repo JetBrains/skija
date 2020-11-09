@@ -18,11 +18,6 @@ public class DebugTextBlobHandler implements RunHandler, AutoCloseable {
         _builder = new TextBlobBuilder();
     }
 
-    public TextBlob shape(Shaper shaper, String text, Font font, float width) {
-        shaper.shape(text, font, FontMgr.getDefault(), null, true, width, this);
-        return _builder.build();
-    }
-
     @Override
     public void close() {
         for (var info: _infos)
@@ -62,7 +57,7 @@ public class DebugTextBlobHandler implements RunHandler, AutoCloseable {
     public void commitRun(RunInfo info, short[] glyphs, Point[] positions, int[] clusters) {
         // System.out.println("advance=" + info._advanceX
         //                    + " glyphCount=" + info._glyphCount
-        //                    + " utf8Range=" + info._utf8RangeBegin + ".." + info.getUtf8RangeEnd() 
+        //                    + " utf8Range=" + info._rangeBegin + ".." + info.getRangeEnd() 
         //                    + " positions=" + Arrays.stream(positions).map(Point::getX).collect(Collectors.toList()));
         var font = new Font(info._fontPtr, false);
         _builder.appendRunPos(font, glyphs, positions);
