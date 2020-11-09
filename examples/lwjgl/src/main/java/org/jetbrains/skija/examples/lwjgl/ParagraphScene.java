@@ -242,11 +242,11 @@ public class ParagraphScene implements Scene {
                 p.paint(canvas, 0, 0);
                 canvas.translate(0, p.getHeight());
 
-                try (var typeface = fc.defaultFallback();
+                try (var typeface = Typeface.makeDefault();
                      var font     = new Font(typeface, 16);
                      var shaper   = Shaper.make();
                      var blob     = shaper.shape("idx: " + glyphIdx, font);
-                     var paint    = new Paint().setColor(0xFFcc3333))
+                     var paint    = new Paint().setColor(0xFFcc3333);)
                 {
                     canvas.drawTextBlob(blob, 0, 0, font, paint);
                     canvas.translate(0, blob.getBounds().getHeight());

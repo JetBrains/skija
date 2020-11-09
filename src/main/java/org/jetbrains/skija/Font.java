@@ -30,8 +30,8 @@ public class Font extends Managed {
      * @param typeface  typeface and style used to draw and measure text
      * @return          Font with Typeface and default size
      */
-    public Font(Typeface typeface) {
-        this(_nMakeTypeface(Native.getPtr(typeface)));
+    public Font(@NotNull Typeface typeface) {
+        this(_nMakeTypeface(typeface._ptr));
         Stats.onNativeCall();
     }
 
@@ -40,8 +40,8 @@ public class Font extends Managed {
      * @param size      typographic size of the text
      * @return          initialized Font
      */
-    public Font(Typeface typeface, float size) {
-        this(_nMakeTypefaceSize(Native.getPtr(typeface), size));
+    public Font(@NotNull Typeface typeface, float size) {
+        this(_nMakeTypefaceSize(typeface._ptr, size));
         Stats.onNativeCall();
     }
 
@@ -56,8 +56,8 @@ public class Font extends Managed {
      * @param skewX     additional shear on x-axis relative to y-axis
      * @return          initialized Font
      */
-    public Font(Typeface typeface, float size, float scaleX, float skewX) {
-        this(_nMakeTypefaceSizeScaleSkew(Native.getPtr(typeface), size, scaleX, skewX));
+    public Font(@NotNull Typeface typeface, float size, float scaleX, float skewX) {
+        this(_nMakeTypefaceSizeScaleSkew(typeface._ptr, size, scaleX, skewX));
         Stats.onNativeCall();
     }
 

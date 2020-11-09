@@ -1,1 +1,1 @@
-del /q target
+rmdir /s /q target
