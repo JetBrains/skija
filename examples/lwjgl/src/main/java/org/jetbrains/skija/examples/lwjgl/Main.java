@@ -16,9 +16,19 @@ import org.jetbrains.skija.impl.*;
 
 public class Main {
     public static void main(String [] args) throws Exception {
-        Window.lwjglInit();
+        GLFWErrorCallback.createPrint(System.err).set();
+        if (!glfwInit())
+            throw new IllegalStateException("Unable to initialize GLFW");
+
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        new Window((int) (vidmode.width() * 0.75), (int) (vidmode.height() * 0.75)).run();
+        int width = (int) (vidmode.width() * 0.75);
+        int height = (int) (vidmode.height() * 0.75);
+        IRect bounds = IRect.makeXYWH(
+                         Math.max(0, (vidmode.width() - width) / 2),
+                         Math.max(0, (vidmode.height() - height) / 2),
+                         width,
+                         height);
+        new Window().run(bounds);
     }
 }
 
@@ -27,67 +37,12 @@ class Window {
     public int width;
     public int height;
     public float dpi = 1f;
-    public int left;
-    public int top;
     public int xpos = 0;
     public int ypos = 0;
     public boolean vsync = true;
     public boolean stats = true;
-    private Typeface interRegular;
-    private Font     interRegular13tnum;
+    private Font interRegular13tnum;
     private int[] refreshRates;
-
-    public Window(int width, int height) {
-        this.width = width;
-        this.height = height;
-        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        this.left = Math.max(0, (vidmode.width() - width) / 2);
-        this.top = Math.max(0, (vidmode.height() - height) / 2);
-        xpos = width / 2;
-        ypos = height / 2;
-        refreshRates = getRefreshRates();
-    }
-
-    public Window(int width, int height, int left, int top) {
-        this.width = width;
-        this.height = height;
-        this.left = left;
-        this.top = top;
-    }
-
-    public void run() {
-        init();
-        loop();
-
-        glfwFreeCallbacks(window);
-        glfwDestroyWindow(window);
-        glfwTerminate();
-        glfwSetErrorCallback(null).free();
-    }
-
-    public static void lwjglInit() {
-        GLFWErrorCallback.createPrint(System.err).set();
-        if (!glfwInit())
-            throw new IllegalStateException("Unable to initialize GLFW");
-    }
-
-    private int[] getFramebufferSize(long window) {
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer pWidth = stack.mallocInt(1);
-            IntBuffer pHeight = stack.mallocInt(1);
-            glfwGetFramebufferSize(window, pWidth, pHeight);
-            return new int[] {pWidth.get(0), pHeight.get(0)};
-        }
-    }
-
-    private int[] getWindowSize(long window) {
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer pWidth = stack.mallocInt(1);
-            IntBuffer pHeight = stack.mallocInt(1);
-            glfwGetWindowSize(window, pWidth, pHeight);
-            return new int[] {pWidth.get(0), pHeight.get(0)};
-        }
-    }
 
     private int[] getRefreshRates() {
         var monitors = glfwGetMonitors();
@@ -98,12 +53,40 @@ class Window {
         return res;
     }
 
-    private void init() {
+    public void run(IRect bounds) {
+        refreshRates = getRefreshRates();
+
+        createWindow(bounds);
+        loop();
+
+        glfwFreeCallbacks(window);
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
+    }
+
+    private void updateDimensions() {
+        int[] width = new int[1];
+        int[] height = new int[1];
+        glfwGetFramebufferSize(window, width, height);
+
+        float[] xscale = new float[1];
+        float[] yscale = new float[1];
+        glfwGetWindowContentScale(window, xscale, yscale);
+        assert xscale[0] == yscale[0] : "Horizontal dpi=" + xscale[0] + ", vertical dpi=" + yscale[0];
+
+        this.width = (int) (width[0] / xscale[0]);
+        this.height = (int) (height[0] / yscale[0]);
+        this.dpi = xscale[0];
+        System.out.println("FramebufferSize " + width[0] + "x" + height[0] + ", scale " + this.dpi + ", window " + this.width + "x" + this.height);
+    }
+
+    private void createWindow(IRect bounds) {
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
-        window = glfwCreateWindow(width, height, "Skija LWJGL Demo", NULL, NULL);
+        window = glfwCreateWindow(bounds.getWidth(), bounds.getHeight(), "Skija LWJGL Demo", NULL, NULL);
         if (window == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
 
@@ -112,15 +95,10 @@ class Window {
                 glfwSetWindowShouldClose(window, true);
         });
 
-        int[] wSize = getWindowSize(window);
-        width = wSize[0];
-        height = wSize[1];
-
-        int[] fbSize = getFramebufferSize(window);
-        dpi = fbSize[0] / width;
-        assert fbSize[1] / height == dpi : "Horizontal dpi=" + dpi + ", vertical dpi=" + fbSize[1] / height;
-
-        glfwSetWindowPos(window, left, top);
+        glfwSetWindowPos(window, bounds.getLeft(), bounds.getTop());
+        updateDimensions();
+        xpos = width / 2;
+        ypos = height / 2;
 
         glfwMakeContextCurrent(window);
         glfwSwapInterval(vsync ? 1 : 0); // Enable v-sync
@@ -133,8 +111,6 @@ class Window {
     private Canvas canvas;
 
     private void initSkia() {
-        System.out.println("Buffer " + width + "x" + height + "@" + dpi);
-
         Stats.enabled = true;
 
         canvas = null;
@@ -280,13 +256,7 @@ class Window {
         context = Context.makeGL();
 
         GLFW.glfwSetWindowSizeCallback(window, (window, width, height) -> {
-            this.width = width;
-            this.height = height;
-
-            int[] fbSize = getFramebufferSize(window);
-            dpi = fbSize[0] / width;
-            assert fbSize[1] / height == dpi : "Horizontal dpi=" + dpi + ", vertical dpi=" + fbSize[1] / height;
-
+            updateDimensions();
             initSkia();
             draw();
         });
@@ -361,7 +331,7 @@ class Window {
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
         currentScene = "RunIterator";
-        interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
+        var interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();
 
