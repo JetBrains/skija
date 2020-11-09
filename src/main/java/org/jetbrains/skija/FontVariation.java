@@ -40,6 +40,6 @@ public class FontVariation {
     }
 
     public static FontVariation[] parse(String s) {
-        return _splitPattern.splitAsStream​(s).map(FontVariation::parseOne).toArray(FontVariation[]::new);
+        return _splitPattern.splitAsStream(s).map(FontVariation::parseOne).toArray(FontVariation[]::new);
     }
 }

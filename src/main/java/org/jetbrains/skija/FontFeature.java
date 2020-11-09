@@ -75,6 +75,6 @@ public class FontFeature {
     }
 
     public static FontFeature[] parse(String s) {
-        return _splitPattern.splitAsStream​(s).map(FontFeature::parseOne).toArray(FontFeature[]::new);
+        return _splitPattern.splitAsStream(s).map(FontFeature::parseOne).toArray(FontFeature[]::new);
     }
 }
