@@ -262,8 +262,13 @@ class Window {
         });
 
         glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
-            this.xpos = (int) xpos;
-            this.ypos = (int) ypos;
+            if(System.getProperty("os.name").toLowerCase().contains("windows")) {
+                this.xpos = (int) (xpos / dpi);
+                this.ypos = (int) (ypos / dpi);
+            } else {
+                this.xpos = (int) xpos;
+                this.ypos = (int) ypos;
+            }
         });
 
         glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
