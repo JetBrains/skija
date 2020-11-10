@@ -11,5 +11,6 @@
 [v] Share ManagedString between all Iterators in Shaper
 [v] Lazy Font construction in RunInfo
 [ ] GetPrimitiveArrayCritical
-[ ] Fix icudtl.dat on Windows
-[ ] Fix Windows demo
+[v] Fix icudtl.dat on Windows
+[v] Fix Windows demo
+[ ] Get rid of skia submodule, update Skia version in README

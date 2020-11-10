@@ -68,25 +68,49 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Typeface__1nMakeDefa
     return reinterpret_cast<jlong>(SkTypeface::MakeDefault().release());
 }
 
+// TODO remove after https://bugs.chromium.org/p/skia/issues/detail?id=10929
+sk_sp<SkTypeface> setDefaultVariationCoords(sk_sp<SkTypeface> face) {
+    #if defined(SK_BUILD_FOR_WIN)
+        int count = face->getVariationDesignParameters(nullptr, 0);
+        if (count > 0) {
+            std::vector<SkFontParameters::Variation::Axis> params(count);
+            face->getVariationDesignParameters(params.data(), count);
+            std::vector<SkFontArguments::VariationPosition::Coordinate> coords(count);
+            for (int i = 0; i < count; ++i) {
+                coords[i].axis = params[i].tag;
+                coords[i].value = params[i].def;
+            }
+            SkFontArguments arg;
+            arg.setVariationDesignPosition({coords.data(), count});
+            return face->makeClone(arg);
+        }
+    #endif
+
+    return face;
+}
+
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Typeface__1nMakeFromName
   (JNIEnv* env, jclass jclass, jstring nameStr, jint styleValue) {
     SkString name = skString(env, nameStr);
     SkFontStyle style = skija::FontStyle::fromJava(styleValue);
-    SkTypeface* instance = SkTypeface::MakeFromName(name.c_str(), style).release();
-    return reinterpret_cast<jlong>(instance);
+    sk_sp<SkTypeface> instance = SkTypeface::MakeFromName(name.c_str(), style);
+    SkTypeface* ptr = setDefaultVariationCoords(instance).release();
+    return reinterpret_cast<jlong>(ptr);
 }
     
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Typeface__1nMakeFromFile
   (JNIEnv* env, jclass jclass, jstring pathStr, jint index) {
     SkString path = skString(env, pathStr);
-    SkTypeface* ptr = SkTypeface::MakeFromFile(path.c_str(), index).release();
+    sk_sp<SkTypeface> instance = SkTypeface::MakeFromFile(path.c_str(), index);
+    SkTypeface* ptr = setDefaultVariationCoords(instance).release();
     return reinterpret_cast<jlong>(ptr);
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Typeface__1nMakeFromData
   (JNIEnv* env, jclass jclass, jlong dataPtr, jint index) {
     SkData* data = reinterpret_cast<SkData*>(static_cast<uintptr_t>(dataPtr));
-    SkTypeface* ptr = SkTypeface::MakeFromData(sk_ref_sp(data), index).release();
+    sk_sp<SkTypeface> instance = SkTypeface::MakeFromData(sk_ref_sp(data), index);
+    SkTypeface* ptr = setDefaultVariationCoords(instance).release();
     return reinterpret_cast<jlong>(ptr);
 }
 
