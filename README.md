@@ -204,7 +204,7 @@ Download prebuilt Skia from [this repository](https://github.com/JetBrains/skia-
 Unpack and set
 
 ```
-export SKIA_DIR=~/Downloads/Skia-m87-a0c82f0-macos-Release-x64
+export SKIA_DIR=~/Downloads/Skia-m87-4893488-macos-Release-x64
 ```
 
 To build Skia from scratch, consult [JetBrains/skia-build](https://github.com/JetBrains/skia-build).
