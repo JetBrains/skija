@@ -43,6 +43,7 @@ class Window {
     public boolean stats = true;
     private Font interRegular13tnum;
     private int[] refreshRates;
+    private String os = System.getProperty("os.name").toLowerCase();
 
     private int[] getRefreshRates() {
         var monitors = glfwGetMonitors();
@@ -262,12 +263,12 @@ class Window {
         });
 
         glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
-            if(System.getProperty("os.name").toLowerCase().contains("windows")) {
-                this.xpos = (int) (xpos / dpi);
-                this.ypos = (int) (ypos / dpi);
-            } else {
+            if(os.contains("mac") || os.contains("darwin")) {
                 this.xpos = (int) xpos;
                 this.ypos = (int) ypos;
+            } else {
+                this.xpos = (int) (xpos / dpi);
+                this.ypos = (int) (ypos / dpi);
             }
         });
 
@@ -335,8 +336,8 @@ class Window {
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Font Variations";
-        var interRegular = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
+        currentScene = "Font";
+        var interRegular = Typeface.makeFromFile("fonts/InterHinted-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();
 

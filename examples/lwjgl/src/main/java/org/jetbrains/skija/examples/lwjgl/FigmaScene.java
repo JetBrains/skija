@@ -16,15 +16,18 @@ public class FigmaScene implements Scene {
 
     @SneakyThrows
     public FigmaScene() {
-        try (var typeface = Typeface.makeFromFile("fonts/Inter-V.otf");) { // FontMgr.getDefault().matchFamilyStyle("System Font", FontStyle.NORMAL);
+        try (var typeface = Typeface.makeFromFile("fonts/InterHinted-Regular.ttf");) { // FontMgr.getDefault().matchFamilyStyle("System Font", FontStyle.NORMAL);
             uiFont = new Font(typeface, 11);
+            uiFont.setSubpixel(true);
             metrics.put(uiFont, uiFont.getMetrics());
 
             uiFontSmall = new Font(typeface, 9);
+            uiFontSmall.setSubpixel(true);
             metrics.put(uiFontSmall, uiFontSmall.getMetrics());
 
-            try (var medium = typeface.makeClone(new FontVariation("wght", 700))) {
+            try (var medium = Typeface.makeFromFile("fonts/InterHinted-Bold.ttf");) {
                 uiFontBold = new Font(medium, 11);
+                uiFontBold.setSubpixel(true);
                 metrics.put(uiFontBold, uiFontBold.getMetrics());
             }
         }

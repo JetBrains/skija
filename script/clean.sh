@@ -1,4 +1,6 @@
-#!/usr/bin/env -S zsh -euo pipefail
+#!/bin/bash
+set -o errexit -o nounset -o pipefail
+cd "`dirname $0`/.."
 
-rm -rf `dirname $0`/../target/*
-rm -rf `dirname $0`/../examples/lwjgl/target/*
+rm -rf target/*
+rm -rf examples/lwjgl/target/*

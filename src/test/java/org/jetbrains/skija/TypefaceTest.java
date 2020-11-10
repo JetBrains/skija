@@ -13,8 +13,8 @@ public class TypefaceTest implements Executable {
     public void execute() throws Exception {
         boolean isLinux = System.getProperty("os.name").equals("Linux");
 
-        Typeface inter = Typeface.makeFromFile("src/test/resources/fonts/Inter-Regular.ttf");
-        Typeface interV = Typeface.makeFromFile("src/test/resources/fonts/Inter-V.otf");
+        Typeface inter = Typeface.makeFromFile("src/test/resources/fonts/InterHinted-Regular.ttf");
+        Typeface interV = Typeface.makeFromFile("src/test/resources/fonts/Inter-V.ttf");
         Typeface jbMono = Typeface.makeFromFile("src/test/resources/fonts/JetBrainsMono-Regular.ttf");
         Typeface jbMonoBold = Typeface.makeFromData(Data.makeFromFileName("src/test/resources/fonts/JetBrainsMono-Bold.ttf"));
 
@@ -53,11 +53,11 @@ public class TypefaceTest implements Executable {
             assertEquals("Arial", Typeface.makeFromName("Arial", FontStyle.NORMAL).getFamilyName());
 
         int[] Skia = new int[] { 83, 107, 105, 97 };
-        assertArrayEquals(new short[] { 393, 709, 673, 501 }, inter.getUTF32GlyphIds(Skia));
-        assertArrayEquals(new short[] { 393, 709, 673, 501 }, inter.getStringGlyphIds("Skia"));
-        assertEquals(Short.valueOf((short) 393), inter.getUTF32GlyphId(83));
+        assertArrayEquals(new short[] { 394, 713, 677, 503 }, inter.getUTF32GlyphIds(Skia));
+        assertArrayEquals(new short[] { 394, 713, 677, 503 }, inter.getStringGlyphIds("Skia"));
+        assertEquals(Short.valueOf((short) 394), inter.getUTF32GlyphId(83));
 
-        assertEquals(2538, interV.getGlyphsCount());
+        assertEquals(2548, interV.getGlyphsCount());
 
         assertEquals(17, inter.getTablesCount());
         // assertArrayEquals(null, inter.getTableTags());
@@ -72,8 +72,8 @@ public class TypefaceTest implements Executable {
         // assertEquals(null, interV.getKerningPairAdjustments(null));
         // assertArrayEquals(null, interV.getKerningPairAdjustments(interV.getStringGlyphIds("TAV")));
 
-        assertArrayEquals(new FontFamilyName[] { new FontFamilyName("Inter V", "en-US") }, interV.getFamilyNames());
-        assertEquals("Inter V", interV.getFamilyName());
+        assertArrayEquals(new FontFamilyName[] { new FontFamilyName("Inter", "en-US") }, interV.getFamilyNames());
+        assertEquals("Inter", interV.getFamilyName());
         // if (!isLinux)
         //     assertEquals(Rect.makeLTRB(-0.7386364f, -1.0909119f, 2.5830965f, 0.31959534f), interV.getBounds());
     }

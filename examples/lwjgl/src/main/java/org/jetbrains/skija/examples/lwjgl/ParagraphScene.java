@@ -14,7 +14,7 @@ public class ParagraphScene implements Scene {
         TypefaceFontProvider fm = new TypefaceFontProvider();
         Typeface jbMono = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf");
         fm.registerTypeface(jbMono);
-        Typeface inter = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
+        Typeface inter = Typeface.makeFromFile("fonts/InterHinted-Regular.ttf");
         fm.registerTypeface(inter, "Interface");
         fc.setAssetFontManager(fm);
     }

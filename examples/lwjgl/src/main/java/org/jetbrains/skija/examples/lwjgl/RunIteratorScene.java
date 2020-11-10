@@ -21,7 +21,7 @@ public class RunIteratorScene implements Scene {
     public RunIteratorScene() {
         lato36  = new Font(Typeface.makeFromFile("fonts/Lato-Regular.ttf"), 36);
         fira36  = new Font(Typeface.makeFromFile("fonts/FiraCode-Regular.ttf"), 36);
-        var inter = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
+        var inter = Typeface.makeFromFile("fonts/InterHinted-Regular.ttf");
         inter36 = new Font(inter, 36);
         inter11 = new Font(inter, 11);
         inter11Metrics = inter11.getMetrics();

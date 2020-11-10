@@ -17,7 +17,7 @@ public class FontMgrTest implements Executable {
         fm.registerTypeface(jbMono);
         Typeface jbMonoBold = Typeface.makeFromFile("src/test/resources/fonts/JetBrainsMono-Bold.ttf", 0);
         fm.registerTypeface(jbMonoBold);
-        Typeface inter = Typeface.makeFromFile("src/test/resources/fonts/Inter-Regular.ttf", 0);
+        Typeface inter = Typeface.makeFromFile("src/test/resources/fonts/InterHinted-Regular.ttf", 0);
         fm.registerTypeface(inter, "Interface");
 
         assertEquals(2, fm.getFamiliesCount());

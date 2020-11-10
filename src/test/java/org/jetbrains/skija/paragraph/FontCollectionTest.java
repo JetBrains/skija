@@ -15,7 +15,7 @@ public class FontCollectionTest implements Executable {
         TypefaceFontProvider fm = new TypefaceFontProvider();
         Typeface jbMono = Typeface.makeFromFile("src/test/resources/fonts/JetBrainsMono-Regular.ttf", 0);
         fm.registerTypeface(jbMono);
-        Typeface inter = Typeface.makeFromFile("src/test/resources/fonts/Inter-Regular.ttf", 0);
+        Typeface inter = Typeface.makeFromFile("src/test/resources/fonts/InterHinted-Regular.ttf", 0);
         fm.registerTypeface(inter, "Interface");
 
         // FontCollection

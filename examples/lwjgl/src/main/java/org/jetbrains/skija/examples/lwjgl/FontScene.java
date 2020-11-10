@@ -6,6 +6,8 @@ import org.jetbrains.skija.shaper.*;
 
 public class FontScene implements Scene {
     public Typeface _inter;
+    public Typeface _interHinted;
+    public Typeface _interV;
     public Typeface _jbMono;
     public Typeface _testKern;
     public Typeface _testSubpixel;
@@ -23,7 +25,9 @@ public class FontScene implements Scene {
     public Font     _jbMono13;
 
     public FontScene() {
-        _inter          = Typeface.makeFromFile("fonts/Inter-Regular.ttf");
+        _inter          = Typeface.makeFromFile("fonts/Inter-Regular.otf");
+        _interV         = Typeface.makeFromFile("fonts/Inter-V.ttf");
+        _interHinted    = Typeface.makeFromFile("fonts/InterHinted-Regular.ttf");
         _jbMono         = Typeface.makeFromFile("fonts/JetBrainsMono-Regular.ttf");
         _testKern       = Typeface.makeFromFile("fonts/TestKERNOne.otf");
         _testSubpixel   = Typeface.makeFromFile("fonts/TestSubpixel-Regular.otf");
@@ -57,13 +61,18 @@ public class FontScene implements Scene {
         canvas.restoreToCount(layer);
 
         layer = canvas.save();
-        canvas.translate(windowWidth / 2, 30);
+        canvas.translate(windowWidth * 4 / 6, 30);
         drawTestKern(canvas);
         canvas.restoreToCount(layer);
 
         layer = canvas.save();
-        canvas.translate(windowWidth / 2 + 100, 30);
+        canvas.translate(windowWidth * 5 / 6, 30);
         drawTestSubpixel(canvas);
+        canvas.restoreToCount(layer);
+
+        layer = canvas.save();
+        canvas.translate(windowWidth * 2 / 5, 30);
+        drawModes(canvas);
         canvas.restoreToCount(layer);
     }
 
@@ -169,11 +178,6 @@ public class FontScene implements Scene {
         _inter13.setSkewX(0);
         _drawLine(canvas, "Inter 13px setSize=13 setScaleX=1 setSkewX=0", _inter13);
 
-        assert Arrays.equals(new short[] { 393, 709, 673, 701, 501 }, _inter13.getStringGlyphIds("Skija"));
-        assert Arrays.equals(new short[] { 393, 709, 673, 701, 501 }, _inter13.getUTF32GlyphIds("Skija".codePoints().toArray()));
-        assert 393 == _inter13.getUTF32GlyphId('S');
-        assert 5 == _inter13.getStringGlyphsCount("Skija");
-
         String text = "Inter size=13 Font.measureText";
         float height = _drawLine(canvas, text, _inter18);
         Rect bounds = _inter18.measureText(text);
@@ -256,5 +260,32 @@ public class FontScene implements Scene {
         _drawLine(canvas, "AAAAAAAAAAA", new Font(_testSubpixel, 10));
         canvas.translate(0, 10);
         _drawLine(canvas, "AAAAAAAAAAA", new Font(_testSubpixel, 10).setSubpixel(true));
+    }
+
+    public void drawModes(Canvas canvas) {
+        String common = "1006 Component Fix Position Scrolling ";
+        try (var font = new Font(_inter, 11)) {
+            _drawLine(canvas, common + "Inter 11", font);
+        }
+
+        try (var font = new Font(_inter, 11).setSubpixel(true)) {
+            _drawLine(canvas, common + "Inter 11 Subpixel", font);
+        }
+
+        try (var font = new Font(_interHinted, 11)) {
+            _drawLine(canvas, common + "Inter 11 Hinted", font);
+        }
+
+        try (var font = new Font(_interHinted, 11).setSubpixel(true)) {
+            _drawLine(canvas, common + "Inter 11 Hinted Subpixel", font);
+        }
+
+        try (var font = new Font(_interV, 11)) {
+            _drawLine(canvas, common + "Inter 11 Variable", font);
+        }
+
+        try (var font = new Font(_interV, 11).setSubpixel(true)) {
+            _drawLine(canvas, common + "Inter 11 Variable Subpixel", font);
+        }
     }
 }

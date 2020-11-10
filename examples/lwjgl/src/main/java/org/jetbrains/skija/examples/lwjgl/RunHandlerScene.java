@@ -14,7 +14,7 @@ public class RunHandlerScene implements Scene {
 
     public RunHandlerScene() {
         lato36 = new Font(Typeface.makeFromFile("fonts/Lato-Regular.ttf"), 36);
-        inter9 = new Font(Typeface.makeFromFile("fonts/Inter-Regular.ttf"), 9);
+        inter9 = new Font(Typeface.makeFromFile("fonts/InterHinted-Regular.ttf"), 9);
     }
 
     @Override

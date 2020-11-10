@@ -1,5 +1,6 @@
-#!/usr/bin/env -S zsh -euo pipefail
-cd `dirname $0`/..
+#!/bin/bash
+set -o errexit -o nounset -o pipefail
+cd "`dirname $0`/.."
 
 mkdir -p target
 

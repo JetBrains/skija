@@ -7,7 +7,7 @@ public class DrawableScene implements Scene {
     public final Paint bounds = new Paint().setColor(0x803333CC).setMode(PaintMode.STROKE).setStrokeWidth(1);
 
     public DrawableScene() {
-        inter18 = new Font(Typeface.makeFromFile("fonts/Inter-Regular.ttf"), 18);
+        inter18 = new Font(Typeface.makeFromFile("fonts/InterHinted-Regular.ttf"), 18);
     }
 
     @Override

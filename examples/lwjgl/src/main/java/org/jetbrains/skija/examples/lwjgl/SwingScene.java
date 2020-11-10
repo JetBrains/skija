@@ -22,31 +22,31 @@ public class SwingScene implements Scene {
     // public final javax.swing.JPanel panel;
     public static List<Pair<String, javax.swing.JPanel>> panels = new ArrayList<>();
 
-     @SneakyThrows
+    @SneakyThrows
     public SwingScene() {
-         // System.out.println(Arrays.toString(UIManager.getInstalledLookAndFeels()));
+        // System.out.println(Arrays.toString(UIManager.getInstalledLookAndFeels()));
 
-         // javax.swing.UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-         // javax.swing.UIManager.setLookAndFeel("com.apple.laf.AquaLookAndFeel");
-         // javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-         // javax.swing.UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        // javax.swing.UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+        // javax.swing.UIManager.setLookAndFeel("com.apple.laf.AquaLookAndFeel");
+        // javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+        // javax.swing.UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 
-         // javax.swing.JFrame f=new javax.swing.JFrame();//creating instance of JFrame
-         // var b=new javax.swing.JComboBox<String>(new String[] {"Swing Button"});//creating instance of JButton
-         // b.setBounds(130,100,200, 50);//x axis, y axis, width, height
-         // f.add(b);//adding button in JFrame
-         // f.setSize(400,500);//400 width and 500 height
-         // f.setLayout(null);//using no layout managers
-         // f.setVisible(true);//making the frame visible
+        // javax.swing.JFrame f=new javax.swing.JFrame();//creating instance of JFrame
+        // var b=new javax.swing.JComboBox<String>(new String[] {"Swing Button"});//creating instance of JButton
+        // b.setBounds(130,100,200, 50);//x axis, y axis, width, height
+        // f.add(b);//adding button in JFrame
+        // f.setSize(400,500);//400 width and 500 height
+        // f.setLayout(null);//using no layout managers
+        // f.setVisible(true);//making the frame visible
 
-         for (var lfi : javax.swing.UIManager.getInstalledLookAndFeels()) {
-             if (lfi.getName() != "Mac OS X") {
-//             if (lfi.getName() == "CDE/Motif") {
+        for (var lfi : javax.swing.UIManager.getInstalledLookAndFeels()) {
+            if (lfi.getName() != "Mac OS X" && lfi.getName() != "GTK+") {
+//              if (lfi.getName() == "CDE/Motif") {
 //              if (lfi.getName() == "Metal") {
-                 javax.swing.UIManager.setLookAndFeel(lfi.getClassName());
-                 panels.add(new Pair(lfi.getName(), panel()));
-             }
-         }
+                javax.swing.UIManager.setLookAndFeel(lfi.getClassName());
+                panels.add(new Pair(lfi.getName(), panel()));
+            }
+        }
     }
 
     long startTime = 0;
@@ -548,7 +548,9 @@ class SkiaGraphics extends java.awt.Graphics2D {
         else
             throw new RuntimeException("Unknown font style: " + font.getStyle() + " in " + font);
 
-        var typeface = FontMgr.getDefault().matchFamiliesStyle(new String[] {"System Font", "Segoe UI"}, style);
+        var typeface = FontMgr.getDefault().matchFamiliesStyle(new String[] {"System Font", "Segoe UI", "Ubuntu"}, style);
+        if (typeface == null)
+            typeface = Typeface.makeDefault();
         return new Font(typeface, font.getSize());
     }
 
