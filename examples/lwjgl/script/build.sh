@@ -53,6 +53,11 @@ if [[ ! -f target/build_timestamp ]]; then
     touch -t 200912310000 target/build_timestamp
 fi
 
-find src -name "*.java" -newer target/build_timestamp | xargs javac --release 11 -cp $CLASSPATH -d target/classes
+XARG=""
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    XARG=--no-run-if-empty
+fi
+
+find src -name "*.java" -newer target/build_timestamp | xargs $XARG javac --release 11 -cp $CLASSPATH -d target/classes
 
 touch target/build_timestamp

@@ -17,35 +17,40 @@ if [[ ! -f $ANNOTATIONS ]] || [[ ! -f $LOMBOK ]] ; then
     mvn compile
 fi
 
+XARG=""
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+	XARG=--no-run-if-empty
+fi
+
 mkdir -p target/classes/org/jetbrains/skija
 find src/main/java/org/jetbrains/skija/lombok.config -newer target/build_timestamp | xargs -I '{}' cp '{}' target/classes/org/jetbrains/skija
-find src -name "*.java" -newer target/build_timestamp | xargs javac --release 11 -cp target/classes:target/test-classes:$ANNOTATIONS:$LOMBOK
+find src -name "*.java" -newer target/build_timestamp | xargs $XARG javac -encoding UTF8 --release 11 -cp target/classes:target/test-classes:$ANNOTATIONS:$LOMBOK
 
 # move impl
 mkdir -p target/classes/org/jetbrains/skija/impl
-find src/main/java/org/jetbrains/skija/impl -name '*.class' | xargs -I '{}' mv '{}' target/classes/org/jetbrains/skija/impl
+find src/main/java/org/jetbrains/skija/impl -name '*.class' | xargs $XARG -I '{}' mv '{}' target/classes/org/jetbrains/skija/impl
 
 # move shaper
 mkdir -p target/classes/org/jetbrains/skija/shaper
-find src/main/java/org/jetbrains/skija/shaper -name '*.class' | xargs -I '{}' mv '{}' target/classes/org/jetbrains/skija/shaper
+find src/main/java/org/jetbrains/skija/shaper -name '*.class' | xargs $XARG -I '{}' mv '{}' target/classes/org/jetbrains/skija/shaper
 
 # move paragraph
 mkdir -p target/classes/org/jetbrains/skija/paragraph
-find src/main/java/org/jetbrains/skija/paragraph -name '*.class' | xargs -I '{}' mv '{}' target/classes/org/jetbrains/skija/paragraph
+find src/main/java/org/jetbrains/skija/paragraph -name '*.class' | xargs $XARG -I '{}' mv '{}' target/classes/org/jetbrains/skija/paragraph
 
 # move skija
 find src/main/java -name '*.class' | xargs -I '{}' mv '{}' target/classes/org/jetbrains/skija
 
 # move test/paragraph
 mkdir -p target/test-classes/org/jetbrains/skija/paragraph
-find src/test/java/org/jetbrains/skija/paragraph -name '*.class' | xargs -I '{}' mv '{}' target/test-classes/org/jetbrains/skija/paragraph
+find src/test/java/org/jetbrains/skija/paragraph -name '*.class' | xargs $XARG -I '{}' mv '{}' target/test-classes/org/jetbrains/skija/paragraph
 
 # move test/test
 mkdir -p target/test-classes/org/jetbrains/skija/test
-find src/test/java/org/jetbrains/skija/test -name '*.class' | xargs -I '{}' mv '{}' target/test-classes/org/jetbrains/skija/test
+find src/test/java/org/jetbrains/skija/test -name '*.class' | xargs $XARG -I '{}' mv '{}' target/test-classes/org/jetbrains/skija/test
 
 # move test
-find src/test/java/org/jetbrains/skija -name '*.class' | xargs -I '{}' mv '{}' target/test-classes/org/jetbrains/skija
+find src/test/java/org/jetbrains/skija -name '*.class' | xargs $XARG -I '{}' mv '{}' target/test-classes/org/jetbrains/skija
 
 touch target/build_timestamp
 
