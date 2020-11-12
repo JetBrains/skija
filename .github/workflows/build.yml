@@ -44,8 +44,8 @@ jobs:
           java-version: '11.0.8'
       - name: Download Skia
         run: |
-          curl --fail --location --silent --show-error https://github.com/JetBrains/skia-build/releases/download/${{ env.skia_release }}/Skia-${{ env.skia_release }}-macos-Release-x64.zip > Skia-${{ env.skia_release }}-macos-Release-x64.zip.zip
-          unzip -qq Skia-${{ env.skia_release }}-macos-Release-x64.zip.zip -d native/skia
+          curl --fail --location --silent --show-error https://github.com/JetBrains/skia-build/releases/download/${{ env.skia_release }}/Skia-${{ env.skia_release }}-macos-Release-x64.zip > Skia-${{ env.skia_release }}-macos-Release-x64.zip
+          unzip -qq Skia-${{ env.skia_release }}-macos-Release-x64.zip -d native/skia
       - run: SKIA_DIR=native/skia ./native/script/build.sh
       - uses: actions/upload-artifact@v2
         with:
@@ -69,8 +69,8 @@ jobs:
           fetch-depth: 0
       - name: Download Skia
         run: |
-          curl --fail --location --silent --show-error https://github.com/JetBrains/skia-build/releases/download/${{ env.skia_release }}/Skia-${{ env.skia_release }}-linux-Release-x64.zip > Skia-${{ env.skia_release }}-linux-Release-x64.zip.zip
-          unzip -qq Skia-${{ env.skia_release }}-linux-Release-x64.zip.zip -d native/skia
+          curl --fail --location --silent --show-error https://github.com/JetBrains/skia-build/releases/download/${{ env.skia_release }}/Skia-${{ env.skia_release }}-linux-Release-x64.zip > Skia-${{ env.skia_release }}-linux-Release-x64.zip
+          unzip -qq Skia-${{ env.skia_release }}-linux-Release-x64.zip -d native/skia
       - run: SKIA_DIR=native/skia ./native/script/build.sh
       - uses: actions/upload-artifact@v2
         with:
@@ -96,8 +96,8 @@ jobs:
       - name: Download Skia
         shell: bash
         run: |
-          curl --fail --location --silent --show-error https://github.com/JetBrains/skia-build/releases/download/${{ env.skia_release }}/Skia-${{ env.skia_release }}-windows-Release-x64.zip > Skia-${{ env.skia_release }}-windows-Release-x64.zip.zip
-          unzip -qq Skia-${{ env.skia_release }}-windows-Release-x64.zip.zip -d native/skia
+          curl --fail --location --silent --show-error https://github.com/JetBrains/skia-build/releases/download/${{ env.skia_release }}/Skia-${{ env.skia_release }}-windows-Release-x64.zip > Skia-${{ env.skia_release }}-windows-Release-x64.zip
+          unzip -qq Skia-${{ env.skia_release }}-windows-Release-x64.zip -d native/skia
       - shell: bash
         run: SKIA_DIR=native/skia ./native/script/build.sh
       - uses: actions/upload-artifact@v2

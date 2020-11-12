@@ -9,7 +9,7 @@
 
 ## Motivation: Why Skija?
 
-Because Java doesn’t have a powerful and moder 2D graphics — still!
+Because Java doesn’t have a powerful and modern 2D graphics — still!
 
 There are many occasions when you might need graphics:
 
@@ -163,37 +163,27 @@ macOS    | `macos`       | ![version](https://img.shields.io/badge/dynamic/xml?s
 Linux    | `linux`       | ![version](https://img.shields.io/badge/dynamic/xml?style=flat-square&label=latest&color=success&url=https%3A%2F%2Fpackages.jetbrains.team%2Fmaven%2Fp%2Fskija%2Fmaven%2Forg%2Fjetbrains%2Fskija%2Fskija-linux%2Fmaven-metadata.xml&query=//release)
 Windows  | `windows`     | ![version](https://img.shields.io/badge/dynamic/xml?style=flat-square&label=latest&color=success&url=https%3A%2F%2Fpackages.jetbrains.team%2Fmaven%2Fp%2Fskija%2Fmaven%2Forg%2Fjetbrains%2Fskija%2Fskija-windows%2Fmaven-metadata.xml&query=//release)
 
-## Developing Skija
+## Documentation
 
-### Checkout
+Under development — consult source code and JavaDoc comments.
+
+These resources are very useful as well:
+
+- [Skia Documentation](https://api.skia.org/)
+- [SkiaSharp Documentation](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/user-interface/graphics/skiasharp/)
+
+## Building Skija
+
+Prerequisites: Git, CMake, Ninja, JDK 11+, Maven.
+
+Checkout:
 
 ```sh
 git clone https://github.com/JetBrains/skija.git
 cd skija
-```
-
-### Using prebuilt Skia
-
-Download prebuilt Skia from [this repository](https://github.com/JetBrains/skia-build/releases).
-
-Unpack and set
-
-```
-export SKIA_DIR=~/Downloads/Skia-m87-4893488-macos-Release-x64
-```
-
-To build Skia from scratch, consult [JetBrains/skia-build](https://github.com/JetBrains/skia-build).
-
-### Building Skija
-
-Prerequisites:
-
-- CMake
-- Ninja
-- JDK 11+ and JAVA_HOME
-- Maven
-
-```sh
+curl --location https://github.com/JetBrains/skia-build/releases/download/m87-4893488/Skia-m87-4893488-macos-Release-x64.zip > Skia-m87-4893488-macos-Release-x64.zip
+unzip -qq Skia-m87-4893488-macos-Release-x64.zip -d native/skia
+export SKIA_DIR=native/skia
 ./script/install.sh
 ```
 
@@ -204,24 +194,29 @@ org.jetbrains.skija:skija-shared:0.0.0-SNAPSHOT
 org.jetbrains.skija:skija-native:0.0.0-SNAPSHOT
 ```
 
-### Running examples
+## Running examples
 
-Examples require latest master build of Skija installed locally in `.m2` (see [Building](#building-skija)).
+Examples require latest master build of Skija installed locally in `.m2` (see [Building Skija](#building-skija)).
 
-```sh
-./script/install.sh
-```
+See [examples/](examples/).
 
-GLFW (via LWJGL), Java and Maven:
+## Contributing
 
-```sh
-cd examples/lwjgl
-./script/exec.sh
-```
+Contributions are welcome!
 
-JOGL, Kotlin and Gradle:
+Make sure to read [Code Conventions](docs/Conventions.md).
 
-```sh
-cd examples/jogl
-./gradlew run
-```
+Remember: the goal of Skija is to map Skia API as close as possible.
+
+These things have a place in Skija:
+
+- Everything that is in Skia and makes sense in Java world.
+- Convenience methods (e.g. a method that uses a default value for a parameter).
+
+These don’t:
+
+- Things that don’t directly map to anything in Java (pointers, etc).
+- New classes, new methods that don’t exist in Skia.
+- Code that combines Skia APIs together for special use-cases.
+
+Useful things built on top of Skia/Skija are always welcome — as libraries.
