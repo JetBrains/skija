@@ -1,33 +1,54 @@
 # Skija: Skia bindings for Java
 
-Skia is an open source 2D graphics library which provides common APIs that work across a variety of hardware and software platforms. Skija is a high-quality Java bindings for Skia.
+**Skia** is an open source 2D graphics library which provides common APIs that work across a variety of hardware and software platforms.
+
+**Skija** is a high-quality Java bindings for Skia.
 
 ![](extras/logo.png)
 
-## Motivation: Why Skia?
 
-A modern graphic toolkit allows you to build all sorts of graphical UIs without being constrained by existing frameworks:
+## Motivation: Why Skija?
+
+Because Java doesn’t have a powerful and moder 2D graphics — still!
+
+There are many occasions when you might need graphics:
 
 - custom UI widget libraries and whole toolkits,
 - graphs, diagrams,
 - visualizations,
 - games.
 
-Java has several offerings here: Graphics2D from AWT, GraphicsContext from JavaFX. Skia outperforms all of them in almost every benchmark, while also offering many additional features:
+Existing offerings are: Graphics2D from AWT, GraphicsContext from JavaFX. They are good, but underwhelming.
+
+Enter Skia. Skia has a proven track record of industrial-scale project relying on it for all things graphics: Google Chrome, Android, Flutter, Firefox Canvas, Xamarin. Skia outperforms all existing Java2D toolkits in almost every benchmark, and also provides:
 
 - extensive color spaces support,
 - modern typography with open type features, variable typefaces, correct multi-script text handling, emojis,
 - highly-optimized GPU rendering,
-- modern GPU backends, including Vulkan and Metal,
+- modern GPU backends, including Vulkan and Metal (already in Skia, coming to Skija soon),
 - built-in caching and compositing facilities.
 
-Skia has a proven track record of industrial-scale project relying on it for all things graphics:
+Skija brings all this power to the tips of your fingers, as simple as adding a jar to classpath.
 
-- Google Chrome,
-- Android,
-- Flutter,
-- Firefox Canvas,
-- Xamarin.
+## Why hand-crafted bindings?
+
+Automatically generated bindings for Skia exist, but don’t seem to have high adoption:
+
+- [github.com/bytedeco/javacpp-presets/tree/master/skia](https://github.com/bytedeco/javacpp-presets/tree/master/skia)
+- [github.com/eungju/skia-javacpp](https://github.com/eungju/skia-javacpp)
+
+Skija project has a goal of providing great Java-native API that is natural to use. In particular:
+
+- full automatic memory management, no pointer abstractions leaking,
+- natural use of Java classes, interfaces, inheritance, singletons,
+- consistent naming following Java conventions, including getters/setters for properties,
+- typed enums instead of integer constants,
+- native Java platform abstractions instead of wrapped Skia/C++ ones (strings, arrays, streams, files, byte buffers, AutoCloseable),
+- hiding implementation details, e.g. transparent string encoding conversion, byte/code point indices conversion,
+- fluent builder-style APIs where possible,
+- lightweight data classes where possible (Point, Rect, FontMetrics, etc are not mirrored by native instances).
+
+The ultimate goal for Skija is to feel as a Java library and not having to think about native part at all.
 
 ## Built with Skija
 
@@ -48,104 +69,58 @@ Skia has a proven track record of industrial-scale project relying on it for all
 |![](extras/bitmap.png)|![](extras/pythagoras.png)|
 |![](extras/filters.jpg)|![](extras/shaders.png)|
 
-## Why hand-crafted bindings
-
-Automatically generated bindings for Skia exist, but don’t seem to have high adoption:
-
-- [github.com/bytedeco/javacpp-presets/tree/master/skia](https://github.com/bytedeco/javacpp-presets/tree/master/skia)
-- [github.com/eungju/skia-javacpp](https://github.com/eungju/skia-javacpp)
-
-Skija project has a goal of providing great Java-native API that are natural to use. In particular:
-
-- full automatic memory management, no pointer abstractions leaking,
-- natural use of Java classes, interfaces, inheritance, singletons,
-- consistent naming following Java conventions, including getters/setters for properties,
-- typed enums instead of integer constants,
-- native Java platform abstractions instead of wrapped Skia/C++ ones (strings, arrays, streams, files, byte buffers, AutoCloseable),
-- hiding implementation details, e.g. transparent string encoding conversion, byte/code point indices conversion,
-- fluent builder-style APIs where possible,
-- lightweight data classes where possible (Point, Rect, FontMetrics, etc are not mirrored by native instances).
-
-The ultimate goal for Skija is to feel as Java library and not having to think about native part at all.
-
 ## Current status
 
 Active development. Pre-alpha. Everything will change without notice.
 
-Core progress:
+Platforms:
+
+- [x] Windows
+- [x] Linux
+- [x] macOS
+
+APIs:
 
 ```
-Bitmap               ▓▓▓▓▓▓▓▓▓▓
-Canvas               ▓▓▓▓▓▓▓▓░░
-Color                ▓░░░░░░░░░
-ColorFilter          ▓▓▓▓▓▓▓▓▓▓
-ColorInfo            ▓▓▓▓▓▓▓▓▓▓
-ColorSpace           ▓▓▓▓░░░░░░
-Data                 ▓▓▓▓▓▓▓▓▓░
-Drawable             ▓▓▓▓▓▓▓▓░░
-Flattenable          ░░░░░░░░░░
-Font                 ▓▓▓▓▓▓▓▓▓▓
-FontData             ░░░░░░░░░░
-FontManager          ▓▓▓▓▓▓▓▓▓░ 
-FontStyle            ▓▓▓▓▓▓▓▓▓▓
-FontStyleSet         ▓▓▓▓▓▓▓▓▓▓
-Image                ▓▓░░░░░░░░
-ImageFilters         ▓▓▓▓▓▓▓▓▓▓
-ImageInfo            ▓▓▓▓▓▓▓▓▓▓
-MaskFilter           ▓▓▓▓▓▓▓▓▓▓
-Matrix33             ▓▓▓░░░░░░░
+Bitmap               ▓▓▓▓▓▓▓▓▓▓    Paint                ▓▓▓▓▓▓▓▓░░
+Canvas               ▓▓▓▓▓▓▓▓░░    Path                 ▓▓▓▓▓▓▓▓▓▓
+Color                ▓░░░░░░░░░    PathEffects          ▓▓▓▓▓▓▓▓▓▓
+ColorFilter          ▓▓▓▓▓▓▓▓▓▓    PathMeasure          ▓▓▓▓▓▓▓▓▓▓
+ColorInfo            ▓▓▓▓▓▓▓▓▓▓    PaintFilterCanvas    ▓▓▓▓▓▓▓▓▓▓
+ColorSpace           ▓▓▓▓░░░░░░    Picture              ▓▓▓▓▓▓▓▓▓░
+Data                 ▓▓▓▓▓▓▓▓▓░    PictureRecorder      ▓▓▓▓▓▓▓▓▓▓
+Drawable             ▓▓▓▓▓▓▓▓░░    PixelRef             ▓▓▓▓▓▓▓▓▓▓
+Flattenable          ░░░░░░░░░░    Pixmap               ░░░░░░░░░░
+Font                 ▓▓▓▓▓▓▓▓▓▓    Region               ▓▓▓▓▓▓▓▓▓▓
+FontData             ░░░░░░░░░░    ScalerContext        ░░░░░░░░░░
+FontManager          ▓▓▓▓▓▓▓▓▓░    Shader               ▓▓▓▓▓▓▓▓▓▓
+FontStyle            ▓▓▓▓▓▓▓▓▓▓    ShadowUtils          ▓▓▓▓▓▓▓▓▓▓
+FontStyleSet         ▓▓▓▓▓▓▓▓▓▓    Stream               ░░░░░░░░░░
+Image                ▓▓░░░░░░░░    String               ▓░░░░░░░░░
+ImageFilters         ▓▓▓▓▓▓▓▓▓▓    Surface              ▓░░░░░░░░░
+ImageInfo            ▓▓▓▓▓▓▓▓▓▓    TextBlob             ▓▓▓▓▓▓▓▓▓▓
+MaskFilter           ▓▓▓▓▓▓▓▓▓▓    TextBlobBuilder      ▓▓▓▓▓▓▓▓▓▓
+Matrix33             ▓▓▓░░░░░░░    Typeface             ▓▓▓▓▓▓▓▓░░
 Matrix44             ▓▓▓░░░░░░░
-Paint                ▓▓▓▓▓▓▓▓░░
-Path                 ▓▓▓▓▓▓▓▓▓▓
-PathEffects          ▓▓▓▓▓▓▓▓▓▓
-PathMeasure          ▓▓▓▓▓▓▓▓▓▓
-PaintFilterCanvas    ▓▓▓▓▓▓▓▓▓▓
-Picture              ▓▓▓▓▓▓▓▓▓░
-PictureRecorder      ▓▓▓▓▓▓▓▓▓▓
-PixelRef             ▓▓▓▓▓▓▓▓▓▓
-Pixmap               ░░░░░░░░░░
-Region               ▓▓▓▓▓▓▓▓▓▓
-ScalerContext        ░░░░░░░░░░
-Shader               ▓▓▓▓▓▓▓▓▓▓
-ShadowUtils          ▓▓▓▓▓▓▓▓▓▓
-Stream               ░░░░░░░░░░
-String               ▓░░░░░░░░░
-Surface              ▓░░░░░░░░░
-TextBlob             ▓▓▓▓▓▓▓▓▓▓
-TextBlobBuilder      ▓▓▓▓▓▓▓▓▓▓
-Typeface             ▓▓▓▓▓▓▓▓░░
-```
 
-Shaper progress:
+Shaper:                            Paragraph:
 
-```
-BiDiRunIterator      ▓▓▓▓▓▓▓▓▓▓
-FontMgrRunIterator   ▓▓▓▓▓▓▓▓▓▓
-FontRunIterator      ▓▓▓▓▓▓▓▓▓▓
-HbIcuScriptRunIter   ▓▓▓▓▓▓▓▓▓▓
-IcuBidiRunIterator   ▓▓▓▓▓▓▓▓▓▓
-LanguageRunIterator  ▓▓▓▓▓▓▓▓▓▓
-RunHandler           ▓▓▓▓▓▓▓▓▓▓
-RunInfo              ▓▓▓▓▓▓▓▓▓▓
+BiDiRunIterator      ▓▓▓▓▓▓▓▓▓▓    FontCollection       ▓▓▓▓▓▓▓▓▓▓
+FontMgrRunIterator   ▓▓▓▓▓▓▓▓▓▓    LineMetrics          ▓▓▓▓▓▓▓▓▓░
+FontRunIterator      ▓▓▓▓▓▓▓▓▓▓    Paragraph            ▓▓▓▓▓▓▓▓▓▓
+HbIcuScriptRunIter   ▓▓▓▓▓▓▓▓▓▓    ParagraphCache       ▓▓▓▓▓▓▓▓▓▓
+IcuBidiRunIterator   ▓▓▓▓▓▓▓▓▓▓    ParagraphStyle       ▓▓▓▓▓▓▓▓▓▓
+LanguageRunIterator  ▓▓▓▓▓▓▓▓▓▓    ParagraphBuilder     ▓▓▓▓▓▓▓▓▓▓
+RunHandler           ▓▓▓▓▓▓▓▓▓▓    TextStyle            ▓▓▓▓▓▓▓▓▓▓
+RunInfo              ▓▓▓▓▓▓▓▓▓▓    TypefaceFontProvider ▓▓▓▓▓▓▓▓▓▓
 ScriptRunIterator    ▓▓▓▓▓▓▓▓▓▓
 Shaper               ▓▓▓▓▓▓▓▓▓▓
 TextBlobBldRunHndlr  ▓▓▓▓▓▓▓▓▓▓
 ```
 
-Paragraph progress:
-
-```
-FontCollection       ▓▓▓▓▓▓▓▓▓▓
-LineMetrics          ▓▓▓▓▓▓▓▓▓░
-Paragraph            ▓▓▓▓▓▓▓▓▓▓
-ParagraphCache       ▓▓▓▓▓▓▓▓▓▓
-ParagraphStyle       ▓▓▓▓▓▓▓▓▓▓
-ParagraphBuilder     ▓▓▓▓▓▓▓▓▓▓
-TextStyle            ▓▓▓▓▓▓▓▓▓▓
-TypefaceFontProvider ▓▓▓▓▓▓▓▓▓▓
-```
-
 ## Using Skija
+
+Using Skija is as simple as adding a jar file.
 
 Maven:
 
