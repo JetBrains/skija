@@ -782,7 +782,7 @@ public class Bitmap extends Managed {
      *
      * <p>srcX and srcY may be negative to copy only top or left of source. Returns
      * false if getWidth() or getHeight() is zero or negative.
-     * Returns false if abs(srcX) >= getWidth(), or if abs(srcY) >= getHeight().</p>
+     * Returns false if abs(srcX) &gt;= getWidth(), or if abs(srcY) &gt;= getHeight().</p>
      *
      * @param dstInfo      destination width, height, ColorType, AlphaType, ColorSpace
      * @param dstRowBytes  destination row length

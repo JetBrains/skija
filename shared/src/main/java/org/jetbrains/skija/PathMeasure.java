@@ -37,7 +37,7 @@ public class PathMeasure extends Managed {
      * <p>Initialize the pathmeasure with the specified path. The parts of the path that are needed
      * are copied, so the client is free to modify/delete the path after this call.</p>
      *
-     * <p>resScale controls the precision of the measure. values > 1 increase the
+     * <p>resScale controls the precision of the measure. values &gt; 1 increase the
      * precision (and possible slow down the computation).</p>
      */
     public PathMeasure(Path path, boolean forceClosed, float resScale) {
@@ -116,7 +116,7 @@ public class PathMeasure extends Managed {
     /**
      * Given a start and stop distance, return in dst the intervening segment(s).
      * If the segment is zero-length, return false, else return true.
-     * startD and stopD are pinned to legal values (0..getLength()). If startD > stopD
+     * startD and stopD are pinned to legal values (0..getLength()). If startD &gt; stopD
      * then return false (and leave dst untouched).
      * Begin the segment with a moveTo if startWithMoveTo is true
     */
