@@ -4,3 +4,4 @@ build
 /native/skia
 *.log
 *.zip
+examples/bitmap/output.png
