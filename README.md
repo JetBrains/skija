@@ -46,7 +46,7 @@ Skia has a proven track record of industrial-scale project relying on it for all
 |![](extras/geometry.png)|![](extras/text.png)|
 |---|---|
 |![](extras/bitmap.png)|![](extras/pythagoras.png)|
-|![](extras/filters.png)|![](extras/shaders.png)|
+|![](extras/filters.jpg)|![](extras/shaders.png)|
 
 ## Why hand-crafted bindings
 
@@ -226,7 +226,7 @@ This will install local versions of these Skija artifacts:
 
 ```
 org.jetbrains.skija:skija-shared:0.0.0-SNAPSHOT
-org.jetbrains.skija:skija-platform:0.0.0-SNAPSHOT
+org.jetbrains.skija:skija-native:0.0.0-SNAPSHOT
 ```
 
 ### Running examples
@@ -241,7 +241,7 @@ GLFW (via LWJGL), Java and Maven:
 
 ```sh
 cd examples/lwjgl
-./script/mvn_exec.sh
+./script/exec.sh
 ```
 
 JOGL, Kotlin and Gradle:

@@ -2,24 +2,34 @@
 set -o errexit -o nounset -o pipefail
 cd "`dirname $0`/.."
 
-./script/native.sh
+./native/script/build.sh
 
-# javac
-if [ ! -f target/build_timestamp ]; then
-    touch -t 200912310000 target/build_timestamp
-fi
+cd shared
 
 ANNOTATIONS=~/.m2/repository/org/jetbrains/annotations/19.0.0/annotations-19.0.0.jar
+
+if [[ ! -f $ANNOTATIONS ]] ; then
+    mkdir -p `dirname $ANNOTATIONS`
+    curl --fail --location --show-error https://repo1.maven.org/maven2/org/jetbrains/annotations/19.0.0/annotations-19.0.0.jar > $ANNOTATIONS
+fi
+
 LOMBOK=~/.m2/repository/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar
 
-if [[ ! -f $ANNOTATIONS ]] || [[ ! -f $LOMBOK ]] ; then
-    # fetch missing dependencies
-    mvn compile
+if [[ ! -f $LOMBOK ]] ; then
+    mkdir -p `dirname $LOMBOK`
+    curl --fail --location --show-error https://repo1.maven.org/maven2/org/jetbrains/annotations/19.0.0/annotations-19.0.0.jar > $LOMBOK
 fi
 
 XARG=""
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 	XARG=--no-run-if-empty
+fi
+
+# javac
+mkdir -p target
+
+if [ ! -f target/build_timestamp ]; then
+    touch -t 200912310000 target/build_timestamp
 fi
 
 mkdir -p target/classes/org/jetbrains/skija
@@ -55,4 +65,4 @@ find src/test/java/org/jetbrains/skija -name '*.class' | xargs $XARG -I '{}' mv 
 touch target/build_timestamp
 
 # tests
-java -cp target/classes:target/test-classes org.jetbrains.skija.TestSuite
+java -cp target/classes:target/test-classes:../native/build org.jetbrains.skija.TestSuite

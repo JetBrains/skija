@@ -29,7 +29,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: skija-shared
-          path: target/*.jar
+          path: shared/target/*.jar
 
   macos:
     runs-on: macos-10.15
@@ -45,12 +45,12 @@ jobs:
       - name: Download Skia
         run: |
           curl --fail --location --silent --show-error https://github.com/JetBrains/skia-build/releases/download/${{ env.skia_release }}/Skia-${{ env.skia_release }}-macos-Release-x64.zip > Skia-${{ env.skia_release }}-macos-Release-x64.zip.zip
-          unzip -qq Skia-${{ env.skia_release }}-macos-Release-x64.zip.zip -d third_party/skia
-      - run: ./script/native.sh
+          unzip -qq Skia-${{ env.skia_release }}-macos-Release-x64.zip.zip -d native/skia
+      - run: SKIA_DIR=native/skia ./native/script/build.sh
       - uses: actions/upload-artifact@v2
         with:
           name: skija-macos
-          path: target/native/*.dylib
+          path: native/build/*.dylib
       - run: ./ci/deploy_macos.sh
         env:
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
@@ -70,12 +70,12 @@ jobs:
       - name: Download Skia
         run: |
           curl --fail --location --silent --show-error https://github.com/JetBrains/skia-build/releases/download/${{ env.skia_release }}/Skia-${{ env.skia_release }}-linux-Release-x64.zip > Skia-${{ env.skia_release }}-linux-Release-x64.zip.zip
-          unzip -qq Skia-${{ env.skia_release }}-linux-Release-x64.zip.zip -d third_party/skia
-      - run: ./script/native.sh
+          unzip -qq Skia-${{ env.skia_release }}-linux-Release-x64.zip.zip -d native/skia
+      - run: SKIA_DIR=native/skia ./native/script/build.sh
       - uses: actions/upload-artifact@v2
         with:
           name: skija-linux
-          path: target/native/*.so
+          path: native/build/*.so
       - run: ./ci/deploy_linux.sh
         env:
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
@@ -97,13 +97,13 @@ jobs:
         shell: bash
         run: |
           curl --fail --location --silent --show-error https://github.com/JetBrains/skia-build/releases/download/${{ env.skia_release }}/Skia-${{ env.skia_release }}-windows-Release-x64.zip > Skia-${{ env.skia_release }}-windows-Release-x64.zip.zip
-          unzip -qq Skia-${{ env.skia_release }}-windows-Release-x64.zip.zip -d third_party/skia
+          unzip -qq Skia-${{ env.skia_release }}-windows-Release-x64.zip.zip -d native/skia
       - shell: bash
-        run: ./script/native.sh
+        run: SKIA_DIR=native/skia ./native/script/build.sh
       - uses: actions/upload-artifact@v2
         with:
           name: skija-windows
-          path: target/native/*.dll
+          path: native/build/*.dll
       - shell: bash
         run: ./ci/deploy_windows.sh
         env:

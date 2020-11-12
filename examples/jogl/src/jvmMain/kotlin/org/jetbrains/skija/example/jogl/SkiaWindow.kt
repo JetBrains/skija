@@ -8,7 +8,6 @@ import org.jetbrains.skija.FramebufferFormat
 import org.jetbrains.skija.Canvas
 import org.jetbrains.skija.Context
 import org.jetbrains.skija.ColorSpace
-import org.jetbrains.skija.Library
 import org.jetbrains.skija.Surface
 import org.jetbrains.skija.SurfaceOrigin
 import org.jetbrains.skija.SurfaceColorFormat

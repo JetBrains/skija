@@ -2,8 +2,6 @@
 set -o errexit -o nounset -o pipefail
 cd "`dirname $0`/.."
 
-mkdir -p target
-
 LWJGL_VER=3.2.3
 OS=`uname`
 if [[ "$OS" == 'Linux' ]]; then
@@ -23,7 +21,7 @@ LWJGL_LIBS=(
 
 HAS_LWJLG=true
 LOMBOK=~/.m2/repository/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar
-CLASSPATH=target/classes:../../target/classes:$LOMBOK
+CLASSPATH=target/classes:../../shared/target/classes:$LOMBOK
 
 for LIB in "${LWJGL_LIBS[@]}"; do
     JAR=~/.m2/repository/org/lwjgl/$LIB/$LWJGL_VER/$LIB-$LWJGL_VER.jar

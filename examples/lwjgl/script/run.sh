@@ -2,8 +2,6 @@
 set -o errexit -o nounset -o pipefail
 cd "`dirname $0`/.."
 
-mkdir -p target
-
 LWJGL_VER=3.2.3
 OS=`uname`
 JVM_OPTS=''
@@ -24,7 +22,7 @@ LWJGL_LIBS=(
 )
 
 HAS_LWJLG=true
-CLASSPATH=target/classes:../../target/classes
+CLASSPATH=target/classes:../../native/build:../../shared/target/classes
 
 for LIB in "${LWJGL_LIBS[@]}"; do
     JAR=~/.m2/repository/org/lwjgl/$LIB/$LWJGL_VER/$LIB-$LWJGL_VER.jar

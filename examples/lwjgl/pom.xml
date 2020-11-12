@@ -97,7 +97,7 @@
         <dependency>
             <groupId>org.jetbrains.skija</groupId>
             <!-- <artifactId>${skija.artifactId}</artifactId> -->
-            <artifactId>skija-platform</artifactId>
+            <artifactId>skija-native</artifactId>
             <version>0.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>

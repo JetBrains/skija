@@ -1,7 +1,6 @@
-docs/api
-out
+docs/apidocs
 target
-src_cpp/generated
+build
+/native/skia
 *.log
-/skia
 *.zip
