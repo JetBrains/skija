@@ -172,7 +172,7 @@ These resources are very useful as well:
 - [Skia Documentation](https://api.skia.org/)
 - [SkiaSharp Documentation](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/user-interface/graphics/skiasharp/)
 
-## Building Skija
+## Building Skija from scratch
 
 Prerequisites: Git, CMake, Ninja, JDK 11+, Maven.
 
@@ -181,9 +181,6 @@ Checkout:
 ```sh
 git clone https://github.com/JetBrains/skija.git
 cd skija
-curl --location https://github.com/JetBrains/skia-build/releases/download/m87-4893488/Skia-m87-4893488-macos-Release-x64.zip > Skia-m87-4893488-macos-Release-x64.zip
-unzip -qq Skia-m87-4893488-macos-Release-x64.zip -d native/skia
-export SKIA_DIR=native/skia
 ./script/install.sh
 ```
 
@@ -194,9 +191,20 @@ org.jetbrains.skija:skija-shared:0.0.0-SNAPSHOT
 org.jetbrains.skija:skija-native:0.0.0-SNAPSHOT
 ```
 
+Optionally, you can specify different Skia location:
+
+```
+export SKIA_DIR=~/Downloads/Skia-m87-4893488-macos-Release-x64
+./script/install.sh
+```
+
+For building Skia itself, see https://github.com/JetBrains/skia-build/
+
+NOTE for Linux: Prebuilt Skia we provide is built on Ubuntu 14.04. When compiling binary part of Skija, either use Ubuntu 14.04 or our [Dockerfile](./Dockerfile). 
+
 ## Running examples
 
-Examples require latest master build of Skija installed locally in `.m2` (see [Building Skija](#building-skija)).
+Examples require latest master build of Skija installed locally in `.m2` (see [Building Skija](#building-skija-from-scratch)).
 
 See [examples/](examples/).
 

@@ -1,16 +1,17 @@
 #!/bin/bash
 set -o errexit -o nounset -o pipefail
 
+dir=`dirname $0`
+
 if [ -z "${SKIA_DIR-}" ]; then
-    echo "Please set \$SKIA_DIR"
-    exit 1
+    . $dir/fetch_skia.sh
 fi
 
 skia_dir_abs=$(cd $SKIA_DIR; pwd)
 echo "Using Skia from $skia_dir_abs"
 build_type=${build_type:-Release}
 
-cd "`dirname $0`/.."
+cd "$dir/.."
 
 # Build C++
 mkdir -p build
