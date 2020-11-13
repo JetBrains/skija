@@ -165,12 +165,15 @@ Windows  | `windows`     | ![version](https://img.shields.io/badge/dynamic/xml?s
 
 ## Documentation
 
-Under development — consult source code and JavaDoc comments.
+Get started by reading [Getting Started](docs/Getting+Started.md).
 
-These resources are very useful as well:
+API docs are under development — consult source code and JavaDoc comments.
 
-- [Skia Documentation](https://api.skia.org/)
-- [SkiaSharp Documentation](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/user-interface/graphics/skiasharp/)
+I found [SkiaSharp documentation](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/user-interface/graphics/skiasharp/) to be excellent resource on what can be done in Skia. They have nice examples and visual explanations, too.
+
+If Skija is missing a documentation for a particular method or class, check the same class in [Skia Documentation](https://api.skia.org/) instead. It might be that we didn’t move it over to Java yet. PRs are welcome!
+
+Finally, [LWJGL demo app](/examples/lwjgl) has examples of most of the APIs that are currently implemented.
 
 ## Building Skija from scratch
 
@@ -220,6 +223,7 @@ These things have a place in Skija:
 
 - Everything that is in Skia and makes sense in Java world.
 - Convenience methods (e.g. a method that uses a default value for a parameter).
+- Documentation on Skija methods is very welcome!
 
 These don’t:
 
