@@ -15,9 +15,6 @@ on:
       - README.md
       - skija.iml
 
-env:
-  skia_release: m88-59bafeeaa7
-
 jobs:
   shared:
     runs-on: ubuntu-latest
