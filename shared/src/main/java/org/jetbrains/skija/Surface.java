@@ -6,7 +6,7 @@ import org.jetbrains.skija.impl.*;
 public class Surface extends RefCnt {
     static { Library.staticLoad(); }
     
-    public static Surface makeFromBackendRenderTarget(Context context, BackendRenderTarget rt, SurfaceOrigin origin, SurfaceColorFormat colorFormat, ColorSpace colorSpace) {
+    public static Surface makeFromBackendRenderTarget(DirectContext context, BackendRenderTarget rt, SurfaceOrigin origin, SurfaceColorFormat colorFormat, ColorSpace colorSpace) {
         Stats.onNativeCall();
         long ptr = _nMakeFromBackendRenderTarget(Native.getPtr(context), Native.getPtr(rt), origin.ordinal(), colorFormat.ordinal(), Native.getPtr(colorSpace));
         return new Surface(ptr);

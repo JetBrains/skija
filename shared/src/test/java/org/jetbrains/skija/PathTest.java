@@ -184,8 +184,7 @@ public class PathTest implements Executable {
         Path subpath = new Path().lineTo(40, 40).lineTo(40, 0).lineTo(0, 40).lineTo(0, 0).closePath();
         for (Path p: new Path[] {
                        new Path().addPath(subpath),
-                       new Path().incReserve(10).addPath(subpath).closePath(),
-                       new Path().incReserve(10).addPath(subpath).shrinkToFit()
+                       new Path().incReserve(10).addPath(subpath).closePath()
                      })
         {
             TestRunner.pushStack(p.toString());
@@ -245,7 +244,7 @@ public class PathTest implements Executable {
             p.getVerbs(verbs, 10);
             assertArrayEquals(new PathVerb[] { PathVerb.MOVE, PathVerb.LINE, PathVerb.LINE, PathVerb.LINE, PathVerb.LINE, PathVerb.CLOSE, null, null, null, null }, verbs);
 
-            assertEquals(62L, p.getApproximateBytesUsed());
+            assertNotEquals(0L, p.getApproximateBytesUsed());
 
             assertEquals(PathSegmentMask.LINE, p.getSegmentMasks());
 

@@ -538,18 +538,6 @@ public class Path extends Managed implements Iterable<PathSegment> {
     }
 
     /**
-     * Shrinks Path verb array and Point array storage to discard unused capacity.
-     * May reduce the heap overhead for Path known to be fully constructed.
-     *
-     * @return  this
-     */
-    public Path shrinkToFit() {
-        Stats.onNativeCall();
-        _nShrinkToFit(_ptr);
-        return this;
-    }
-
-    /**
      * Adds beginning of contour at Point (x, y).
      *
      * @param x  x-axis value of contour start
@@ -1842,7 +1830,6 @@ public class Path extends Managed implements Iterable<PathSegment> {
     public static native Rect    _nComputeTightBounds(long ptr);
     public static native boolean _nConservativelyContainsRect(long ptr, float l, float t, float r, float b);
     public static native void    _nIncReserve(long ptr, int extraPtCount);
-    public static native void    _nShrinkToFit(long ptr);
     public static native void    _nMoveTo(long ptr, float x, float y);
     public static native void    _nRMoveTo(long ptr, float dx, float dy);
     public static native void    _nLineTo(long ptr, float x, float y);

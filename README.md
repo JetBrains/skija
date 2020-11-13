@@ -20,7 +20,7 @@ There are many occasions when you might need graphics:
 
 Existing offerings are: Graphics2D from AWT, GraphicsContext from JavaFX. They are good, but underwhelming.
 
-Enter Skia. Skia has a proven track record of industrial-scale project relying on it for all things graphics: Google Chrome, Android, Flutter, Firefox Canvas, Xamarin. Skia outperforms all existing Java2D toolkits in almost every benchmark, and also provides:
+Enter Skia. Skia has a proven track record of industrial-scale project relying on it for all things graphics: Google Chrome, Android, Flutter, Firefox Canvas, Xamarin, LibreOffice. Skia outperforms all existing Java2D toolkits in almost every benchmark, and also provides:
 
 - extensive color spaces support,
 - modern typography with open type features, variable typefaces, correct multi-script text handling, emojis,

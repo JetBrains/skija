@@ -16,7 +16,7 @@ on:
       - skija.iml
 
 env:
-  skia_release: m87-4893488
+  skia_release: m88-59bafeeaa7
 
 jobs:
   shared:

@@ -208,11 +208,6 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nIncReserve(JN
     instance->incReserve(extraPtCount);
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nShrinkToFit(JNIEnv* env, jclass jclass, jlong ptr) {
-    SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
-    instance->shrinkToFit();
-}
-
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nMoveTo(JNIEnv* env, jclass jclass, jlong ptr, jfloat x, jfloat y) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
     instance->moveTo(x, y);

@@ -3,12 +3,12 @@ package org.jetbrains.skija;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
-public class Context extends RefCnt {
+public class DirectContext extends RefCnt {
     static { Library.staticLoad(); }
     
-    public static Context makeGL() {
+    public static DirectContext makeGL() {
         Stats.onNativeCall();
-        return new Context(_nMakeGL());
+        return new DirectContext(_nMakeGL());
     }
 
     public void flush() {
@@ -17,7 +17,7 @@ public class Context extends RefCnt {
     }
 
     @ApiStatus.Internal
-    public Context(long ptr) {
+    public DirectContext(long ptr) {
         super(ptr);
     }
 

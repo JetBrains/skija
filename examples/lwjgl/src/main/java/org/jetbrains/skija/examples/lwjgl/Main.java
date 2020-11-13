@@ -106,7 +106,7 @@ class Window {
         glfwShowWindow(window);
     }
 
-    private Context context;
+    private DirectContext context;
     private BackendRenderTarget renderTarget;
     private Surface surface;
     private Canvas canvas;
@@ -254,7 +254,7 @@ class Window {
         GL.createCapabilities();
         if ("false".equals(System.getProperty("skija.staticLoad")))
             Library.load();
-        context = Context.makeGL();
+        context = DirectContext.makeGL();
 
         GLFW.glfwSetWindowSizeCallback(window, (window, width, height) -> {
             updateDimensions();

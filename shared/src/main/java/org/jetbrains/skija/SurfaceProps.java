@@ -9,25 +9,21 @@ import org.jetbrains.skija.impl.*;
 public class SurfaceProps {
     static { Library.staticLoad(); }
     
+    @ApiStatus.Internal 
     public boolean _deviceIndependentFonts;
+    
+    @ApiStatus.Internal 
     public PixelGeometry _pixelGeometry;
 
     public SurfaceProps() {
-        this(false);
+        this(false, PixelGeometry.UNKNOWN);
     }
 
-    public SurfaceProps(boolean useDeviceIndependentFonts) {
-        this(useDeviceIndependentFonts, PixelGeometry.values()[_nComputeDefaultGeometry()]);
-        Stats.onNativeCall();
-    }
-
-    public SurfaceProps(PixelGeometry pixelGeometry) {
-        this(false, pixelGeometry);
+    public SurfaceProps(PixelGeometry geo) {
+        this(false, geo);
     }
 
     @ApiStatus.Internal public int getFlags() {
         return 0 | (_deviceIndependentFonts ? 1 : 0); 
     }
-
-    @ApiStatus.Internal public static native int _nComputeDefaultGeometry();
 }
