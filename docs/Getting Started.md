@@ -144,6 +144,7 @@ var width = 640;
 var height = 480;
 
 // Create window
+glfwInit();
 glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 long windowHandle = glfwCreateWindow(width, height, "Skija LWJGL Demo", NULL, NULL);
