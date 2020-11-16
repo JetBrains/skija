@@ -196,6 +196,43 @@ Using JOGL library: see [examples/jogl](/examples/jogl).
 
 Embedding into AWT window: see [Skiko](https://github.com/jetbrains/skiko).
 
+## Drawing text
+
+For drawing text, there are two important concepts: Typeface and Font. 
+
+[Typeface](/shared/src/main/java/org/jetbrains/skija/Typeface.java) corresponds to a font file and is relatively expensive to create. You can create typeface directly:
+
+```java
+Typeface face = Typeface.makeFromFile("Inter.ttf");
+```
+
+or ask operating system to locate one for you:
+
+```java
+Typeface face = FontMgr.getDefault().matchFamilyStyle("Menlo", FontStyle.NORMAL);
+```
+
+The [Font](/shared/src/main/java/org/jetbrains/skija/Font.java) contains specific settings the Typeface should be drawn with. The most important one is size:
+
+```java
+Font font = new Font(face, 13);
+```
+
+Finally, to specify color, we’ll need paint. All together:
+
+```java
+try (Typeface face = FontMgr.getDefault().matchFamilyStyle("Menlo", FontStyle.NORMAL);
+     Font font  = new Font(face, 13);
+     Paint fill = new Paint().setColor(0xFF000000);)
+{
+    canvas.drawString("Hello, world", 0, 0, font, fill);
+}
+```
+
+For this example, we close all resources immediately after paint. In a real application, you would want to cache both Typeface and Font, as it is expensive to recreate them on every frame.
+
+For advanced font rendering, see [Shaper](/shared/src/main/java/org/jetbrains/skija/shaper/Shaper.java) and [ParagraphBuilder](/shared/src/main/java/org/jetbrains/skija/paragraph/ParagraphBuilder.java).
+
 ## Discovering Skia API
 
 I recommend studying these classes first:
@@ -204,7 +241,9 @@ I recommend studying these classes first:
 - [Paint](/shared/src/main/java/org/jetbrains/skija/Paint.java)
 - [Path](/shared/src/main/java/org/jetbrains/skija/Path.java)
 - [Image](/shared/src/main/java/org/jetbrains/skija/Image.java)
-- [Typeface](/shared/src/main/java/org/jetbrains/skija/Typeface.java), [Font](/shared/src/main/java/org/jetbrains/skija/Font.java)
+- [Shader](/shared/src/main/java/org/jetbrains/skija/Shader.java)
+- [Typeface](/shared/src/main/java/org/jetbrains/skija/Typeface.java)
+- [Font](/shared/src/main/java/org/jetbrains/skija/Font.java)
 - [ParagraphBuilder](/shared/src/main/java/org/jetbrains/skija/paragraph/ParagraphBuilder.java)
 
 I found [SkiaSharp documentation](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/user-interface/graphics/skiasharp/) to be excellent resource on what can be done in Skia. They have nice examples and visual explanations, too.
