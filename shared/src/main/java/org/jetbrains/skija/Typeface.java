@@ -185,8 +185,8 @@ public class Typeface extends RefCnt {
      *
      *  @return  the corresponding glyph ids for each character.
      */
-    public short[] getStringGlyphIds(String s) {
-        return getUTF32GlyphIds(s.codePoints().toArray());
+    public short[] getStringGlyphs(String s) {
+        return getUTF32Glyphs(s.codePoints().toArray());
     }
 
     /**
@@ -194,18 +194,18 @@ public class Typeface extends RefCnt {
      *
      *  @return  the corresponding glyph IDs for each character.
      */
-    public short[] getUTF32GlyphIds(int[] uni) {
+    public short[] getUTF32Glyphs(int[] uni) {
         Stats.onNativeCall();
-        return _nGetUTF32GlyphIds(_ptr, uni);
+        return _nGetUTF32Glyphs(_ptr, uni);
     }
 
     /**
-     *  This is a short-cut for calling {@link #getUTF32GlyphIds(int[])}.
-     *  @return  the glyphID that corresponds to the specified unicode code-point (in UTF32 encoding). If the unichar is not supported, returns 0
+     *  This is a short-cut for calling {@link #getUTF32Glyphs(int[])}.
+     *  @return  the glyph that corresponds to the specified unicode code-point (in UTF32 encoding). If the unichar is not supported, returns 0
      */
-    public short getUTF32GlyphId(int unichar) {
+    public short getUTF32Glyph(int unichar) {
         Stats.onNativeCall();
-        return _nGetUTF32GlyphId(_ptr, unichar);
+        return _nGetUTF32Glyph(_ptr, unichar);
     }
 
     /**
@@ -322,8 +322,8 @@ public class Typeface extends RefCnt {
     @ApiStatus.Internal public static native long     _nMakeFromFile(String path, int index);
     @ApiStatus.Internal public static native long     _nMakeFromData(long dataPtr, int index);
     @ApiStatus.Internal public static native long     _nMakeClone(long ptr, FontVariation[] variations, int collectionIndex);
-    @ApiStatus.Internal public static native short[]  _nGetUTF32GlyphIds(long ptr, int[] uni);
-    @ApiStatus.Internal public static native short    _nGetUTF32GlyphId(long ptr, int unichar);
+    @ApiStatus.Internal public static native short[]  _nGetUTF32Glyphs(long ptr, int[] uni);
+    @ApiStatus.Internal public static native short    _nGetUTF32Glyph(long ptr, int unichar);
     @ApiStatus.Internal public static native int      _nGetGlyphsCount(long ptr);
     @ApiStatus.Internal public static native int      _nGetTablesCount(long ptr);
     @ApiStatus.Internal public static native int[]    _nGetTableTags(long ptr);

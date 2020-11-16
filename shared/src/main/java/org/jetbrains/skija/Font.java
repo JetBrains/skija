@@ -333,8 +333,8 @@ public class Font extends Managed {
      *
      *  @return  the corresponding glyph ids for each character.
      */
-    public short[] getStringGlyphIds(String s) {
-        return getUTF32GlyphIds(s.codePoints().toArray());
+    public short[] getStringGlyphs(String s) {
+        return getUTF32Glyphs(s.codePoints().toArray());
     }
 
     /**
@@ -342,17 +342,17 @@ public class Font extends Managed {
      *
      *  @return  the corresponding glyph IDs for each character.
      */
-    public short[] getUTF32GlyphIds(int[] uni) {
+    public short[] getUTF32Glyphs(int[] uni) {
         Stats.onNativeCall();
-        return _nGetUTF32GlyphIds(_ptr, uni);
+        return _nGetUTF32Glyphs(_ptr, uni);
     }
 
     /**
-     * @return  the glyphID that corresponds to the specified unicode code-point (in UTF32 encoding). If the unichar is not supported, returns 0
+     * @return  the glyph that corresponds to the specified unicode code-point (in UTF32 encoding). If the unichar is not supported, returns 0
      */
-    public short getUTF32GlyphId(int unichar) {
+    public short getUTF32Glyph(int unichar) {
         Stats.onNativeCall();
-        return _nGetUTF32GlyphId(_ptr, unichar);
+        return _nGetUTF32Glyph(_ptr, unichar);
     }
 
     /**
@@ -392,56 +392,56 @@ public class Font extends Managed {
     /**
      * Retrieves the advances for each glyph
      */
-    public float[] getWidths(short[] glyphIds) {
+    public float[] getWidths(short[] glyphs) {
         Stats.onNativeCall();
-        return _nGetWidths(_ptr, glyphIds);
+        return _nGetWidths(_ptr, glyphs);
     }
 
     /**
      * Retrieves the bounds for each glyph
      */
-    public Rect[] getBounds(short[] glyphIds) {
-        return getBounds(glyphIds, null);
+    public Rect[] getBounds(short[] glyphs) {
+        return getBounds(glyphs, null);
     }
 
     /**
      * Retrieves the bounds for each glyph
      */
-    public Rect[] getBounds(short[] glyphIds, Paint p) {
+    public Rect[] getBounds(short[] glyphs, Paint p) {
         Stats.onNativeCall();
-        return _nGetBounds(_ptr, glyphIds, Native.getPtr(p));
+        return _nGetBounds(_ptr, glyphs, Native.getPtr(p));
     }
 
     /**
      * Retrieves the positions for each glyph.
      */
-    public Point[] getPositions(short[] glyphIds) {
+    public Point[] getPositions(short[] glyphs) {
         Stats.onNativeCall();
-        return _nGetPositions(_ptr, glyphIds, 0, 0);
+        return _nGetPositions(_ptr, glyphs, 0, 0);
     }    
 
     /**
      * Retrieves the positions for each glyph, beginning at the specified origin.
      */
-    public Point[] getPositions(short[] glyphIds, Point offset) {
+    public Point[] getPositions(short[] glyphs, Point offset) {
         Stats.onNativeCall();
-        return _nGetPositions(_ptr, glyphIds, offset._x, offset._y);
+        return _nGetPositions(_ptr, glyphs, offset._x, offset._y);
     }
 
     /**
      * Retrieves the x-positions for each glyph.
      */
-    public float[] getXPositions(short[] glyphIds) {
+    public float[] getXPositions(short[] glyphs) {
         Stats.onNativeCall();
-        return _nGetXPositions(_ptr, glyphIds, 0);
+        return _nGetXPositions(_ptr, glyphs, 0);
     }    
 
     /**
      * Retrieves the x-positions for each glyph, beginning at the specified origin.
      */
-    public float[] getXPositions(short[] glyphIds, float offset) {
+    public float[] getXPositions(short[] glyphs, float offset) {
         Stats.onNativeCall();
-        return _nGetXPositions(_ptr, glyphIds, offset);
+        return _nGetXPositions(_ptr, glyphs, offset);
     }
 
     /**
@@ -449,18 +449,18 @@ public class Font extends Managed {
      * Degenerate contours in the glyph outline will be skipped. If glyph is described by a bitmap, returns null.
      */
     @Nullable
-    public Path getPath(short glyphId) {
+    public Path getPath(short glyph) {
         Stats.onNativeCall();
-        long ptr = _nGetPath(_ptr, glyphId);
+        long ptr = _nGetPath(_ptr, glyph);
         return ptr == 0 ? null : new Path(ptr);
     }
 
     /**
      * Return glyph outlines, some of which might be null.
      */
-    public Path[] getPaths(short[] glyphIds) {
+    public Path[] getPaths(short[] glyphs) {
         Stats.onNativeCall();
-        return _nGetPaths(_ptr, glyphIds);
+        return _nGetPaths(_ptr, glyphs);
     }
 
     /**
@@ -518,9 +518,9 @@ public class Font extends Managed {
     @ApiStatus.Internal public static native void    _nSetSize(long ptr, float value);
     @ApiStatus.Internal public static native void    _nSetScaleX(long ptr, float value);
     @ApiStatus.Internal public static native void    _nSetSkewX(long ptr, float value);
-    @ApiStatus.Internal public static native short[] _nGetStringGlyphIds(long ptr, String str);
-    @ApiStatus.Internal public static native short   _nGetUTF32GlyphId(long ptr, int uni);
-    @ApiStatus.Internal public static native short[] _nGetUTF32GlyphIds(long ptr, int[] uni);
+    @ApiStatus.Internal public static native short[] _nGetStringGlyphs(long ptr, String str);
+    @ApiStatus.Internal public static native short   _nGetUTF32Glyph(long ptr, int uni);
+    @ApiStatus.Internal public static native short[] _nGetUTF32Glyphs(long ptr, int[] uni);
     @ApiStatus.Internal public static native int     _nGetStringGlyphsCount(long ptr, String str);
     @ApiStatus.Internal public static native Rect    _nMeasureText(long ptr, String str, long paintPtr);
     @ApiStatus.Internal public static native float   _nMeasureTextWidth(long ptr, String str, long paintPtr); 
@@ -528,8 +528,8 @@ public class Font extends Managed {
     @ApiStatus.Internal public static native Rect[]  _nGetBounds(long ptr, short[] glyphs, long paintPtr);
     @ApiStatus.Internal public static native Point[] _nGetPositions(long ptr, short[] glyphs, float x, float y);
     @ApiStatus.Internal public static native float[] _nGetXPositions(long ptr, short[] glyphs, float x);
-    @ApiStatus.Internal public static native long    _nGetPath(long ptr, short glyphId);
-    @ApiStatus.Internal public static native Path[]  _nGetPaths(long ptr, short[] glyphIds);
+    @ApiStatus.Internal public static native long    _nGetPath(long ptr, short glyph);
+    @ApiStatus.Internal public static native Path[]  _nGetPaths(long ptr, short[] glyphs);
     @ApiStatus.Internal public static native FontMetrics _nGetMetrics(long ptr);
     @ApiStatus.Internal public static native float   _nGetSpacing(long ptr);
 }

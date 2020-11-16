@@ -209,7 +209,7 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Font__1nSetSkewX
     instance->setSkewX(value);
 }
 
-extern "C" JNIEXPORT jshortArray JNICALL Java_org_jetbrains_skija_Font__1nGetStringGlyphIds
+extern "C" JNIEXPORT jshortArray JNICALL Java_org_jetbrains_skija_Font__1nGetStringGlyphs
   (JNIEnv* env, jclass jclass, jlong ptr, jstring str) {
     SkFont* instance = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(ptr));
     jsize len = env->GetStringLength(str);
@@ -221,7 +221,7 @@ extern "C" JNIEXPORT jshortArray JNICALL Java_org_jetbrains_skija_Font__1nGetStr
     return javaShortArray(env, glyphs);
 }
 
-extern "C" JNIEXPORT jshortArray JNICALL Java_org_jetbrains_skija_Font__1nGetUTF32GlyphIds
+extern "C" JNIEXPORT jshortArray JNICALL Java_org_jetbrains_skija_Font__1nGetUTF32Glyphs
   (JNIEnv* env, jclass jclass, jlong ptr, jintArray uniArr) {
     SkFont* instance = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(ptr));
     int count = env->GetArrayLength(uniArr);
@@ -232,7 +232,7 @@ extern "C" JNIEXPORT jshortArray JNICALL Java_org_jetbrains_skija_Font__1nGetUTF
     return javaShortArray(env, glyphs);
 }
 
-extern "C" JNIEXPORT jshort JNICALL Java_org_jetbrains_skija_Font__1nGetUTF32GlyphId
+extern "C" JNIEXPORT jshort JNICALL Java_org_jetbrains_skija_Font__1nGetUTF32Glyph
   (JNIEnv* env, jclass jclass, jlong ptr, jint uni) {
     SkFont* instance = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(ptr));
     return instance->unicharToGlyph(uni);
@@ -325,10 +325,10 @@ extern "C" JNIEXPORT jfloatArray JNICALL Java_org_jetbrains_skija_Font__1nGetXPo
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Font__1nGetPath
-  (JNIEnv* env, jclass jclass, jlong ptr, jshort glyphId) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jshort glyph) {
     SkFont* instance = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(ptr));
     SkPath* path = new SkPath();
-    instance->getPath(glyphId, path);
+    instance->getPath(glyph, path);
     return reinterpret_cast<jlong>(path);
 }
 

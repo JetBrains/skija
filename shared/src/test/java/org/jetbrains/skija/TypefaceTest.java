@@ -53,9 +53,9 @@ public class TypefaceTest implements Executable {
             assertEquals("Arial", Typeface.makeFromName("Arial", FontStyle.NORMAL).getFamilyName());
 
         int[] Skia = new int[] { 83, 107, 105, 97 };
-        assertArrayEquals(new short[] { 394, 713, 677, 503 }, inter.getUTF32GlyphIds(Skia));
-        assertArrayEquals(new short[] { 394, 713, 677, 503 }, inter.getStringGlyphIds("Skia"));
-        assertEquals(Short.valueOf((short) 394), inter.getUTF32GlyphId(83));
+        assertArrayEquals(new short[] { 394, 713, 677, 503 }, inter.getUTF32Glyphs(Skia));
+        assertArrayEquals(new short[] { 394, 713, 677, 503 }, inter.getStringGlyphs("Skia"));
+        assertEquals(Short.valueOf((short) 394), inter.getUTF32Glyph(83));
 
         assertEquals(2548, interV.getGlyphsCount());
 
@@ -68,9 +68,9 @@ public class TypefaceTest implements Executable {
         assertEquals(2816, inter.getUnitsPerEm());
 
         assertArrayEquals(null, jbMono.getKerningPairAdjustments(null));
-        assertArrayEquals(null, jbMono.getKerningPairAdjustments(jbMono.getStringGlyphIds("TAV")));
+        assertArrayEquals(null, jbMono.getKerningPairAdjustments(jbMono.getStringGlyphs("TAV")));
         // assertEquals(null, interV.getKerningPairAdjustments(null));
-        // assertArrayEquals(null, interV.getKerningPairAdjustments(interV.getStringGlyphIds("TAV")));
+        // assertArrayEquals(null, interV.getKerningPairAdjustments(interV.getStringGlyphs("TAV")));
 
         assertArrayEquals(new FontFamilyName[] { new FontFamilyName("Inter", "en-US") }, interV.getFamilyNames());
         assertEquals("Inter", interV.getFamilyName());

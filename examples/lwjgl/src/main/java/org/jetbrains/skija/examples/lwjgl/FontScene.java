@@ -191,7 +191,7 @@ public class FontScene implements Scene {
         text = "Inter size=13 Font.getWidths & Font.getXPositions";
         height = _drawLine(canvas, text, _inter18);
         bounds = _inter18.measureText(text, _paint);
-        short[] glyphs = _inter18.getStringGlyphIds(text);
+        short[] glyphs = _inter18.getStringGlyphs(text);
         float[] widths = _inter18.getWidths(glyphs);
         float[] xPositions = _inter18.getXPositions(glyphs, 5);
         for (int i = 0; i < glyphs.length; ++i) {
@@ -200,7 +200,7 @@ public class FontScene implements Scene {
         
         text = "Inter size=13 Font.getPositions";
         height = _drawLine(canvas, text, _inter18);
-        glyphs = _inter18.getStringGlyphIds(text);
+        glyphs = _inter18.getStringGlyphs(text);
         widths = _inter18.getWidths(glyphs);
         Point[] positions = _inter18.getPositions(glyphs, new Point(3, -height));
         for (int i = 0; i < glyphs.length; ++i) {
@@ -209,7 +209,7 @@ public class FontScene implements Scene {
         
         text = "Inter size=13 Font.getBounds";
         height = _drawLine(canvas, text, _inter18);
-        glyphs = _inter18.getStringGlyphIds(text);        
+        glyphs = _inter18.getStringGlyphs(text);        
         xPositions = _inter18.getXPositions(glyphs);
         Rect[] boundRects = _inter18.getBounds(glyphs);
         FontMetrics metrics = _inter18.getMetrics();
@@ -219,7 +219,7 @@ public class FontScene implements Scene {
 
         text = "Inter size=13 Font.getBounds(short[], _Paint)";
         height = _drawLine(canvas, text, _inter18);
-        glyphs = _inter18.getStringGlyphIds(text);        
+        glyphs = _inter18.getStringGlyphs(text);        
         xPositions = _inter18.getXPositions(glyphs);
         boundRects = _inter18.getBounds(glyphs, _paint);
         for (int i = 0; i < glyphs.length; ++i) {
@@ -228,13 +228,13 @@ public class FontScene implements Scene {
 
         canvas.translate(0, _inter48.getSpacing());
         canvas.save();
-        try (Path p = _inter48.getPath(_inter48.getUTF32GlyphId('@'));) {
+        try (Path p = _inter48.getPath(_inter48.getUTF32Glyph('@'));) {
             bounds = p.computeTightBounds();
             canvas.drawPath(p, _stroke);
             canvas.translate(bounds.getWidth() + 10, 0);
         }
 
-        for (Path p: _inter48.getPaths(_inter48.getStringGlyphIds("$&^"))) {
+        for (Path p: _inter48.getPaths(_inter48.getStringGlyphs("$&^"))) {
             bounds = p.computeTightBounds();
             canvas.drawPath(p, _stroke);
             canvas.translate(bounds.getWidth() + 10, 0);

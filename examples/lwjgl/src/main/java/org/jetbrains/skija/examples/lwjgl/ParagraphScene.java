@@ -223,18 +223,18 @@ public class ParagraphScene implements Scene {
                 }
 
                 // getGlyphPositionAtCoordinate
-                int glyphIdx = p.getGlyphPositionAtCoordinate(dx, dy).getPosition();
+                int glyphx = p.getGlyphPositionAtCoordinate(dx, dy).getPosition();
 
                 try (var blue   = new Paint().setColor(0x80b3d7ff);
                      var orange = new Paint().setColor(0x80ffd7b3);) {
                     
                     // getRectsForRange    
-                    for (TextBox box: p.getRectsForRange(0, glyphIdx, RectHeightMode.TIGHT, RectWidthMode.TIGHT)) {
+                    for (TextBox box: p.getRectsForRange(0, glyphx, RectHeightMode.TIGHT, RectWidthMode.TIGHT)) {
                         canvas.drawRect(box.getRect(), blue);
                     }
 
                     // getWordBoundary
-                    IRange word = p.getWordBoundary(glyphIdx);
+                    IRange word = p.getWordBoundary(glyphx);
                     for (TextBox box: p.getRectsForRange(word.getStart(), word.getEnd(), RectHeightMode.TIGHT, RectWidthMode.TIGHT)) {
                         canvas.drawRect(box.getRect(), orange);
                     }
@@ -245,7 +245,7 @@ public class ParagraphScene implements Scene {
                 try (var typeface = Typeface.makeDefault();
                      var font     = new Font(typeface, 16);
                      var shaper   = Shaper.make();
-                     var blob     = shaper.shape("idx: " + glyphIdx, font);
+                     var blob     = shaper.shape("idx: " + glyphx, font);
                      var paint    = new Paint().setColor(0xFFcc3333);)
                 {
                     canvas.drawTextBlob(blob, 0, 0, font, paint);

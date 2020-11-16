@@ -51,7 +51,7 @@ public class TextBlobBuilder extends Managed {
      * @return        this
      */
     public TextBlobBuilder appendRun(Font font, String text, float x, float y) {
-        return appendRun(font, font.getStringGlyphIds(text), x, y, null);
+        return appendRun(font, font.getStringGlyphs(text), x, y, null);
     }
 
     /** 
@@ -70,7 +70,7 @@ public class TextBlobBuilder extends Managed {
      * @return        this
      */
     public TextBlobBuilder appendRun(Font font, String text, float x, float y, @Nullable Rect bounds) {
-        return appendRun(font, font.getStringGlyphIds(text), x, y, bounds);
+        return appendRun(font, font.getStringGlyphs(text), x, y, bounds);
     }
 
     /** 

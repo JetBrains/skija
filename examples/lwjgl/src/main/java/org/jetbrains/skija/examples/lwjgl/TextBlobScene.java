@@ -25,7 +25,7 @@ public class TextBlobScene implements Scene {
     }
 
     public void drawPosH(Canvas canvas) {
-        short[] glyphs = font.getStringGlyphIds("Fibonacci numbers");
+        short[] glyphs = font.getStringGlyphs("Fibonacci numbers");
         float[] widths = font.getWidths(glyphs);
         float[] xpos = new float[glyphs.length];
         float distance = 0, a = 0, b = 1;
@@ -44,7 +44,7 @@ public class TextBlobScene implements Scene {
     }
 
     public void drawPos(Canvas canvas) {
-        short[] glyphs = font.getStringGlyphIds("Sine Cosine Tangent Cotangent");
+        short[] glyphs = font.getStringGlyphs("Sine Cosine Tangent Cotangent");
         float[] widths = font.getWidths(glyphs);
         float distance = 0;
 
@@ -64,7 +64,7 @@ public class TextBlobScene implements Scene {
     }
 
     public void drawRSXform(Canvas canvas) {
-        short[] glyphs = font.getStringGlyphIds("Circular Text");
+        short[] glyphs = font.getStringGlyphs("Circular Text");
         float[] widths = font.getWidths(glyphs);
         RSXform[] xforms = new RSXform[glyphs.length];
 
@@ -105,19 +105,19 @@ public class TextBlobScene implements Scene {
         try (var builder = new TextBlobBuilder();) {
             builder.appendRun(font, "appendRun", 0, 0, Rect.makeXYWH(0, 0, 100, 20));
 
-            short[] glyphs = font.getStringGlyphIds("appendRunPosH");
+            short[] glyphs = font.getStringGlyphs("appendRunPosH");
             float[] posX = new float[glyphs.length];
             for (int i = 0; i < posX.length; ++i)
                 posX[i] = i * 20; 
             builder.appendRunPosH(font, glyphs, posX, gap);
 
-            glyphs = font.getStringGlyphIds("appendRunPos");
+            glyphs = font.getStringGlyphs("appendRunPos");
             Point[] pos = new Point[glyphs.length];
             for (int i = 0; i < pos.length; ++i)
                 pos[i] = new Point(i * 20, 2 * gap + (float) Math.sin(i) * 5f); 
             builder.appendRunPos(font, glyphs, pos);
 
-            glyphs = font.getStringGlyphIds("appendRSXform");
+            glyphs = font.getStringGlyphs("appendRSXform");
             RSXform[] xform = new RSXform[glyphs.length];
             for (int i = 0; i < xform.length; ++i) {
                 double angle = i * Math.PI / xform.length;
