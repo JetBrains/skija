@@ -86,7 +86,7 @@ void drawCircle(Canvas c) {
 // Totally OK, `p` will be freed at the next GC
 ```
 
-Only as an additional bonus, all Managed descendants implement AutoClosable. If you want (and only if you want!), you can free short-lived objects immediately after use. This is not mandatory, but might help freeing more memore quicker.
+Only as an additional bonus, all Managed descendants implement AutoClosable. If you want (and only if you want!), you can free short-lived objects immediately after use. This is not mandatory, but might help freeing more memory quicker.
 
 ```java
 void drawCircle(Canvas c) {
