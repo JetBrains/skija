@@ -71,13 +71,22 @@ The ultimate goal for Skija is to feel as a Java library and not having to think
 
 ## Current status
 
-Active development. Pre-alpha. Everything will change without notice.
+Public alpha. Things might change without notice.
+
+Please note that Skia is known to change its API quite often (monthly). Skija will do its best to protect from these changes, but sometimes it might be impossible (e.g. method was removed). Normally it’s auxiliary stuff though, don’t worry too much.
 
 Platforms:
 
 - [x] Windows
 - [x] Linux
 - [x] macOS
+
+Backends:
+
+- [x] Bitmap
+- [x] OpenGL
+- [x] Metal (example pending)
+- [ ] Vulkan
 
 APIs:
 
@@ -165,7 +174,7 @@ Windows  | `windows`     | ![version](https://img.shields.io/badge/dynamic/xml?s
 
 ## Documentation
 
-Get started by reading [Getting Started](docs/Getting+Started.md).
+Get started by reading [Getting Started](docs/Getting%20Started.md).
 
 API docs are under development — consult source code and JavaDoc comments.
 
