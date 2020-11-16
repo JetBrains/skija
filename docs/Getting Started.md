@@ -5,12 +5,12 @@
 Add ONE of these dependencies to your ant/maven/gradle/bazel:
 
 ```
-org.jetbrains.skija:skija-windows:0.6.1
-org.jetbrains.skija:skija-linux:0.6.1
-org.jetbrains.skija:skija-macos:0.6.1
+org.jetbrains.skija:skija-windows:0.0.0
+org.jetbrains.skija:skija-linux:0.0.0
+org.jetbrains.skija:skija-macos:0.0.0
 ```
 
-(Replace `0.6.1` with ![version](https://img.shields.io/badge/dynamic/xml?style=flat-square&label=latest&color=success&url=https%3A%2F%2Fpackages.jetbrains.team%2Fmaven%2Fp%2Fskija%2Fmaven%2Forg%2Fjetbrains%2Fskija%2Fskija-macos%2Fmaven-metadata.xml&query=//release)
+(Replace `0.0.0` with ![version](https://img.shields.io/badge/dynamic/xml?style=flat-square&label=latest&color=success&url=https%3A%2F%2Fpackages.jetbrains.team%2Fmaven%2Fp%2Fskija%2Fmaven%2Forg%2Fjetbrains%2Fskija%2Fskija-macos%2Fmaven-metadata.xml&query=//release))
 
 In you main class, import
 
@@ -34,6 +34,14 @@ To draw something, you often need a [Paint](/shared/src/main/java/org/jetbrains/
 ```java
 Paint paint = new Paint();
 paint.setColor(0xFFFF0000);
+```
+
+The color is a 32-bit integer in ARGB format. `0xFF______` is fully opaque, `0x00______` is fully transparent. The colors are:
+
+```java
+Red   = 0xFFFF0000
+Green = 0xFF00FF00
+Blue  = 0xFF0000FF
 ```
 
 Finally, we can draw something:
@@ -189,6 +197,15 @@ Using JOGL library: see [examples/jogl](/examples/jogl).
 Embedding into AWT window: see [Skiko](https://github.com/jetbrains/skiko).
 
 ## Discovering Skia API
+
+I recommend studying these classes first:
+
+- [Canvas](/shared/src/main/java/org/jetbrains/skija/Canvas.java)
+- [Paint](/shared/src/main/java/org/jetbrains/skija/Paint.java)
+- [Path](/shared/src/main/java/org/jetbrains/skija/Path.java)
+- [Image](/shared/src/main/java/org/jetbrains/skija/Image.java)
+- [Typeface](/shared/src/main/java/org/jetbrains/skija/Typeface.java), [Font](/shared/src/main/java/org/jetbrains/skija/Font.java)
+- [ParagraphBuilder](/shared/src/main/java/org/jetbrains/skija/paragraph/ParagraphBuilder.java)
 
 I found [SkiaSharp documentation](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/user-interface/graphics/skiasharp/) to be excellent resource on what can be done in Skia. They have nice examples and visual explanations, too.
 
