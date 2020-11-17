@@ -20,10 +20,17 @@ public class Color4f {
     }
 
     public Color4f(int c) {
-        this((c >> 16 & 0xFF) / 256f,
-             (c >> 8 & 0xFF) / 256f,
-             (c & 0xFF) / 256f,
-             (c >> 24 & 0xFF) / 256f);
+        this((c >> 16 & 0xFF) / 255f,
+             (c >> 8 & 0xFF) / 255f,
+             (c & 0xFF) / 255f,
+             (c >> 24 & 0xFF) / 255f);
+    }
+
+    public int toColor() {
+        return (((int) (_a * 255f)) << 24)
+          | (((int) (_r * 255f)) << 16)
+          | (((int) (_g * 255f)) << 8)
+          | ((int) (_b * 255f));
     }
 
     public float[] flatten() {
