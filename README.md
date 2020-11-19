@@ -186,7 +186,7 @@ Finally, [LWJGL demo app](/examples/lwjgl) has examples of most of the APIs that
 
 ## Building Skija from scratch
 
-Prerequisites: Git, CMake, Ninja, JDK 11+, Maven.
+Prerequisites: Git, CMake, Ninja, JDK 11+, set $JAVA_HOME, Maven.
 
 Checkout:
 
