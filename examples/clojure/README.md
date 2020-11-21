@@ -11,5 +11,5 @@ Demonstration of Skija APIs from Clojure.
 From  CLI run the below command,
 
 ```
-clj -J-XstartOnFirstThread -M -m  lwjgl.main
+clj -J-XstartOnFirstThread -m  lwjgl.main
 ```
