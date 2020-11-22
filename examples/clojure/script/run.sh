@@ -2,4 +2,9 @@
 set -o errexit -o nounset -o pipefail
 cd "`dirname $0`/.."
 
-clj -J-XstartOnFirstThread -X lwjgl.main/-main
+OS=`uname`
+if [[ "$OS" == 'Darwin' ]]; then
+   clj -J-XstartOnFirstThread -M -m lwjgl.main
+else
+    clj -M -m lwjgl.main
+fi

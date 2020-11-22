@@ -5,11 +5,20 @@ Demonstration of Skija APIs from Clojure.
 
 - JDK 11
 - Clojure 1.10.1
+- `clojure` command-line tool 1.10.1.727 or later
 
 ## Up & Running:
 
-From  CLI run the below command,
+From CLI run the below command:
+
+Windows/Linux:
 
 ```
-clj -J-XstartOnFirstThread -M -m  lwjgl.main
+clj -M -m lwjgl.main
+```
+
+macOS:
+
+```
+clj -J-XstartOnFirstThread -M -m lwjgl.main
 ```
