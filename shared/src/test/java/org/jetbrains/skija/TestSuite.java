@@ -12,6 +12,7 @@ public class TestSuite {
         TestRunner.testClass(FontMgrTest.class);
         TestRunner.testClass(ImageTest.class);
         TestRunner.testClass(PathTest.class);
+        TestRunner.testClass(SurfaceTest.class);
         TestRunner.testClass(PathMeasureTest.class);
         TestRunner.testClass(TypefaceTest.class);
 
