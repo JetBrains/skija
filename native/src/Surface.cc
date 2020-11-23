@@ -72,7 +72,7 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Surface__1nGeneration
     return surface->generationID();
 }
 
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Surface__1nReadPixels
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Surface__1nReadPixels
   (JNIEnv* env, jclass jclass, jlong ptr, jlong bitmapPtr, jint srcX, jint srcY) {
     SkSurface* surface = reinterpret_cast<SkSurface*>(static_cast<uintptr_t>(ptr));
     SkBitmap* bitmap = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(bitmapPtr));
@@ -102,18 +102,6 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Surface__1nUnique
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkSurface* surface = reinterpret_cast<SkSurface*>(static_cast<uintptr_t>(ptr));
     return surface->unique();
-}
-
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Surface__1nRef
-  (JNIEnv* env, jclass jclass, jlong ptr) {
-    SkSurface* surface = reinterpret_cast<SkSurface*>(static_cast<uintptr_t>(ptr));
-    surface->ref();
-}
-
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Surface__1nUnref
-  (JNIEnv* env, jclass jclass, jlong ptr) {
-    SkSurface* surface = reinterpret_cast<SkSurface*>(static_cast<uintptr_t>(ptr));
-    surface->unref();
 }
 
 extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Surface__1nGetImageInfo

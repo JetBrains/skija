@@ -27,10 +27,6 @@ public class SurfaceTest implements Executable {
             assertNotEquals(id, surface.getGenerationId());
 
             assertEquals(true, surface.isUnique());
-            surface.ref();
-            assertNotEquals(true, surface.isUnique());
-            surface.unref();
-            assertEquals(true, surface.isUnique());
 
             var imageInfo = surface.getImageInfo();
             assertEquals(100, imageInfo.getWidth());

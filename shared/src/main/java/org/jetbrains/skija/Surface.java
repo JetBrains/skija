@@ -341,27 +341,6 @@ public class Surface extends RefCnt {
         return _nUnique(_ptr);
     }
 
-    /**
-     * <p>Increment the reference count.</p>
-     *
-     * <p>Must be balanced by a call to unref().</p>
-     */
-    public void ref() {
-        Stats.onNativeCall();
-        _nRef(_ptr);
-    }
-
-    /**
-     * <p>Decrement the reference count.</p>
-     *
-     * <p>If the reference count is 1 before the decrement, then delete the object.
-     * Note that if this is the case, then the object needs to have been allocated via new, and not on the stack.</p>
-     */
-    public void unref() {
-        Stats.onNativeCall();
-        _nUnref(_ptr);
-    }
-
     @ApiStatus.Internal
     public Surface(long ptr) {
         super(ptr);
@@ -386,6 +365,4 @@ public class Surface extends RefCnt {
     public static native void _nFlushAndSubmit(long ptr, boolean syncCpu);
     public static native void _nFlush(long ptr);
     public static native boolean _nUnique(long ptr);
-    public static native void _nRef(long ptr);
-    public static native void _nUnref(long ptr);
 }
