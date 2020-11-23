@@ -13,7 +13,7 @@ public abstract class PaintFilterCanvas extends Canvas {
      * @param unrollDrawable if needed to filter nested drawable content using this canvas (for drawables there is no paint to filter)
      */
     public PaintFilterCanvas(@NotNull Canvas canvas, boolean unrollDrawable) {
-        super(_nMake(Native.getPtr(canvas), unrollDrawable), true);
+        super(_nMake(Native.getPtr(canvas), unrollDrawable), true, canvas);
         Stats.onNativeCall();
         _nAttachToJava(_ptr);
         Stats.onNativeCall();

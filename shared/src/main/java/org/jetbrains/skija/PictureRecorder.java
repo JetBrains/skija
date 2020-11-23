@@ -31,7 +31,7 @@ public class PictureRecorder extends Managed {
     */
     public Canvas beginRecording(Rect bounds) {
         Stats.onNativeCall();
-        return new Canvas(_nBeginRecording(_ptr, bounds._left, bounds._top, bounds._right, bounds._bottom), false);
+        return new Canvas(_nBeginRecording(_ptr, bounds._left, bounds._top, bounds._right, bounds._bottom), false, this);
     }
 
     /**
@@ -41,7 +41,7 @@ public class PictureRecorder extends Managed {
     public Canvas getRecordingCanvas() {
         Stats.onNativeCall();
         long ptr = _nGetRecordingCanvas(_ptr);
-        return ptr == 0 ? null : new Canvas(ptr, false);
+        return ptr == 0 ? null : new Canvas(ptr, false, this);
     }
 
     /**

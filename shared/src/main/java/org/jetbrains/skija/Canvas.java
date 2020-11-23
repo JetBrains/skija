@@ -5,11 +5,14 @@ import org.jetbrains.skija.impl.*;
 
 public class Canvas extends Managed {
     static { Library.staticLoad(); }
-    
 
     @ApiStatus.Internal
-    public Canvas(long ptr, boolean managed) {
+    public final Object _owner;
+    
+    @ApiStatus.Internal
+    public Canvas(long ptr, boolean managed, Object owner) {
         super(ptr, _FinalizerHolder.PTR, managed);
+        this._owner = owner;
     }
 
     /**
@@ -45,7 +48,7 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_const_SkBitmap_const_SkSurfaceProps">https://fiddle.skia.org/c/@Canvas_const_SkBitmap_const_SkSurfaceProps</a>
      */
     public Canvas(Bitmap bitmap, SurfaceProps surfaceProps) {
-        this(_nMakeFromBitmap(Native.getPtr(bitmap), surfaceProps.getFlags(), surfaceProps.getPixelGeometry().ordinal()), true);
+        this(_nMakeFromBitmap(Native.getPtr(bitmap), surfaceProps.getFlags(), surfaceProps.getPixelGeometry().ordinal()), true, bitmap);
         Stats.onNativeCall();
     }
 

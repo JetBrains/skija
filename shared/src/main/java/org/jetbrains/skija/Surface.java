@@ -20,7 +20,7 @@ public class Surface extends RefCnt {
 
     public Canvas getCanvas() {
         Stats.onNativeCall();
-        return new Canvas(_nGetCanvas(_ptr), false);
+        return new Canvas(_nGetCanvas(_ptr), false, this);
     }
 
     public Image makeImageSnapshot() {

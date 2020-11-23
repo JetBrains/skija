@@ -13,6 +13,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_impl_Library__1nAfterLoad
   (JNIEnv* env, jclass jclass) {
+    env->EnsureLocalCapacity(64);
     java::onLoad(env);
     skija::onLoad(env);
     skija::shaper::onLoad(env);
