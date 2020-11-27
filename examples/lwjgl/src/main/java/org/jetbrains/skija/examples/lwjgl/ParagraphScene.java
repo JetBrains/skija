@@ -196,7 +196,7 @@ public class ParagraphScene implements Scene {
             pb.addText(" is true\n");
 
             pb.pushStyle(largeTs);
-            pb.addText("The previous ");
+            pb.addText("The previous       ");
             pb.popStyle();
             pb.addText("sentence");
             pb.pushStyle(largeTs);

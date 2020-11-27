@@ -7,11 +7,12 @@ import org.jetbrains.skija.*;
 public class TrivialFontRunIterator implements Iterator<FontRun> {
     @ApiStatus.Internal public final int     _length;
     @ApiStatus.Internal public final Font    _font;
-    @ApiStatus.Internal public       boolean _atEnd = false;
+    @ApiStatus.Internal public       boolean _atEnd;
     
     public TrivialFontRunIterator(String text, Font font) {
         _length = text.length();
-        _font = font;
+        _font   = font;
+        _atEnd  = _length == 0;
     }
 
     @Override

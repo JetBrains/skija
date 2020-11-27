@@ -61,12 +61,11 @@ public class TextBlobBuilderRunHandler<T> extends Managed implements RunHandler 
         throw new UnsupportedOperationException("commitLine");
     }
 
+    @Nullable
     public TextBlob makeBlob() {
         Stats.onNativeCall();
         long ptr = _nMakeBlob(_ptr);
-        if (0 == ptr)
-            throw new RuntimeException("Failed to shape: " + _text);
-        return new TextBlob(ptr);
+        return 0 == ptr ? null : new TextBlob(ptr);
     }
 
     @ApiStatus.Internal

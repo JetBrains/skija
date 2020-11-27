@@ -119,16 +119,18 @@ public class RunIteratorScene implements Scene {
     private void drawBlob(Canvas canvas, DebugTextBlobHandler handler, String comment) {
         canvas.drawString(comment, 0, -inter11Metrics.getAscent(), inter11, textFill);
         canvas.translate(0, inter11Metrics.getHeight());
+        var blob = handler._builder.build();
+        if (blob != null) {
+            try (blob) {
+                canvas.drawTextBlob(blob, 0, 0, lato36, textFill);
+            
+                for (var triple: handler._infos) {
+                    var runBounds = triple.getThird();
+                    canvas.drawRect(runBounds, boundsStroke);
+                }
 
-        try (var blob = handler._builder.build()) {
-            canvas.drawTextBlob(blob, 0, 0, lato36, textFill);
-        
-            for (var triple: handler._infos) {
-                var runBounds = triple.getThird();
-                canvas.drawRect(runBounds, boundsStroke);
+                canvas.translate(0, blob.getBounds().getBottom() + 20);
             }
-
-            canvas.translate(0, blob.getBounds().getBottom() + 20);
         }
     }
 }

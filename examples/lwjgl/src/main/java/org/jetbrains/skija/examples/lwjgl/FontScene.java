@@ -47,10 +47,13 @@ public class FontScene implements Scene {
 
     public float _drawLine(Canvas canvas, String text, Font font) {
         var blob = Shaper.make().shape(text, font);
-        var bounds = blob.getBounds();
-        canvas.drawTextBlob(blob, 0, 0, font, _paint);
-        canvas.translate(0, bounds.getHeight());
-        return bounds.getHeight();
+        if (blob != null) {
+            var bounds = blob.getBounds();
+            canvas.drawTextBlob(blob, 0, 0, font, _paint);
+            canvas.translate(0, bounds.getHeight());
+            return bounds.getHeight();
+        }
+        return 0;
     }
 
     @Override
@@ -77,7 +80,7 @@ public class FontScene implements Scene {
     }
 
     public void drawInter(Canvas canvas) {
-        
+        _drawLine(canvas, "", _defaultFont);
         _drawLine(canvas, "Default", _defaultFont);
         _drawLine(canvas, "Inter size=18", _inter18);
         _drawLine(canvas, "Inter size=13 scaleX=1", _inter13_1_0);

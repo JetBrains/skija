@@ -7,11 +7,12 @@ import org.jetbrains.skija.*;
 public class TrivialLanguageRunIterator implements Iterator<LanguageRun> {
     @ApiStatus.Internal public final int     _length;
     @ApiStatus.Internal public final String  _language;
-    @ApiStatus.Internal public       boolean _atEnd = false;
+    @ApiStatus.Internal public       boolean _atEnd;
     
     public TrivialLanguageRunIterator(String text, String language) {
-        _length = text.length();
+        _length   = text.length();
         _language = language;
+        _atEnd    = _length == 0;
     }
 
     @Override
