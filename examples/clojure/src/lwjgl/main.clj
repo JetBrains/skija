@@ -3,7 +3,7 @@
    [nrepl.server :as nrepl])
   (:import
    [org.jetbrains.skija BackendRenderTarget Canvas ColorSpace DirectContext FramebufferFormat Paint Rect Surface SurfaceColorFormat SurfaceOrigin]
-   [org.lwjgl.glfw GLFW]
+   [org.lwjgl.glfw Callbacks GLFW GLFWErrorCallback]
    [org.lwjgl.opengl GL GL11]
    [org.lwjgl.system MemoryUtil]))
 
@@ -21,6 +21,7 @@
     (.drawRect canvas (Rect/makeXYWH -50 -50 100 100) paint)))
 
 (defn -main [& args]
+  (.set (GLFWErrorCallback/createPrint System/err))
   (GLFW/glfwInit)
   (GLFW/glfwWindowHint GLFW/GLFW_VISIBLE GLFW/GLFW_FALSE)
   (GLFW/glfwWindowHint GLFW/GLFW_RESIZABLE GLFW/GLFW_TRUE)
@@ -52,7 +53,16 @@
           (.flush context)
           (GLFW/glfwSwapBuffers window)
           (GLFW/glfwPollEvents)
-          (recur))))))
+          (recur)))
+
+      (Callbacks/glfwFreeCallbacks window)
+      (GLFW/glfwHideWindow window)
+      (GLFW/glfwDestroyWindow window)
+      (GLFW/glfwPollEvents)
+      (GLFW/glfwTerminate)
+      (.free (GLFW/glfwSetErrorCallback nil))
+      (shutdown-agents)
+      )))
 
 (comment
   (reset! lwjgl.main/*rect-color (lwjgl.main/color 0xFF33CC33)))

@@ -320,6 +320,7 @@ class Window {
         scenes.put("Image Filters",    new ImageFiltersScene());
         scenes.put("Mask Filters",     new MaskFiltersScene());
         scenes.put("Paragraph",        new ParagraphScene());
+        scenes.put("Paragraph Metrics",new ParagraphMetricsScene());
         scenes.put("Paragraph Style",  new ParagraphStyleScene());
         scenes.put("Path Effects",     new PathEffectsScene());
         scenes.put("Paths",            new PathsScene());
@@ -336,7 +337,7 @@ class Window {
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Font";
+        currentScene = "Paragraph Style";
         var interRegular = Typeface.makeFromFile("fonts/InterHinted-Regular.ttf");
         interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
         t0 = System.nanoTime();

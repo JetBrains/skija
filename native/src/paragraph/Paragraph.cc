@@ -123,14 +123,20 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_paragraph_Paragraph_
 }
 
 extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Paragraph__1nGetLineMetrics
-  (JNIEnv* env, jclass jclass, jlong ptr) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong textPtr) {
     Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
+    SkString* text = reinterpret_cast<SkString*>(static_cast<uintptr_t>(textPtr));
     std::vector<LineMetrics> res;
     instance->getLineMetrics(res);
     jobjectArray resArray = env->NewObjectArray(res.size(), skija::paragraph::LineMetrics::cls, nullptr);
+    auto conv = skija::UtfIndicesConverter(*text);
     for (int i = 0; i < res.size(); ++i) {
         LineMetrics lm = res[i];
-        jobject lmObj = env->NewObject(skija::paragraph::LineMetrics::cls, skija::paragraph::LineMetrics::ctor, lm.fStartIndex, lm.fEndIndex, lm.fEndExcludingWhitespaces, lm.fEndIncludingNewline, lm.fHardBreak, lm.fAscent, lm.fDescent, lm.fUnscaledAscent, lm.fHeight, lm.fWidth, lm.fLeft, lm.fBaseline, lm.fLineNumber);
+        size_t startIndex = conv.from8To16(lm.fStartIndex);
+        size_t endExcludingWhitespaces = conv.from8To16(lm.fEndExcludingWhitespaces);
+        size_t endIndex = conv.from8To16(lm.fEndIndex);
+        size_t endIncludingNewline = conv.from8To16(lm.fEndIncludingNewline);
+        jobject lmObj = env->NewObject(skija::paragraph::LineMetrics::cls, skija::paragraph::LineMetrics::ctor, startIndex, endIndex, endExcludingWhitespaces, endIncludingNewline, lm.fHardBreak, lm.fAscent, lm.fDescent, lm.fUnscaledAscent, lm.fHeight, lm.fWidth, lm.fLeft, lm.fBaseline, lm.fLineNumber);
         env->SetObjectArrayElement(resArray, i, lmObj);
     }
     return resArray;
@@ -160,28 +166,34 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_Paragraph__
     return instance->updateTextAlign(static_cast<TextAlign>(textAlignment));
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_Paragraph__1nUpdateText
-  (JNIEnv* env, jclass jclass, jlong ptr, jint from, jstring text) {
-    Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
-    return instance->updateText(from, skString(env, text));
-}
+// extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_Paragraph__1nUpdateText
+//   (JNIEnv* env, jclass jclass, jlong ptr, jint from, jstring text) {
+//     Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
+//     return instance->updateText(from, skString(env, text));
+// }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_Paragraph__1nUpdateFontSize
-  (JNIEnv* env, jclass jclass, jlong ptr, jint from, jint to, jfloat fontSize) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jint from, jint to, jfloat fontSize, jlong textPtr) {
     Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
-    return instance->updateFontSize(from, to, fontSize);
+    SkString* text = reinterpret_cast<SkString*>(static_cast<uintptr_t>(textPtr));
+    auto conv = skija::UtfIndicesConverter(*text);
+    return instance->updateFontSize(conv.from16To8(from), conv.from16To8(to), fontSize);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_Paragraph__1nUpdateForegroundPaint
-  (JNIEnv* env, jclass jclass, jlong ptr, jint from, jint to, jlong paintPtr) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jint from, jint to, jlong paintPtr, jlong textPtr) {
     Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
-    return instance->updateForegroundPaint(from, to, *paint);
+    SkString* text = reinterpret_cast<SkString*>(static_cast<uintptr_t>(textPtr));
+    auto conv = skija::UtfIndicesConverter(*text);
+    return instance->updateForegroundPaint(conv.from16To8(from), conv.from16To8(to), *paint);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_Paragraph__1nUpdateBackgroundPaint
-  (JNIEnv* env, jclass jclass, jlong ptr, jint from, jint to, jlong paintPtr) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jint from, jint to, jlong paintPtr, jlong textPtr) {
     Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
-    return instance->updateBackgroundPaint(from, to, *paint);
+    SkString* text = reinterpret_cast<SkString*>(static_cast<uintptr_t>(textPtr));
+    auto conv = skija::UtfIndicesConverter(*text);
+    return instance->updateBackgroundPaint(conv.from16To8(from), conv.from16To8(to), *paint);
 }

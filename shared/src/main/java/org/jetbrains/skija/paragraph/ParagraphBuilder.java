@@ -6,6 +6,9 @@ import org.jetbrains.skija.impl.*;
 
 public class ParagraphBuilder extends Managed {
     static { Library.staticLoad(); }
+
+    @ApiStatus.Internal
+    public ManagedString _text;
     
     public ParagraphBuilder(ParagraphStyle style, FontCollection fc) {
         super(_nMake(Native.getPtr(style), Native.getPtr(fc)), _FinalizerHolder.PTR);
@@ -27,6 +30,10 @@ public class ParagraphBuilder extends Managed {
     public ParagraphBuilder addText(String text) {
         Stats.onNativeCall();
         _nAddText(_ptr, text);
+        if (_text == null)
+            _text = new ManagedString(text);
+        else
+            _text.append(text);
         return this;
     }
 
@@ -44,7 +51,9 @@ public class ParagraphBuilder extends Managed {
 
     public Paragraph build() {
         Stats.onNativeCall();
-        return new Paragraph(_nBuild(_ptr));
+        var paragraph = new Paragraph(_nBuild(_ptr), _text);
+        _text = null;
+        return paragraph;
     }
 
     @ApiStatus.Internal

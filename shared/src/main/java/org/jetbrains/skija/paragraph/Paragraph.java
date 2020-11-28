@@ -6,6 +6,18 @@ import org.jetbrains.skija.impl.*;
 
 public class Paragraph extends Managed {
     static { Library.staticLoad(); }
+
+    @ApiStatus.Internal
+    public ManagedString _text;
+
+    @Override
+    public void close() {
+        if (_text != null) {
+            _text.close();
+            _text = null;
+        }
+        super.close();
+    }
     
     public float getMaxWidth() {
         Stats.onNativeCall();
@@ -61,7 +73,7 @@ public class Paragraph extends Managed {
 
     /**
      * Returns a vector of bounding boxes that enclose all text between
-     * start and end glyph indexes, including start and excluding end.
+     * start and end char indices, including start and excluding end.
      */
     public TextBox[] getRectsForRange(int start, int end, RectHeightMode rectHeightMode, RectWidthMode rectWidthMode) {
         Stats.onNativeCall();
@@ -90,7 +102,7 @@ public class Paragraph extends Managed {
 
     public LineMetrics[] getLineMetrics() {
         Stats.onNativeCall();
-        return _nGetLineMetrics(_ptr);
+        return _nGetLineMetrics(_ptr, Native.getPtr(_text));
     }
 
     public long getLineNumber() {
@@ -115,33 +127,35 @@ public class Paragraph extends Managed {
         return this;
     }
 
-    public Paragraph updateText(int from, String text) {
-        Stats.onNativeCall();
-        _nUpdateText(_ptr, from, text);
-        return this;
-    }
+    // public Paragraph updateText(int from, String text) {
+    //     Stats.onNativeCall();
+    //     _nUpdateText(_ptr, from, text);
+    //     // TODO: update _text
+    //     return this;
+    // }
 
     public Paragraph updateFontSize(int from, int to, float size) {
         Stats.onNativeCall();
-        _nUpdateFontSize(_ptr, from, to, size);
+        _nUpdateFontSize(_ptr, from, to, size, Native.getPtr(_text));
         return this;
     }
 
     public Paragraph updateForegroundPaint(int from, int to, Paint paint) {
         Stats.onNativeCall();
-        _nUpdateForegroundPaint(_ptr, from, to, Native.getPtr(paint));
+        _nUpdateForegroundPaint(_ptr, from, to, Native.getPtr(paint), Native.getPtr(_text));
         return this;
     }
 
     public Paragraph updateBackgroundPaint(int from, int to, Paint paint) {
         Stats.onNativeCall();
-        _nUpdateBackgroundPaint(_ptr, from, to, Native.getPtr(paint));
+        _nUpdateBackgroundPaint(_ptr, from, to, Native.getPtr(paint), Native.getPtr(_text));
         return this;
     }
 
     @ApiStatus.Internal
-    public Paragraph(long ptr) {
+    public Paragraph(long ptr, ManagedString text) {
         super(ptr, _FinalizerHolder.PTR); Stats.onNativeCall();
+        _text = text;
     }
 
     @ApiStatus.Internal
@@ -164,13 +178,13 @@ public class Paragraph extends Managed {
     public static native TextBox[] _nGetRectsForPlaceholders(long ptr);
     public static native int   _nGetGlyphPositionAtCoordinate(long ptr, float dx, float dy);
     public static native long  _nGetWordBoundary(long ptr, int offset);
-    public static native LineMetrics[] _nGetLineMetrics(long ptr);
+    public static native LineMetrics[] _nGetLineMetrics(long ptr, long textPtr);
     public static native long  _nGetLineNumber(long ptr);
     public static native void  _nMarkDirty(long ptr);
     public static native int   _nGetUnresolvedGlyphsCount(long ptr);
     public static native void  _nUpdateAlignment(long ptr, int Align);
-    public static native void  _nUpdateText(long ptr, int from, String text);
-    public static native void  _nUpdateFontSize(long ptr, int from, int to, float size);
-    public static native void  _nUpdateForegroundPaint(long ptr, int from, int to, long paintPtr);
-    public static native void  _nUpdateBackgroundPaint(long ptr, int from, int to, long paintPtr);
+    // public static native void  _nUpdateText(long ptr, int from, String text);
+    public static native void  _nUpdateFontSize(long ptr, int from, int to, float size, long textPtr);
+    public static native void  _nUpdateForegroundPaint(long ptr, int from, int to, long paintPtr, long textPtr);
+    public static native void  _nUpdateBackgroundPaint(long ptr, int from, int to, long paintPtr, long textPtr);
 }

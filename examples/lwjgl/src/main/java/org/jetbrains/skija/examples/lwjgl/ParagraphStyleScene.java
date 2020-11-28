@@ -1,11 +1,7 @@
 package org.jetbrains.skija.examples.lwjgl;
 
 import java.util.Arrays;
-import org.jetbrains.skija.Canvas;
-import org.jetbrains.skija.FontMgr;
-import org.jetbrains.skija.FontStyle;
-import org.jetbrains.skija.Typeface;
-
+import org.jetbrains.skija.*;
 import org.jetbrains.skija.paragraph.*;
 
 public class ParagraphStyleScene implements Scene {
@@ -32,6 +28,12 @@ public class ParagraphStyleScene implements Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         canvas.translate(30, 30);
+        drawStyles(canvas, width);
+        canvas.translate(0, 30);
+        drawUpdates(canvas);
+    }
+
+    public void drawStyles(Canvas canvas, int width) {
         try (TextStyle ts = new TextStyle().setColor(0xFF000000);) {
 
             try (ParagraphStyle ps = new ParagraphStyle().setTextStyle(ts)) {
@@ -108,5 +110,37 @@ public class ParagraphStyleScene implements Scene {
 // The region cloud hath mask’d him from me now.
 // Yet him for this my love no whit disdaineth;
 // Suns of the world may stain when heaven’s sun staineth.
+    }
+
+    public void drawUpdates(Canvas canvas) {
+        try (TextStyle ts = new TextStyle().setColor(0xFF000000).setFontSize(16);
+             ParagraphStyle ps = new ParagraphStyle().setTextStyle(ts);
+             ParagraphBuilder pb = new ParagraphBuilder(ps, fc);
+             Paint red = new Paint().setColor(0xFFCC3333);
+             Paint redBg = new Paint().setColor(0xFFFFEEEE);)
+        {
+            pb.addText("тут размер, тут цвет, а тут фон, вот");
+            try (Paragraph p = pb.build();) {
+                p.layout(Float.POSITIVE_INFINITY);
+                p.paint(canvas, 0, 0);
+                canvas.translate(0, p.getHeight());
+
+                p.updateFontSize(4, 10, 24);
+                p.layout(Float.POSITIVE_INFINITY);
+                p.paint(canvas, 0, 0);
+                canvas.translate(0, p.getHeight());
+
+                p.updateForegroundPaint(16, 20, red);
+                p.layout(Float.POSITIVE_INFINITY);
+                p.paint(canvas, 0, 0);
+                canvas.translate(0, p.getHeight());                
+
+                p.updateBackgroundPaint(28, 31, redBg);
+                p.layout(Float.POSITIVE_INFINITY);
+                p.paint(canvas, 0, 0);
+                canvas.translate(0, p.getHeight());                
+            }
+        }
+
     }
 }

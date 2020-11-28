@@ -23,3 +23,33 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_ManagedString__1nT
     SkString* instance = reinterpret_cast<SkString*>(static_cast<uintptr_t>(ptr));
     return javaString(env, *instance);
 }
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_ManagedString__1nInsert
+  (JNIEnv* env, jclass jclass, jlong ptr, jint offset, jstring s) {
+    SkString* instance = reinterpret_cast<SkString*>(static_cast<uintptr_t>(ptr));
+    skija::UtfIndicesConverter conv(*instance);
+    instance->insert(conv.from16To8(offset), skString(env, s));
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_ManagedString__1nAppend
+  (JNIEnv* env, jclass jclass, jlong ptr, jstring s) {
+    SkString* instance = reinterpret_cast<SkString*>(static_cast<uintptr_t>(ptr));
+    instance->append(skString(env, s));
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_ManagedString__1nRemoveSuffix
+  (JNIEnv* env, jclass jclass, jlong ptr, jint from) {
+    SkString* instance = reinterpret_cast<SkString*>(static_cast<uintptr_t>(ptr));
+    skija::UtfIndicesConverter conv(*instance);
+    size_t from8 = conv.from16To8(from);
+    instance->remove(from8, instance->size() - from8);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_ManagedString__1nRemove
+  (JNIEnv* env, jclass jclass, jlong ptr, jint from, jint len) {
+    SkString* instance = reinterpret_cast<SkString*>(static_cast<uintptr_t>(ptr));
+    skija::UtfIndicesConverter conv(*instance);
+    size_t from8 = conv.from16To8(from);
+    size_t to8 = conv.from16To8(from + len);
+    instance->remove(from8, to8 - from8);
+}

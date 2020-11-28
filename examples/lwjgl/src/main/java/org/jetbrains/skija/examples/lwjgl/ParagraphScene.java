@@ -37,13 +37,6 @@ public class ParagraphScene implements Scene {
         }
 
         canvas.translate(30, 30);
-        drawSonnet(canvas);
-        canvas.translate(0, 500);
-        drawMetrics(canvas, xpos - 30f, ypos - 530f);
-    }
-
-    public void drawSonnet(Canvas canvas) {
-        canvas.save();
 
         try (TextStyle defaultTs = new TextStyle().setColor(0xFF000000);
              ParagraphStyle ps = new ParagraphStyle();
@@ -173,85 +166,5 @@ public class ParagraphScene implements Scene {
                 }
             }
         }
-
-        canvas.restore();
-    }
-
-    public void drawMetrics(Canvas canvas, float dx, float dy) {
-        try (TextStyle defaultTs = new TextStyle().setFontSize(24).setColor(0xFF000000);
-             TextStyle largeTs   = new TextStyle().setFontSize(36).setColor(0xFF000000);
-             TextStyle smallTs   = new TextStyle().setFontSize(12).setColor(0xFF000000);
-             ParagraphStyle ps   = new ParagraphStyle();
-             ParagraphBuilder pb = new ParagraphBuilder(ps, fc);
-             ParagraphStyle ps2  = new ParagraphStyle().setAlignment(Alignment.RIGHT);
-             Paint boundaries    = new Paint().setColor(0xFFFAA6B2).setMode(PaintMode.STROKE).setStrokeWidth(1f);)
-        {
-            // default style
-            pb.pushStyle(defaultTs);
-            
-            pb.addText("The following ");
-            pb.pushStyle(largeTs);
-            pb.addText("sentence");
-            pb.popStyle();
-            pb.addText(" is true\n");
-
-            pb.pushStyle(largeTs);
-            pb.addText("The previous       ");
-            pb.popStyle();
-            pb.addText("sentence");
-            pb.pushStyle(largeTs);
-            pb.addText(" is false\n");
-            pb.popStyle();
-
-            pb.setParagraphStyle(ps2);
-            pb.pushStyle(defaultTs);
-            pb.addText("— Vicious circularity, \n");
-            pb.pushStyle(smallTs);
-            pb.addText("  or infinite regress");
-            pb.popStyle();
-
-            try (Paragraph p = pb.build();) {
-                p.layout(600f);
-
-                // getLineMetrics
-                for (LineMetrics lm: p.getLineMetrics()) {
-                    canvas.drawRect(Rect.makeXYWH((float) lm.getLeft(),
-                                                  (float) (lm.getBaseline() - lm.getAscent()),
-                                                  (float) lm.getWidth(),
-                                                  (float) (lm.getAscent() + lm.getDescent())), boundaries);
-                    canvas.drawLine((float) lm.getLeft(), (float) lm.getBaseline(), (float) (lm.getLeft() + lm.getWidth()), (float) lm.getBaseline(), boundaries);
-                }
-
-                // getGlyphPositionAtCoordinate
-                int glyphx = p.getGlyphPositionAtCoordinate(dx, dy).getPosition();
-
-                try (var blue   = new Paint().setColor(0x80b3d7ff);
-                     var orange = new Paint().setColor(0x80ffd7b3);) {
-                    
-                    // getRectsForRange    
-                    for (TextBox box: p.getRectsForRange(0, glyphx, RectHeightMode.TIGHT, RectWidthMode.TIGHT)) {
-                        canvas.drawRect(box.getRect(), blue);
-                    }
-
-                    // getWordBoundary
-                    IRange word = p.getWordBoundary(glyphx);
-                    for (TextBox box: p.getRectsForRange(word.getStart(), word.getEnd(), RectHeightMode.TIGHT, RectWidthMode.TIGHT)) {
-                        canvas.drawRect(box.getRect(), orange);
-                    }
-                }
-                p.paint(canvas, 0, 0);
-                canvas.translate(0, p.getHeight());
-
-                try (var typeface = Typeface.makeDefault();
-                     var font     = new Font(typeface, 16);
-                     var shaper   = Shaper.make();
-                     var blob     = shaper.shape("idx: " + glyphx, font);
-                     var paint    = new Paint().setColor(0xFFcc3333);)
-                {
-                    canvas.drawTextBlob(blob, 0, 0, font, paint);
-                    canvas.translate(0, blob.getBounds().getHeight());
-                }
-            }
-        }
-    }
+   }
 }
