@@ -2,7 +2,7 @@ package org.jetbrains.skija.examples.lwjgl;
 
 import org.jetbrains.skija.*;
 
-public class SquaresScene implements Scene {
+public class SquaresScene extends Scene {
     static long start = System.currentTimeMillis();
 
     @Override

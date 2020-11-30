@@ -3,7 +3,7 @@ package org.jetbrains.skija.examples.lwjgl;
 import org.jetbrains.skija.*;
 import java.util.*;
 
-public class ShadowUtilsScene implements Scene {
+public class ShadowUtilsScene extends Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         try (Path path = new Path().moveTo(100, 8)

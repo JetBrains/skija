@@ -2,7 +2,7 @@ package org.jetbrains.skija.examples.lwjgl;
 
 import org.jetbrains.skija.*;
 
-public class PythagorasScene implements Scene {
+public class PythagorasScene extends Scene {
     private int    color1   = 0xFFcc5333;
     private int    color2   = 0xFF70e92d;
     private double minAngle = 0;

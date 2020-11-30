@@ -3,7 +3,7 @@ package org.jetbrains.skija.examples.lwjgl;
 import java.util.*;
 import org.jetbrains.skija.*;
 
-public class FontVariationsScene implements Scene {
+public class FontVariationsScene extends Scene {
     public final Typeface _interV;
     public final Map<FontVariation, Font> fontCache = new HashMap<>();
 

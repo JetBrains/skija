@@ -4,7 +4,7 @@ import java.util.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.shaper.*;
 
-public class FontScene implements Scene {
+public class FontScene extends Scene {
     public Typeface _inter;
     public Typeface _interHinted;
     public Typeface _interV;

@@ -3,7 +3,7 @@ package org.jetbrains.skija.examples.lwjgl;
 import org.jetbrains.skija.*;
 import java.util.*;
 
-public class BitmapScene implements Scene {
+public class BitmapScene extends Scene {
     private List<Pair<Path, Integer>> shapes = new ArrayList<>(100);
 
     public BitmapScene() {

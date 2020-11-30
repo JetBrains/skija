@@ -4,7 +4,7 @@ import org.jetbrains.skija.*;
 import java.util.*;
 import java.util.concurrent.atomic.*;
 
-public class PictureRecorderScene implements Scene {
+public class PictureRecorderScene extends Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         canvas.translate(30, 30);

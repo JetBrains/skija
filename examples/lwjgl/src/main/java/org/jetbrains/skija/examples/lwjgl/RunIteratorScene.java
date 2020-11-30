@@ -6,7 +6,7 @@ import java.util.stream.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.shaper.*;
 
-public class RunIteratorScene implements Scene {
+public class RunIteratorScene extends Scene {
     public final Font lato36;
     public final Font fira36;
     public final Font inter36;

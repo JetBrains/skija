@@ -54,6 +54,12 @@ find_path(SKPARAGRAPH_INCLUDE_DIR Paragraph.h HINTS "${SKIA_DIR}/modules/skparag
 add_library(skparagraph INTERFACE)
 target_link_libraries(skparagraph INTERFACE ${SKPARAGRAPH_LIBRARY})
 
+# SVG
+find_library(SKIA_SVG_LIBRARY svg PATH "${SKIA_LIBRARY_DIR}")
+add_library(svg INTERFACE)
+target_link_libraries(svg INTERFACE ${SKIA_SVG_LIBRARY})
+find_path(SKIA_SVG_INCLUDE_DIR SkSVGDOM.h HINTS "${SKIA_DIR}/modules/svg/include")
+
 find_path(SKIA_CONFIG_INCLUDE_DIR SkUserConfig.h HINTS "${SKIA_DIR}/include/config")
 find_path(SKIA_CORE_INCLUDE_DIR SkCanvas.h HINTS "${SKIA_DIR}/include/core")
 find_path(SKIA_PATHOPS_INCLUDE_DIR SkPathOps.h HINTS "${SKIA_DIR}/include/pathops")
@@ -89,7 +95,8 @@ target_include_directories(skia INTERFACE
   ${SKSHAPER_INCLUDE_DIR}
   ${SKPARAGRAPH_INCLUDE_DIR}
   ${FREETYPE_INCLUDE_DIRS}
-  ${HARFBUZZ_INCLUDE_DIRS})
+  ${HARFBUZZ_INCLUDE_DIRS}
+  ${SKIA_SVG_INCLUDE_DIR})
 if(WIN32)
   target_include_directories(skia INTERFACE
     ${SKIA_ANGLE_INCLUDE_DIR})

@@ -167,7 +167,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Bitmap__1nGetPixelRe
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
     SkIPoint origin = instance->pixelRefOrigin();
-    return (uint64_t (origin.fX) << 32) | origin.fY;
+    return packIPoint(origin);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Bitmap__1nSetPixelRef

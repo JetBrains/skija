@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.util.*;
 import org.jetbrains.skija.*;
 
-public class FigmaScene implements Scene {
+public class FigmaScene extends Scene {
     private Font uiFont;
     private Font uiFontSmall;
     private Font uiFontBold;

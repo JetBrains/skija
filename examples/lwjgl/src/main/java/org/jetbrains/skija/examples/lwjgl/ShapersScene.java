@@ -4,7 +4,7 @@ import java.util.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.shaper.*;
 
-public class ShapersScene implements Scene {
+public class ShapersScene extends Scene {
     public final Font firaCode11;
     public final Paint stroke = new Paint().setColor(0x203333CC).setMode(PaintMode.STROKE).setStrokeWidth(1);
     public final Paint fill = new Paint().setColor(0xFF000000);

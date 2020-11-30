@@ -816,6 +816,18 @@ jobject javaFloat(JNIEnv* env, float val) {
     return env->NewObject(java::lang::Float::cls, java::lang::Float::ctor, val);
 }
 
+jlong packTwoInts(int32_t a, int32_t b) {
+    return (uint64_t (a) << 32) | b;
+}
+
+jlong packIPoint(SkIPoint p) {
+    return packTwoInts(p.fX, p.fY);
+}
+
+jlong packTwoInt32(SkISize p) {
+    return packTwoInts(p.fWidth, p.fHeight);
+}
+
 jbyteArray javaByteArray(JNIEnv* env, const std::vector<jbyte>& bytes) {
     jbyteArray res = env->NewByteArray(bytes.size());
     env->SetByteArrayRegion(res, 0, bytes.size(), bytes.data());

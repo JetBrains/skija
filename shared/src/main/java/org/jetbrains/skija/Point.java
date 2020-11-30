@@ -24,4 +24,8 @@ public class Point {
     public Point offset(float dx, float dy) {
         return new Point(_x + dx, _y + dy);
     }
+
+    public boolean isEmpty() {
+        return _x <= 0 || _y <= 0;
+    }
 }

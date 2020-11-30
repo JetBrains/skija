@@ -119,7 +119,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_paragraph_Paragraph_
   (JNIEnv* env, jclass jclass, jlong ptr, jint offset) {
     Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
     SkRange<size_t> range = instance->getWordBoundary(offset);
-    return (range.start << 32) | (range.end & 0xFFFFFFFF);
+    return packTwoInts(range.start & 0xFFFFFFFF, range.end & 0xFFFFFFFF);
 }
 
 extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Paragraph__1nGetLineMetrics

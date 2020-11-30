@@ -8,10 +8,11 @@ set(CMAKE_BUILD_TYPE Release)
 
 file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/*.cc)
 file(GLOB IMPL_SOURCES ${CMAKE_SOURCE_DIR}/src/impl/*.cc)
-file(GLOB SHAPER_SOURCES ${CMAKE_SOURCE_DIR}/src/shaper/*.cc)
 file(GLOB PARAGRAPH_SOURCES ${CMAKE_SOURCE_DIR}/src/paragraph/*.cc)
+file(GLOB SHAPER_SOURCES ${CMAKE_SOURCE_DIR}/src/shaper/*.cc)
+file(GLOB SVG_SOURCES ${CMAKE_SOURCE_DIR}/src/svg/*.cc)
 add_definitions(-DSK_GL -DSK_SHAPER_HARFBUZZ_AVAILABLE -DSK_UNICODE_AVAILABLE)
-add_library(skija SHARED ${SOURCES} ${IMPL_SOURCES} ${SHAPER_SOURCES} ${PARAGRAPH_SOURCES})
+add_library(skija SHARED ${SOURCES} ${IMPL_SOURCES} ${PARAGRAPH_SOURCES} ${SHAPER_SOURCES} ${SVG_SOURCES})
 
 # Platforms
 
@@ -40,4 +41,4 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(FindSkia)
-target_link_libraries(skija skia skshaper skparagraph)
+target_link_libraries(skija skia skshaper skparagraph svg)

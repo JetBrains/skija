@@ -125,6 +125,10 @@ RunInfo              ▓▓▓▓▓▓▓▓▓▓    TypefaceFontProvider ▓�
 ScriptRunIterator    ▓▓▓▓▓▓▓▓▓▓
 Shaper               ▓▓▓▓▓▓▓▓▓▓
 TextBlobBldRunHndlr  ▓▓▓▓▓▓▓▓▓▓
+
+SVG:
+
+DOM                  ▓▓▓▓▓▓▓▓░░
 ```
 
 ## Using Skija

@@ -40,13 +40,17 @@ find src -name "*.java" -newer target/build_timestamp | xargs $XARG javac -encod
 mkdir -p target/classes/org/jetbrains/skija/impl
 find src/main/java/org/jetbrains/skija/impl -name '*.class' | xargs $XARG -I '{}' mv '{}' target/classes/org/jetbrains/skija/impl
 
+# move paragraph
+mkdir -p target/classes/org/jetbrains/skija/paragraph
+find src/main/java/org/jetbrains/skija/paragraph -name '*.class' | xargs $XARG -I '{}' mv '{}' target/classes/org/jetbrains/skija/paragraph
+
 # move shaper
 mkdir -p target/classes/org/jetbrains/skija/shaper
 find src/main/java/org/jetbrains/skija/shaper -name '*.class' | xargs $XARG -I '{}' mv '{}' target/classes/org/jetbrains/skija/shaper
 
-# move paragraph
-mkdir -p target/classes/org/jetbrains/skija/paragraph
-find src/main/java/org/jetbrains/skija/paragraph -name '*.class' | xargs $XARG -I '{}' mv '{}' target/classes/org/jetbrains/skija/paragraph
+# move svg
+mkdir -p target/classes/org/jetbrains/skija/svg
+find src/main/java/org/jetbrains/skija/svg -name '*.class' | xargs $XARG -I '{}' mv '{}' target/classes/org/jetbrains/skija/svg
 
 # move skija
 find src/main/java -name '*.class' | xargs -I '{}' mv '{}' target/classes/org/jetbrains/skija

@@ -2,7 +2,7 @@ package org.jetbrains.skija.examples.lwjgl;
 
 import org.jetbrains.skija.*;
 
-public class DrawableScene implements Scene {
+public class DrawableScene extends Scene {
     public final Font inter18;
     public final Paint bounds = new Paint().setColor(0x803333CC).setMode(PaintMode.STROKE).setStrokeWidth(1);
 

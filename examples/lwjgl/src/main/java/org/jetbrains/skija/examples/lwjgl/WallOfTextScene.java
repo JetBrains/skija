@@ -6,7 +6,7 @@ import java.nio.file.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.shaper.*;
 
-public class WallOfTextScene implements Scene {
+public class WallOfTextScene extends Scene {
     private Font font;
     private String text;
     private Paint textColor;

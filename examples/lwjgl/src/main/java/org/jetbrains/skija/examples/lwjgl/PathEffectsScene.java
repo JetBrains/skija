@@ -2,7 +2,7 @@ package org.jetbrains.skija.examples.lwjgl;
 
 import org.jetbrains.skija.*;
 
-public class PathEffectsScene implements Scene {
+public class PathEffectsScene extends Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         canvas.translate(20, 20);

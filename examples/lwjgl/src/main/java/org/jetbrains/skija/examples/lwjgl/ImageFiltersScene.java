@@ -5,7 +5,7 @@ import java.nio.file.Files;
 
 import org.jetbrains.skija.*;
 
-public class ImageFiltersScene implements Scene {
+public class ImageFiltersScene extends Scene {
     protected final Image image;
 
     public ImageFiltersScene() {

@@ -41,7 +41,6 @@ class Window {
     public int ypos = 0;
     public boolean vsync = true;
     public boolean stats = true;
-    private Font interRegular13tnum;
     private int[] refreshRates;
     private String os = System.getProperty("os.name").toLowerCase();
 
@@ -140,11 +139,12 @@ class Window {
         t0 = t1;
         canvas.clear(0xFFFFFFFF);
         int count = canvas.save();
-        scenes.get(currentScene).draw(canvas, width, height, dpi, xpos, ypos);
+        var scene = scenes.get(currentScene);
+        scene.draw(canvas, width, height, dpi, xpos, ypos);
         canvas.restoreToCount(count);
         count = canvas.save();
         if (stats)
-            drawStats();
+            drawStats(scene);
         canvas.restoreToCount(count);
         timesIdx = (timesIdx + 1) % times.length;
         context.flush();
@@ -171,7 +171,7 @@ class Window {
             font, paint);
     }
 
-    public void drawStats() {
+    public void drawStats(Scene scene) {
         long nativeCalls = Stats.nativeCalls;
         Stats.nativeCalls = 0;
         int allocated = Stats.allocated.values().stream().reduce(0, Integer::sum);
@@ -181,44 +181,54 @@ class Window {
         Paint graph = new Paint().setColor(0xFF00FF00).setStrokeWidth(1);
         Paint graphPast = new Paint().setColor(0x9000FF00).setStrokeWidth(1);
         Paint graphLimit = new Paint().setColor(0xFFcc3333).setStrokeWidth(1);
-        Font font = interRegular13tnum;
+        Font font = Scene.inter13;
         FontMetrics metrics = font.getMetrics();
 
+        float variantsHeight = scene._variants.length > 1 ? 25 : 0;
+
         // Background
-        canvas.translate(width - 230, height - 185);
-        canvas.drawRRect(RRect.makeLTRB(0, 0, 225, 180, 7), bg);
+        canvas.translate(width - 230, height - 185 - variantsHeight);
+        canvas.drawRRect(RRect.makeLTRB(0, 0, 225, 180 + variantsHeight, 7), bg);
         canvas.translate(5, 5);
 
         // Scene
         RRect buttonBounds = RRect.makeLTRB(0, 0, 30, 20, 2);
         Rect  labelBounds = Rect.makeLTRB(35, 0, 225, 20);
         canvas.drawRRect(buttonBounds, bg);
-        drawStringCentered("←→", buttonBounds, font, metrics,canvas, fg);
+        Scene.drawStringCentered(canvas, "←→", 15, 10, font, fg);
         int sceneIdx = 1;
-        for (String scene : scenes.keySet()) {
-            if (scene.equals(currentScene)) break;
+        for (String sceneKey : scenes.keySet()) {
+            if (sceneKey.equals(currentScene)) break;
             sceneIdx++;
         }
         drawStringLeft(sceneIdx + "/" + scenes.size() + " " + currentScene, labelBounds, font, metrics, canvas, fg);
         canvas.translate(0, 25);
 
+        // Variants
+        if (scene._variants.length > 1) {
+            labelBounds = Rect.makeLTRB(35, 0, 225, 20);
+            canvas.drawRRect(buttonBounds, bg);
+            Scene.drawStringCentered(canvas, "↑↓", 15, 10, font, fg);
+            drawStringLeft((scene._variantIdx + 1) + "/" + scene._variants.length + " " + scene.variantTitle(), labelBounds, font, metrics, canvas, fg);
+            canvas.translate(0, 25);
+        }
+
         // VSync
         buttonBounds = RRect.makeXYWH(5, 0, 20, 20, 2);
         canvas.drawRRect(buttonBounds, bg);
-        drawStringCentered("V", buttonBounds, font, metrics,canvas, fg);
+        Scene.drawStringCentered(canvas, "V", 15, 10, font, fg);
         drawStringLeft("VSync: " + (vsync ? "ON" : "OFF"), labelBounds, font, metrics, canvas, fg);
         canvas.translate(0, 25);
 
         // Stats
-        buttonBounds = RRect.makeXYWH(5, 0, 20, 20, 2);
         canvas.drawRRect(buttonBounds, bg);
-        drawStringCentered("S", buttonBounds, font, metrics,canvas, fg);
+        Scene.drawStringCentered(canvas, "S", 15, 10, font, fg);
         drawStringLeft("Stats: " + (stats ? "ON" : "OFF"), labelBounds, font, metrics, canvas, fg);
         canvas.translate(0, 25);
 
         // GC
         canvas.drawRRect(buttonBounds, bg);
-        drawStringCentered("G", buttonBounds, font, metrics,canvas, fg);
+        Scene.drawStringCentered(canvas, "G", 15, 10, font, fg);
         drawStringLeft("GC objects: " + allocated, labelBounds, font, metrics, canvas, fg);
         canvas.translate(0, 25);
 
@@ -289,6 +299,12 @@ class Window {
                     case GLFW_KEY_RIGHT:
                         currentScene = Optional.ofNullable(scenes.higherKey(currentScene)).orElse(scenes.firstKey());
                         break;
+                    case GLFW_KEY_UP:
+                        scenes.get(currentScene).changeVariant(-1);
+                        break;
+                    case GLFW_KEY_DOWN:
+                        scenes.get(currentScene).changeVariant(1);
+                        break;
                     case GLFW_KEY_V:
                         vsync = !vsync;
                         glfwSwapInterval(vsync ? 1 : 0);
@@ -332,14 +348,13 @@ class Window {
         scenes.put("RunHandler",       new RunHandlerScene());
         scenes.put("RunIterator",      new RunIteratorScene());
         scenes.put("Squares",          new SquaresScene());
+        scenes.put("SVG",              new SVGScene());
         scenes.put("Swing",            new SwingScene());
         scenes.put("Text Blob",        new TextBlobScene());
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Paragraph Style";
-        var interRegular = Typeface.makeFromFile("fonts/InterHinted-Regular.ttf");
-        interRegular13tnum = new Font(interRegular, 13); // , new FontFeature("tnum"));
+        currentScene = "SVG";
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {

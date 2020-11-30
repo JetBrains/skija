@@ -18,7 +18,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SwingScene implements Scene {
+public class SwingScene extends Scene {
     // public final javax.swing.JPanel panel;
     public static List<Pair<String, javax.swing.JPanel>> panels = new ArrayList<>();
 

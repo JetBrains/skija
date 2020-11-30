@@ -5,7 +5,7 @@ import java.util.stream.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.shaper.*;
 
-public class RunHandlerScene implements Scene {
+public class RunHandlerScene extends Scene {
     public final Font lato36;
     public final Font inter9;
     public final Paint boundsStroke = new Paint().setColor(0x403333CC).setMode(PaintMode.STROKE).setStrokeWidth(1);

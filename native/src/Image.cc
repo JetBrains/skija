@@ -19,7 +19,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image__1nMakeFromEnc
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image__1nGetDimensions
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkImage* instance = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(ptr));
-    return (uint64_t (instance->height()) << 32) | instance->width();
+    return packTwoInts(instance->width(), instance->height());
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image__1nEncodeToData

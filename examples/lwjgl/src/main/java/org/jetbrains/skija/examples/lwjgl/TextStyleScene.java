@@ -4,7 +4,7 @@ import java.util.Arrays;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.paragraph.*;
 
-public class TextStyleScene implements Scene {
+public class TextStyleScene extends Scene {
     public FontCollection fc = new FontCollection();
     public Typeface slabo;
 

@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.jetbrains.skija.*;
 
-public class ImagesScene implements Scene {
+public class ImagesScene extends Scene {
     protected final Image circus;
     protected final Image circusCropped;
     protected final Image cloud;

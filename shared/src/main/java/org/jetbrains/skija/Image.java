@@ -72,8 +72,8 @@ public class Image extends RefCnt {
     public void _getDimensions() {
         Stats.onNativeCall();
         long res = _nGetDimensions(_ptr);
-        _width = (int) (res & 0xFFFFFFFF);
-        _height = (int) (res >>> 32);
+        _height = (int) (res & 0xFFFFFFFF);
+        _width = (int) (res >>> 32);
     }
 
     @ApiStatus.Internal

@@ -4,7 +4,7 @@ import org.jetbrains.skija.*;
 import org.jetbrains.skija.shaper.*;
 import org.jetbrains.skija.paragraph.*;
 
-public class ParagraphMetricsScene implements Scene {
+public class ParagraphMetricsScene extends Scene {
     public FontCollection fc = new FontCollection();
     public long lastUpdate = 0;
 

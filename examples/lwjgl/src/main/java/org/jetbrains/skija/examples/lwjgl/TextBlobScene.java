@@ -4,7 +4,7 @@ import java.util.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.shaper.*;
 
-public class TextBlobScene implements Scene {
+public class TextBlobScene extends Scene {
     private Font font;
     private float gap = 40;
 
