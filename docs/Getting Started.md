@@ -12,10 +12,13 @@ org.jetbrains.skija:skija-macos:0.0.0
 
 (Replace `0.0.0` with ![version](https://img.shields.io/badge/dynamic/xml?style=flat-square&label=latest&color=success&url=https%3A%2F%2Fpackages.jetbrains.team%2Fmaven%2Fp%2Fskija%2Fmaven%2Forg%2Fjetbrains%2Fskija%2Fskija-macos%2Fmaven-metadata.xml&query=//release))
 
-In you main class, import
+The repository url is https://packages.jetbrains.team/maven/p/skija/maven
+
+In your main class, import
 
 ```java
 import org.jetbrains.skija.*;
+import java.io.IOException;
 ```
 
 ## Rendering the first image
@@ -57,8 +60,15 @@ Image image = surface.makeImageSnapshot();
 Data pngData = image.encodeToData(EncodedImageFormat.PNG);
 byte [] pngBytes = pngData.getBytes();
 
-Path path = java.nio.file.Path.of("output.png");
-java.nio.file.Files.write(path, pngBytes);
+try
+{
+    java.nio.file.Path path = java.nio.file.Path.of("output.png");
+    java.nio.file.Files.write(path, pngBytes);
+}
+catch (IOException e)
+{
+    System.out.println(e);
+}
 ```
 
 Voilà! You can now open `output.png` from the working directory to check if it actually contains what you just drew.
