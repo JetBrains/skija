@@ -8,22 +8,28 @@ import org.jetbrains.annotations.*;
 
 public class Library {
     private static boolean _loaded = false;
+    // It is possible to reenter staticLoad() when executing load(), so prevent recursive enter with this flag.
     private static boolean _loading = false;
 
     public static synchronized void staticLoad() {
-         if (_loaded || _loading)
+        if (_loaded || _loading)
             return;
 
         _loading = true;
         try {
+            // We cannot use a system property here for the class name unfortunately, as cannot set
+            // it if Skija code is executed very early by the user, and passing it via JVM options
+            // doesn't look like an option.
             Class clazz = Class.forName("org.jetbrains.skija.CustomLoader");
             Runnable customLoader = (Runnable)clazz.newInstance();
             customLoader.run();
             _loaded = true;
             return;
         } catch (ClassNotFoundException cnfe) {
-        } catch (Throwable t) {
-            t.printStackTrace();
+        } catch (InstantiationException ie) {
+            throw new RuntimeException(ie);
+        } catch (IllegalAccessException iae) {
+            throw new RuntimeException(iae);
         } finally {
             _loading = false;
         }
@@ -60,7 +66,6 @@ public class Library {
     // https://github.com/adamheinrich/native-utils/blob/e6a39489662846a77504634b6fafa4995ede3b1d/src/main/java/cz/adamh/utils/NativeUtils.java
     @ApiStatus.Internal
     public static File _extract(String resourcePath, String fileName, File tempDir) {
-        // @SneakyThrows leak Lombok to the runtime.
         try {
             File file;
             URL url = Library.class.getResource(resourcePath + fileName);
