@@ -1,3 +1,0 @@
-/Users/prokopov/ws/skija/examples/metal/CMakeFiles/rebuild_cache.dir
-/Users/prokopov/ws/skija/examples/metal/CMakeFiles/edit_cache.dir
-/Users/prokopov/ws/skija/examples/metal/CMakeFiles/metal.dir
