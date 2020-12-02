@@ -123,8 +123,6 @@ class Window {
         surface = Surface.makeFromBackendRenderTarget(context, renderTarget, SurfaceOrigin.BOTTOM_LEFT, SurfaceColorFormat.RGBA_8888, ColorSpace.getDisplayP3()); // TODO load monitor profile
 
         canvas = surface.getCanvas();
-        canvas.scale(dpi, dpi);
-        // canvas.translate(0.5f, 0.5f);
     }
 
     private NavigableMap<String, Scene> scenes;
@@ -140,9 +138,14 @@ class Window {
         canvas.clear(0xFFFFFFFF);
         int count = canvas.save();
         var scene = scenes.get(currentScene);
+        if (scene.scale()) {
+            canvas.scale(dpi, dpi);
+            // canvas.translate(0.5f, 0.5f);
+        }
         scene.draw(canvas, width, height, dpi, xpos, ypos);
         canvas.restoreToCount(count);
         count = canvas.save();
+        canvas.scale(dpi, dpi);
         if (stats)
             drawStats(scene);
         canvas.restoreToCount(count);
@@ -354,7 +357,7 @@ class Window {
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "SVG";
+        currentScene = "Font";
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {

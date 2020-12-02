@@ -9,6 +9,10 @@ public abstract class Scene {
 
     public String[] _variants = new String[] { "Default" };
     public int _variantIdx = 0;
+    
+    public boolean scale() {
+        return true;
+    }
 
     public String variantTitle() {
         return _variants[_variantIdx];

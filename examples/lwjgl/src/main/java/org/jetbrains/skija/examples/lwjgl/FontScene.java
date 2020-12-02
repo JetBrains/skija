@@ -23,6 +23,7 @@ public class FontScene extends Scene {
     public Font     _inter13_1_neg1;
     public Font     _inter48;
     public Font     _jbMono13;
+    public float    _dpi = 0;
 
     public FontScene() {
         _inter          = Typeface.makeFromFile("fonts/Inter-Regular.otf");
@@ -35,14 +36,6 @@ public class FontScene extends Scene {
         _stroke         = new Paint().setColor(0xFF2a9d8f).setMode(PaintMode.STROKE).setStrokeWidth(2).setPathEffect(PathEffect.makeDash(new float[] {6, 2}, 0));
         _boundaryPaint  = new Paint().setColor(0xFFe76f51).setMode(PaintMode.STROKE);
         _defaultFont    = new Font();
-        _inter13        = new Font(_inter, 13);
-        _inter18        = new Font(_inter, 18);
-        _inter13_1_0    = new Font(_inter, 13, 1, 0);
-        _inter13_2_0    = new Font(_inter, 13, 2, 0);
-        _inter13_1_1    = new Font(_inter, 13, 1, 1);
-        _inter13_1_neg1 = new Font(_inter, 13, 1, -1);
-        _inter48        = new Font(_inter, 48);
-        _jbMono13       = new Font(_jbMono, 13);
     }
 
     public float _drawLine(Canvas canvas, String text, Font font) {
@@ -56,30 +49,45 @@ public class FontScene extends Scene {
         return 0;
     }
 
+    public void recreateFonts(float dpi) {
+        if (dpi == _dpi)
+            return;
+        _inter13        = new Font(_inter, dpi * 13);
+        _inter18        = new Font(_inter, dpi * 18);
+        _inter13_1_0    = new Font(_inter, dpi * 13, 1, 0);
+        _inter13_2_0    = new Font(_inter, dpi * 13, 2, 0);
+        _inter13_1_1    = new Font(_inter, dpi * 13, 1, 1);
+        _inter13_1_neg1 = new Font(_inter, dpi * 13, 1, -1);
+        _inter48        = new Font(_inter, dpi * 48);
+        _jbMono13       = new Font(_jbMono, dpi * 13);
+    }
+
     @Override
     public void draw(Canvas canvas, int windowWidth, int windowHeight, float dpi, int xpos, int ypos) {
+        recreateFonts(dpi);
+
         int layer = canvas.save();
-        canvas.translate(30, 30);
-        drawInter(canvas);
+        canvas.translate(30 * dpi, 30 * dpi);
+        drawInter(canvas, dpi);
         canvas.restoreToCount(layer);
 
         layer = canvas.save();
-        canvas.translate(windowWidth * 4 / 6, 30);
-        drawTestKern(canvas);
+        canvas.translate(windowWidth * 4 / 6 * dpi, 30 * dpi);
+        drawTestKern(canvas, dpi);
         canvas.restoreToCount(layer);
 
         layer = canvas.save();
-        canvas.translate(windowWidth * 5 / 6, 30);
-        drawTestSubpixel(canvas);
+        canvas.translate(windowWidth * 5 / 6 * dpi, 30 * dpi);
+        drawTestSubpixel(canvas, dpi);
         canvas.restoreToCount(layer);
 
         layer = canvas.save();
-        canvas.translate(windowWidth * 2 / 5, 30);
-        drawModes(canvas);
+        canvas.translate(windowWidth * 2 / 5 * dpi, 30 * dpi);
+        drawModes(canvas, dpi);
         canvas.restoreToCount(layer);
     }
 
-    public void drawInter(Canvas canvas) {
+    public void drawInter(Canvas canvas, float dpi) {
         _drawLine(canvas, "", _defaultFont);
         _drawLine(canvas, "Default", _defaultFont);
         _drawLine(canvas, "Inter size=18", _inter18);
@@ -158,25 +166,25 @@ public class FontScene extends Scene {
         }
         _inter13.setHinting(defaultHinting);
 
-        assert Objects.equals(_inter13, _inter18.makeWithSize(13));
+        assert Objects.equals(_inter13, _inter18.makeWithSize(13 * dpi));
         assert Objects.equals(null, _defaultFont.getTypeface());
         assert Objects.equals(_inter, _inter13.getTypeface());
         assert Objects.equals(Typeface.makeDefault(), _defaultFont.getTypefaceOrDefault());
-        assert 13 == _inter13.getSize();
+        assert 13 * dpi == _inter13.getSize();
         assert 1 == _inter13.getScaleX();
         assert 0 == _inter13.getSkewX();
 
         _inter13.setTypeface(_jbMono);
-        _inter13.setSize(18);
+        _inter13.setSize(18 * dpi);
         _inter13.setScaleX(1.2f);
         _inter13.setSkewX(-0.2f);
-        assert 18 == _inter13.getSize();
+        assert 18 * dpi == _inter13.getSize();
         assert 1.2f == _inter13.getScaleX();
         assert -0.2f == _inter13.getSkewX();
         _drawLine(canvas, "Inter 13px setTypeface=jbMono setSize=18 setScaleX=1.2 setSkewX=-0.2", _inter13);
 
         _inter13.setTypeface(_inter);
-        _inter13.setSize(13);
+        _inter13.setSize(13 * dpi);
         _inter13.setScaleX(1);
         _inter13.setSkewX(0);
         _drawLine(canvas, "Inter 13px setSize=13 setScaleX=1 setSkewX=0", _inter13);
@@ -249,7 +257,7 @@ public class FontScene extends Scene {
         _drawLine(canvas, "FIN", _inter13);
     }
 
-    public void drawTestKern(Canvas canvas) {
+    public void drawTestKern(Canvas canvas, float dpi) {
         for (int size = 9; size < 24; ++size) {
             _drawLine(canvas, size + " TuTuTuTu", new Font(_testKern, size));
         }
@@ -259,36 +267,39 @@ public class FontScene extends Scene {
         }
     }
 
-    public void drawTestSubpixel(Canvas canvas) {
-        _drawLine(canvas, "AAAAAAAAAAA", new Font(_testSubpixel, 10));
-        canvas.translate(0, 10);
-        _drawLine(canvas, "AAAAAAAAAAA", new Font(_testSubpixel, 10).setSubpixel(true));
+    public void drawTestSubpixel(Canvas canvas, float dpi) {
+        _drawLine(canvas, "AAAAAAAAAAA", new Font(_testSubpixel, 10 * dpi));
+        canvas.translate(0, 10 * dpi);
+        _drawLine(canvas, "AAAAAAAAAAA", new Font(_testSubpixel, 10 * dpi).setSubpixel(true));
     }
 
-    public void drawModes(Canvas canvas) {
+    public void drawModes(Canvas canvas, float dpi) {
         String common = "1006 Component Fix Position Scrolling ";
-        try (var font = new Font(_inter, 11)) {
-            _drawLine(canvas, common + "Inter 11", font);
-        }
 
-        try (var font = new Font(_inter, 11).setSubpixel(true)) {
-            _drawLine(canvas, common + "Inter 11 Subpixel", font);
-        }
+        for (var pair: new Pair[] {
+            new Pair<>("", _inter),
+            new Pair<>(" Hinted", _interHinted),
+            new Pair<>(" Variable", _interV),})
+        {
+            try (var font = new Font((Typeface) pair.getSecond(), 11 * dpi);) {
+                var name = "Inter 11" + pair.getFirst();
+                
+                _drawLine(canvas, common + name, font);
+                
+                font.setSubpixel(true);
+                _drawLine(canvas, common + name + " Subpixel", font);
+                
+                font.setSubpixel(false).setMetricsLinear(true);
+                _drawLine(canvas, common + name + " Linear", font);
 
-        try (var font = new Font(_interHinted, 11)) {
-            _drawLine(canvas, common + "Inter 11 Hinted", font);
+                font.setSubpixel(true);
+                _drawLine(canvas, common + name + " Subpixel Linear", font);
+            }
         }
+    }
 
-        try (var font = new Font(_interHinted, 11).setSubpixel(true)) {
-            _drawLine(canvas, common + "Inter 11 Hinted Subpixel", font);
-        }
-
-        try (var font = new Font(_interV, 11)) {
-            _drawLine(canvas, common + "Inter 11 Variable", font);
-        }
-
-        try (var font = new Font(_interV, 11).setSubpixel(true)) {
-            _drawLine(canvas, common + "Inter 11 Variable Subpixel", font);
-        }
+    @Override
+    public boolean scale() {
+        return false;
     }
 }
