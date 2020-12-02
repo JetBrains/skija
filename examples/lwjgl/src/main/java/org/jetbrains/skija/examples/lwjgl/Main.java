@@ -333,6 +333,7 @@ class Window {
         scenes.put("Empty",            new EmptyScene());
         scenes.put("Figma",            new FigmaScene());
         scenes.put("Font",             new FontScene());
+        scenes.put("Font Rendering",   new FontRenderingScene());
         scenes.put("Font Variations",  new FontVariationsScene());
         scenes.put("Geometry",         new GeometryScene());
         scenes.put("Images",           new ImagesScene());
@@ -357,7 +358,7 @@ class Window {
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Font";
+        currentScene = "Font Rendering";
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {
