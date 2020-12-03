@@ -148,6 +148,8 @@ class Window {
         canvas.scale(dpi, dpi);
         if (stats)
             drawStats(scene);
+        else if (timesIdx % 100 == 0)
+            System.out.println(String.format("%.0f fps", 1000.0 / Arrays.stream(times).takeWhile(t->t>0).average().getAsDouble()));
         canvas.restoreToCount(count);
         timesIdx = (timesIdx + 1) % times.length;
         context.flush();
@@ -326,6 +328,7 @@ class Window {
         initSkia();
 
         scenes = new TreeMap<>();
+        scenes.put("Bench Circles",    new BenchCirclesScene());
         scenes.put("Bitmap",           new BitmapScene());
         scenes.put("Blends",           new BlendsScene());
         scenes.put("Color Filters",    new ColorFiltersScene());
@@ -358,7 +361,7 @@ class Window {
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Font Rendering";
+        currentScene = "Bench Circles";
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {
