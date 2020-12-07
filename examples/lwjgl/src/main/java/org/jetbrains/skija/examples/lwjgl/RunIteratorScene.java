@@ -37,7 +37,7 @@ public class RunIteratorScene extends Scene {
         String text = "oneΩπΩдва😀🕵️‍♀️👩‍❤️‍👨ثلاثة1234خمسة";
 
         try (var shaper = Shaper.makeShapeThenWrap();) { // Shaper.makeCoreText();
-            try (var handler = new DebugTextBlobHandler();)
+            try (var handler = new DebugTextBlobHandler().withRuns();)
             {
                 var fontIter = new TrivialFontRunIterator(text, lato36);
                 var bidiIter = new TrivialBidiRunIterator(text, Bidi.DIRECTION_LEFT_TO_RIGHT);
@@ -47,7 +47,7 @@ public class RunIteratorScene extends Scene {
                 drawBlob(canvas, handler, "All trivial");
             }
 
-            try (var handler = new DebugTextBlobHandler();
+            try (var handler = new DebugTextBlobHandler().withRuns();
                  var fontIter = new FontMgrRunIterator(text, lato36, null);)
             {
                 var bidiIter = new TrivialBidiRunIterator(text, Bidi.DIRECTION_LEFT_TO_RIGHT);
@@ -57,7 +57,7 @@ public class RunIteratorScene extends Scene {
                 drawBlob(canvas, handler, "FontMgrRunIterator");
             }
 
-            try (var handler = new DebugTextBlobHandler();)
+            try (var handler = new DebugTextBlobHandler().withRuns();)
             {
                 Map<Pair<Integer, Integer>, Font> fonts = new HashMap(Map.of(
                     new Pair(0, 0x7F), lato36,
@@ -74,7 +74,7 @@ public class RunIteratorScene extends Scene {
                 drawBlob(canvas, handler, "CustomFontRunIterator");
             }
 
-            try (var handler = new DebugTextBlobHandler();
+            try (var handler = new DebugTextBlobHandler().withRuns();
                  var bidiIter = new IcuBidiRunIterator(text, Bidi.DIRECTION_LEFT_TO_RIGHT);)
             {
                 var fontIter = new TrivialFontRunIterator(text, lato36);
@@ -84,7 +84,7 @@ public class RunIteratorScene extends Scene {
                 drawBlob(canvas, handler, "IcuBidiRunIterator");
             }
 
-            try (var handler = new DebugTextBlobHandler();)
+            try (var handler = new DebugTextBlobHandler().withRuns();)
             {
                 var fontIter = new TrivialFontRunIterator(text, lato36);
                 var bidiIter = new JavaTextBidiRunIterator(text);
@@ -94,7 +94,7 @@ public class RunIteratorScene extends Scene {
                 drawBlob(canvas, handler, "JavaTextBidiRunIterator");
             }
 
-            try (var handler = new DebugTextBlobHandler();
+            try (var handler = new DebugTextBlobHandler().withRuns();
                  var scriptIter = new HbIcuScriptRunIterator(text);)
             {
                 var fontIter = new TrivialFontRunIterator(text, lato36);
@@ -104,7 +104,7 @@ public class RunIteratorScene extends Scene {
                 drawBlob(canvas, handler, "HbIcuScriptRunIterator");
             }
 
-            try (var handler = new DebugTextBlobHandler();
+            try (var handler = new DebugTextBlobHandler().withRuns();
                  var fontIter = new FontMgrRunIterator(text, lato36, null);
                  var bidiIter = new IcuBidiRunIterator(text, Bidi.DIRECTION_LEFT_TO_RIGHT);
                  var scriptIter = new HbIcuScriptRunIterator(text);)
@@ -119,14 +119,13 @@ public class RunIteratorScene extends Scene {
     private void drawBlob(Canvas canvas, DebugTextBlobHandler handler, String comment) {
         canvas.drawString(comment, 0, -inter11Metrics.getAscent(), inter11, textFill);
         canvas.translate(0, inter11Metrics.getHeight());
-        var blob = handler._builder.build();
+        var blob = handler.makeBlob();
         if (blob != null) {
             try (blob) {
                 canvas.drawTextBlob(blob, 0, 0, lato36, textFill);
             
-                for (var triple: handler._infos) {
-                    var runBounds = triple.getThird();
-                    canvas.drawRect(runBounds, boundsStroke);
+                for (var run: handler._runs) {
+                    canvas.drawRect(run.getBounds(), boundsStroke);
                 }
 
                 canvas.translate(0, blob.getBounds().getBottom() + 20);

@@ -2,6 +2,7 @@ package org.jetbrains.skija.examples.lwjgl;
 
 import java.util.*;
 import java.util.stream.*;
+import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.shaper.*;
 
@@ -12,16 +13,22 @@ public class DebugTextBlobHandler implements RunHandler, AutoCloseable {
     public float _maxRunLeading = 0;
     public float _xPos = 0;
     public float _yPos = 0;
-    public List<DebugTextRun> _runs = new ArrayList<>();
+    public List<DebugTextRun> _runs = null;
 
     public DebugTextBlobHandler() {
         _builder = new TextBlobBuilder();
     }
 
+    public DebugTextBlobHandler withRuns() {
+        _runs = new ArrayList<>();
+        return this;
+    }
+
     @Override
     public void close() {
-        for (var info: _runs)
-            info._font.close();
+        if (_runs != null)
+            for (var info: _runs)
+                info._font.close();
 
         _builder.close();
     }
@@ -36,8 +43,8 @@ public class DebugTextBlobHandler implements RunHandler, AutoCloseable {
 
     @Override
     public void runInfo(RunInfo info) {
-        var font = new Font(info._fontPtr, false);
-        var metrics   = font.getMetrics();
+        var font       = new Font(info._fontPtr, false);
+        var metrics    = font.getMetrics();
         _maxRunAscent  = Math.min(_maxRunAscent,  metrics.getAscent());
         _maxRunDescent = Math.max(_maxRunDescent, metrics.getDescent());
         _maxRunLeading = Math.max(_maxRunLeading, metrics.getLeading());
@@ -61,18 +68,24 @@ public class DebugTextBlobHandler implements RunHandler, AutoCloseable {
         //                    + " positions=" + Arrays.stream(positions).map(Point::getX).collect(Collectors.toList()));
         var font = new Font(info._fontPtr, false);
         _builder.appendRunPos(font, glyphs, positions);
-        _runs.add(new DebugTextRun(
-            info,
-            info.getFont(), 
-            Rect.makeXYWH(_xPos, _yPos - (-_maxRunAscent), info.getAdvance().getX(), (-_maxRunAscent) + _maxRunDescent),
-            glyphs,
-            positions,
-            clusters));
+        if (_runs != null)
+            _runs.add(new DebugTextRun(
+                info,
+                info.getFont(), 
+                Rect.makeXYWH(_xPos, _yPos - (-_maxRunAscent), info.getAdvance().getX(), (-_maxRunAscent) + _maxRunDescent),
+                glyphs,
+                positions,
+                clusters));
         _xPos += info.getAdvance().getX();
     }
 
     @Override
     public void commitLine() {
         _yPos += _maxRunDescent + _maxRunLeading;
+    }
+
+    @Nullable
+    public TextBlob makeBlob() {
+        return _builder.build();
     }
 }

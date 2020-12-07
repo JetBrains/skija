@@ -24,7 +24,7 @@ public class RunHandlerScene extends Scene {
 
         try (var shaper  = Shaper.makeShapeThenWrap(); // Shaper.makeCoreText();
              var tbHandler = new TextBlobBuilderRunHandler(text, new Point(0, 0));
-             var handler = new DebugTextBlobHandler();)
+             var handler = new DebugTextBlobHandler().withRuns();)
         {
             // TextBlobBuilderRunHandler
             shaper.shape(text, lato36, FontMgr.getDefault(), null, true, width - 40, tbHandler);
@@ -36,7 +36,7 @@ public class RunHandlerScene extends Scene {
             // DebugTextBlobHandler
             shaper.shape(text, lato36, FontMgr.getDefault(), null, true, width - 40, handler);
             
-            try (var blob = handler._builder.build()) {
+            try (var blob = handler.makeBlob()) {
                 canvas.drawTextBlob(blob, 0, 0, lato36, textFill);
             }
 

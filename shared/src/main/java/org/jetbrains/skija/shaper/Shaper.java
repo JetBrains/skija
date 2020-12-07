@@ -78,38 +78,31 @@ public class Shaper extends Managed {
         return new Shaper(_nMake(Native.getPtr(fontMgr)));
     }
 
-    @NotNull @Contract("_, _ -> new")
+    @Nullable @Contract("_, _ -> new")
     public TextBlob shape(String text, Font font) {
         return shape(text, font, null, true, Float.POSITIVE_INFINITY, Point.ZERO);
     }
 
-    @NotNull @Contract("_, _, _ -> new")
+    @Nullable @Contract("_, _, _ -> new")
     public TextBlob shape(String text, Font font, float width) {
         return shape(text, font, null, true, width, Point.ZERO);
     }
 
-    @NotNull @Contract("_, _, _, _ -> new")
+    @Nullable @Contract("_, _, _, _ -> new")
     public TextBlob shape(String text, Font font, float width, @NotNull Point offset) {
         return shape(text, font, null, true, width, offset);
     }
 
-    @NotNull @Contract("_, _, _, _, _ -> new")
+    @Nullable @Contract("_, _, _, _, _ -> new")
     public TextBlob shape(String text, Font font, boolean leftToRight, float width, @NotNull Point offset) {
         return shape(text, font, null, leftToRight, width, offset);
     }
 
-    @NotNull @Contract("_, _, _, _, _, _ -> new")
+    @Nullable @Contract("_, _, _, _, _, _ -> new")
     public TextBlob shape(String text, Font font, @Nullable FontFeature[] features, boolean leftToRight, float width, @NotNull Point offset) {
-        try (var textUtf8 = new ManagedString(text);
-             var fontIter = new FontMgrRunIterator(textUtf8, false, font, null);
-             var bidiIter = new IcuBidiRunIterator(textUtf8, false, leftToRight ? java.text.Bidi.DIRECTION_LEFT_TO_RIGHT : java.text.Bidi.DIRECTION_RIGHT_TO_LEFT);
-             var scriptIter = new HbIcuScriptRunIterator(textUtf8, false);
-             var handler = new TextBlobBuilderRunHandler(textUtf8, false, offset._x, offset._y);)
-        {
-            var langIter = new TrivialLanguageRunIterator(text, Locale.getDefault().toLanguageTag());
-            shape(textUtf8, fontIter, bidiIter, scriptIter, langIter, features, width, handler);
-            return handler.makeBlob();
-        }
+        Stats.onNativeCall();
+        long ptr = _nShapeToTextBlob(_ptr, text, Native.getPtr(font), features, leftToRight, width, offset._x, offset._y);
+        return 0 == ptr ? null : new TextBlob(ptr);
     }
 
     @NotNull @Contract("_, _, _, _, _, _, _ -> this")
@@ -182,6 +175,7 @@ public class Shaper extends Managed {
     public static native long _nMakeShapeDontWrapOrReorder(long fontMgrPtr);
     public static native long _nMakeCoreText();
     public static native long _nMake(long fontMgrPtr);
+    public static native long _nShapeToTextBlob(long ptr, String text, long fontPtr, FontFeature[] features, boolean leftToRight, float width, float offsetX, float offsetY);
     public static native void _nShape(long ptr, long textPtr, Iterator<FontRun> fontIter, Iterator<BidiRun> bidiIter, Iterator<ScriptRun> scriptIter, Iterator<LanguageRun> langIter,
                                       FontFeature[] features, float width, RunHandler runHandler);
 }

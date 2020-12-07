@@ -17,6 +17,7 @@ add_cp() {
 }
 
 add_cp "org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar"
+add_cp "org/jetbrains/annotations/19.0.0/annotations-19.0.0.jar"
 add_cp "org/lwjgl/lwjgl/3.2.3/lwjgl-3.2.3.jar"
 add_cp "org/lwjgl/lwjgl-glfw/3.2.3/lwjgl-glfw-3.2.3.jar"
 add_cp "org/lwjgl/lwjgl-opengl/3.2.3/lwjgl-opengl-3.2.3.jar"
