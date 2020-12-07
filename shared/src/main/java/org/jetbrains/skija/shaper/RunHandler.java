@@ -33,7 +33,7 @@ public interface RunHandler {
      * <p>WARN positions are reported from the start of the line, not run, only in Shaper.makeCoreText https://bugs.chromium.org/p/skia/issues/detail?id=10898</p>
      *
      * @param positions  put glyphs[i] at positions[i]
-     * @param clusters   utf8+clusters[i] starts run which produced glyphs[i]
+     * @param clusters   clusters[i] is an utf-16 offset starting run which produced glyphs[i]
      */
     void commitRun(RunInfo info, short[] glyphs, Point[] positions, int[] clusters);
 

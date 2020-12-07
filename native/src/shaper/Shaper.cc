@@ -212,11 +212,14 @@ public:
     }
 
     void commitRunBuffer(const SkShaper::RunHandler::RunInfo& info) {
-        jobject runInfoObj = skija::shaper::RunInfo::toJava(fEnv, info, fIndicesConverter);
+        size_t begin = fIndicesConverter.from8To16(info.utf8Range.fBegin);
+        for (int i = 0; i < fClusters.size(); ++i)
+            fClusters[i] = fIndicesConverter.from8To16(fClusters[i]);
+        jintArray clusters = javaIntArray(fEnv, fClusters);
+        size_t end = fIndicesConverter.from8To16(info.utf8Range.fBegin + info.utf8Range.fSize);
+        jobject runInfoObj = skija::shaper::RunInfo::toJava(fEnv, info, begin, end);
         jshortArray glyphs = javaShortArray(fEnv, fGlyphs);
         jobjectArray positions = skija::Point::fromSkPoints(fEnv, fPositions);
-        jintArray clusters = javaIntArray(fEnv, fClusters);
-
         fEnv->CallObjectMethod(fRunHandler, skija::shaper::RunHandler::commitRun, runInfoObj, glyphs, positions, clusters);
         fEnv->SetLongField(runInfoObj, skija::shaper::RunInfo::_fontPtr, 0);
     }

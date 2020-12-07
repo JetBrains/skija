@@ -67,6 +67,7 @@ namespace skija {
 
             void onLoad(JNIEnv* env);
             void onUnload(JNIEnv* env);
+            jobject toJava(JNIEnv* env, const SkShaper::RunHandler::RunInfo& info, size_t begin, size_t end);
             jobject toJava(JNIEnv* env, const SkShaper::RunHandler::RunInfo& info, skija::UtfIndicesConverter& indicesConverter);
         }
 

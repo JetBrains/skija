@@ -23,7 +23,7 @@ public class ShadowUtils {
      * @param spotColor            The color of the spot shadow.
      * @param transparentOccluder  The occluding object is not opaque. Knowing that the occluder is opaque allows
      *                             us to cull shadow geometry behind it and improve performance.
-     * @param geometricOnly  Don't try to use analytic shadows.
+     * @param geometricOnly        Don't try to use analytic shadows.
      */
     public static void drawShadow(@NotNull Canvas canvas,
                                   @NotNull Path path,

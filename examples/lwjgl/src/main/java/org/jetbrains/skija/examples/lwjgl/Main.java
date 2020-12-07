@@ -328,7 +328,6 @@ class Window {
         initSkia();
 
         scenes = new TreeMap<>();
-        scenes.put("Bench Circles",    new BenchCirclesScene());
         scenes.put("Bitmap",           new BitmapScene());
         scenes.put("Blends",           new BlendsScene());
         scenes.put("Color Filters",    new ColorFiltersScene());
@@ -361,7 +360,7 @@ class Window {
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Bench Circles";
+        currentScene = "RunHandler";
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {

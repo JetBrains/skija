@@ -120,10 +120,8 @@ namespace skija {
                 env->DeleteGlobalRef(cls);
             }
 
-            jobject toJava(JNIEnv* env, const SkShaper::RunHandler::RunInfo& info, skija::UtfIndicesConverter& indicesConverter) {
+            jobject toJava(JNIEnv* env, const SkShaper::RunHandler::RunInfo& info, size_t begin, size_t end) {
                 SkFont* font = new SkFont(info.fFont);
-                size_t begin = indicesConverter.from8To16(info.utf8Range.fBegin);
-                size_t end = indicesConverter.from8To16(info.utf8Range.fBegin + info.utf8Range.fSize);
                 return env->NewObject(
                     cls, 
                     ctor,
@@ -134,6 +132,12 @@ namespace skija {
                     info.glyphCount,
                     begin,
                     end - begin);
+            }
+
+            jobject toJava(JNIEnv* env, const SkShaper::RunHandler::RunInfo& info, skija::UtfIndicesConverter& indicesConverter) {
+                size_t begin = indicesConverter.from8To16(info.utf8Range.fBegin);
+                size_t end = indicesConverter.from8To16(info.utf8Range.fBegin + info.utf8Range.fSize);
+                return toJava(env, info, begin, end);
             }
         }
 

@@ -12,7 +12,7 @@ public class DebugTextBlobHandler implements RunHandler, AutoCloseable {
     public float _maxRunLeading = 0;
     public float _xPos = 0;
     public float _yPos = 0;
-    public List<Triple<RunInfo, Font, Rect>> _infos = new ArrayList<>();
+    public List<DebugTextRun> _runs = new ArrayList<>();
 
     public DebugTextBlobHandler() {
         _builder = new TextBlobBuilder();
@@ -20,8 +20,8 @@ public class DebugTextBlobHandler implements RunHandler, AutoCloseable {
 
     @Override
     public void close() {
-        for (var info: _infos)
-            info.getSecond().close();
+        for (var info: _runs)
+            info._font.close();
 
         _builder.close();
     }
@@ -61,7 +61,13 @@ public class DebugTextBlobHandler implements RunHandler, AutoCloseable {
         //                    + " positions=" + Arrays.stream(positions).map(Point::getX).collect(Collectors.toList()));
         var font = new Font(info._fontPtr, false);
         _builder.appendRunPos(font, glyphs, positions);
-        _infos.add(new Triple(info, info.getFont(), Rect.makeXYWH(_xPos, _yPos - (-_maxRunAscent), info.getAdvance().getX(), (-_maxRunAscent) + _maxRunDescent)));
+        _runs.add(new DebugTextRun(
+            info,
+            info.getFont(), 
+            Rect.makeXYWH(_xPos, _yPos - (-_maxRunAscent), info.getAdvance().getX(), (-_maxRunAscent) + _maxRunDescent),
+            glyphs,
+            positions,
+            clusters));
         _xPos += info.getAdvance().getX();
     }
 

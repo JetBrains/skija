@@ -44,17 +44,17 @@ public class RunHandlerScene extends Scene {
             FontMetrics interMetrics = inter9.getMetrics();
             float maxBottom = 0;
 
-            for (var triple: handler._infos) {
-                var runBounds = triple.getThird();
+            for (var run: handler._runs) {
+                var runBounds = run.getBounds();
                 canvas.drawRect(runBounds, boundsStroke);
 
-                var info = triple.getFirst();
+                var info = run.getInfo();
                 try (var builder = new TextBlobBuilder();) {
                     float lh = interMetrics.getHeight();
                     float yPos = -interMetrics.getAscent();
                     float padding = 6;
                     float margin = 6;
-                    var font = triple.getSecond();
+                    var font = run.getFont();
 
                     // build details blob
                     try (var typeface = font.getTypeface();) {
@@ -62,8 +62,11 @@ public class RunHandlerScene extends Scene {
                     }
                     builder.appendRun(inter9, "bidi " + info.getBidiLevel(), 0, yPos + lh);
                     builder.appendRun(inter9, "adv (" + info.getAdvanceX() + ", " + info.getAdvanceY() + ")", 0, yPos + lh * 2);
-                    builder.appendRun(inter9, "glyphs " + info.getGlyphCount(), 0, yPos + lh * 3);
-                    builder.appendRun(inter9, "range " + info.getRangeBegin() + ".." + info.getRangeEnd() + " “" + text.substring(info.getRangeBegin(), info.getRangeEnd()) + "”", 0, yPos + lh * 4);
+                    builder.appendRun(inter9, "range " + info.getRangeBegin() + ".." + info.getRangeEnd() + " “" + text.substring(info.getRangeBegin(), info.getRangeEnd()) + "”", 0, yPos + lh * 3);
+                    builder.appendRun(inter9, info.getGlyphCount() + " glyphs: " + Arrays.toString(run.getGlyphs()), 0, yPos + lh * 4);
+                    builder.appendRun(inter9, "x positions " + Arrays.stream(run.getPositions()).map(Point::getX).map(Object::toString).collect(Collectors.joining(", ", "[", "]")), 0, yPos + lh * 5);
+                    builder.appendRun(inter9, "y position " + run.getPositions()[0].getY(), 0, yPos + lh * 6);
+                    builder.appendRun(inter9, "clusters " + Arrays.toString(run.getClusters()), 0, yPos + lh * 7);
 
                     try (var detailsBlob = builder.build(); ) {
 
