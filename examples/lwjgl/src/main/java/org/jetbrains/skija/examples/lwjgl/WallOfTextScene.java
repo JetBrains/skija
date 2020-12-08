@@ -3,10 +3,12 @@ package org.jetbrains.skija.examples.lwjgl;
 import java.util.*;
 import java.io.*;
 import java.nio.file.*;
+import java.util.stream.*;
 import lombok.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.shaper.*;
+import org.jetbrains.skija.paragraph.*;
 
 public class WallOfTextScene extends Scene {
     private Font font = null;
@@ -14,6 +16,7 @@ public class WallOfTextScene extends Scene {
     private String text;
     private Paint fill = new Paint();
     private int[] colors;
+    private FontCollection fc = null;
 
     @SneakyThrows
     public WallOfTextScene() {
@@ -24,13 +27,15 @@ public class WallOfTextScene extends Scene {
         text = String.join(" ", words);
         _variants = new String[] {
             "ShapeThenWrap",
-            "ShapeThenWrap by word",
-            "Java Handler",
-            "Java Handler by word",
+            "ShapeThenWrap by words",
+            "JVM RunHandler",
+            "JVM RunHandler by words",
             "ShaperDrivenWrapper",
             "Primitive",
             "CoreText",
             "ShapeDontWrapOrReorder",
+            "Paragraph with cache",
+            "Paragraph no cache"
         };
         colors = new int[] {
             0xFFf94144,
@@ -46,8 +51,41 @@ public class WallOfTextScene extends Scene {
         };
     }
     
+    void drawParagraph(Canvas canvas, float fontSize, float padding, float textWidth) {
+        if (fc == null) {
+            fc = new FontCollection();
+            fc.setDefaultFontManager(FontMgr.getDefault());
+            var fm = new TypefaceFontProvider();
+            fm.registerTypeface(inter, "Inter");
+            fc.setAssetFontManager(fm);
+        }
+
+        if (_variants[_variantIdx].endsWith("no cache"))
+            fc.getParagraphCache().reset();
+
+        try (var ts = new TextStyle()
+                          .setFontFamilies(new String[] { "Inter" })
+                          .setFontSize(fontSize)
+                          .setColor(colors[_variantIdx]);
+             var ps = new ParagraphStyle();
+             var pb = new ParagraphBuilder(ps, fc);)
+        {
+            for (int i = 0; i < words.length; ++i) {
+                ts.setColor(colors[i % colors.length]);
+                pb.pushStyle(ts);
+                pb.addText(words[i] + " ");
+                pb.popStyle();
+            }
+
+            try (Paragraph p = pb.build();) {
+                p.layout(textWidth);
+                p.paint(canvas, padding, padding);
+            }
+        }
+    }
+
     TextBlob makeBlob(String text, Shaper shaper, float textWidth) {
-        if (_variants[_variantIdx].startsWith("Java Handler")) {
+        if (_variants[_variantIdx].startsWith("JVM RunHandler")) {
             try (var handler = new DebugTextBlobHandler();) {
                 shaper.shape(text, font, FontMgr.getDefault(), null, true, textWidth, handler);
                 return handler.makeBlob();
@@ -56,49 +94,62 @@ public class WallOfTextScene extends Scene {
             return shaper.shape(text, font, textWidth);
     }
 
+    void drawByWords(Shaper shaper, Canvas canvas, float padding, float textWidth) {
+        var x = padding;
+        var y = padding;
+        for (int i = 0; i < words.length; ++i) {
+            try (var blob = makeBlob(words[i], shaper, Float.POSITIVE_INFINITY);) {
+                var bounds = blob.getBounds();
+                var wordWidth = bounds.getRight();
+                if (x + wordWidth > textWidth) {
+                    x = padding;
+                    y += bounds.getHeight();
+                }
+                canvas.drawTextBlob(blob, x, y, font, fill);
+                x += wordWidth;
+            }
+        }
+    }
+
+    public void drawTogether(Shaper shaper, Canvas canvas, float padding, float textWidth) {
+        try (var blob = makeBlob(text, shaper, textWidth);) {
+            canvas.drawTextBlob(blob, padding, padding, font, fill);
+        }
+    }
+
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {        
         var padding = 20f * dpi;
         var textWidth = width * dpi - padding * 2;
-        Shaper shaper = null;
+        var fontSize = 14.5f * dpi;
         var variant = _variants[_variantIdx];
-        if (font == null)
-            font = new Font(inter, 14.5f * dpi).setSubpixel(true);
-        fill.setColor(colors[_variantIdx]);
 
-        if ("Primitive".equals(variant))
-            shaper = Shaper.makePrimitive();
-        else if ("ShaperDrivenWrapper".equals(variant))
-            shaper = Shaper.makeShaperDrivenWrapper();
-        else if ("ShapeDontWrapOrReorder".equals(variant))
-            shaper = Shaper.makeShapeDontWrapOrReorder();
-        else if ("CoreText".equals(variant))
-            shaper = "Mac OS X".equals(System.getProperty("os.name")) ? Shaper.makeCoreText() : null;
-        else
-            shaper = Shaper.makeShapeThenWrap();
+        if (variant.startsWith("Paragraph"))
+            drawParagraph(canvas, fontSize, padding, textWidth);
+        else {
+            if (font == null)
+                font = new Font(inter, fontSize).setSubpixel(true);
+            fill.setColor(colors[_variantIdx]);
 
-        if (shaper != null) {
-            if (variant.endsWith("by word")) {
-                var x = padding;
-                var y = padding;
-                for (int i = 0; i < words.length; ++i) {
-                    try (var blob = makeBlob(words[i], shaper, Float.POSITIVE_INFINITY);) {
-                        var bounds = blob.getBounds();
-                        var wordWidth = bounds.getRight();
-                        if (x + wordWidth > textWidth) {
-                            x = padding;
-                            y += bounds.getHeight();
-                        }
-                        canvas.drawTextBlob(blob, x, y, font, fill);
-                        x += wordWidth;
-                    }
-                }
-            } else {
-                try (var blob = makeBlob(text, shaper, textWidth);) {
-                    canvas.drawTextBlob(blob, padding, padding, font, fill);
-                }
+            Shaper shaper = null;
+            if ("Primitive".equals(variant))
+                shaper = Shaper.makePrimitive();
+            else if ("ShaperDrivenWrapper".equals(variant))
+                shaper = Shaper.makeShaperDrivenWrapper();
+            else if ("ShapeDontWrapOrReorder".equals(variant))
+                shaper = Shaper.makeShapeDontWrapOrReorder();
+            else if ("CoreText".equals(variant))
+                shaper = "Mac OS X".equals(System.getProperty("os.name")) ? Shaper.makeCoreText() : null;
+            else
+                shaper = Shaper.makeShapeThenWrap();
+
+            if (shaper != null) {
+                if (variant.endsWith("by words"))
+                    drawByWords(shaper, canvas, padding, textWidth);
+                else
+                    drawTogether(shaper, canvas, padding, textWidth);
+                shaper.close();
             }
-            shaper.close();
         }
     }
 
