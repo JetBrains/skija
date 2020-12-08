@@ -116,6 +116,47 @@ public class TextBlob extends Managed {
         return ptr == 0 ? null : new TextBlob(ptr);
     }
 
+    /**
+     * @return  glyph indices for the whole blob
+     */
+    @NotNull
+    public short[] getGlyphs() {
+        Stats.onNativeCall();
+        return _nGetGlyphs(_ptr);
+    }
+
+    /**
+     * <p>Return result depends on how blob was constructed.</p>
+     * 
+     * <ul><li>makeFromPosH returns 1 float per glyph (x pos)
+     * <li>makeFromPos returns 2 floats per glyph (x, y pos)
+     * <li>makeFromRSXform returns 4 floats per glyph
+     * </ul>
+     * 
+     * <p>Blobs constructed by TextBlobBuilderRunHandler/Shaper default handler have 2 floats per glyph.</p>
+     * 
+     * @return  glyph positions for the blob if it was made with makeFromPos, null otherwise
+     */
+    @NotNull
+    public float[] getPositions() {
+        Stats.onNativeCall();
+        return _nGetPositions(_ptr);
+    }
+
+    /**
+     * Only works on TextBlobs that come from TextBlobBuilderRunHandler/Shaper default handler.
+     * 
+     * @return  utf-16 offsets of clusters that start the glyph
+     * @throws  IllegalArgumentException if TextBlob doesn’t have this information
+     */
+    @NotNull
+    public int[] getClusters() {
+        Stats.onNativeCall();
+        int[] res = _nGetClusters(_ptr);
+        if (res == null)
+            throw new IllegalArgumentException();
+        return res; 
+    }
 
     @ApiStatus.Internal
     public static class _FinalizerHolder {
@@ -131,4 +172,7 @@ public class TextBlob extends Managed {
     @ApiStatus.Internal public static native long _nMakeFromRSXform(short[] glyphs, float[] xform, long fontPtr);
     @ApiStatus.Internal public static native long _nSerializeToData(long ptr /*, SkSerialProcs */);
     @ApiStatus.Internal public static native long _nMakeFromData(long dataPtr /*, SkDeserialProcs */);
+    @ApiStatus.Internal public static native short[] _nGetGlyphs(long ptr);
+    @ApiStatus.Internal public static native float[] _nGetPositions(long ptr);
+    @ApiStatus.Internal public static native int[]   _nGetClusters(long ptr);
 }

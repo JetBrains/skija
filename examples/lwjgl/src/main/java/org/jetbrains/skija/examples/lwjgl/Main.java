@@ -360,7 +360,7 @@ class Window {
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Wall of Text";
+        currentScene = "RunHandler";
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {
