@@ -5,7 +5,6 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.stream.*;
 import lombok.*;
-import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.shaper.*;
 import org.jetbrains.skija.paragraph.*;

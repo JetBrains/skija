@@ -130,7 +130,7 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Tex
   (JNIEnv* env, jclass jclass, jlong ptr) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
     std::vector<TextShadow> shadows = instance->getShadows();
-    jobjectArray shadowsArr = env->NewObjectArray(shadows.size(), skija::paragraph::Shadow::cls, nullptr);
+    jobjectArray shadowsArr = env->NewObjectArray((jsize) shadows.size(), skija::paragraph::Shadow::cls, nullptr);
     for (int i = 0; i < shadows.size(); ++i) {
         const TextShadow& s = shadows[i];
         env->SetObjectArrayElement(shadowsArr, i, env->NewObject(skija::paragraph::Shadow::cls, skija::paragraph::Shadow::ctor, s.fColor, s.fOffset.fX, s.fOffset.fY, s.fBlurRadius));
@@ -154,7 +154,7 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Tex
   (JNIEnv* env, jclass jclass, jlong ptr) {
     TextStyle* instance = reinterpret_cast<TextStyle*>(static_cast<uintptr_t>(ptr));
     std::vector<FontFeature> fontFeatures = instance->getFontFeatures();
-    jobjectArray fontFeaturesArr = env->NewObjectArray(fontFeatures.size(), skija::FontFeature::cls, nullptr);
+    jobjectArray fontFeaturesArr = env->NewObjectArray((jsize) fontFeatures.size(), skija::FontFeature::cls, nullptr);
     for (int i = 0; i < fontFeatures.size(); ++i) {
         const FontFeature& ff = fontFeatures[i];
         env->SetObjectArrayElement(fontFeaturesArr, i, env->NewObject(skija::FontFeature::cls, skija::FontFeature::ctor, javaString(env, ff.fName), ff.fValue));

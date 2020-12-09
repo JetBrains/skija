@@ -149,7 +149,7 @@ public:
     }
 
     jint onConsume(jobject runObj) override {
-        fLevel = fEnv->GetIntField(runObj, skija::shaper::BidiRun::_level);
+        fLevel = fEnv->GetIntField(runObj, skija::shaper::BidiRun::_level) & 0xFF;
         return fEnv->GetIntField(runObj, skija::shaper::BidiRun::_end);
     }
     
@@ -173,7 +173,7 @@ public:
     }
     
 protected:
-    uint8_t fScript;
+    uint32_t fScript;
 };
 
 class SkijaLanguageRunIterator: public SkijaRunIterator<SkShaper::LanguageRunIterator> {

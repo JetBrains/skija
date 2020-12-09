@@ -83,7 +83,7 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Par
   (JNIEnv* env, jclass jclass, jlong ptr, jint start, jint end, jint rectHeightStyle, jint rectWidthStyle) {
     Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
     std::vector<TextBox> rects = instance->getRectsForRange(start, end, static_cast<RectHeightStyle>(rectHeightStyle), static_cast<RectWidthStyle>(rectWidthStyle));
-    jobjectArray rectsArray = env->NewObjectArray(rects.size(), skija::paragraph::TextBox::cls, nullptr);
+    jobjectArray rectsArray = env->NewObjectArray((jsize) rects.size(), skija::paragraph::TextBox::cls, nullptr);
     for (int i = 0; i < rects.size(); ++i) {
         TextBox box = rects[i];
         jobject boxObj = env->NewObject(skija::paragraph::TextBox::cls, skija::paragraph::TextBox::ctor, box.rect.fLeft, box.rect.fTop, box.rect.fRight, box.rect.fBottom, static_cast<jint>(box.direction));
@@ -96,7 +96,7 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Par
   (JNIEnv* env, jclass jclass, jlong ptr) {
     Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
     std::vector<TextBox> rects = instance->getRectsForPlaceholders();
-    jobjectArray rectsArray = env->NewObjectArray(rects.size(), skija::paragraph::TextBox::cls, nullptr);
+    jobjectArray rectsArray = env->NewObjectArray((jsize) rects.size(), skija::paragraph::TextBox::cls, nullptr);
     for (int i = 0; i < rects.size(); ++i) {
         TextBox box = rects[i];
         jobject boxObj = env->NewObject(skija::paragraph::TextBox::cls, skija::paragraph::TextBox::ctor, box.rect.fLeft, box.rect.fTop, box.rect.fRight, box.rect.fBottom, static_cast<jint>(box.direction));
@@ -130,7 +130,7 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Par
     if (!text) text = &empty;
     std::vector<LineMetrics> res;
     instance->getLineMetrics(res);
-    jobjectArray resArray = env->NewObjectArray(res.size(), skija::paragraph::LineMetrics::cls, nullptr);
+    jobjectArray resArray = env->NewObjectArray((jsize) res.size(), skija::paragraph::LineMetrics::cls, nullptr);
     auto conv = skija::UtfIndicesConverter(*text);
     for (int i = 0; i < res.size(); ++i) {
         LineMetrics lm = res[i];

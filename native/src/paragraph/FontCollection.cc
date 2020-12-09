@@ -75,8 +75,8 @@ extern "C" JNIEXPORT jlongArray JNICALL Java_org_jetbrains_skija_paragraph_FontC
     for (int i = 0; i < found.size(); ++i)
         res[i] = reinterpret_cast<jlong>(found[i].release());
 
-    jlongArray resArray = env->NewLongArray(found.size());
-    env->SetLongArrayRegion(resArray, 0, found.size(), res.data());
+    jlongArray resArray = env->NewLongArray((jsize) found.size());
+    env->SetLongArrayRegion(resArray, 0, (jsize) found.size(), res.data());
     return resArray;
 }
 

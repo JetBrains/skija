@@ -2,7 +2,6 @@ package org.jetbrains.skija.examples.lwjgl;
 
 import java.util.*;
 import java.util.stream.*;
-import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.shaper.*;
 
@@ -84,7 +83,6 @@ public class DebugTextBlobHandler implements RunHandler, AutoCloseable {
         _yPos += _maxRunDescent + _maxRunLeading;
     }
 
-    @Nullable
     public TextBlob makeBlob() {
         return _builder.build();
     }

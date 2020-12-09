@@ -173,7 +173,7 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Path__1nGetVerbs(JNIE
 
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Path__1nApproximateBytesUsed(JNIEnv* env, jclass jclass, jlong ptr) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
-    return instance->approximateBytesUsed();
+    return (jint) instance->approximateBytesUsed();
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nSwap(JNIEnv* env, jclass jclass, jlong ptr, jlong otherPtr) {
@@ -439,8 +439,8 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Path__1nDumpHex
 extern "C" JNIEXPORT jbyteArray JNICALL Java_org_jetbrains_skija_Path__1nSerializeToBytes
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkPath* instance = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(ptr));
-    int count = instance->writeToMemory(nullptr);
-    jbyteArray bytesArray = env->NewByteArray(count);
+    size_t count = instance->writeToMemory(nullptr);
+    jbyteArray bytesArray = env->NewByteArray((jsize) count);
     jbyte* bytes = env->GetByteArrayElements(bytesArray, 0);
     instance->writeToMemory(bytes);
     env->ReleaseByteArrayElements(bytesArray, bytes, 0);

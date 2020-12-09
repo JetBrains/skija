@@ -245,10 +245,10 @@ namespace skija {
         const char* fStart8;
         const char* fPtr8;
         const char* fEnd8;
-        size_t fPos16;
+        uint32_t fPos16;
 
-        size_t from16To8(size_t i16);
-        size_t from8To16(size_t i8);
+        size_t from16To8(uint32_t i16);
+        uint32_t from8To16(size_t i8);
     };
 }
 

@@ -20,9 +20,9 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Data__1nSize
 extern "C" JNIEXPORT jbyteArray JNICALL Java_org_jetbrains_skija_Data__1nBytes
   (JNIEnv* env, jclass jclass, jlong ptr, jlong offset, jlong length) {
     SkData* instance = reinterpret_cast<SkData*>(static_cast<uintptr_t>(ptr));
-    jbyteArray bytesArray = env->NewByteArray(length);
+    jbyteArray bytesArray = env->NewByteArray((jsize) length);
     const jbyte* bytes = reinterpret_cast<const jbyte*>(instance->bytes() + offset);
-    env->SetByteArrayRegion(bytesArray, 0, length, bytes); 
+    env->SetByteArrayRegion(bytesArray, 0, (jsize) length, bytes); 
     return bytesArray;
 }
 
@@ -37,7 +37,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Data__1nMakeFromByte
   (JNIEnv* env, jclass jclass, jbyteArray bytesArray, jlong offset, jlong length) {
     jbyte* bytes = reinterpret_cast<jbyte*>(malloc(length));
     if (!bytes) return 0;
-    env->GetByteArrayRegion(bytesArray, offset, length, bytes);
+    env->GetByteArrayRegion(bytesArray, (jsize) offset, (jsize) length, bytes);
     SkData* instance = SkData::MakeFromMalloc(bytes, length).release();
     return reinterpret_cast<jlong>(instance);
 }

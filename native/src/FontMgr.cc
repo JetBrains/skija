@@ -53,7 +53,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_FontMgr__1nMatchFami
     for (int i = 0; i < bcp47.size(); ++i)
         bcp47[i] = bcp47Strings[i].c_str();
     
-    SkTypeface* typeface = instance->matchFamilyStyleCharacter(familyName.c_str(), skija::FontStyle::fromJava(fontStyle), bcp47.data(), bcp47.size(), character);
+    SkTypeface* typeface = instance->matchFamilyStyleCharacter(familyName.c_str(), skija::FontStyle::fromJava(fontStyle), bcp47.data(), (int) bcp47.size(), character);
     
     return reinterpret_cast<jlong>(typeface);
 }

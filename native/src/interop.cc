@@ -398,7 +398,7 @@ namespace skija {
         }
 
         jobjectArray fromSkPoints(JNIEnv* env, const std::vector<SkPoint>& ps) {
-            jobjectArray res = env->NewObjectArray(ps.size(), cls, nullptr);
+            jobjectArray res = env->NewObjectArray((jsize) ps.size(), cls, nullptr);
             for (int i = 0; i < ps.size(); ++i) {
                 env->SetObjectArrayElement(res, i, fromSkPoint(env, ps[i]));
             }
@@ -829,32 +829,32 @@ jlong packTwoInt32(SkISize p) {
 }
 
 jbyteArray javaByteArray(JNIEnv* env, const std::vector<jbyte>& bytes) {
-    jbyteArray res = env->NewByteArray(bytes.size());
-    env->SetByteArrayRegion(res, 0, bytes.size(), bytes.data());
+    jbyteArray res = env->NewByteArray((jsize) bytes.size());
+    env->SetByteArrayRegion(res, 0, (jsize) bytes.size(), bytes.data());
     return res;
 }
 
 jshortArray javaShortArray(JNIEnv* env, const std::vector<jshort>& shorts) {
-    jshortArray res = env->NewShortArray(shorts.size());
-    env->SetShortArrayRegion(res, 0, shorts.size(), shorts.data());
+    jshortArray res = env->NewShortArray((jsize) shorts.size());
+    env->SetShortArrayRegion(res, 0, (jsize) shorts.size(), shorts.data());
     return res;
 }
 
 jintArray javaIntArray(JNIEnv* env, const std::vector<jint>& ints) {
-    jintArray res = env->NewIntArray(ints.size());
-    env->SetIntArrayRegion( res, 0, ints.size(), ints.data());
+    jintArray res = env->NewIntArray((jsize) ints.size());
+    env->SetIntArrayRegion( res, 0, (jsize) ints.size(), ints.data());
     return res;
 }
 
 jlongArray javaLongArray(JNIEnv* env, const std::vector<jlong>& longs) {
-    jlongArray res = env->NewLongArray(longs.size());
-    env->SetLongArrayRegion(res, 0, longs.size(), longs.data());
+    jlongArray res = env->NewLongArray((jsize) longs.size());
+    env->SetLongArrayRegion(res, 0, (jsize) longs.size(), longs.data());
     return res;
 }
 
 jfloatArray javaFloatArray(JNIEnv* env, const std::vector<jfloat>& floats) {
-    jfloatArray res = env->NewFloatArray(floats.size());
-    env->SetFloatArrayRegion(res, 0, floats.size(), floats.data());
+    jfloatArray res = env->NewFloatArray((jsize) floats.size());
+    env->SetFloatArrayRegion(res, 0, (jsize) floats.size(), floats.data());
     return res;
 }
 
@@ -862,9 +862,9 @@ std::vector<SkString> skStringVector(JNIEnv* env, jobjectArray arr) {
     if (arr == nullptr) {
         return std::vector<SkString>(0);
     } else {
-        size_t len = env->GetArrayLength(arr);
+        jsize len = env->GetArrayLength(arr);
         std::vector<SkString> res(len);
-        for (int i = 0; i < len; ++i) {
+        for (jint i = 0; i < len; ++i) {
             jstring str = static_cast<jstring>(env->GetObjectArrayElement(arr, i));
             res[i] = skString(env, str);
         }
@@ -873,8 +873,8 @@ std::vector<SkString> skStringVector(JNIEnv* env, jobjectArray arr) {
 }
 
 jobjectArray javaStringArray(JNIEnv* env, const std::vector<SkString>& strings) {
-    jobjectArray res = env->NewObjectArray(strings.size(), java::lang::String::cls, nullptr);
-    for (int i = 0; i < strings.size(); ++i)
+    jobjectArray res = env->NewObjectArray((jsize) strings.size(), java::lang::String::cls, nullptr);
+    for (jint i = 0; i < (jsize) strings.size(); ++i)
         env->SetObjectArrayElement(res, i, javaString(env, strings[i]));
     return res;
 }
@@ -894,7 +894,7 @@ skija::UtfIndicesConverter::UtfIndicesConverter(const SkString& str):
   skija::UtfIndicesConverter::UtfIndicesConverter(str.c_str(), str.size())
 {}
 
-size_t skija::UtfIndicesConverter::from16To8(size_t i16) {
+size_t skija::UtfIndicesConverter::from16To8(uint32_t i16) {
     if (i16 >= fPos16) {
         // if new i16 >= last fPos16, continue from where we started
     } else {
@@ -904,23 +904,23 @@ size_t skija::UtfIndicesConverter::from16To8(size_t i16) {
 
     while (fPtr8 < fEnd8 && fPos16 < i16) {
         SkUnichar u = SkUTF::NextUTF8(&fPtr8, fEnd8);
-        fPos16 += SkUTF::ToUTF16(u);
+        fPos16 += (uint32_t) SkUTF::ToUTF16(u);
     }
 
     return fPtr8 - fStart8;
 }
 
-size_t skija::UtfIndicesConverter::from8To16(size_t i8) {
-    if (i8 >= fPtr8 - fStart8) {
+uint32_t skija::UtfIndicesConverter::from8To16(size_t i8) {
+    if (i8 >= (size_t) (fPtr8 - fStart8)) {
         // if new i8 >= last fPtr8, continue from where we started
     } else {
         fPtr8 = fStart8;
         fPos16 = 0;
     }
 
-    while (fPtr8 - fStart8 < i8) {
+    while ((size_t) (fPtr8 - fStart8) < i8) {
         SkUnichar u = SkUTF::NextUTF8(&fPtr8, fEnd8);
-        fPos16 += SkUTF::ToUTF16(u);
+        fPos16 += (uint32_t) SkUTF::ToUTF16(u);
     }
 
     return fPos16;

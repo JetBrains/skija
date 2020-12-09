@@ -219,7 +219,7 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_Typeface__1nG
         names.push_back(name);
     }
     iter->unref();
-    jobjectArray res = env->NewObjectArray(names.size(), skija::FontFamilyName::cls, nullptr);
+    jobjectArray res = env->NewObjectArray((jsize) names.size(), skija::FontFamilyName::cls, nullptr);
     for (int i = 0; i < names.size(); ++i) {
         jstring nameStr = javaString(env, names[i].fString);
         jstring langStr = javaString(env, names[i].fLanguage);

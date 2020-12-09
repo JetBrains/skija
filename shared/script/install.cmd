@@ -1,1 +1,1 @@
-mvn -DskipTests install
+call mvn -DskipTests install

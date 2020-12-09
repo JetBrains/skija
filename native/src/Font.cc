@@ -255,7 +255,7 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Font__1nMeasureTex
     jsize len = env->GetStringLength(str);
     const jchar* chars = env->GetStringCritical(str, nullptr);
     SkRect bounds;
-    int count = instance->measureText(chars, len * sizeof(jchar), SkTextEncoding::kUTF16, &bounds, paint);
+    instance->measureText(chars, len * sizeof(jchar), SkTextEncoding::kUTF16, &bounds, paint);
     env->ReleaseStringCritical(str, chars);
     return skija::Rect::fromSkRect(env, bounds);
 }
@@ -341,7 +341,7 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_Font__1nGetPa
 
     struct Ctx {
         jobjectArray paths;
-        size_t       idx;
+        jsize        idx;
         JNIEnv*      env;
     } ctx = { env->NewObjectArray(count, skija::Path::cls, nullptr), 0, env };
 
