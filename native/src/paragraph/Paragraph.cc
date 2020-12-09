@@ -126,6 +126,8 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Par
   (JNIEnv* env, jclass jclass, jlong ptr, jlong textPtr) {
     Paragraph* instance = reinterpret_cast<Paragraph*>(static_cast<uintptr_t>(ptr));
     SkString* text = reinterpret_cast<SkString*>(static_cast<uintptr_t>(textPtr));
+    SkString empty;
+    if (!text) text = &empty;
     std::vector<LineMetrics> res;
     instance->getLineMetrics(res);
     jobjectArray resArray = env->NewObjectArray(res.size(), skija::paragraph::LineMetrics::cls, nullptr);
