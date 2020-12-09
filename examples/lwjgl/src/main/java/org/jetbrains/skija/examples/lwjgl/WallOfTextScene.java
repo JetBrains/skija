@@ -36,6 +36,7 @@ public class WallOfTextScene extends Scene {
             "Paragraph with cache",
             "Paragraph no cache"
         };
+        _variantIdx = 8;
         colors = new int[] {
             0xFFf94144,
             0xFFf3722c,
@@ -59,8 +60,10 @@ public class WallOfTextScene extends Scene {
             fc.setAssetFontManager(fm);
         }
 
-        if (_variants[_variantIdx].endsWith("no cache"))
-            fc.getParagraphCache().reset();
+        if (_variants[_variantIdx].endsWith("no cache")) {
+            // fc.getParagraphCache().reset();
+            fc.getParagraphCache().printStatistics();
+        }
 
         try (var ts = new TextStyle()
                           .setFontFamilies(new String[] { "Inter" })
