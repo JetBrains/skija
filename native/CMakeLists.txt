@@ -11,14 +11,26 @@ file(GLOB IMPL_SOURCES ${CMAKE_SOURCE_DIR}/src/impl/*.cc)
 file(GLOB PARAGRAPH_SOURCES ${CMAKE_SOURCE_DIR}/src/paragraph/*.cc)
 file(GLOB SHAPER_SOURCES ${CMAKE_SOURCE_DIR}/src/shaper/*.cc)
 file(GLOB SVG_SOURCES ${CMAKE_SOURCE_DIR}/src/svg/*.cc)
-add_definitions(-DSK_GL -DSK_SHAPER_HARFBUZZ_AVAILABLE -DSK_UNICODE_AVAILABLE)
 add_library(skija SHARED ${SOURCES} ${IMPL_SOURCES} ${PARAGRAPH_SOURCES} ${SHAPER_SOURCES} ${SVG_SOURCES})
 
-# Platforms
+add_definitions(-DFT2_BUILD_LIBRARY
+    -DFT_CONFIG_MODULES_H=<include/freetype-android/ftmodule.h>
+    -DFT_CONFIG_OPTIONS_H=<include/freetype-android/ftoption.h>
+    -DPNG_INTEL_SSE
+    -DPNG_SET_OPTION_SUPPORTED
+    -DSK_GL
+    -DSK_SHAPER_HARFBUZZ_AVAILABLE
+    -DSK_UNICODE_AVAILABLE)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_definitions(-DNDEBUG)
+endif()
 
 if(APPLE)
     target_include_directories(skija PRIVATE $ENV{JAVA_HOME}/include $ENV{JAVA_HOME}/include/darwin)
-    add_definitions(-DSK_SHAPER_CORETEXT_AVAILABLE -DSK_METAL)
+    add_definitions(-DSK_ENABLE_API_AVAILABLE
+        -DSK_METAL
+        -DSK_SHAPER_CORETEXT_AVAILABLE)
 
 elseif(UNIX)
     target_include_directories(skija PRIVATE $ENV{JAVA_HOME}/include $ENV{JAVA_HOME}/include/linux)
@@ -34,7 +46,7 @@ elseif(WIN32)
     set(CMAKE_CXX_FLAGS_RELEASE "/MT")
     set(CMAKE_CXX_FLAGS_DEBUG "/MTd")
     target_link_options(skija PRIVATE /INCREMENTAL:NO /NODEFAULTLIB:MSVCRT /machine:X64)
-
+    add_definitions(-DNOMINMAX -DWIN32_LEAN_AND_MEAN)
 endif()
 
 # Skia

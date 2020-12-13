@@ -61,6 +61,8 @@
                         <argument>${exec.arguments.thread}</argument>
                         <argument>-Djava.awt.headless=true</argument>
                         <argument>-ea</argument>
+                        <argument>-esa</argument>
+                        <!-- <argument>-Xcheck:jni</argument> -->
                         <!-- <argument>-XX:+UnlockExperimentalVMOptions</argument> -->
                         <!-- <argument>-XX:+UseShenandoahGC</argument> -->
                         <!-- <argument>-XX:+UseZGC</argument> -->

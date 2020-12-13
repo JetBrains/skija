@@ -479,7 +479,7 @@ namespace skija {
         }
 
         jobject fromSkRect(JNIEnv* env, const SkRect& rect) {
-            return env->CallStaticObjectMethod(cls, makeLTRB, rect.fLeft, rect.fTop, rect.fRight, rect.fBottom);
+            return fromLTRB(env, rect.fLeft, rect.fTop, rect.fRight, rect.fBottom);
         }
     }
 
