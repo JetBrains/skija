@@ -22,7 +22,7 @@ public class Library {
             return null;
         try (InputStream is = url.openStream()) {
             byte[] bytes = is.readAllBytes();
-            return new String(bytes);
+            return new String(bytes).trim();
         } catch (IOException e) {
             return null;
         }
