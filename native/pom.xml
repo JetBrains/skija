@@ -25,6 +25,7 @@
                     <include>libskija.so</include>
                     <include>skija.dll</include>
                     <include>icudtl.dat</include>
+                    <include>skija.version</include>
                 </includes>
             </resource>
         </resources>

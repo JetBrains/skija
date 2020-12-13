@@ -61,8 +61,8 @@ public class WallOfTextScene extends Scene {
         }
 
         if (_variants[_variantIdx].endsWith("no cache")) {
-            // fc.getParagraphCache().reset();
-            fc.getParagraphCache().printStatistics();
+            fc.getParagraphCache().reset();
+            // fc.getParagraphCache().printStatistics();
         }
 
         try (var ts = new TextStyle()

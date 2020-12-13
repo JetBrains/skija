@@ -3,6 +3,7 @@ package org.jetbrains.skija.impl;
 import java.io.*;
 import java.net.*;
 import java.nio.file.*;
+import java.util.*;
 import lombok.*;
 import org.jetbrains.annotations.*;
 
@@ -15,10 +16,23 @@ public class Library {
             load();
     }
 
+    public static String readResource(String path) {
+        URL url = Library.class.getResource(path);
+        if (url == null)
+            return null;
+        try (InputStream is = url.openStream()) {
+            byte[] bytes = is.readAllBytes();
+            return new String(bytes);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
     public static synchronized void load() {
         if (_loaded) return;
 
-        File tempDir = new File(System.getProperty("java.io.tmpdir"), "skija_" + System.nanoTime());
+        String version = readResource("/skija.version");
+        File tempDir = new File(System.getProperty("java.io.tmpdir"), "skija_" + (version == null ? "" + System.nanoTime() : version));
         String os = System.getProperty("os.name").toLowerCase();
         
         if (os.contains("mac") || os.contains("darwin")) {
@@ -33,12 +47,27 @@ public class Library {
             System.load(library.getAbsolutePath());
         } else
             throw new RuntimeException("Unknown operation system");
+
+        if (tempDir.exists() && version == null) {
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    Files.walk(tempDir.toPath())
+                         .map(Path::toFile)
+                         .sorted(Comparator.reverseOrder())
+                         .forEach((f) -> {
+                            Log.debug("Deleting " + f);
+                            f.delete();
+                         });
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }));
+        }
         
         _loaded = true;
         _nAfterLoad();
     }
 
-    // https://github.com/adamheinrich/native-utils/blob/e6a39489662846a77504634b6fafa4995ede3b1d/src/main/java/cz/adamh/utils/NativeUtils.java
     @ApiStatus.Internal
     @SneakyThrows
     public static File _extract(String resourcePath, String fileName, File tempDir) {
@@ -47,19 +76,18 @@ public class Library {
         if (url == null)
             throw new IllegalArgumentException("Library file " + fileName + " not found in " + resourcePath);
         else if (url.getProtocol() == "file") {
-            // System.out.println("Loading " + url);
             file = new File(url.toURI());
-        } else
-            try (InputStream is = url.openStream()) {
-                if (!tempDir.exists()) {
+        } else {
+            file = new File(tempDir, fileName);
+            if (!file.exists()) {
+                if (!tempDir.exists())
                     tempDir.mkdirs();
-                    tempDir.deleteOnExit();
+                try (InputStream is = url.openStream()) {
+                    Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 }
-                file = new File(tempDir, fileName);
-                file.deleteOnExit();
-                Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                // System.out.println("Loading " + url + " from " + file);
             }
+        }
+        Log.debug("Loading " + file);
         return file;
     }
 

@@ -33,14 +33,6 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_paragraph_Paragra
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_paragraph_ParagraphCache__1nPrintStatistics
   (JNIEnv* env, jclass jclass, jlong ptr, jlong paragraphPtr) {
-    std::cout << "ParagraphCache " << sizeof(ParagraphCache) << std::endl;
-    // std::cout << "ParagraphCacheKey " << sizeof(ParagraphCacheKey) << std::endl;
-    // std::cout << "ParagraphCacheValue " << sizeof(ParagraphCacheValue) << std::endl;
-    std::cout << "Placeholder " << sizeof(Placeholder) << std::endl;
-    std::cout << "ParagraphStyle " << sizeof(ParagraphStyle) << std::endl;
-    std::cout << "SkString " << sizeof(SkString) << std::endl;
-    std::cout << "std::u16string " << sizeof(std::u16string) << std::endl;
-    
     ParagraphCache* instance = reinterpret_cast<ParagraphCache*>(static_cast<uintptr_t>(ptr));
     instance->printStatistics();
 }

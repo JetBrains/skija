@@ -1,7 +1,7 @@
 #!/bin/bash
 set -o errexit -o nounset -o pipefail
 
-skia_release=m88-b05f80697a
+skia_release=m88-fc6759b235
 
 OS=`uname`
 if [[ "$OS" == 'Linux' ]]; then

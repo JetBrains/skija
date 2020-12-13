@@ -35,4 +35,4 @@ else
     add_cp "org/lwjgl/lwjgl-opengl/3.2.3/lwjgl-opengl-3.2.3-natives-windows.jar"
 fi
 
-java -cp $classpath $java_opts -Djava.awt.headless=true -ea org.jetbrains.skija.examples.lwjgl.Main
+java -cp $classpath $java_opts -Djava.awt.headless=true -ea -esa -Dskija.logLevel=DEBUG org.jetbrains.skija.examples.lwjgl.Main
