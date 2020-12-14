@@ -1,5 +1,6 @@
 package org.jetbrains.skija.shaper;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
@@ -14,6 +15,7 @@ public class TextBlobBuilderRunHandler<T> extends Managed implements RunHandler 
     public TextBlobBuilderRunHandler(ManagedString text, boolean manageText, float offsetX, float offsetY) {
         super(_nMake(Native.getPtr(text), offsetX, offsetY), _FinalizerHolder.PTR);
         _text = manageText ? text : null;
+        Reference.reachabilityFence(text);
     }
 
     public TextBlobBuilderRunHandler(String text) {
@@ -63,9 +65,13 @@ public class TextBlobBuilderRunHandler<T> extends Managed implements RunHandler 
 
     @Nullable
     public TextBlob makeBlob() {
-        Stats.onNativeCall();
-        long ptr = _nMakeBlob(_ptr);
-        return 0 == ptr ? null : new TextBlob(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nMakeBlob(_ptr);
+            return 0 == ptr ? null : new TextBlob(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal

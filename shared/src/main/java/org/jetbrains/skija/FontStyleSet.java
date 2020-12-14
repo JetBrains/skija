@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -12,30 +13,50 @@ public class FontStyleSet extends RefCnt {
     }
 
     public int count() {
-        Stats.onNativeCall();
-        return _nCount(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nCount(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public FontStyle getStyle(int index) {
-        Stats.onNativeCall();
-        return new FontStyle(_nGetStyle(_ptr, index));
+        try {
+            Stats.onNativeCall();
+            return new FontStyle(_nGetStyle(_ptr, index));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }    
 
     public String getStyleName(int index) {
-        Stats.onNativeCall();
-        return _nGetStyleName(_ptr, index);
+        try {
+            Stats.onNativeCall();
+            return _nGetStyleName(_ptr, index);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }        
 
     public Typeface getTypeface(int index) {
-        Stats.onNativeCall();
-        long ptr = _nGetTypeface(_ptr, index);
-        return ptr == 0 ? null : new Typeface(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nGetTypeface(_ptr, index);
+            return ptr == 0 ? null : new Typeface(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }    
 
     public Typeface matchStyle(FontStyle style) {
-        Stats.onNativeCall();
-        long ptr = _nMatchStyle(_ptr, style._value);
-        return ptr == 0 ? null : new Typeface(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nMatchStyle(_ptr, style._value);
+            return ptr == 0 ? null : new Typeface(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }    
 
     @ApiStatus.Internal

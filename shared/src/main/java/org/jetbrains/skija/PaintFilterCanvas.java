@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -17,6 +18,7 @@ public abstract class PaintFilterCanvas extends Canvas {
         Stats.onNativeCall();
         _nAttachToJava(_ptr);
         Stats.onNativeCall();
+        Reference.reachabilityFence(canvas);
     }
 
     /**

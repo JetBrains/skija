@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import lombok.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
@@ -19,8 +20,12 @@ public class ManagedString extends Managed {
 
     @Override
     public String toString() {
-        Stats.onNativeCall();
-        return _nToString(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nToString(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @NotNull @Contract("-> this")

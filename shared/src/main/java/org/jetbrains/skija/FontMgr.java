@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -7,19 +8,31 @@ public class FontMgr extends RefCnt {
     static { Library.staticLoad(); }
     
     public int getFamiliesCount() {
-        Stats.onNativeCall();
-        return _nGetFamiliesCount(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetFamiliesCount(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public String getFamilyName(int index) {
-        Stats.onNativeCall();
-        return _nGetFamilyName(_ptr, index);
+        try {
+            Stats.onNativeCall();
+            return _nGetFamilyName(_ptr, index);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public FontStyleSet makeStyleSet(int index) {
-        Stats.onNativeCall();
-        long ptr = _nMakeStyleSet(_ptr, index);
-        return ptr == 0 ? null : new FontStyleSet(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nMakeStyleSet(_ptr, index);
+            return ptr == 0 ? null : new FontStyleSet(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -34,8 +47,12 @@ public class FontMgr extends RefCnt {
      * {@link #makeStyleSet(int)} due to hidden or auto-activated fonts.
      */
     public FontStyleSet matchFamily(String familyName) {
-        Stats.onNativeCall();
-        return new FontStyleSet(_nMatchFamily(_ptr, familyName));
+        try {
+            Stats.onNativeCall();
+            return new FontStyleSet(_nMatchFamily(_ptr, familyName));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -52,9 +69,13 @@ public class FontMgr extends RefCnt {
      */
     @Nullable
     public Typeface matchFamilyStyle(String familyName, FontStyle style) {
-        Stats.onNativeCall();
-        long ptr = _nMatchFamilyStyle(_ptr, familyName, style._value);
-        return ptr == 0 ? null : new Typeface(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nMatchFamilyStyle(_ptr, familyName, style._value);
+            return ptr == 0 ? null : new Typeface(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @Nullable
@@ -83,9 +104,13 @@ public class FontMgr extends RefCnt {
      * requested character will be matched.
      */
     public Typeface matchFamilyStyleCharacter(@Nullable String familyName, FontStyle style, @Nullable String[] bcp47, int character) {
-        Stats.onNativeCall();
-        long ptr = _nMatchFamilyStyleCharacter(_ptr, familyName, style._value, bcp47, character);
-        return ptr == 0 ? null : new Typeface(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nMatchFamilyStyleCharacter(_ptr, familyName, style._value, bcp47, character);
+            return ptr == 0 ? null : new Typeface(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @Nullable
@@ -108,9 +133,14 @@ public class FontMgr extends RefCnt {
     }
 
     public Typeface makeFromData(Data data, int ttcIndex) {
-        Stats.onNativeCall();
-        long ptr = _nMakeFromData(_ptr, Native.getPtr(data), ttcIndex);
-        return ptr == 0 ? null : new Typeface(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nMakeFromData(_ptr, Native.getPtr(data), ttcIndex);
+            return ptr == 0 ? null : new Typeface(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(data);
+        }
     }
 
     public static class _DefaultHolder {

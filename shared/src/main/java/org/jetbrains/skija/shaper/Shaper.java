@@ -1,5 +1,6 @@
 package org.jetbrains.skija.shaper;
 
+import java.lang.ref.*;
 import java.util.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
@@ -25,8 +26,12 @@ public class Shaper extends Managed {
 
     @NotNull @Contract("_ -> new")
     public static Shaper makeShaperDrivenWrapper(@Nullable FontMgr fontMgr) {
-        Stats.onNativeCall();
-        return new Shaper(_nMakeShaperDrivenWrapper(Native.getPtr(fontMgr)));
+        try {
+            Stats.onNativeCall();
+            return new Shaper(_nMakeShaperDrivenWrapper(Native.getPtr(fontMgr)));
+        } finally {
+            Reference.reachabilityFence(fontMgr);
+        }
     }
 
     @NotNull @Contract("-> new")
@@ -36,8 +41,12 @@ public class Shaper extends Managed {
 
     @NotNull @Contract("_ -> new")
     public static Shaper makeShapeThenWrap(@Nullable FontMgr fontMgr) {
-        Stats.onNativeCall();
-        return new Shaper(_nMakeShapeThenWrap(Native.getPtr(fontMgr)));
+        try {
+            Stats.onNativeCall();
+            return new Shaper(_nMakeShapeThenWrap(Native.getPtr(fontMgr)));
+        } finally {
+            Reference.reachabilityFence(fontMgr);
+        }
     }
 
     @NotNull @Contract("-> new")
@@ -47,8 +56,12 @@ public class Shaper extends Managed {
 
     @NotNull @Contract("_ -> new")
     public static Shaper makeShapeDontWrapOrReorder(@Nullable FontMgr fontMgr) {
-        Stats.onNativeCall();
-        return new Shaper(_nMakeShapeDontWrapOrReorder(Native.getPtr(fontMgr)));
+        try {
+            Stats.onNativeCall();
+            return new Shaper(_nMakeShapeDontWrapOrReorder(Native.getPtr(fontMgr)));
+        } finally {
+            Reference.reachabilityFence(fontMgr);
+        }
     }
 
     /**
@@ -74,8 +87,12 @@ public class Shaper extends Managed {
 
     @NotNull @Contract("_ -> new")
     public static Shaper make(@Nullable FontMgr fontMgr) {
-        Stats.onNativeCall();
-        return new Shaper(_nMake(Native.getPtr(fontMgr)));
+        try {
+            Stats.onNativeCall();
+            return new Shaper(_nMake(Native.getPtr(fontMgr)));
+        } finally {
+            Reference.reachabilityFence(fontMgr);
+        }
     }
 
     @Nullable @Contract("_, _ -> new")
@@ -100,9 +117,14 @@ public class Shaper extends Managed {
 
     @Nullable @Contract("_, _, _, _, _, _ -> new")
     public TextBlob shape(String text, Font font, @Nullable FontFeature[] features, boolean leftToRight, float width, @NotNull Point offset) {
-        Stats.onNativeCall();
-        long ptr = _nShapeToTextBlob(_ptr, text, Native.getPtr(font), features, leftToRight, width, offset._x, offset._y);
-        return 0 == ptr ? null : new TextBlob(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nShapeToTextBlob(_ptr, text, Native.getPtr(font), features, leftToRight, width, offset._x, offset._y);
+            return 0 == ptr ? null : new TextBlob(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(font);
+        }
     }
 
     @NotNull @Contract("_, _, _, _, _, _, _ -> this")

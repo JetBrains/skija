@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -12,8 +13,12 @@ public class DirectContext extends RefCnt {
     }
 
     public void flush() {
-        Stats.onNativeCall();
-        _nFlush(_ptr);
+        try {
+            Stats.onNativeCall();
+            _nFlush(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal

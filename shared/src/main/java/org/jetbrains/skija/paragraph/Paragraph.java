@@ -1,5 +1,6 @@
 package org.jetbrains.skija.paragraph;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
@@ -20,43 +21,75 @@ public class Paragraph extends Managed {
     }
     
     public float getMaxWidth() {
-        Stats.onNativeCall();
-        return _nGetMaxWidth(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetMaxWidth(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public float getHeight() {
-        Stats.onNativeCall();
-        return _nGetHeight(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetHeight(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public float getMinIntrinsicWidth() {
-        Stats.onNativeCall();
-        return _nGetMinIntrinsicWidth(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetMinIntrinsicWidth(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public float getMaxIntrinsicWidth() {
-        Stats.onNativeCall();
-        return _nGetMaxIntrinsicWidth(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetMaxIntrinsicWidth(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public float getAlphabeticBaseline() {
-        Stats.onNativeCall();
-        return _nGetAlphabeticBaseline(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetAlphabeticBaseline(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public float getIdeographicBaseline() {
-        Stats.onNativeCall();
-        return _nGetIdeographicBaseline(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetIdeographicBaseline(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public float getLongestLine() {
-        Stats.onNativeCall();
-        return _nGetLongestLine(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetLongestLine(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public boolean didExceedMaxLines() {
-        Stats.onNativeCall();
-        return _nDidExceedMaxLines(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nDidExceedMaxLines(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Paragraph layout(float width) {
@@ -66,9 +99,13 @@ public class Paragraph extends Managed {
     }
 
     public Paragraph paint(Canvas canvas, float x, float y) {
-        Stats.onNativeCall();
-        _nPaint(_ptr, Native.getPtr(canvas), x, y);
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nPaint(_ptr, Native.getPtr(canvas), x, y);
+            return this;
+        } finally {
+            Reference.reachabilityFence(canvas);
+        }
     }
 
     /**
@@ -76,38 +113,63 @@ public class Paragraph extends Managed {
      * start and end char indices, including start and excluding end.
      */
     public TextBox[] getRectsForRange(int start, int end, RectHeightMode rectHeightMode, RectWidthMode rectWidthMode) {
-        Stats.onNativeCall();
-        return _nGetRectsForRange(_ptr, start, end, rectHeightMode.ordinal(), rectWidthMode.ordinal());
+        try {
+            Stats.onNativeCall();
+            return _nGetRectsForRange(_ptr, start, end, rectHeightMode.ordinal(), rectWidthMode.ordinal());
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextBox[] getRectsForPlaceholders() {
-        Stats.onNativeCall();
-        return _nGetRectsForPlaceholders(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetRectsForPlaceholders(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public PositionWithAffinity getGlyphPositionAtCoordinate(float dx, float dy) {
-        Stats.onNativeCall();
-        int res = _nGetGlyphPositionAtCoordinate(_ptr, dx, dy);
-        if (res >= 0)
-            return new PositionWithAffinity(res, Affinity.DOWNSTREAM);
-        else
-            return new PositionWithAffinity(-res-1, Affinity.UPSTREAM);
+        try {
+            Stats.onNativeCall();
+            int res = _nGetGlyphPositionAtCoordinate(_ptr, dx, dy);
+            if (res >= 0)
+                return new PositionWithAffinity(res, Affinity.DOWNSTREAM);
+            else
+                return new PositionWithAffinity(-res-1, Affinity.UPSTREAM);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public IRange getWordBoundary(int offset) {
-        Stats.onNativeCall();
-        long l = _nGetWordBoundary(_ptr, offset);
-        return new IRange((int) (l >>> 32), (int) (l & 0xFFFFFFFF));
+        try {
+            Stats.onNativeCall();
+            long l = _nGetWordBoundary(_ptr, offset);
+            return new IRange((int) (l >>> 32), (int) (l & 0xFFFFFFFF));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public LineMetrics[] getLineMetrics() {
-        Stats.onNativeCall();
-        return _nGetLineMetrics(_ptr, Native.getPtr(_text));
+        try {
+            Stats.onNativeCall();
+            return _nGetLineMetrics(_ptr, Native.getPtr(_text));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(_text);
+        }
     }
 
     public long getLineNumber() {
-        Stats.onNativeCall();
-        return _nGetLineNumber(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetLineNumber(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Paragraph markDirty() {
@@ -117,8 +179,12 @@ public class Paragraph extends Managed {
     }
 
     public int getUnresolvedGlyphsCount() {
-        Stats.onNativeCall();
-        return _nGetUnresolvedGlyphsCount(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetUnresolvedGlyphsCount(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Paragraph updateAlignment(Alignment alignment) {
@@ -135,21 +201,35 @@ public class Paragraph extends Managed {
     // }
 
     public Paragraph updateFontSize(int from, int to, float size) {
-        Stats.onNativeCall();
-        _nUpdateFontSize(_ptr, from, to, size, Native.getPtr(_text));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nUpdateFontSize(_ptr, from, to, size, Native.getPtr(_text));
+            return this;
+        } finally {
+            Reference.reachabilityFence(_text);
+        }
     }
 
     public Paragraph updateForegroundPaint(int from, int to, Paint paint) {
-        Stats.onNativeCall();
-        _nUpdateForegroundPaint(_ptr, from, to, Native.getPtr(paint), Native.getPtr(_text));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nUpdateForegroundPaint(_ptr, from, to, Native.getPtr(paint), Native.getPtr(_text));
+            return this;
+        } finally {
+            Reference.reachabilityFence(paint);
+            Reference.reachabilityFence(_text);
+        }
     }
 
     public Paragraph updateBackgroundPaint(int from, int to, Paint paint) {
-        Stats.onNativeCall();
-        _nUpdateBackgroundPaint(_ptr, from, to, Native.getPtr(paint), Native.getPtr(_text));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nUpdateBackgroundPaint(_ptr, from, to, Native.getPtr(paint), Native.getPtr(_text));
+            return this;
+        } finally {
+            Reference.reachabilityFence(paint);
+            Reference.reachabilityFence(_text);
+        }
     }
 
     @ApiStatus.Internal

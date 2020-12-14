@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -19,8 +20,12 @@ public class TextBlob extends Managed {
      * @return  conservative bounding box
      */
     public Rect getBounds() {
-        Stats.onNativeCall();
-        return _nBounds(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nBounds(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -29,8 +34,12 @@ public class TextBlob extends Managed {
      * @return  identifier for TextBlob
      */
     public int getUniqueId() {
-        Stats.onNativeCall();
-        return _nGetUniqueId(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetUniqueId(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -48,8 +57,13 @@ public class TextBlob extends Managed {
      */
     @Nullable
     public float[] getIntercepts(float lowerBound, float upperBound, @Nullable Paint paint) {
-        Stats.onNativeCall();
-        return _nGetIntercepts(_ptr, lowerBound, upperBound, Native.getPtr(paint));
+        try {
+            Stats.onNativeCall();
+            return _nGetIntercepts(_ptr, lowerBound, upperBound, Native.getPtr(paint));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(paint);
+        }
     }
 
     /**
@@ -63,10 +77,14 @@ public class TextBlob extends Managed {
      * @return        new TextBlob or null
      */
     public static TextBlob makeFromPosH(short[] glyphs, float[] xpos, float ypos, Font font) {
-        assert glyphs.length == xpos.length : "glyphs.length " + glyphs.length + " != xpos.length " + xpos.length;
-        Stats.onNativeCall();
-        long ptr = _nMakeFromPosH(glyphs, xpos, ypos, Native.getPtr(font));
-        return ptr == 0 ? null : new TextBlob(ptr);
+        try {
+            assert glyphs.length == xpos.length : "glyphs.length " + glyphs.length + " != xpos.length " + xpos.length;
+            Stats.onNativeCall();
+            long ptr = _nMakeFromPosH(glyphs, xpos, ypos, Native.getPtr(font));
+            return ptr == 0 ? null : new TextBlob(ptr);
+        } finally {
+            Reference.reachabilityFence(font);
+        }
     }
 
     /**
@@ -79,41 +97,57 @@ public class TextBlob extends Managed {
      * @return        new TextBlob or null
      */
     public static TextBlob makeFromPos(short[] glyphs, Point[] pos, Font font) {
-        assert glyphs.length == pos.length : "glyphs.length " + glyphs.length + " != pos.length " + pos.length;
-        float[] floatPos = new float[pos.length * 2];
-        for (int i = 0; i < pos.length; ++i) {
-            floatPos[i * 2]     = pos[i]._x;
-            floatPos[i * 2 + 1] = pos[i]._y;
+        try {
+            assert glyphs.length == pos.length : "glyphs.length " + glyphs.length + " != pos.length " + pos.length;
+            float[] floatPos = new float[pos.length * 2];
+            for (int i = 0; i < pos.length; ++i) {
+                floatPos[i * 2]     = pos[i]._x;
+                floatPos[i * 2 + 1] = pos[i]._y;
+            }
+            Stats.onNativeCall();
+            long ptr = _nMakeFromPos(glyphs, floatPos, Native.getPtr(font));
+            return ptr == 0 ? null : new TextBlob(ptr);
+        } finally {
+            Reference.reachabilityFence(font);
         }
-        Stats.onNativeCall();
-        long ptr = _nMakeFromPos(glyphs, floatPos, Native.getPtr(font));
-        return ptr == 0 ? null : new TextBlob(ptr);
     }
 
     public static TextBlob makeFromRSXform(short[] glyphs, RSXform[] xform, Font font) {
-        assert glyphs.length == xform.length : "glyphs.length " + glyphs.length + " != xform.length " + xform.length;
-        float[] floatXform = new float[xform.length * 4];
-        for (int i = 0; i < xform.length; ++i) {
-            floatXform[i * 4]     = xform[i]._scos;
-            floatXform[i * 4 + 1] = xform[i]._ssin;
-            floatXform[i * 4 + 2] = xform[i]._tx;
-            floatXform[i * 4 + 3] = xform[i]._ty;
+        try {
+            assert glyphs.length == xform.length : "glyphs.length " + glyphs.length + " != xform.length " + xform.length;
+            float[] floatXform = new float[xform.length * 4];
+            for (int i = 0; i < xform.length; ++i) {
+                floatXform[i * 4]     = xform[i]._scos;
+                floatXform[i * 4 + 1] = xform[i]._ssin;
+                floatXform[i * 4 + 2] = xform[i]._tx;
+                floatXform[i * 4 + 3] = xform[i]._ty;
+            }
+            Stats.onNativeCall();
+            long ptr = _nMakeFromRSXform(glyphs, floatXform, Native.getPtr(font));
+            return ptr == 0 ? null : new TextBlob(ptr);
+        } finally {
+            Reference.reachabilityFence(font);
         }
-        Stats.onNativeCall();
-        long ptr = _nMakeFromRSXform(glyphs, floatXform, Native.getPtr(font));
-        return ptr == 0 ? null : new TextBlob(ptr);
     }
 
     public Data serializeToData() {
-        Stats.onNativeCall();
-        return new Data(_nSerializeToData(_ptr));
+        try {
+            Stats.onNativeCall();
+            return new Data(_nSerializeToData(_ptr));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @Nullable
     public static TextBlob makeFromData(Data data) {
-        Stats.onNativeCall();
-        long ptr = _nMakeFromData(Native.getPtr(data));
-        return ptr == 0 ? null : new TextBlob(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nMakeFromData(Native.getPtr(data));
+            return ptr == 0 ? null : new TextBlob(ptr);
+        } finally {
+            Reference.reachabilityFence(data);
+        }
     }
 
     /**
@@ -121,8 +155,12 @@ public class TextBlob extends Managed {
      */
     @NotNull
     public short[] getGlyphs() {
-        Stats.onNativeCall();
-        return _nGetGlyphs(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetGlyphs(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -139,8 +177,12 @@ public class TextBlob extends Managed {
      */
     @NotNull
     public float[] getPositions() {
-        Stats.onNativeCall();
-        return _nGetPositions(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetPositions(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -151,11 +193,15 @@ public class TextBlob extends Managed {
      */
     @NotNull
     public int[] getClusters() {
-        Stats.onNativeCall();
-        int[] res = _nGetClusters(_ptr);
-        if (res == null)
-            throw new IllegalArgumentException();
-        return res; 
+        try {
+            Stats.onNativeCall();
+            int[] res = _nGetClusters(_ptr);
+            if (res == null)
+                throw new IllegalArgumentException();
+            return res; 
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal

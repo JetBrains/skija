@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import lombok.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
@@ -43,6 +44,7 @@ public class PathMeasure extends Managed {
     public PathMeasure(Path path, boolean forceClosed, float resScale) {
         this(_nMakePath(Native.getPtr(path), forceClosed, resScale));
         Stats.onNativeCall();
+        Reference.reachabilityFence(path);
     }
 
     /**
@@ -50,9 +52,13 @@ public class PathMeasure extends Managed {
      * are copied, so the client is free to modify/delete the path after this call.
      */
     public PathMeasure setPath(@Nullable Path path, boolean forceClosed) {
-        Stats.onNativeCall();
-        _nSetPath(_ptr, Native.getPtr(path), forceClosed);
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetPath(_ptr, Native.getPtr(path), forceClosed);
+            return this;
+        } finally {
+            Reference.reachabilityFence(path);
+        }
     }
 
     /** 
@@ -60,8 +66,12 @@ public class PathMeasure extends Managed {
      * is associated (e.g. resetPath(null))
      */
     public float getLength() {
-        Stats.onNativeCall();
-        return _nGetLength(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetLength(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -72,8 +82,12 @@ public class PathMeasure extends Managed {
      */
     @Nullable
     public Point getPosition(float distance) {
-        Stats.onNativeCall();
-        return _nGetPosition(_ptr, distance);   
+        try {
+            Stats.onNativeCall();
+            return _nGetPosition(_ptr, distance);   
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -84,8 +98,12 @@ public class PathMeasure extends Managed {
      */
     @Nullable
     public Point getTangent(float distance) {
-        Stats.onNativeCall();
-        return _nGetTangent(_ptr, distance);   
+        try {
+            Stats.onNativeCall();
+            return _nGetTangent(_ptr, distance);   
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -96,8 +114,12 @@ public class PathMeasure extends Managed {
      */
     @Nullable
     public RSXform getRSXform(float distance) {
-        Stats.onNativeCall();
-        return _nGetRSXform(_ptr, distance);
+        try {
+            Stats.onNativeCall();
+            return _nGetRSXform(_ptr, distance);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -108,9 +130,13 @@ public class PathMeasure extends Managed {
      */
     @Nullable
     public Matrix33 getMatrix(float distance, boolean getPosition, boolean getTangent) {
-        Stats.onNativeCall();
-        float[] mat = _nGetMatrix(_ptr, distance, getPosition, getTangent);
-        return mat == null ? null : new Matrix33(mat);
+        try {
+            Stats.onNativeCall();
+            float[] mat = _nGetMatrix(_ptr, distance, getPosition, getTangent);
+            return mat == null ? null : new Matrix33(mat);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -122,16 +148,25 @@ public class PathMeasure extends Managed {
     */
     @Nullable
     public boolean getSegment(float startD, float endD, @NotNull Path dst, boolean startWithMoveTo) {
-        Stats.onNativeCall();
-        return _nGetSegment(_ptr, startD, endD, Native.getPtr(dst), startWithMoveTo);
+        try {
+            Stats.onNativeCall();
+            return _nGetSegment(_ptr, startD, endD, Native.getPtr(dst), startWithMoveTo);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(dst);
+        }
     }
 
     /**
      * @return  true if the current contour is closed.
      */
     public boolean isClosed() {
-        Stats.onNativeCall();
-        return _nIsClosed(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsClosed(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /** 
@@ -139,8 +174,12 @@ public class PathMeasure extends Managed {
      * we're done with the path.
      */
     public boolean nextContour() {
-        Stats.onNativeCall();
-        return _nNextContour(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nNextContour(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal

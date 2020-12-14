@@ -1,5 +1,6 @@
 package org.jetbrains.skija.paragraph;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
@@ -13,12 +14,18 @@ public class ParagraphBuilder extends Managed {
     public ParagraphBuilder(ParagraphStyle style, FontCollection fc) {
         super(_nMake(Native.getPtr(style), Native.getPtr(fc)), _FinalizerHolder.PTR);
         Stats.onNativeCall();
+        Reference.reachabilityFence(style);
+        Reference.reachabilityFence(fc);
     }
 
     public ParagraphBuilder pushStyle(TextStyle style) {
-        Stats.onNativeCall();
-        _nPushStyle(_ptr, Native.getPtr(style));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nPushStyle(_ptr, Native.getPtr(style));
+            return this;
+        } finally {
+            Reference.reachabilityFence(style);
+        }
     }
 
     public ParagraphBuilder popStyle() {
@@ -44,16 +51,24 @@ public class ParagraphBuilder extends Managed {
     }
 
     public ParagraphBuilder setParagraphStyle(ParagraphStyle style) {
-        Stats.onNativeCall();
-        _nSetParagraphStyle(_ptr, Native.getPtr(style));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetParagraphStyle(_ptr, Native.getPtr(style));
+            return this;
+        } finally {
+            Reference.reachabilityFence(style);
+        }
     }
 
     public Paragraph build() {
-        Stats.onNativeCall();
-        var paragraph = new Paragraph(_nBuild(_ptr), _text);
-        _text = null;
-        return paragraph;
+        try {
+            Stats.onNativeCall();
+            var paragraph = new Paragraph(_nBuild(_ptr), _text);
+            _text = null;
+            return paragraph;
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal

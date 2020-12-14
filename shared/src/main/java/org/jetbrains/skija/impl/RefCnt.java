@@ -1,5 +1,6 @@
 package org.jetbrains.skija.impl;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 
 public abstract class RefCnt extends Managed {
@@ -12,8 +13,12 @@ public abstract class RefCnt extends Managed {
     }
 
     public int getRefCount() {
-        Stats.onNativeCall();
-        return _nGetRefCount(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetRefCount(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @Override

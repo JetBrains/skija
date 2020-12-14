@@ -1,5 +1,6 @@
 package org.jetbrains.skija.paragraph;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
@@ -8,45 +9,75 @@ public class ParagraphCache extends Native {
     static { Library.staticLoad(); }
     
     public void abandon() {
-        _validate();
-        Stats.onNativeCall();
-        _nAbandon(_ptr);
+        try {
+            _validate();
+            Stats.onNativeCall();
+            _nAbandon(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public void reset() {
-        _validate();
-        Stats.onNativeCall();
-        _nReset(_ptr);
+        try {
+            _validate();
+            Stats.onNativeCall();
+            _nReset(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public boolean updateParagraph(Paragraph paragraph) {
-        _validate();
-        Stats.onNativeCall();
-        return _nUpdateParagraph(_ptr, Native.getPtr(paragraph));
+        try {
+            _validate();
+            Stats.onNativeCall();
+            return _nUpdateParagraph(_ptr, Native.getPtr(paragraph));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(paragraph);
+        }
     }
 
     public boolean findParagraph(Paragraph paragraph) {
-        _validate();
-        Stats.onNativeCall();
-        return _nFindParagraph(_ptr, Native.getPtr(paragraph));
+        try {
+            _validate();
+            Stats.onNativeCall();
+            return _nFindParagraph(_ptr, Native.getPtr(paragraph));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(paragraph);
+        }
     }
 
     public void printStatistics() {
-        _validate();
-        Stats.onNativeCall();
-        _nPrintStatistics(_ptr);
+        try {
+            _validate();
+            Stats.onNativeCall();
+            _nPrintStatistics(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public void setEnabled(boolean value) {
-        _validate();
-        Stats.onNativeCall();
-        _nSetEnabled(_ptr, value);
+        try {
+            _validate();
+            Stats.onNativeCall();
+            _nSetEnabled(_ptr, value);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public int getCount() {
-        _validate();
-        Stats.onNativeCall();
-        return _nGetCount(_ptr);
+        try {
+            _validate();
+            Stats.onNativeCall();
+            return _nGetCount(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal
@@ -60,8 +91,12 @@ public class ParagraphCache extends Native {
 
     @ApiStatus.Internal
     public void _validate() {
-        if (Native.getPtr(_owner) == 0)
-            throw new IllegalStateException("ParagraphCache needs owning FontCollection to be alive");
+        try {
+            if (Native.getPtr(_owner) == 0)
+                throw new IllegalStateException("ParagraphCache needs owning FontCollection to be alive");
+        } finally {
+            Reference.reachabilityFence(_owner);
+        }
     }
 
     @ApiStatus.Internal public static native void    _nAbandon(long ptr);

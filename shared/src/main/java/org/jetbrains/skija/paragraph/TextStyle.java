@@ -1,5 +1,6 @@
 package org.jetbrains.skija.paragraph;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
@@ -19,18 +20,32 @@ public class TextStyle extends Managed {
 
     @ApiStatus.Internal @Override
     public boolean _nativeEquals(Native other) {
-        Stats.onNativeCall();
-        return _nEquals(_ptr, Native.getPtr(other));
+        try {
+            Stats.onNativeCall();
+            return _nEquals(_ptr, Native.getPtr(other));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(other);
+        }
     }
 
     public boolean equals(TextStyleAttribute attribute, TextStyle other) {
-        Stats.onNativeCall();
-        return _nAttributeEquals(_ptr, attribute.ordinal(), Native.getPtr(other));
+        try {
+            Stats.onNativeCall();
+            return _nAttributeEquals(_ptr, attribute.ordinal(), Native.getPtr(other));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(other);
+        }
     }
 
     public int getColor() {
-        Stats.onNativeCall();
-        return _nGetColor(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetColor(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle setColor(int color) {
@@ -41,33 +56,53 @@ public class TextStyle extends Managed {
 
     @Nullable
     public Paint getForeground() {
-        Stats.onNativeCall();
-        long ptr = _nGetForeground(_ptr);
-        return ptr == 0 ? null : new Paint(ptr, true);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nGetForeground(_ptr);
+            return ptr == 0 ? null : new Paint(ptr, true);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle setForeground(@Nullable Paint paint) {
-        Stats.onNativeCall();
-        _nSetForeground(_ptr, Native.getPtr(paint));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetForeground(_ptr, Native.getPtr(paint));
+            return this;
+        } finally {
+            Reference.reachabilityFence(paint);
+        }
     }
 
     @Nullable
     public Paint getBackground() {
-        Stats.onNativeCall();
-        long ptr = _nGetBackground(_ptr);
-        return ptr == 0 ? null : new Paint(ptr, true);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nGetBackground(_ptr);
+            return ptr == 0 ? null : new Paint(ptr, true);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle setBackground(@Nullable Paint paint) {
-        Stats.onNativeCall();
-        _nSetBackground(_ptr, Native.getPtr(paint));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetBackground(_ptr, Native.getPtr(paint));
+            return this;
+        } finally {
+            Reference.reachabilityFence(paint);
+        }
     }
 
     public DecorationStyle getDecorationStyle() {
-        Stats.onNativeCall();
-        return _nGetDecorationStyle(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetDecorationStyle(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle setDecorationStyle(DecorationStyle d) {
@@ -77,8 +112,12 @@ public class TextStyle extends Managed {
     }
 
     public FontStyle getFontStyle() {
-        Stats.onNativeCall();
-        return new FontStyle(_nGetFontStyle(_ptr));
+        try {
+            Stats.onNativeCall();
+            return new FontStyle(_nGetFontStyle(_ptr));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle setFontStyle(FontStyle s) {
@@ -88,8 +127,12 @@ public class TextStyle extends Managed {
     }
 
     public Shadow[] getShadows() {
-        Stats.onNativeCall();
-        return _nGetShadows(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetShadows(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle addShadow(Shadow s) {
@@ -111,8 +154,12 @@ public class TextStyle extends Managed {
     }
 
     public FontFeature[] getFontFeatures() {
-        Stats.onNativeCall();
-        return _nGetFontFeatures(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetFontFeatures(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle addFontFeature(FontFeature f) {
@@ -134,8 +181,12 @@ public class TextStyle extends Managed {
     }
 
     public float getFontSize() {
-        Stats.onNativeCall();
-        return _nGetFontSize(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetFontSize(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle setFontSize(float size) {
@@ -145,8 +196,12 @@ public class TextStyle extends Managed {
     }
 
     public String[] getFontFamilies() {
-        Stats.onNativeCall();
-        return _nGetFontFamilies(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetFontFamilies(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle setFontFamily(String family) {
@@ -161,8 +216,12 @@ public class TextStyle extends Managed {
 
     @Nullable
     public Float getHeight() {
-        Stats.onNativeCall();
-        return _nGetHeight(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetHeight(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle setHeight(@Nullable Float height) {
@@ -175,8 +234,12 @@ public class TextStyle extends Managed {
     }
 
     public float getLetterSpacing() {
-        Stats.onNativeCall();
-        return _nGetLetterSpacing(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetLetterSpacing(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle setLetterSpacing(float letterSpacing) {
@@ -186,8 +249,12 @@ public class TextStyle extends Managed {
     }
 
     public float getWordSpacing() {
-        Stats.onNativeCall();
-        return _nGetWordSpacing(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetWordSpacing(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle setWordSpacing(float wordSpacing) {
@@ -197,20 +264,32 @@ public class TextStyle extends Managed {
     }
 
     public Typeface getTypeface() {
-        Stats.onNativeCall();
-        long ptr = _nGetTypeface(_ptr);
-        return ptr == 0 ? null : new Typeface(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nGetTypeface(_ptr);
+            return ptr == 0 ? null : new Typeface(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle setTypeface(Typeface typeface) {
-        Stats.onNativeCall();
-        _nSetTypeface(_ptr, Native.getPtr(typeface));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetTypeface(_ptr, Native.getPtr(typeface));
+            return this;
+        } finally {
+            Reference.reachabilityFence(typeface);
+        }
     }
 
     public String getLocale() {
-        Stats.onNativeCall();
-        return _nGetLocale(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetLocale(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle setLocale(String locale) {
@@ -220,8 +299,12 @@ public class TextStyle extends Managed {
     }
 
     public BaselineMode getBaselineMode() {
-        Stats.onNativeCall();
-        return BaselineMode.values()[_nGetBaselineMode(_ptr)];
+        try {
+            Stats.onNativeCall();
+            return BaselineMode.values()[_nGetBaselineMode(_ptr)];
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle setBaselineMode(BaselineMode baseline) {
@@ -231,13 +314,21 @@ public class TextStyle extends Managed {
     }
 
     public FontMetrics getFontMetrics() {
-        Stats.onNativeCall();
-        return _nGetFontMetrics(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetFontMetrics(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }    
 
     public boolean isPlaceholder() {
-        Stats.onNativeCall();
-        return _nIsPlaceholder(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsPlaceholder(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public TextStyle setPlaceholder() {

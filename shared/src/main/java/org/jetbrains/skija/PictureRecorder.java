@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import java.util.function.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
@@ -30,8 +31,12 @@ public class PictureRecorder extends Managed {
      * @return the canvas.
     */
     public Canvas beginRecording(Rect bounds) {
-        Stats.onNativeCall();
-        return new Canvas(_nBeginRecording(_ptr, bounds._left, bounds._top, bounds._right, bounds._bottom), false, this);
+        try {
+            Stats.onNativeCall();
+            return new Canvas(_nBeginRecording(_ptr, bounds._left, bounds._top, bounds._right, bounds._bottom), false, this);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -39,9 +44,13 @@ public class PictureRecorder extends Managed {
      */
     @Nullable
     public Canvas getRecordingCanvas() {
-        Stats.onNativeCall();
-        long ptr = _nGetRecordingCanvas(_ptr);
-        return ptr == 0 ? null : new Canvas(ptr, false, this);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nGetRecordingCanvas(_ptr);
+            return ptr == 0 ? null : new Canvas(ptr, false, this);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -54,8 +63,12 @@ public class PictureRecorder extends Managed {
      * themselves.</p>
      */
     public Picture finishRecordingAsPicture() {
-        Stats.onNativeCall();
-        return new Picture(_nFinishRecordingAsPicture(_ptr));
+        try {
+            Stats.onNativeCall();
+            return new Picture(_nFinishRecordingAsPicture(_ptr));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -69,8 +82,12 @@ public class PictureRecorder extends Managed {
      * @return the picture containing the recorded content.
      */
     public Picture finishRecordingAsPicture(@NotNull Rect cull) {
-        Stats.onNativeCall();
-        return new Picture(_nFinishRecordingAsPictureWithCull(_ptr, cull._left, cull._top, cull._right, cull._bottom));
+        try {
+            Stats.onNativeCall();
+            return new Picture(_nFinishRecordingAsPictureWithCull(_ptr, cull._left, cull._top, cull._right, cull._bottom));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     // TODO

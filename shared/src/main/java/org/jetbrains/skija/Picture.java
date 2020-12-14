@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import java.util.function.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
@@ -19,9 +20,13 @@ public class Picture extends RefCnt {
      */
     @Nullable
     public static Picture makeFromData(Data data) {
-        Stats.onNativeCall();
-        long ptr = _nMakeFromData(Native.getPtr(data));
-        return ptr == 0 ? null : new Picture(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nMakeFromData(Native.getPtr(data));
+            return ptr == 0 ? null : new Picture(ptr);
+        } finally {
+            Reference.reachabilityFence(data);
+        }
     }
 
     /**
@@ -54,9 +59,13 @@ public class Picture extends RefCnt {
      * @see <a href="https://fiddle.skia.org/c/@Picture_playback">https://fiddle.skia.org/c/@Picture_playback</a>
      */
     public Picture playback(Canvas canvas, @Nullable BooleanSupplier abort) {
-        Stats.onNativeCall();
-        _nPlayback(_ptr, Native.getPtr(canvas), abort);
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nPlayback(_ptr, Native.getPtr(canvas), abort);
+            return this;
+        } finally {
+            Reference.reachabilityFence(canvas);
+        }
     }
 
     /**
@@ -71,8 +80,12 @@ public class Picture extends RefCnt {
      * @see <a href="https://fiddle.skia.org/c/@Picture_cullRect">https://fiddle.skia.org/c/@Picture_cullRect</a>
      */
     public Rect getCullRect() {
-        Stats.onNativeCall();
-        return _nGetCullRect(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetCullRect(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -81,8 +94,12 @@ public class Picture extends RefCnt {
      * @return  identifier for Picture
      */
     public int getUniqueId() {
-        Stats.onNativeCall();
-        return _nGetUniqueId(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetUniqueId(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -91,8 +108,12 @@ public class Picture extends RefCnt {
      * @see  <a href="https://fiddle.skia.org/c/@Picture_serialize">https://fiddle.skia.org/c/@Picture_serialize</a>
      */
     public Data serializeToData() {
-        Stats.onNativeCall();
-        return new Data(_nSerializeToData(_ptr));
+        try {
+            Stats.onNativeCall();
+            return new Data(_nSerializeToData(_ptr));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -124,8 +145,12 @@ public class Picture extends RefCnt {
      * @see <a href="https://fiddle.skia.org/c/@Picture_approximateOpCount">https://fiddle.skia.org/c/@Picture_approximateOpCount</a>
      */
     public int getApproximateOpCount() {
-        Stats.onNativeCall();
-        return _nGetApproximateOpCount(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetApproximateOpCount(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -137,8 +162,12 @@ public class Picture extends RefCnt {
      * @see <a href="https://fiddle.skia.org/c/@Picture_approximateBytesUsed">https://fiddle.skia.org/c/@Picture_approximateBytesUsed</a>
      */
     public long getApproximateBytesUsed() {
-        Stats.onNativeCall();
-        return _nGetApproximateBytesUsed(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetApproximateBytesUsed(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**

@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -29,9 +30,15 @@ public class Surface extends RefCnt {
      */
     @Nullable
     public static Surface makeFromBackendRenderTarget(DirectContext context, BackendRenderTarget rt, SurfaceOrigin origin, SurfaceColorFormat colorFormat, @Nullable ColorSpace colorSpace) {
-        Stats.onNativeCall();
-        long ptr = _nMakeFromBackendRenderTarget(Native.getPtr(context), Native.getPtr(rt), origin.ordinal(), colorFormat.ordinal(), Native.getPtr(colorSpace));
-        return ptr == 0 ? null : new Surface(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nMakeFromBackendRenderTarget(Native.getPtr(context), Native.getPtr(rt), origin.ordinal(), colorFormat.ordinal(), Native.getPtr(colorSpace));
+            return ptr == 0 ? null : new Surface(ptr);
+        } finally {
+            Reference.reachabilityFence(context);
+            Reference.reachabilityFence(rt);
+            Reference.reachabilityFence(colorSpace);
+        }
     }
 
     /**
@@ -66,8 +73,12 @@ public class Surface extends RefCnt {
      * @see <a href="https://fiddle.skia.org/c/@Surface_width">https://fiddle.skia.org/c/@Surface_width</a>
      */
     public int getWidth() {
-        Stats.onNativeCall();
-        return _nGetWidth(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetWidth(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -77,8 +88,12 @@ public class Surface extends RefCnt {
      * @see <a href="https://fiddle.skia.org/c/@Surface_height">https://fiddle.skia.org/c/@Surface_height</a>
      */
     public int getHeight() {
-        Stats.onNativeCall();
-        return _nGetHeight(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetHeight(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -88,8 +103,12 @@ public class Surface extends RefCnt {
      */
     @NotNull
     public ImageInfo getImageInfo() {
-        Stats.onNativeCall();
-        return _nGetImageInfo(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetImageInfo(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -101,8 +120,12 @@ public class Surface extends RefCnt {
      * @return unique content identifier
      */
     public int getGenerationId() {
-        Stats.onNativeCall();
-        return _nGenerationId(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGenerationId(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -113,8 +136,12 @@ public class Surface extends RefCnt {
      * @see <a href="https://fiddle.skia.org/c/@Surface_notifyContentWillChange">https://fiddle.skia.org/c/@Surface_notifyContentWillChange</a>
      */
     public void notifyContentWillChange(ContentChangeMode mode) {
-        Stats.onNativeCall();
-        _nNotifyContentWillChange(_ptr, mode.ordinal());
+        try {
+            Stats.onNativeCall();
+            _nNotifyContentWillChange(_ptr, mode.ordinal());
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -124,9 +151,13 @@ public class Surface extends RefCnt {
      */
     @Nullable
     public DirectContext getRecordingContext() {
-        Stats.onNativeCall();
-        long ptr = _nGetRecordingContext(_ptr);
-        return ptr == 0 ? null : new DirectContext(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nGetRecordingContext(_ptr);
+            return ptr == 0 ? null : new DirectContext(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -139,9 +170,13 @@ public class Surface extends RefCnt {
      */
     @NotNull
     public Canvas getCanvas() {
-        Stats.onNativeCall();
-        long ptr = _nGetCanvas(_ptr);
-        return ptr == 0 ? null : new Canvas(ptr, false, this);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nGetCanvas(_ptr);
+            return ptr == 0 ? null : new Canvas(ptr, false, this);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -158,14 +193,18 @@ public class Surface extends RefCnt {
      */
     @Nullable
     public Surface makeSurface(ImageInfo imageInfo) {
-        Stats.onNativeCall();
-        long ptr = _nMakeSurfaceI(_ptr,
-                imageInfo._width,
-                imageInfo._height,
-                imageInfo._colorInfo._colorType.ordinal(),
-                imageInfo._colorInfo._alphaType.ordinal(),
-                Native.getPtr(imageInfo._colorInfo._colorSpace));
-        return new Surface(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nMakeSurfaceI(_ptr,
+                    imageInfo._width,
+                    imageInfo._height,
+                    imageInfo._colorInfo._colorType.ordinal(),
+                    imageInfo._colorInfo._alphaType.ordinal(),
+                    Native.getPtr(imageInfo._colorInfo._colorSpace));
+            return new Surface(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -183,9 +222,13 @@ public class Surface extends RefCnt {
      */
     @Nullable
     public Surface makeSurface(int width, int height) {
-        Stats.onNativeCall();
-        long ptr = _nMakeSurface(_ptr, width, height);
-        return new Surface(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nMakeSurface(_ptr, width, height);
+            return new Surface(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -198,8 +241,12 @@ public class Surface extends RefCnt {
      * @see <a href="https://fiddle.skia.org/c/@Surface_makeImageSnapshot">https://fiddle.skia.org/c/@Surface_makeImageSnapshot</a>
      */
     public Image makeImageSnapshot() {
-        Stats.onNativeCall();
-        return new Image(_nMakeImageSnapshot(_ptr));
+        try {
+            Stats.onNativeCall();
+            return new Image(_nMakeImageSnapshot(_ptr));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -219,8 +266,12 @@ public class Surface extends RefCnt {
      */
     @Nullable
     public Image makeImageSnapshot(IRect area) {
-        Stats.onNativeCall();
-        return new Image(_nMakeImageSnapshotR(_ptr, area._left, area._top, area._right, area._bottom));
+        try {
+            Stats.onNativeCall();
+            return new Image(_nMakeImageSnapshotR(_ptr, area._left, area._top, area._right, area._bottom));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -235,8 +286,14 @@ public class Surface extends RefCnt {
      * @see <a href="https://fiddle.skia.org/c/@Surface_draw">https://fiddle.skia.org/c/@Surface_draw</a>
      */
     public void draw(Canvas canvas, int x, int y, Paint paint) {
-        Stats.onNativeCall();
-        _nDraw(_ptr, Native.getPtr(canvas), x, y, Native.getPtr(paint));
+        try {
+            Stats.onNativeCall();
+            _nDraw(_ptr, Native.getPtr(canvas), x, y, Native.getPtr(paint));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(canvas);
+            Reference.reachabilityFence(paint);
+        }
     }
 
     /**
@@ -273,8 +330,13 @@ public class Surface extends RefCnt {
      * @see <a href="https://fiddle.skia.org/c/@Surface_readPixels_3">https://fiddle.skia.org/c/@Surface_readPixels_3</a>
      */
     public boolean readPixels(Bitmap bitmap, int srcX, int srcY) {
-        Stats.onNativeCall();
-        return _nReadPixels(_ptr, Native.getPtr(bitmap), srcX, srcY);
+        try {
+            Stats.onNativeCall();
+            return _nReadPixels(_ptr, Native.getPtr(bitmap), srcX, srcY);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(bitmap);
+        }
     }
 
     /**
@@ -292,8 +354,13 @@ public class Surface extends RefCnt {
      * @see <a href="https://fiddle.skia.org/c/@Surface_writePixels_2">https://fiddle.skia.org/c/@Surface_writePixels_2</a>
      */
     public void writePixels(Bitmap bitmap, int x, int y) {
-        Stats.onNativeCall();
-        _nWritePixels(_ptr, Native.getPtr(bitmap), x, y);
+        try {
+            Stats.onNativeCall();
+            _nWritePixels(_ptr, Native.getPtr(bitmap), x, y);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(bitmap);
+        }
     }
 
     /**
@@ -306,8 +373,12 @@ public class Surface extends RefCnt {
      * a DirectContext.
      */
     public void flushAndSubmit() {
-        Stats.onNativeCall();
-        _nFlushAndSubmit(_ptr, false);
+        try {
+            Stats.onNativeCall();
+            _nFlushAndSubmit(_ptr, false);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -322,13 +393,21 @@ public class Surface extends RefCnt {
      * @param syncCpu a flag determining if cpu should be synced
      */
     public void flushAndSubmit(boolean syncCpu) {
-        Stats.onNativeCall();
-        _nFlushAndSubmit(_ptr, syncCpu);
+        try {
+            Stats.onNativeCall();
+            _nFlushAndSubmit(_ptr, syncCpu);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public void flush() {
-        Stats.onNativeCall();
-        _nFlush(_ptr);
+        try {
+            Stats.onNativeCall();
+            _nFlush(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -337,8 +416,12 @@ public class Surface extends RefCnt {
      * <p>Ensures that all previous owner's actions are complete.</p>
      */
     public boolean isUnique() {
-        Stats.onNativeCall();
-        return _nUnique(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nUnique(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal

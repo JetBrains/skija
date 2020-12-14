@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -50,11 +51,13 @@ public class Canvas extends Managed {
     public Canvas(Bitmap bitmap, SurfaceProps surfaceProps) {
         this(_nMakeFromBitmap(Native.getPtr(bitmap), surfaceProps.getFlags(), surfaceProps.getPixelGeometry().ordinal()), true, bitmap);
         Stats.onNativeCall();
+        Reference.reachabilityFence(bitmap);
     }
 
     public Canvas drawPoint(float x, float y, Paint paint) {
         Stats.onNativeCall();
         _nDrawPoint(_ptr, x, y, Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -107,6 +110,7 @@ public class Canvas extends Managed {
     public Canvas drawPoints(float[] coords, Paint paint) {
         Stats.onNativeCall();
         _nDrawPoints(_ptr, 0 /* SkCanvas::PointMode::kPoints_PointMode */, coords, Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -155,6 +159,7 @@ public class Canvas extends Managed {
     public Canvas drawLines(float[] coords, Paint paint) {
         Stats.onNativeCall();
         _nDrawPoints(_ptr, 1 /* SkCanvas::PointMode::kLines_PointMode */, coords, Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -201,54 +206,64 @@ public class Canvas extends Managed {
     public Canvas drawPolygon(float[] coords, Paint paint) {
         Stats.onNativeCall();
         _nDrawPoints(_ptr, 2 /* SkCanvas::PointMode::kPolygon_PointMode */, coords, Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
     public Canvas drawLine(float x0, float y0, float x1, float y1, Paint paint) {
         Stats.onNativeCall();
         _nDrawLine(_ptr, x0, y0, x1, y1, Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
     public Canvas drawArc(float left, float top, float width, float height, float startAngle, float sweepAngle, boolean includeCenter, Paint paint) {
         Stats.onNativeCall();
         _nDrawArc(_ptr, left, top, width, height, startAngle, sweepAngle, includeCenter, Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
     public Canvas drawRect(Rect r, Paint paint) {
         Stats.onNativeCall();
         _nDrawRect(_ptr, r._left, r._top, r._right, r._bottom, Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
     public Canvas drawOval(Rect r, Paint paint) {
         Stats.onNativeCall();
         _nDrawOval(_ptr, r._left, r._top, r._right, r._bottom, Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
     public Canvas drawCircle(float x, float y, float radius, Paint paint) {
         Stats.onNativeCall();
         _nDrawOval(_ptr, x - radius, y - radius, x + radius, y + radius, Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
     public Canvas drawRRect(RRect r, Paint paint) {
         Stats.onNativeCall();
         _nDrawRRect(_ptr, r._left, r._top, r._right, r._bottom, r._radii, Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
     public Canvas drawDRRect(RRect outer, RRect inner, Paint paint) {
         Stats.onNativeCall();
         _nDrawDRRect(_ptr, outer._left, outer._top, outer._right, outer._bottom, outer._radii, inner._left, inner._top, inner._right, inner._bottom, inner._radii, Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
     public Canvas drawPath(Path path, Paint paint) {
         Stats.onNativeCall();
         _nDrawPath(_ptr, Native.getPtr(path), Native.getPtr(paint));
+        Reference.reachabilityFence(path);
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -259,6 +274,8 @@ public class Canvas extends Managed {
     public Canvas drawImage(Image image, float left, float top, Paint paint) {
         Stats.onNativeCall();
         _nDrawImageIRect(_ptr, Native.getPtr(image), 0, 0, image.getWidth(), image.getHeight(), left, top, left + image.getWidth(), top + image.getHeight(), Native.getPtr(paint), true);
+        Reference.reachabilityFence(image);
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -269,6 +286,8 @@ public class Canvas extends Managed {
     public Canvas drawImageRect(Image image, Rect dst, Paint paint) {
         Stats.onNativeCall();
         _nDrawImageIRect(_ptr, Native.getPtr(image), 0, 0, image.getWidth(), image.getHeight(), dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), true);
+        Reference.reachabilityFence(image);
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -279,6 +298,8 @@ public class Canvas extends Managed {
     public Canvas drawImageRect(Image image, Rect src, Rect dst, Paint paint, boolean strict) {
         Stats.onNativeCall();
         _nDrawImageRect(_ptr, Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
+        Reference.reachabilityFence(image);
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -293,6 +314,8 @@ public class Canvas extends Managed {
     public Canvas drawImageIRect(Image image, IRect src, Rect dst, Paint paint, boolean strict) {
         Stats.onNativeCall();
         _nDrawImageIRect(_ptr, Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
+        Reference.reachabilityFence(image);
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -303,6 +326,8 @@ public class Canvas extends Managed {
     public Canvas drawBitmap(Bitmap bitmap, float left, float top, Paint paint) {
         Stats.onNativeCall();
         _nDrawBitmapIRect(_ptr, Native.getPtr(bitmap), 0, 0, bitmap.getWidth(), bitmap.getHeight(), left, top, left + bitmap.getWidth(), top + bitmap.getHeight(), Native.getPtr(paint), true);
+        Reference.reachabilityFence(bitmap);
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -313,6 +338,8 @@ public class Canvas extends Managed {
     public Canvas drawBitmapRect(Bitmap bitmap, Rect dst, Paint paint) {
         Stats.onNativeCall();
         _nDrawBitmapIRect(_ptr, Native.getPtr(bitmap), 0, 0, bitmap.getWidth(), bitmap.getHeight(), dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), true);
+        Reference.reachabilityFence(bitmap);
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -323,6 +350,8 @@ public class Canvas extends Managed {
     public Canvas drawBitmapRect(Bitmap bitmap, Rect src, Rect dst, Paint paint, boolean strict) {
         Stats.onNativeCall();
         _nDrawBitmapRect(_ptr, Native.getPtr(bitmap), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
+        Reference.reachabilityFence(bitmap);
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -337,24 +366,33 @@ public class Canvas extends Managed {
     public Canvas drawBitmapIRect(Bitmap bitmap, IRect src, Rect dst, Paint paint, boolean strict) {
         Stats.onNativeCall();
         _nDrawBitmapIRect(_ptr, Native.getPtr(bitmap), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
+        Reference.reachabilityFence(bitmap);
+        Reference.reachabilityFence(paint);
         return this;
     }
 
     public Canvas drawRegion(Region r, Paint paint) {
         Stats.onNativeCall();
         _nDrawRegion(_ptr, Native.getPtr(r), Native.getPtr(paint));
+        Reference.reachabilityFence(r);
+        Reference.reachabilityFence(paint);
         return this;
     }
 
     public Canvas drawString(String s, float x, float y, Font font, Paint paint) {
         Stats.onNativeCall();
         _nDrawString(_ptr, s, x, y, Native.getPtr(font), Native.getPtr(paint));
+        Reference.reachabilityFence(font);
+        Reference.reachabilityFence(paint);
         return this;
     }
 
     public Canvas drawTextBlob(TextBlob blob, float x, float y, Font font, Paint paint) {
         Stats.onNativeCall();
         _nDrawTextBlob(_ptr, Native.getPtr(blob), x, y, Native.getPtr(font), Native.getPtr(paint));
+        Reference.reachabilityFence(blob);
+        Reference.reachabilityFence(font);
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -365,6 +403,8 @@ public class Canvas extends Managed {
     public Canvas drawPicture(Picture picture, Matrix33 matrix, Paint paint) {
         Stats.onNativeCall();
         _nDrawPicture(_ptr, Native.getPtr(picture), matrix == null ? null : matrix._mat, Native.getPtr(paint));
+        Reference.reachabilityFence(picture);
+        Reference.reachabilityFence(paint);
         return this;
     }   
 
@@ -434,6 +474,7 @@ public class Canvas extends Managed {
         assert texCoords == null || texCoords.length == positions.length : "Expected texCoords.length == positions.length, got: " + texCoords.length + " != " + positions.length;
         Stats.onNativeCall();
         _nDrawVertices(_ptr, 0 /* kTriangles_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), indices, mode.ordinal(), Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -502,6 +543,7 @@ public class Canvas extends Managed {
         assert texCoords == null || texCoords.length == positions.length : "Expected texCoords.length == positions.length, got: " + texCoords.length + " != " + positions.length;
         Stats.onNativeCall();
         _nDrawVertices(_ptr, 1 /* kTriangleStrip_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), indices, mode.ordinal(), Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -570,6 +612,7 @@ public class Canvas extends Managed {
         assert texCoords == null || texCoords.length == positions.length : "Expected texCoords.length == positions.length, got: " + texCoords.length + " != " + positions.length;
         Stats.onNativeCall();
         _nDrawVertices(_ptr, 2 /* kTriangleFan_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), indices, mode.ordinal(), Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -668,6 +711,7 @@ public class Canvas extends Managed {
         assert texCoords == null || texCoords.length == 4 : "Expected texCoords.length == 4, got: " + texCoords.length;
         Stats.onNativeCall();
         _nDrawPatch(_ptr, Point.flattenArray(cubics), colors, Point.flattenArray(texCoords), mode.ordinal(), Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -723,6 +767,7 @@ public class Canvas extends Managed {
     public Canvas drawDrawable(@NotNull Drawable drawable, @Nullable Matrix33 matrix) {
         Stats.onNativeCall();
         _nDrawDrawable(_ptr, Native.getPtr(drawable), matrix == null ? null : matrix._mat);
+        Reference.reachabilityFence(drawable);
         return this;
     }
 
@@ -735,6 +780,7 @@ public class Canvas extends Managed {
     public Canvas drawPaint(Paint paint) {
         Stats.onNativeCall();
         _nDrawPaint(_ptr, Native.getPtr(paint));
+        Reference.reachabilityFence(paint);
         return this;
     }
 
@@ -803,6 +849,7 @@ public class Canvas extends Managed {
     public Canvas clipPath(Path p, ClipMode mode, boolean antiAlias) {
         Stats.onNativeCall();
         _nClipPath(_ptr, Native.getPtr(p), mode.ordinal(), antiAlias);
+        Reference.reachabilityFence(p);
         return this;
     }
 
@@ -821,6 +868,7 @@ public class Canvas extends Managed {
     public Canvas clipRegion(Region r, ClipMode mode) {
         Stats.onNativeCall();
         _nClipRegion(_ptr, Native.getPtr(r), mode.ordinal());
+        Reference.reachabilityFence(r);
         return this;
     }
 
@@ -895,8 +943,13 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_readPixels_3">https://fiddle.skia.org/c/@Canvas_readPixels_3</a>
      */
     public boolean readPixels(Bitmap bitmap, int srcX, int srcY) {
-        Stats.onNativeCall();
-        return _nReadPixels(_ptr, Native.getPtr(bitmap), srcX, srcY);
+        try {
+            Stats.onNativeCall();
+            return _nReadPixels(_ptr, Native.getPtr(bitmap), srcX, srcY);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(bitmap);
+        }
     }
 
     /**
@@ -941,18 +994,32 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@State_Stack_b">https://fiddle.skia.org/c/@State_Stack_b</a>
     */
     public boolean writePixels(Bitmap bitmap, int x, int y) {
-        Stats.onNativeCall();
-        return _nWritePixels(_ptr, Native.getPtr(bitmap), x, y);
+        try {
+            Stats.onNativeCall();
+            return _nWritePixels(_ptr, Native.getPtr(bitmap), x, y);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(bitmap);
+        }
     }    
 
     public int save() {
-        Stats.onNativeCall();
-        return _nSave(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nSave(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public int saveLayer(float left, float top, float right, float bottom, Paint paint) {
-        Stats.onNativeCall();
-        return _nSaveLayerRect(_ptr, left, top, right, bottom, Native.getPtr(paint));
+        try {
+            Stats.onNativeCall();
+            return _nSaveLayerRect(_ptr, left, top, right, bottom, Native.getPtr(paint));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(paint);
+        }
     }
 
     /**
@@ -979,16 +1046,25 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_saveLayer_4">https://fiddle.skia.org/c/@Canvas_saveLayer_4</a>
     */
     public int saveLayer(@Nullable Rect bounds, @Nullable Paint paint) {
-        Stats.onNativeCall();
-        if (bounds == null)
-            return _nSaveLayer(_ptr, Native.getPtr(paint));
-        else
-            return _nSaveLayerRect(_ptr, bounds._left, bounds._top, bounds._right, bounds._bottom, Native.getPtr(paint));
+        try {
+            Stats.onNativeCall();
+            if (bounds == null)
+                return _nSaveLayer(_ptr, Native.getPtr(paint));
+            else
+                return _nSaveLayerRect(_ptr, bounds._left, bounds._top, bounds._right, bounds._bottom, Native.getPtr(paint));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(paint);
+        }
     }
 
     public int getSaveCount() {
-        Stats.onNativeCall();
-        return _nGetSaveCount(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetSaveCount(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Canvas restore() {
@@ -1015,7 +1091,7 @@ public class Canvas extends Managed {
     public static native void _nDrawLine(long ptr, float x0, float y0, float x1, float y1, long paintPtr);
     public static native void _nDrawArc(long ptr, float left, float top, float width, float height, float startAngle, float sweepAngle, boolean includeCenter, long paintPtr);
     public static native void _nDrawRect(long ptr, float left, float top, float right, float bottom, long paintPtr);
-    public static native void _nDrawOval(long ptr, float left, float top, float right, float bottom, long paintPtr);
+    public static native void _nDrawOval(long ptr, float left, float top, float right, float bottom, long paint);
     public static native void _nDrawRRect(long ptr, float left, float top, float right, float bottom, float[] radii, long paintPtr);
     public static native void _nDrawDRRect(long ptr, float ol, float ot, float or, float ob, float[] oradii, float il, float it, float ir, float ib, float[] iradii, long paintPtr);
     public static native void _nDrawPath(long ptr, long nativePath, long paintPtr);

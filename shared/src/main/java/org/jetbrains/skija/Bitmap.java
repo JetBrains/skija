@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import lombok.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
@@ -36,8 +37,12 @@ public class Bitmap extends Managed {
      */
     @NotNull @Contract("-> new")
     public Bitmap makeClone() {
-        Stats.onNativeCall();
-        return new Bitmap(_nMakeClone(_ptr));
+        try {
+            Stats.onNativeCall();
+            return new Bitmap(_nMakeClone(_ptr));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -50,12 +55,18 @@ public class Bitmap extends Managed {
     public void swap(@NotNull Bitmap other) {
         Stats.onNativeCall();
         _nSwap(_ptr, Native.getPtr(other));
+        Reference.reachabilityFence(this);
+        Reference.reachabilityFence(other);
     }
 
     @NotNull
     public ImageInfo getImageInfo() {
-        Stats.onNativeCall();
-        return _nGetImageInfo(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetImageInfo(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -118,8 +129,12 @@ public class Bitmap extends Managed {
      * @return  maximum pixels per row
      */
     public int getRowBytesAsPixels() {
-        Stats.onNativeCall();
-        return _nGetRowBytesAsPixels(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetRowBytesAsPixels(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -130,7 +145,7 @@ public class Bitmap extends Managed {
      */
     public int getShiftPerPixel() {
         return getImageInfo().getShiftPerPixel();
-    }    
+    }
 
     /**
      * Returns true if either getWidth() or getHeight() are zero.
@@ -153,8 +168,12 @@ public class Bitmap extends Managed {
      * @return  true if no PixelRef is associated
      */
     public boolean isNull() {
-        Stats.onNativeCall();
-        return _nIsNull(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsNull(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -177,8 +196,12 @@ public class Bitmap extends Managed {
      * @return  byte length of pixel row
      */
     public long getRowBytes() {
-        Stats.onNativeCall();
-        return _nGetRowBytes(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetRowBytes(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -213,8 +236,12 @@ public class Bitmap extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Bitmap_setAlphaType">https://fiddle.skia.org/c/@Bitmap_setAlphaType</a>
      */
     public boolean setAlphaType(ColorAlphaType alphaType) {
-        Stats.onNativeCall();
-        return _nSetAlphaType(_ptr, alphaType.ordinal());
+        try {
+            Stats.onNativeCall();
+            return _nSetAlphaType(_ptr, alphaType.ordinal());
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -226,8 +253,12 @@ public class Bitmap extends Managed {
      * @return  size in bytes of image buffer
      */
     public long computeByteSize() {
-        Stats.onNativeCall();
-        return _nComputeByteSize(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nComputeByteSize(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -240,8 +271,12 @@ public class Bitmap extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Bitmap_isImmutable">https://fiddle.skia.org/c/@Bitmap_isImmutable</a>
      */
     public boolean isImmutable() {
-        Stats.onNativeCall();
-        return _nIsImmutable(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsImmutable(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -311,8 +346,12 @@ public class Bitmap extends Managed {
      * @return    true if all pixels have opaque values or ColorType is opaque
      */
     public boolean computeIsOpaque() {
-        Stats.onNativeCall();
-        return _nComputeIsOpaque(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nComputeIsOpaque(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -396,14 +435,19 @@ public class Bitmap extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Bitmap_setInfo">https://fiddle.skia.org/c/@Bitmap_setInfo</a>
      */
     public boolean setImageInfo(@NotNull ImageInfo imageInfo, long rowBytes) {
-        Stats.onNativeCall();
-        return _nSetImageInfo(_ptr,
-            imageInfo._width,
-            imageInfo._height,
-            imageInfo._colorInfo._colorType.ordinal(),
-            imageInfo._colorInfo._alphaType.ordinal(),
-            Native.getPtr(imageInfo._colorInfo._colorSpace),
-            rowBytes);
+        try {
+            Stats.onNativeCall();
+            return _nSetImageInfo(_ptr,
+                imageInfo._width,
+                imageInfo._height,
+                imageInfo._colorInfo._colorType.ordinal(),
+                imageInfo._colorInfo._alphaType.ordinal(),
+                Native.getPtr(imageInfo._colorInfo._colorSpace),
+                rowBytes);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(imageInfo._colorInfo._colorSpace);
+        }
     }
 
     /**
@@ -423,14 +467,19 @@ public class Bitmap extends Managed {
      * @return            true if pixels allocation is successful
      */
     public boolean allocPixelsFlags(@NotNull ImageInfo imageInfo, boolean zeroPixels) {
-        Stats.onNativeCall();
-        return _nAllocPixelsFlags(_ptr,
-            imageInfo._width,
-            imageInfo._height,
-            imageInfo._colorInfo._colorType.ordinal(),
-            imageInfo._colorInfo._alphaType.ordinal(),
-            Native.getPtr(imageInfo._colorInfo._colorSpace),
-            zeroPixels ? 1 : 0);
+        try {
+            Stats.onNativeCall();
+            return _nAllocPixelsFlags(_ptr,
+                imageInfo._width,
+                imageInfo._height,
+                imageInfo._colorInfo._colorType.ordinal(),
+                imageInfo._colorInfo._alphaType.ordinal(),
+                Native.getPtr(imageInfo._colorInfo._colorSpace),
+                zeroPixels ? 1 : 0);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(imageInfo._colorInfo._colorSpace);
+        }
     }
 
    /** 
@@ -451,14 +500,19 @@ public class Bitmap extends Managed {
     * @return          true if pixel storage is allocated
     */
     public boolean allocPixels(@NotNull ImageInfo info, long rowBytes) {
-        Stats.onNativeCall();
-        return _nAllocPixelsRowBytes(_ptr,
-            info._width,
-            info._height,
-            info._colorInfo._colorType.ordinal(),
-            info._colorInfo._alphaType.ordinal(),
-            Native.getPtr(info._colorInfo._colorSpace),
-            rowBytes);
+        try {
+            Stats.onNativeCall();
+            return _nAllocPixelsRowBytes(_ptr,
+                info._width,
+                info._height,
+                info._colorInfo._colorType.ordinal(),
+                info._colorInfo._alphaType.ordinal(),
+                Native.getPtr(info._colorInfo._colorSpace),
+                rowBytes);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(info._colorInfo._colorSpace);
+        }
     }
 
     /**
@@ -538,15 +592,20 @@ public class Bitmap extends Managed {
     public boolean installPixels(@NotNull ImageInfo info,
                                  @Nullable byte[] pixels,
                                  long rowBytes) {
-        Stats.onNativeCall();
-        return _nInstallPixels(_ptr, 
-            info._width,
-            info._height,
-            info._colorInfo._colorType.ordinal(),
-            info._colorInfo._alphaType.ordinal(),
-            Native.getPtr(info._colorInfo._colorSpace),
-            pixels,
-            rowBytes);
+        try {
+            Stats.onNativeCall();
+            return _nInstallPixels(_ptr, 
+                info._width,
+                info._height,
+                info._colorInfo._colorType.ordinal(),
+                info._colorInfo._alphaType.ordinal(),
+                Native.getPtr(info._colorInfo._colorSpace),
+                pixels,
+                rowBytes);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(info._colorInfo._colorSpace);
+        }
     }
 
     /**
@@ -558,8 +617,12 @@ public class Bitmap extends Managed {
      * @return  true if the allocation succeeds
      */
     public boolean allocPixels() {
-        Stats.onNativeCall();
-        return _nAllocPixels(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nAllocPixels(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -572,9 +635,13 @@ public class Bitmap extends Managed {
      */
     @Nullable
     public PixelRef getPixelRef() {
-        Stats.onNativeCall();
-        long res = _nGetPixelRef(_ptr);
-        return res == 0 ? null : new PixelRef(res);
+        try {
+            Stats.onNativeCall();
+            long res = _nGetPixelRef(_ptr);
+            return res == 0 ? null : new PixelRef(res);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -593,9 +660,13 @@ public class Bitmap extends Managed {
      */
     @NotNull
     public IPoint getPixelRefOrigin() {
-        Stats.onNativeCall();
-        long res = _nGetPixelRefOrigin(_ptr);
-        return new IPoint((int) (res & 0xFFFFFFFF), (int) (res >>> 32));
+        try {
+            Stats.onNativeCall();
+            long res = _nGetPixelRefOrigin(_ptr);
+            return new IPoint((int) (res & 0xFFFFFFFF), (int) (res >>> 32));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -616,9 +687,13 @@ public class Bitmap extends Managed {
      */
     @NotNull @Contract("_, _, _ -> this")
     public Bitmap setPixelRef(@Nullable PixelRef pixelRef, int dx, int dy) {
-        Stats.onNativeCall();
-        _nSetPixelRef(_ptr, Native.getPtr(pixelRef), dx, dy);
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetPixelRef(_ptr, Native.getPtr(pixelRef), dx, dy);
+            return this;
+        } finally {
+            Reference.reachabilityFence(pixelRef);
+        }
     }
 
     /**
@@ -627,8 +702,12 @@ public class Bitmap extends Managed {
      * @return  true if getPixels() is not null
      */
     public boolean isReadyToDraw() {
-        Stats.onNativeCall();
-        return _nIsReadyToDraw(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsReadyToDraw(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -643,8 +722,12 @@ public class Bitmap extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Bitmap_getGenerationID">https://fiddle.skia.org/c/@Bitmap_getGenerationID</a>
      */
     public int getGenerationId() {
-        Stats.onNativeCall();
-        return _nGetGenerationId(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetGenerationId(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /** 
@@ -655,9 +738,13 @@ public class Bitmap extends Managed {
      */
     @NotNull @Contract("-> this")
     public Bitmap notifyPixelsChanged() {
-        Stats.onNativeCall();
-        _nNotifyPixelsChanged(_ptr);
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nNotifyPixelsChanged(_ptr);
+            return this;
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -672,9 +759,13 @@ public class Bitmap extends Managed {
      */
     @NotNull @Contract("_ -> this")
     public Bitmap erase(int color) {
-        Stats.onNativeCall();
-        _nEraseColor(_ptr, color);
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nEraseColor(_ptr, color);
+            return this;
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -692,9 +783,13 @@ public class Bitmap extends Managed {
      */
     @NotNull @Contract("_, _ -> this")
     public Bitmap erase(int color, @NotNull IRect area) {
-        Stats.onNativeCall();
-        _nErase(_ptr, color, area._left, area._top, area._right, area._bottom);
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nErase(_ptr, color, area._left, area._top, area._right, area._bottom);
+            return this;
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /** 
@@ -714,8 +809,12 @@ public class Bitmap extends Managed {
      * @return   pixel converted to unpremultiplied color
      */
     public int getColor(int x, int y) {
-        Stats.onNativeCall();
-        return _nGetColor(_ptr, x, y);
+        try {
+            Stats.onNativeCall();
+            return _nGetColor(_ptr, x, y);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -728,8 +827,12 @@ public class Bitmap extends Managed {
      * @return   alpha converted to normalized float
      */
     public float getAlphaf(int x, int y) {
-        Stats.onNativeCall();
-        return _nGetAlphaf(_ptr, x, y);
+        try {
+            Stats.onNativeCall();
+            return _nGetAlphaf(_ptr, x, y);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -756,8 +859,13 @@ public class Bitmap extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Bitmap_extractSubset">https://fiddle.skia.org/c/@Bitmap_extractSubset</a>
      */
     public boolean extractSubset(@NotNull Bitmap dst, @NotNull IRect subset) {
-        Stats.onNativeCall();
-        return _nExtractSubset(_ptr, Native.getPtr(dst), subset._left, subset._top, subset._right, subset._bottom);
+        try {
+            Stats.onNativeCall();
+            return _nExtractSubset(_ptr, Native.getPtr(dst), subset._left, subset._top, subset._right, subset._bottom);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(dst);
+        }
     }
 
     /** 
@@ -792,16 +900,21 @@ public class Bitmap extends Managed {
      */
     @Nullable
     public byte[] readPixels(@NotNull ImageInfo dstInfo, long dstRowBytes, int srcX, int srcY) {
-        Stats.onNativeCall();
-        return _nReadPixels(_ptr,
-            dstInfo._width,
-            dstInfo._height,
-            dstInfo._colorInfo._colorType.ordinal(),
-            dstInfo._colorInfo._alphaType.ordinal(),
-            Native.getPtr(dstInfo._colorInfo._colorSpace),
-            dstRowBytes,
-            srcX,
-            srcY);
+        try {
+            Stats.onNativeCall();
+            return _nReadPixels(_ptr,
+                dstInfo._width,
+                dstInfo._height,
+                dstInfo._colorInfo._colorType.ordinal(),
+                dstInfo._colorInfo._alphaType.ordinal(),
+                Native.getPtr(dstInfo._colorInfo._colorSpace),
+                dstRowBytes,
+                srcX,
+                srcY);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(dstInfo._colorInfo._colorSpace);
+        }
     }
 
     /**
@@ -829,8 +942,14 @@ public class Bitmap extends Managed {
      */
     @Nullable
     public IPoint extractAlpha(@NotNull Bitmap dst, @Nullable Paint paint) {
-        Stats.onNativeCall();
-        return _nExtractAlpha(_ptr, Native.getPtr(dst), Native.getPtr(paint));
+        try {
+            Stats.onNativeCall();
+            return _nExtractAlpha(_ptr, Native.getPtr(dst), Native.getPtr(paint));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(dst);
+            Reference.reachabilityFence(paint);
+        }
     }
 
     @NotNull
@@ -857,8 +976,12 @@ public class Bitmap extends Managed {
     public Shader makeShader(@NotNull FilterTileMode tmx,
                              @NotNull FilterTileMode tmy,
                              @Nullable Matrix33 localMatrix) {
-        Stats.onNativeCall();
-        return new Shader(_nMakeShader(_ptr, tmx.ordinal(), tmy.ordinal(), localMatrix == null ? null : localMatrix._mat));
+        try {
+            Stats.onNativeCall();
+            return new Shader(_nMakeShader(_ptr, tmx.ordinal(), tmy.ordinal(), localMatrix == null ? null : localMatrix._mat));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal

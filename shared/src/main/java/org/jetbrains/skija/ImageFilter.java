@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -9,13 +10,23 @@ public class ImageFilter extends RefCnt {
     static { Library.staticLoad(); }
     
     public static ImageFilter makeAlphaThreshold(Region r, float innerMin, float outerMax, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeAlphaThreshold(Native.getPtr(r), innerMin, outerMax, Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeAlphaThreshold(Native.getPtr(r), innerMin, outerMax, Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(r);
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makeArithmetic(float k1, float k2, float k3, float k4, boolean enforcePMColor, ImageFilter bg, ImageFilter fg, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeArithmetic(k1, k2, k3, k4, enforcePMColor, Native.getPtr(bg), Native.getPtr(fg), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeArithmetic(k1, k2, k3, k4, enforcePMColor, Native.getPtr(bg), Native.getPtr(fg), crop));
+        } finally {
+            Reference.reachabilityFence(bg);
+            Reference.reachabilityFence(fg);
+        }
     }
 
     public static ImageFilter makeBlur(float sigmaX, float sigmaY, FilterTileMode mode) {
@@ -23,23 +34,42 @@ public class ImageFilter extends RefCnt {
     }
 
     public static ImageFilter makeBlur(float sigmaX, float sigmaY, FilterTileMode mode, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeBlur(sigmaX, sigmaY, mode.ordinal(), Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeBlur(sigmaX, sigmaY, mode.ordinal(), Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makeColorFilter(ColorFilter f, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeColorFilter(Native.getPtr(f), Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeColorFilter(Native.getPtr(f), Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(f);
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makeCompose(ImageFilter outer, ImageFilter inner) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeCompose(Native.getPtr(outer), Native.getPtr(inner)));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeCompose(Native.getPtr(outer), Native.getPtr(inner)));
+        } finally {
+            Reference.reachabilityFence(outer);
+            Reference.reachabilityFence(inner);
+        }
     }
 
     public static ImageFilter makeDisplacementMap(ColorChannel x, ColorChannel y, float scale, ImageFilter displacement, ImageFilter color, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeDisplacementMap(x.ordinal(), y.ordinal(), scale, Native.getPtr(displacement), Native.getPtr(color), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeDisplacementMap(x.ordinal(), y.ordinal(), scale, Native.getPtr(displacement), Native.getPtr(color), crop));
+        } finally {
+            Reference.reachabilityFence(displacement);
+            Reference.reachabilityFence(color);
+        }
     }
 
     public static ImageFilter makeDropShadow(float dx, float dy, float sigmaX, float sigmaY, int color) {
@@ -47,8 +77,12 @@ public class ImageFilter extends RefCnt {
     }
 
     public static ImageFilter makeDropShadow(float dx, float dy, float sigmaX, float sigmaY, int color, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeDropShadow(dx, dy, sigmaX, sigmaY, color, Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeDropShadow(dx, dy, sigmaX, sigmaY, color, Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makeDropShadowOnly(float dx, float dy, float sigmaX, float sigmaY, int color) {
@@ -56,8 +90,12 @@ public class ImageFilter extends RefCnt {
     }
 
     public static ImageFilter makeDropShadowOnly(float dx, float dy, float sigmaX, float sigmaY, int color, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeDropShadowOnly(dx, dy, sigmaX, sigmaY, color, Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeDropShadowOnly(dx, dy, sigmaX, sigmaY, color, Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makeImage(Image image) {
@@ -66,40 +104,68 @@ public class ImageFilter extends RefCnt {
     }
 
     public static ImageFilter makeImage(Image image, Rect src, Rect dst, FilterQuality q) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeImage(Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, q.ordinal()));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeImage(Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, q.ordinal()));
+        } finally {
+            Reference.reachabilityFence(image);
+        }
     }
 
     public static ImageFilter makeMagnifier(Rect r, float inset, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeMagnifier(r._left, r._top, r._right, r._bottom, inset, Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeMagnifier(r._left, r._top, r._right, r._bottom, inset, Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makeMatrixConvolution(int kernelW, int kernelH, float[] kernel, float gain, float bias, int offsetX, int offsetY, FilterTileMode tileMode, boolean convolveAlpha, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeMatrixConvolution(kernelW, kernelH, kernel, gain, bias, offsetX, offsetY, tileMode.ordinal(), convolveAlpha, Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeMatrixConvolution(kernelW, kernelH, kernel, gain, bias, offsetX, offsetY, tileMode.ordinal(), convolveAlpha, Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makeMatrixTransform(Matrix33 matrix, FilterQuality q, ImageFilter input) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeMatrixTransform(matrix.getMat(), q.ordinal(), Native.getPtr(input)));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeMatrixTransform(matrix.getMat(), q.ordinal(), Native.getPtr(input)));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makeMerge(ImageFilter[] filters, IRect crop) {
-        Stats.onNativeCall();
-        long[] filterPtrs = new long[filters.length];
-        Arrays.setAll(filterPtrs, i -> Native.getPtr(filters[i]));
-        return new ImageFilter(_nMakeMerge(filterPtrs, crop));
+        try {
+            Stats.onNativeCall();
+            long[] filterPtrs = new long[filters.length];
+            Arrays.setAll(filterPtrs, i -> Native.getPtr(filters[i]));
+            return new ImageFilter(_nMakeMerge(filterPtrs, crop));
+        } finally {
+            Reference.reachabilityFence(filters);
+        }
     }
 
     public static ImageFilter makeOffset(float dx, float dy, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeOffset(dx, dy, Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeOffset(dx, dy, Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makePaint(Paint paint, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakePaint(Native.getPtr(paint), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakePaint(Native.getPtr(paint), crop));
+        } finally {
+            Reference.reachabilityFence(paint);
+        }
     }
 
     // public static ImageFilter makePicture(Picture picture, Rect target) {
@@ -108,53 +174,94 @@ public class ImageFilter extends RefCnt {
     // }
 
     public static ImageFilter makeTile(Rect src, Rect dst, ImageFilter input) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeTile(src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(input)));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeTile(src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(input)));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makeXfermode(BlendMode blendMode, ImageFilter bg, ImageFilter fg, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeXfermode(blendMode.ordinal(), Native.getPtr(bg), Native.getPtr(fg), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeXfermode(blendMode.ordinal(), Native.getPtr(bg), Native.getPtr(fg), crop));
+        } finally {
+            Reference.reachabilityFence(bg);
+            Reference.reachabilityFence(fg);
+        }
     }
 
     public static ImageFilter makeDilate(float rx, float ry, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeDilate(rx, ry, Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeDilate(rx, ry, Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makeErode(float rx, float ry, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeErode(rx, ry, Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeErode(rx, ry, Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makeDistantLitDiffuse(float x, float y, float z, int lightColor, float surfaceScale, float kd, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeDistantLitDiffuse(x, y, z, lightColor, surfaceScale, kd, Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeDistantLitDiffuse(x, y, z, lightColor, surfaceScale, kd, Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makePointLitDiffuse(float x, float y, float z, int lightColor, float surfaceScale, float kd, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakePointLitDiffuse(x, y, z, lightColor, surfaceScale, kd, Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakePointLitDiffuse(x, y, z, lightColor, surfaceScale, kd, Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makeSpotLitDiffuse(float x0, float y0, float z0, float x1, float y1, float z1, float falloffExponent, float cutoffAngle, int lightColor, float surfaceScale, float kd, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeSpotLitDiffuse(x0, y0, z0, x1, y1, z1, falloffExponent, cutoffAngle, lightColor, surfaceScale, kd, Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeSpotLitDiffuse(x0, y0, z0, x1, y1, z1, falloffExponent, cutoffAngle, lightColor, surfaceScale, kd, Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makeDistantLitSpecular(float x, float y, float z, int lightColor, float surfaceScale, float ks, float shininess, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeDistantLitSpecular(x, y, z, lightColor, surfaceScale, ks, shininess, Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeDistantLitSpecular(x, y, z, lightColor, surfaceScale, ks, shininess, Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makePointLitSpecular(float x, float y, float z, int lightColor, float surfaceScale, float ks, float shininess, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakePointLitSpecular(x, y, z, lightColor, surfaceScale, ks, shininess, Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakePointLitSpecular(x, y, z, lightColor, surfaceScale, ks, shininess, Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     public static ImageFilter makeSpotLitSpecular(float x0, float y0, float z0, float x1, float y1, float z1, float falloffExponent, float cutoffAngle, int lightColor, float surfaceScale, float ks, float shininess, ImageFilter input, IRect crop) {
-        Stats.onNativeCall();
-        return new ImageFilter(_nMakeSpotLitSpecular(x0, y0, z0, x1, y1, z1, falloffExponent, cutoffAngle, lightColor, surfaceScale, ks, shininess, Native.getPtr(input), crop));
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeSpotLitSpecular(x0, y0, z0, x1, y1, z1, falloffExponent, cutoffAngle, lightColor, surfaceScale, ks, shininess, Native.getPtr(input), crop));
+        } finally {
+            Reference.reachabilityFence(input);
+        }
     }
 
     @ApiStatus.Internal

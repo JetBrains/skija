@@ -1,5 +1,6 @@
 package org.jetbrains.skija.shaper;
 
+import java.lang.ref.*;
 import java.util.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
@@ -11,6 +12,7 @@ public class IcuBidiRunIterator extends ManagedRunIterator<BidiRun> {
     public IcuBidiRunIterator(ManagedString text, boolean manageText, int bidiLevel) {
         super(_nMake(Native.getPtr(text), bidiLevel), text, manageText);
         Stats.onNativeCall();
+        Reference.reachabilityFence(text);
     }
 
     public IcuBidiRunIterator(String text, int bidiLevel) {
@@ -19,8 +21,12 @@ public class IcuBidiRunIterator extends ManagedRunIterator<BidiRun> {
 
     @Override
     public BidiRun next() {
-        _nConsume(_ptr);
-        return new BidiRun(_getEndOfCurrentRun(), _nGetCurrentLevel(_ptr));
+        try {
+            _nConsume(_ptr);
+            return new BidiRun(_getEndOfCurrentRun(), _nGetCurrentLevel(_ptr));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal public static native long _nMake(long textPtr, int bidiLevel);

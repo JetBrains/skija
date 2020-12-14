@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -34,7 +35,13 @@ public class ColorSpace extends Managed {
     }
 
     public Color4f convert(ColorSpace to, Color4f color) {
-        return new Color4f(_nConvert(_ptr, Native.getPtr(to == null ? getSRGB() : to), color.getR(), color.getG(), color.getB(), color.getA()));
+        to = to == null ? getSRGB() : to;
+        try {
+            return new Color4f(_nConvert(_ptr, Native.getPtr(to), color.getR(), color.getG(), color.getB(), color.getA()));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(to);
+        }
     }
 
     @ApiStatus.Internal
@@ -51,16 +58,24 @@ public class ColorSpace extends Managed {
      * @return  true if the color space gamma is near enough to be approximated as sRGB
      */
     public boolean isGammaCloseToSRGB() {
-        Stats.onNativeCall();
-        return _nIsGammaCloseToSRGB(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsGammaCloseToSRGB(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * @return  true if the color space gamma is linear
      */
     public boolean isGammaLinear() {
-        Stats.onNativeCall();
-        return _nIsGammaLinear(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsGammaLinear(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -75,8 +90,12 @@ public class ColorSpace extends Managed {
      * function checks for logical equality.</p>
      */
     public boolean isSRGB() {
-        Stats.onNativeCall();
-        return _nIsSRGB(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsSRGB(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
     
     @ApiStatus.Internal

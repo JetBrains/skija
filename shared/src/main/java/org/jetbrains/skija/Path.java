@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -43,7 +44,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
     */
     @ApiStatus.Internal @Override
     public boolean _nativeEquals(Native other) {
-        return _nEquals(_ptr, Native.getPtr(other));
+        try {
+            return _nEquals(_ptr, Native.getPtr(other));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(other);
+        }
     }
 
     /**
@@ -60,8 +66,13 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_isInterpolatable">https://fiddle.skia.org/c/@Path_isInterpolatable</a>
      */
     public boolean isInterpolatable(Path compare) {
-        Stats.onNativeCall();
-        return _nIsInterpolatable(_ptr, Native.getPtr(compare));
+        try {
+            Stats.onNativeCall();
+            return _nIsInterpolatable(_ptr, Native.getPtr(compare));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(compare);
+        }
     }
 
     /** 
@@ -87,16 +98,25 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_interpolate">https://fiddle.skia.org/c/@Path_interpolate</a>
      */
     public Path makeLerp(Path ending, float weight) {
-        Stats.onNativeCall();
-        long ptr = _nMakeLerp(_ptr, Native.getPtr(ending), weight);
-        if (ptr == 0)
-            throw new IllegalArgumentException("Point array is not the same size as ending Point array");
-        return new Path(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nMakeLerp(_ptr, Native.getPtr(ending), weight);
+            if (ptr == 0)
+                throw new IllegalArgumentException("Point array is not the same size as ending Point array");
+            return new Path(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(ending);
+        }
     }
 
     public PathFillMode getFillMode() {
-        Stats.onNativeCall();
-        return PathFillMode.values()[_nGetFillMode(_ptr)];
+        try {
+            Stats.onNativeCall();
+            return PathFillMode.values()[_nGetFillMode(_ptr)];
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Path setFillMode(PathFillMode fillMode) {
@@ -111,8 +131,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @return  true or false
      */
     public boolean isConvex() {
-        Stats.onNativeCall();
-        return _nIsConvex(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsConvex(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -123,8 +147,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_isOval">https://fiddle.skia.org/c/@Path_isOval</a>
      */
     public Rect isOval() {
-        Stats.onNativeCall();
-        return _nIsOval(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsOval(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -135,8 +163,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_isRRect">https://fiddle.skia.org/c/@Path_isRRect</a>
      */
     public RRect isRRect() {
-        Stats.onNativeCall();
-        return _nIsRRect(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsRRect(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -182,8 +214,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @return  true if the path contains no Verb array
      */
     public boolean isEmpty() {
-        Stats.onNativeCall();
-        return _nIsEmpty(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsEmpty(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -197,8 +233,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_isLastContourClosed">https://fiddle.skia.org/c/@Path_isLastContourClosed</a>
      */
     public boolean isLastContourClosed() {
-        Stats.onNativeCall();
-        return _nIsLastContourClosed(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsLastContourClosed(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -209,8 +249,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @return  true if all Point values are finite
      */
     public boolean isFinite() {
-        Stats.onNativeCall();
-        return _nIsFinite(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsFinite(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -222,8 +266,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @return  true if caller will alter Path after drawing
      */
     public boolean isVolatile() {
-        Stats.onNativeCall();
-        return _nIsVolatile(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsVolatile(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -317,8 +365,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_isLine">https://fiddle.skia.org/c/@Path_isLine</a>
      */
     public Point[] getAsLine() {
-        Stats.onNativeCall();
-        return _nMaybeGetAsLine(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nMaybeGetAsLine(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -330,8 +382,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_countPoints">https://fiddle.skia.org/c/@Path_countPoints</a>
      */
     public int getPointsCount() {
-        Stats.onNativeCall();
-        return _nGetPointsCount(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetPointsCount(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -346,8 +402,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_getPoint">https://fiddle.skia.org/c/@Path_getPoint</a>
      */
     public Point getPoint(int index) {
-        Stats.onNativeCall();
-        return _nGetPoint(_ptr, index);
+        try {
+            Stats.onNativeCall();
+            return _nGetPoint(_ptr, index);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -376,9 +436,13 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_getPoints">https://fiddle.skia.org/c/@Path_getPoints</a>
      */
     public int getPoints(Point[] points, int max) {
-        assert points == null ? max == 0 : true;
-        Stats.onNativeCall();
-        return _nGetPoints(_ptr, points, max);
+        try {
+            assert points == null ? max == 0 : true;
+            Stats.onNativeCall();
+            return _nGetPoints(_ptr, points, max);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -390,8 +454,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_countVerbs">https://fiddle.skia.org/c/@Path_countVerbs</a>
      */
     public int getVerbsCount() {
-        Stats.onNativeCall();
-        return _nCountVerbs(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nCountVerbs(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public PathVerb[] getVerbs() {
@@ -410,14 +478,18 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_getVerbs">https://fiddle.skia.org/c/@Path_getVerbs</a>
      */
     public int getVerbs(PathVerb[] verbs, int max) {
-        assert verbs == null ? max == 0 : true;
-        Stats.onNativeCall();
-        byte[] out = verbs == null ? null : new byte[max];
-        int count = _nGetVerbs(_ptr, out, max);
-        if (verbs != null)
-            for (int i = 0; i < Math.min(count, max); ++i)
-                verbs[i] = PathVerb.values()[out[i]];
-        return count;
+        try {
+            assert verbs == null ? max == 0 : true;
+            Stats.onNativeCall();
+            byte[] out = verbs == null ? null : new byte[max];
+            int count = _nGetVerbs(_ptr, out, max);
+            if (verbs != null)
+                for (int i = 0; i < Math.min(count, max); ++i)
+                    verbs[i] = PathVerb.values()[out[i]];
+            return count;
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -426,8 +498,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @return  approximate size
      */
     public long getApproximateBytesUsed() {
-        Stats.onNativeCall();
-        return _nApproximateBytesUsed(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nApproximateBytesUsed(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -441,9 +517,13 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_swap">https://fiddle.skia.org/c/@Path_swap</a>
      */
     public Path swap(Path other) {
-        Stats.onNativeCall();
-        _nSwap(_ptr, Native.getPtr(other));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSwap(_ptr, Native.getPtr(other));
+            return this;
+        } finally {
+            Reference.reachabilityFence(other);
+        }
     }
 
     /** 
@@ -458,8 +538,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @return  bounds of all Point in Point array
      */
     public Rect getBounds() {
-        Stats.onNativeCall();
-        return _nGetBounds(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetBounds(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -498,8 +582,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_computeTightBounds">https://fiddle.skia.org/c/@Path_computeTightBounds</a>
      */
     public Rect computeTightBounds() {
-        Stats.onNativeCall();
-        return _nComputeTightBounds(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nComputeTightBounds(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -517,8 +605,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_conservativelyContainsRect">https://fiddle.skia.org/c/@Path_conservativelyContainsRect</a>
      */
     public boolean conservativelyContainsRect(Rect rect) {
-        Stats.onNativeCall();
-        return _nConservativelyContainsRect(_ptr, rect._left, rect._top, rect._right, rect._bottom);
+        try {
+            Stats.onNativeCall();
+            return _nConservativelyContainsRect(_ptr, rect._left, rect._top, rect._right, rect._bottom);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -1110,8 +1202,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_isRect">https://fiddle.skia.org/c/@Path_isRect</a>
      */
     public Rect isRect() {
-        Stats.onNativeCall();
-        return _nIsRect(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsRect(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -1394,9 +1490,13 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @return        reference to Path
      */
     public Path addPath(Path src, boolean extend) {
-        Stats.onNativeCall();
-        _nAddPath(_ptr, Native.getPtr(src), extend);
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nAddPath(_ptr, Native.getPtr(src), extend);
+            return this;
+        } finally {
+            Reference.reachabilityFence(src);
+        }
     }
 
     /**
@@ -1428,9 +1528,13 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @return        reference to Path
      */
     public Path addPath(Path src, float dx, float dy, boolean extend) {
-        Stats.onNativeCall();
-        _nAddPathOffset(_ptr, Native.getPtr(src), dx, dy, extend);
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nAddPathOffset(_ptr, Native.getPtr(src), dx, dy, extend);
+            return this;
+        } finally {
+            Reference.reachabilityFence(src);
+        }
     }
 
     /**
@@ -1462,9 +1566,13 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @return        reference to Path
      */
     public Path addPath(Path src, Matrix33 matrix, boolean extend) {
-        Stats.onNativeCall();
-        _nAddPathTransform(_ptr, Native.getPtr(src), matrix.getMat(), extend);
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nAddPathTransform(_ptr, Native.getPtr(src), matrix.getMat(), extend);
+            return this;
+        } finally {
+            Reference.reachabilityFence(src);
+        }
     }
 
     /** 
@@ -1477,9 +1585,13 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_reverseAddPath">https://fiddle.skia.org/c/@Path_reverseAddPath</a>
      */
     public Path reverseAddPath(Path src) {
-        Stats.onNativeCall();
-        _nReverseAddPath(_ptr, Native.getPtr(src));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nReverseAddPath(_ptr, Native.getPtr(src));
+            return this;
+        } finally {
+            Reference.reachabilityFence(src);
+        }
     }
 
     /**
@@ -1505,9 +1617,13 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_offset">https://fiddle.skia.org/c/@Path_offset</a>
      */
     public Path offset(float dx, float dy, Path dst) {
-        Stats.onNativeCall();
-        _nOffset(_ptr, dx, dy, Native.getPtr(dst));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nOffset(_ptr, dx, dy, Native.getPtr(dst));
+            return this;
+        } finally {
+            Reference.reachabilityFence(dst);
+        }
     }
 
     /**
@@ -1565,9 +1681,13 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_transform">https://fiddle.skia.org/c/@Path_transform</a>
      */
     public Path transform(Matrix33 matrix, Path dst, boolean applyPerspectiveClip) {
-        Stats.onNativeCall();
-        _nTransform(_ptr, matrix.getMat(), Native.getPtr(dst), applyPerspectiveClip);
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nTransform(_ptr, matrix.getMat(), Native.getPtr(dst), applyPerspectiveClip);
+            return this;
+        } finally {
+            Reference.reachabilityFence(dst);
+        }
     }
 
     /**
@@ -1578,8 +1698,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_getLastPt">https://fiddle.skia.org/c/@Path_getLastPt</a>
      */
     public Point getLastPt() {
-        Stats.onNativeCall();
-        return _nGetLastPt(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetLastPt(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -1625,8 +1749,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see PathSegmentMask#CUBIC
      */
     public int getSegmentMasks() {
-        Stats.onNativeCall();
-        return _nGetSegmentMasks(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetSegmentMasks(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @Override
@@ -1649,8 +1777,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_contains">https://fiddle.skia.org/c/@Path_contains</a>
      */
     public boolean contains(float x, float y) {
-        Stats.onNativeCall();
-        return _nContains(_ptr, x, y);
+        try {
+            Stats.onNativeCall();
+            return _nContains(_ptr, x, y);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -1714,8 +1846,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://fiddle.skia.org/c/@Path_writeToMemory">https://fiddle.skia.org/c/@Path_writeToMemory</a>
      */
     public byte[] serializeToBytes() {
-        Stats.onNativeCall();
-        return _nSerializeToBytes(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nSerializeToBytes(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -1731,9 +1867,14 @@ public class Path extends Managed implements Iterable<PathSegment> {
      */
     @Nullable
     public static Path makeCombining(@NotNull Path one, @NotNull Path two, PathOp op) {
-        Stats.onNativeCall();
-        long ptr = _nMakeCombining(Native.getPtr(one), Native.getPtr(two), op.ordinal());
-        return ptr == 0 ? null : new Path(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nMakeCombining(Native.getPtr(one), Native.getPtr(two), op.ordinal());
+            return ptr == 0 ? null : new Path(ptr);
+        } finally {
+            Reference.reachabilityFence(one);
+            Reference.reachabilityFence(two);
+        }
     }
 
     /**
@@ -1771,8 +1912,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @see <a href="https://bugs.chromium.org/p/skia/issues/detail?id=1762">https://bugs.chromium.org/p/skia/issues/detail?id=1762</a>
      */
     public int getGenerationId() {
-        Stats.onNativeCall();
-        return _nGetGenerationId(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetGenerationId(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }    
 
     /**
@@ -1783,8 +1928,12 @@ public class Path extends Managed implements Iterable<PathSegment> {
      * @return  true if Path data is consistent
      */
     public boolean isValid() {
-        Stats.onNativeCall();
-        return _nIsValid(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsValid(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal

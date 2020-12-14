@@ -1,7 +1,7 @@
 package org.jetbrains.skija;
 
-import java.util.function.Consumer;
-import java.util.function.LongConsumer;
+import java.lang.ref.*;
+import java.util.function.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -34,6 +34,7 @@ public class Font extends Managed {
     public Font(@NotNull Typeface typeface) {
         this(_nMakeTypeface(Native.getPtr(typeface)));
         Stats.onNativeCall();
+        Reference.reachabilityFence(typeface);
     }
 
     /**
@@ -43,6 +44,7 @@ public class Font extends Managed {
     public Font(@NotNull Typeface typeface, float size) {
         this(_nMakeTypefaceSize(Native.getPtr(typeface), size));
         Stats.onNativeCall();
+        Reference.reachabilityFence(typeface);
     }
 
     /**
@@ -58,6 +60,7 @@ public class Font extends Managed {
     public Font(@NotNull Typeface typeface, float size, float scaleX, float skewX) {
         this(_nMakeTypefaceSizeScaleSkew(Native.getPtr(typeface), size, scaleX, skewX));
         Stats.onNativeCall();
+        Reference.reachabilityFence(typeface);
     }
 
     /**
@@ -66,7 +69,12 @@ public class Font extends Managed {
      */
     @ApiStatus.Internal @Override
     public boolean _nativeEquals(Native other) {
-        return _nEquals(_ptr, Native.getPtr(other));
+        try {
+            return _nEquals(_ptr, Native.getPtr(other));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(other);
+        }
     }
 
     public static Font makeClone(long ptr) {
@@ -81,32 +89,48 @@ public class Font extends Managed {
      * @return  true if all glyphs are hinted
     */
     public boolean isAutoHintingForced() {
-        Stats.onNativeCall();
-        return _nIsAutoHintingForced(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsAutoHintingForced(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * @return  true if font engine may return glyphs from font bitmaps instead of from outlines
      */
     public boolean areBitmapsEmbedded() {
-        Stats.onNativeCall();
-        return _nAreBitmapsEmbedded(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nAreBitmapsEmbedded(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * @return  true if glyphs may be drawn at sub-pixel offsets
      */
     public boolean isSubpixel() {
-        Stats.onNativeCall();
-        return _nIsSubpixel(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsSubpixel(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * @return  true if font and glyph metrics are requested to be linearly scalable
      */
     public boolean areMetricsLinear() {
-        Stats.onNativeCall();
-        return _nAreMetricsLinear(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nAreMetricsLinear(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -116,8 +140,12 @@ public class Font extends Managed {
      * @return  true if bold is approximated through stroke width
      */
     public boolean isEmboldened() {
-        Stats.onNativeCall();
-        return _nIsEmboldened(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsEmboldened(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -127,8 +155,12 @@ public class Font extends Managed {
      * @return  true if baselines may be snapped to pixels
      */
     public boolean isBaselineSnapped() {
-        Stats.onNativeCall();
-        return _nIsBaselineSnapped(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsBaselineSnapped(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -211,8 +243,12 @@ public class Font extends Managed {
      * Whether edge pixels draw opaque or with partial transparency.
      */
     public FontEdging getEdging() {
-        Stats.onNativeCall();
-        return FontEdging.values()[_nGetEdging(_ptr)];
+        try {
+            Stats.onNativeCall();
+            return FontEdging.values()[_nGetEdging(_ptr)];
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -229,8 +265,12 @@ public class Font extends Managed {
      * @return  level of glyph outline adjustment
      */
     public FontHinting getHinting() {
-        Stats.onNativeCall();
-        return FontHinting.values()[_nGetHinting(_ptr)];
+        try {
+            Stats.onNativeCall();
+            return FontHinting.values()[_nGetHinting(_ptr)];
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -254,9 +294,13 @@ public class Font extends Managed {
      */ 
     @Nullable
     public Typeface getTypeface() {
-        Stats.onNativeCall();
-        long ptr = _nGetTypeface(_ptr);
-        return ptr == 0 ? null : new Typeface(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nGetTypeface(_ptr);
+            return ptr == 0 ? null : new Typeface(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -264,41 +308,61 @@ public class Font extends Managed {
      */
     @NotNull
     public Typeface getTypefaceOrDefault() {
-        Stats.onNativeCall();
-        return new Typeface(_nGetTypefaceOrDefault(_ptr));
+        try {
+            Stats.onNativeCall();
+            return new Typeface(_nGetTypefaceOrDefault(_ptr));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * @return  text size in points
      */
     public float getSize() {
-        Stats.onNativeCall();
-        return _nGetSize(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetSize(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * @return  text scale on x-axis. Default value is 1
      */
     public float getScaleX() {
-        Stats.onNativeCall();
-        return _nGetScaleX(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetScaleX(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * @return  text skew on x-axis. Default value is 0
      */
     public float getSkewX() {
-        Stats.onNativeCall();
-        return _nGetSkewX(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetSkewX(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * Sets Typeface to typeface. Pass null to use the default typeface.
      */
     public Font setTypeface(@Nullable Typeface typeface) {
-        Stats.onNativeCall();
-        _nSetTypeface(_ptr, Native.getPtr(typeface));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetTypeface(_ptr, Native.getPtr(typeface));
+            return this;
+        } finally {
+            Reference.reachabilityFence(typeface);
+        }
     }
 
     /**
@@ -343,24 +407,36 @@ public class Font extends Managed {
      *  @return  the corresponding glyph IDs for each character.
      */
     public short[] getUTF32Glyphs(int[] uni) {
-        Stats.onNativeCall();
-        return _nGetUTF32Glyphs(_ptr, uni);
+        try {
+            Stats.onNativeCall();
+            return _nGetUTF32Glyphs(_ptr, uni);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * @return  the glyph that corresponds to the specified unicode code-point (in UTF32 encoding). If the unichar is not supported, returns 0
      */
     public short getUTF32Glyph(int unichar) {
-        Stats.onNativeCall();
-        return _nGetUTF32Glyph(_ptr, unichar);
+        try {
+            Stats.onNativeCall();
+            return _nGetUTF32Glyph(_ptr, unichar);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * @return  number of glyphs represented by text
      */
     public int getStringGlyphsCount(String s) {
-        Stats.onNativeCall();
-        return _nGetStringGlyphsCount(_ptr, s);
+        try {
+            Stats.onNativeCall();
+            return _nGetStringGlyphsCount(_ptr, s);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -375,8 +451,13 @@ public class Font extends Managed {
      * @return   the bounding box of text
      */
     public Rect measureText(String s, Paint p) {
-        Stats.onNativeCall();
-        return _nMeasureText(_ptr, s, Native.getPtr(p));
+        try {
+            Stats.onNativeCall();
+            return _nMeasureText(_ptr, s, Native.getPtr(p));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(p);
+        }
     }
 
     public float measureTextWidth(String s) {
@@ -385,16 +466,25 @@ public class Font extends Managed {
     }
 
     public float measureTextWidth(String s, Paint p) {
-        Stats.onNativeCall();
-        return _nMeasureTextWidth(_ptr, s, Native.getPtr(p));
+        try {
+            Stats.onNativeCall();
+            return _nMeasureTextWidth(_ptr, s, Native.getPtr(p));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(p);
+        }
     }
 
     /**
      * Retrieves the advances for each glyph
      */
     public float[] getWidths(short[] glyphs) {
-        Stats.onNativeCall();
-        return _nGetWidths(_ptr, glyphs);
+        try {
+            Stats.onNativeCall();
+            return _nGetWidths(_ptr, glyphs);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -408,40 +498,61 @@ public class Font extends Managed {
      * Retrieves the bounds for each glyph
      */
     public Rect[] getBounds(short[] glyphs, Paint p) {
-        Stats.onNativeCall();
-        return _nGetBounds(_ptr, glyphs, Native.getPtr(p));
+        try {
+            Stats.onNativeCall();
+            return _nGetBounds(_ptr, glyphs, Native.getPtr(p));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(p);
+        }
     }
 
     /**
      * Retrieves the positions for each glyph.
      */
     public Point[] getPositions(short[] glyphs) {
-        Stats.onNativeCall();
-        return _nGetPositions(_ptr, glyphs, 0, 0);
+        try {
+            Stats.onNativeCall();
+            return _nGetPositions(_ptr, glyphs, 0, 0);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }    
 
     /**
      * Retrieves the positions for each glyph, beginning at the specified origin.
      */
     public Point[] getPositions(short[] glyphs, Point offset) {
-        Stats.onNativeCall();
-        return _nGetPositions(_ptr, glyphs, offset._x, offset._y);
+        try {
+            Stats.onNativeCall();
+            return _nGetPositions(_ptr, glyphs, offset._x, offset._y);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * Retrieves the x-positions for each glyph.
      */
     public float[] getXPositions(short[] glyphs) {
-        Stats.onNativeCall();
-        return _nGetXPositions(_ptr, glyphs, 0);
+        try {
+            Stats.onNativeCall();
+            return _nGetXPositions(_ptr, glyphs, 0);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }    
 
     /**
      * Retrieves the x-positions for each glyph, beginning at the specified origin.
      */
     public float[] getXPositions(short[] glyphs, float offset) {
-        Stats.onNativeCall();
-        return _nGetXPositions(_ptr, glyphs, offset);
+        try {
+            Stats.onNativeCall();
+            return _nGetXPositions(_ptr, glyphs, offset);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -450,17 +561,25 @@ public class Font extends Managed {
      */
     @Nullable
     public Path getPath(short glyph) {
-        Stats.onNativeCall();
-        long ptr = _nGetPath(_ptr, glyph);
-        return ptr == 0 ? null : new Path(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nGetPath(_ptr, glyph);
+            return ptr == 0 ? null : new Path(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * Return glyph outlines, some of which might be null.
      */
     public Path[] getPaths(short[] glyphs) {
-        Stats.onNativeCall();
-        return _nGetPaths(_ptr, glyphs);
+        try {
+            Stats.onNativeCall();
+            return _nGetPaths(_ptr, glyphs);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -468,8 +587,12 @@ public class Font extends Managed {
      * dimensions required by text scale, text skew, fake bold, style stroke, and {@link PathEffect}.
      */
     public FontMetrics getMetrics() {
-        Stats.onNativeCall();
-        return _nGetMetrics(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetMetrics(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -477,8 +600,12 @@ public class Font extends Managed {
      * Result is scaled by text size but does not take into account dimensions required by stroking and SkPathEffect.
      */
     public float getSpacing() {
-        Stats.onNativeCall();
-        return _nGetSpacing(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetSpacing(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal

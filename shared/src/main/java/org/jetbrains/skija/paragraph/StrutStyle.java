@@ -1,5 +1,6 @@
 package org.jetbrains.skija.paragraph;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
@@ -19,13 +20,22 @@ public class StrutStyle extends Managed {
 
     @ApiStatus.Internal @Override
     public boolean _nativeEquals(Native other) {
-        Stats.onNativeCall();
-        return _nEquals(_ptr, Native.getPtr(other));
+        try {
+            Stats.onNativeCall();
+            return _nEquals(_ptr, Native.getPtr(other));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(other);
+        }
     }
 
     public String[] getFontFamilies() {
-        Stats.onNativeCall();
-        return _nGetFontFamilies(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetFontFamilies(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public StrutStyle setFontFamilies(String[] families) {
@@ -35,8 +45,12 @@ public class StrutStyle extends Managed {
     }
 
     public FontStyle getFontStyle() {
-        Stats.onNativeCall();
-        return new FontStyle(_nGetFontStyle(_ptr));
+        try {
+            Stats.onNativeCall();
+            return new FontStyle(_nGetFontStyle(_ptr));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public StrutStyle setFontStyle(FontStyle style) {
@@ -46,8 +60,12 @@ public class StrutStyle extends Managed {
     }
 
     public float getFontSize() {
-        Stats.onNativeCall();
-        return _nGetFontSize(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetFontSize(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public StrutStyle setFontSize(float value) {
@@ -57,8 +75,12 @@ public class StrutStyle extends Managed {
     }
 
     public float getHeight() {
-        Stats.onNativeCall();
-        return _nGetHeight(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetHeight(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public StrutStyle setHeight(float value) {
@@ -68,8 +90,12 @@ public class StrutStyle extends Managed {
     }
 
     public float getLeading() {
-        Stats.onNativeCall();
-        return _nGetLeading(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetLeading(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public StrutStyle setLeading(float value) {
@@ -79,8 +105,12 @@ public class StrutStyle extends Managed {
     }
 
     public boolean isEnabled() {
-        Stats.onNativeCall();
-        return _nIsEnabled(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsEnabled(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public StrutStyle setEnabled(boolean value) {
@@ -90,8 +120,12 @@ public class StrutStyle extends Managed {
     }
 
     public boolean isHeightForced() {
-        Stats.onNativeCall();
-        return _nIsHeightForced(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsHeightForced(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public StrutStyle setHeightForced(boolean value) {
@@ -101,8 +135,12 @@ public class StrutStyle extends Managed {
     }
 
     public boolean isHeightOverridden() {
-        Stats.onNativeCall();
-        return _nIsHeightOverridden(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsHeightOverridden(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public StrutStyle setHeightOverridden(boolean value) {

@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -35,9 +36,13 @@ public class TextBlobBuilder extends Managed {
      */
     @Nullable
     public TextBlob build() {
-        Stats.onNativeCall();
-        long ptr = _nBuild(_ptr);
-        return ptr == 0 ? null : new TextBlob(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nBuild(_ptr);
+            return ptr == 0 ? null : new TextBlob(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /** 
@@ -89,9 +94,13 @@ public class TextBlobBuilder extends Managed {
      * @return        this
      */
     public TextBlobBuilder appendRun(Font font, short[] glyphs, float x, float y, @Nullable Rect bounds) {
-        Stats.onNativeCall();
-        _nAppendRun(_ptr, Native.getPtr(font), glyphs, x, y, bounds);
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nAppendRun(_ptr, Native.getPtr(font), glyphs, x, y, bounds);
+            return this;
+        } finally {
+            Reference.reachabilityFence(font);
+        }
     }
 
     /** 
@@ -122,10 +131,14 @@ public class TextBlobBuilder extends Managed {
      * @return        this
      */
     public TextBlobBuilder appendRunPosH(Font font, short[] glyphs, float[] xs, float y, @Nullable Rect bounds) {
-        assert glyphs.length == xs.length : "glyphs.length " + glyphs.length + " != xs.length " + xs.length;
-        Stats.onNativeCall();
-        _nAppendRunPosH(_ptr, Native.getPtr(font), glyphs, xs, y, bounds);
-        return this;
+        try {
+            assert glyphs.length == xs.length : "glyphs.length " + glyphs.length + " != xs.length " + xs.length;
+            Stats.onNativeCall();
+            _nAppendRunPosH(_ptr, Native.getPtr(font), glyphs, xs, y, bounds);
+            return this;
+        } finally {
+            Reference.reachabilityFence(font);
+        }
     }
 
     /** 
@@ -154,29 +167,37 @@ public class TextBlobBuilder extends Managed {
      * @return        this
      */
     public TextBlobBuilder appendRunPos(Font font, short[] glyphs, Point[] pos, @Nullable Rect bounds) {
-        assert glyphs.length == pos.length : "glyphs.length " + glyphs.length + " != pos.length " + pos.length;
-        float[] floatPos = new float[pos.length * 2];
-        for (int i = 0; i < pos.length; ++i) {
-            floatPos[i * 2]     = pos[i]._x;
-            floatPos[i * 2 + 1] = pos[i]._y;
+        try {
+            assert glyphs.length == pos.length : "glyphs.length " + glyphs.length + " != pos.length " + pos.length;
+            float[] floatPos = new float[pos.length * 2];
+            for (int i = 0; i < pos.length; ++i) {
+                floatPos[i * 2]     = pos[i]._x;
+                floatPos[i * 2 + 1] = pos[i]._y;
+            }
+            Stats.onNativeCall();
+            _nAppendRunPos(_ptr, Native.getPtr(font), glyphs, floatPos, bounds);
+            return this;
+        } finally {
+            Reference.reachabilityFence(font);
         }
-        Stats.onNativeCall();
-        _nAppendRunPos(_ptr, Native.getPtr(font), glyphs, floatPos, bounds);
-        return this;
     }
 
     public TextBlobBuilder appendRunRSXform(Font font, short[] glyphs, RSXform[] xform) {
-        assert glyphs.length == xform.length : "glyphs.length " + glyphs.length + " != xform.length " + xform.length;
-        float[] floatXform = new float[xform.length * 4];
-        for (int i = 0; i < xform.length; ++i) {
-            floatXform[i * 4]     = xform[i]._scos;
-            floatXform[i * 4 + 1] = xform[i]._ssin;
-            floatXform[i * 4 + 2] = xform[i]._tx;
-            floatXform[i * 4 + 3] = xform[i]._ty;
+        try {
+            assert glyphs.length == xform.length : "glyphs.length " + glyphs.length + " != xform.length " + xform.length;
+            float[] floatXform = new float[xform.length * 4];
+            for (int i = 0; i < xform.length; ++i) {
+                floatXform[i * 4]     = xform[i]._scos;
+                floatXform[i * 4 + 1] = xform[i]._ssin;
+                floatXform[i * 4 + 2] = xform[i]._tx;
+                floatXform[i * 4 + 3] = xform[i]._ty;
+            }
+            Stats.onNativeCall();
+            _nAppendRunRSXform(_ptr, Native.getPtr(font), glyphs, floatXform);
+            return this;
+        } finally {
+            Reference.reachabilityFence(font);
         }
-        Stats.onNativeCall();
-        _nAppendRunRSXform(_ptr, Native.getPtr(font), glyphs, floatXform);
-        return this;
     }
 
     @ApiStatus.Internal

@@ -1,5 +1,6 @@
 package org.jetbrains.skija.shaper;
 
+import java.lang.ref.*;
 import java.util.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
@@ -26,12 +27,21 @@ public abstract class ManagedRunIterator<T> extends Managed implements Iterator<
 
     @ApiStatus.Internal
     public int _getEndOfCurrentRun() {
-        return _nGetEndOfCurrentRun(_ptr, Native.getPtr(_text));
+        try {
+            return _nGetEndOfCurrentRun(_ptr, Native.getPtr(_text));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(_text);
+        }
     }
 
     @Override
     public boolean hasNext() {
-        return !_nIsAtEnd(_ptr);
+        try {
+            return !_nIsAtEnd(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal

@@ -1,5 +1,6 @@
 package org.jetbrains.skija.shaper;
 
+import java.lang.ref.*;
 import lombok.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
@@ -12,6 +13,10 @@ public class FontRun {
 
     @ApiStatus.Internal 
     public long _getFontPtr() {
-        return Native.getPtr(_font);
+        try {
+            return Native.getPtr(_font);
+        } finally {
+            Reference.reachabilityFence(_font);
+        }
     }
 }

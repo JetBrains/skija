@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -64,16 +65,24 @@ public class Image extends RefCnt {
      */
     @Nullable
     public Data encodeToData(EncodedImageFormat format, int quality) {
-        Stats.onNativeCall();
-        long ptr = _nEncodeToData(_ptr, format.ordinal(), quality);
-        return ptr == 0 ? null : new Data(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nEncodeToData(_ptr, format.ordinal(), quality);
+            return ptr == 0 ? null : new Data(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public void _getDimensions() {
-        Stats.onNativeCall();
-        long res = _nGetDimensions(_ptr);
-        _height = (int) (res & 0xFFFFFFFF);
-        _width = (int) (res >>> 32);
+        try {
+            Stats.onNativeCall();
+            long res = _nGetDimensions(_ptr);
+            _height = (int) (res & 0xFFFFFFFF);
+            _width = (int) (res >>> 32);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal

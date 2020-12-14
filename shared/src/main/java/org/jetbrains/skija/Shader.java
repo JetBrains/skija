@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -7,7 +8,12 @@ public class Shader extends RefCnt {
     static { Library.staticLoad(); }
     
     public Shader makeWithColorFilter(ColorFilter f) {
-        return new Shader(_nMakeWithColorFilter(_ptr, Native.getPtr(f)));
+        try {
+            return new Shader(_nMakeWithColorFilter(_ptr, Native.getPtr(f)));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(f);
+        }
     }
 
     // Linear
@@ -43,9 +49,13 @@ public class Shader extends RefCnt {
     }
 
     public static Shader makeLinearGradient(float x0, float y0, float x1, float y1, Color4f[] colors, ColorSpace cs, float[] positions, GradientStyle style) {
-        assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
-        Stats.onNativeCall();
-        return new Shader(_nMakeLinearGradientCS(x0, y0, x1, y1, Color4f.flattenArray(colors), Native.getPtr(cs), positions, style.getTileMode().ordinal(), style._getFlags(), style._getMatrixArray()));
+        try {
+            assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
+            Stats.onNativeCall();
+            return new Shader(_nMakeLinearGradientCS(x0, y0, x1, y1, Color4f.flattenArray(colors), Native.getPtr(cs), positions, style.getTileMode().ordinal(), style._getFlags(), style._getMatrixArray()));
+        } finally {
+            Reference.reachabilityFence(cs);
+        }
     }
 
     // Radial
@@ -81,9 +91,13 @@ public class Shader extends RefCnt {
     }
 
     public static Shader makeRadialGradient(float x, float y, float r, Color4f[] colors, ColorSpace cs, float[] positions, GradientStyle style) {
-        assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
-        Stats.onNativeCall();
-        return new Shader(_nMakeRadialGradientCS(x, y, r, Color4f.flattenArray(colors), Native.getPtr(cs), positions, style.getTileMode().ordinal(), style._getFlags(), style._getMatrixArray()));
+        try {
+            assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
+            Stats.onNativeCall();
+            return new Shader(_nMakeRadialGradientCS(x, y, r, Color4f.flattenArray(colors), Native.getPtr(cs), positions, style.getTileMode().ordinal(), style._getFlags(), style._getMatrixArray()));
+        } finally {
+            Reference.reachabilityFence(cs);
+        }
     }
 
     // Two-point Conical
@@ -119,9 +133,13 @@ public class Shader extends RefCnt {
     }
 
     public static Shader makeTwoPointConicalGradient(float x0, float y0, float r0, float x1, float y1, float r1, Color4f[] colors, ColorSpace cs, float[] positions, GradientStyle style) {
-        assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
-        Stats.onNativeCall();
-        return new Shader(_nMakeTwoPointConicalGradientCS(x0, y0, r0, x1, y1, r1, Color4f.flattenArray(colors), Native.getPtr(cs), positions, style.getTileMode().ordinal(), style._getFlags(), style._getMatrixArray()));
+        try {
+            assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
+            Stats.onNativeCall();
+            return new Shader(_nMakeTwoPointConicalGradientCS(x0, y0, r0, x1, y1, r1, Color4f.flattenArray(colors), Native.getPtr(cs), positions, style.getTileMode().ordinal(), style._getFlags(), style._getMatrixArray()));
+        } finally {
+            Reference.reachabilityFence(cs);
+        }
     }
 
     // Sweep
@@ -165,9 +183,13 @@ public class Shader extends RefCnt {
     }
 
     public static Shader makeSweepGradient(float x, float y, float startAngle, float endAngle, Color4f[] colors, ColorSpace cs, float[] positions, GradientStyle style) {
-        assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
-        Stats.onNativeCall();
-        return new Shader(_nMakeSweepGradientCS(x, y, startAngle, endAngle, Color4f.flattenArray(colors), Native.getPtr(cs), positions, style.getTileMode().ordinal(), style._getFlags(), style._getMatrixArray()));
+        try {
+            assert positions == null || colors.length == positions.length : "colors.length " + colors.length + "!= positions.length " + positions.length;
+            Stats.onNativeCall();
+            return new Shader(_nMakeSweepGradientCS(x, y, startAngle, endAngle, Color4f.flattenArray(colors), Native.getPtr(cs), positions, style.getTileMode().ordinal(), style._getFlags(), style._getMatrixArray()));
+        } finally {
+            Reference.reachabilityFence(cs);
+        }
     }
 
     //
@@ -183,18 +205,32 @@ public class Shader extends RefCnt {
     }
 
     public static Shader makeColor(Color4f color, ColorSpace space) {
-        Stats.onNativeCall();
-        return new Shader(_nMakeColorCS(color.getR(), color.getG(), color.getB(), color.getA(), Native.getPtr(space)));
+        try {
+            Stats.onNativeCall();
+            return new Shader(_nMakeColorCS(color.getR(), color.getG(), color.getB(), color.getA(), Native.getPtr(space)));
+        } finally {
+            Reference.reachabilityFence(space);
+        }
     }
 
     public static Shader makeBlend(BlendMode mode, Shader dst, Shader src) {
-        Stats.onNativeCall();
-        return new Shader(_nMakeBlend(mode.ordinal(), Native.getPtr(dst), Native.getPtr(src)));
+        try {
+            Stats.onNativeCall();
+            return new Shader(_nMakeBlend(mode.ordinal(), Native.getPtr(dst), Native.getPtr(src)));
+        } finally {
+            Reference.reachabilityFence(dst);
+            Reference.reachabilityFence(src);
+        }
     }
 
     public static Shader makeLerp(float t, Shader dst, Shader src) {
-        Stats.onNativeCall();
-        return new Shader(_nMakeLerp(t, Native.getPtr(dst), Native.getPtr(src)));
+        try {
+            Stats.onNativeCall();
+            return new Shader(_nMakeLerp(t, Native.getPtr(dst), Native.getPtr(src)));
+        } finally {
+            Reference.reachabilityFence(dst);
+            Reference.reachabilityFence(src);
+        }
     }
 
     @ApiStatus.Internal

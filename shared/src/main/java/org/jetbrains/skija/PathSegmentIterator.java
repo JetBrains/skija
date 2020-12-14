@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import java.util.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
@@ -13,11 +14,15 @@ public class PathSegmentIterator extends Managed implements Iterator<PathSegment
 
     @Override
     public PathSegment next() {
-        if (_nextSegment._verb == PathVerb.DONE)
-            throw new NoSuchElementException();
-        PathSegment res = _nextSegment;
-        _nextSegment = _nNext(_ptr);
-        return res;
+        try {
+            if (_nextSegment._verb == PathVerb.DONE)
+                throw new NoSuchElementException();
+            PathSegment res = _nextSegment;
+            _nextSegment = _nNext(_ptr);
+            return res;
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @Override
@@ -33,10 +38,14 @@ public class PathSegmentIterator extends Managed implements Iterator<PathSegment
     }
 
     public static PathSegmentIterator make(Path path, boolean forceClose) {
-        long ptr = _nMake(Native.getPtr(path), forceClose);
-        PathSegmentIterator i = new PathSegmentIterator(path, ptr);
-        i._nextSegment = _nNext(ptr);
-        return i;
+        try {
+            long ptr = _nMake(Native.getPtr(path), forceClose);
+            PathSegmentIterator i = new PathSegmentIterator(path, ptr);
+            i._nextSegment = _nNext(ptr);
+            return i;
+        } finally {
+            Reference.reachabilityFence(path);
+        }
     }
 
     @ApiStatus.Internal

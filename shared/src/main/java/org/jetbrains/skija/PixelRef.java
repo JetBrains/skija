@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import lombok.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
@@ -13,18 +14,30 @@ public class PixelRef extends RefCnt {
     }
 
     public int getWidth() {
-        Stats.onNativeCall();
-        return _nGetWidth(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetWidth(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public int getHeight() {
-        Stats.onNativeCall();
-        return _nGetHeight(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetHeight(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public long getRowBytes() {
-        Stats.onNativeCall();
-        return _nGetRowBytes(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetRowBytes(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /** 
@@ -33,8 +46,12 @@ public class PixelRef extends RefCnt {
      * called), a different generation ID will be returned.
      */
     public int getGenerationId() {
-        Stats.onNativeCall();
-        return _nGetGenerationId(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetGenerationId(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -53,8 +70,12 @@ public class PixelRef extends RefCnt {
      * contents of its pixels will not change for the lifetime of the pixelref.
      */
     public boolean isImmutable() {
-        Stats.onNativeCall();
-        return _nIsImmutable(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsImmutable(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /** 

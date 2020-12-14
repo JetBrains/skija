@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -16,28 +17,50 @@ public class PathEffect extends RefCnt {
     }
 
     public PathEffect makeSum(PathEffect second) {
-        Stats.onNativeCall();
-        return new PathEffect(_nMakeSum(_ptr, Native.getPtr(second)));
+        try {
+            Stats.onNativeCall();
+            return new PathEffect(_nMakeSum(_ptr, Native.getPtr(second)));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(second);
+        }
     }
     
     public PathEffect makeCompose(PathEffect inner) {
-        Stats.onNativeCall();
-        return new PathEffect(_nMakeCompose(_ptr, Native.getPtr(inner)));
+        try {
+            Stats.onNativeCall();
+            return new PathEffect(_nMakeCompose(_ptr, Native.getPtr(inner)));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(inner);
+        }
     }
     
     public Rect computeFastBounds(Rect src) {
-        Stats.onNativeCall();
-        return _nComputeFastBounds(_ptr, src._left, src._top, src._right, src._bottom);
+        try {
+            Stats.onNativeCall();
+            return _nComputeFastBounds(_ptr, src._left, src._top, src._right, src._bottom);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public static PathEffect makePath1D(Path path, float advance, float phase, Style style) {
-        Stats.onNativeCall();
-        return new PathEffect(_nMakePath1D(Native.getPtr(path), advance, phase, style.ordinal()));
+        try {
+            Stats.onNativeCall();
+            return new PathEffect(_nMakePath1D(Native.getPtr(path), advance, phase, style.ordinal()));
+        } finally {
+            Reference.reachabilityFence(path);
+        }
     }
 
     public static PathEffect makePath2D(Matrix33 matrix, Path path) {
-        Stats.onNativeCall();
-        return new PathEffect(_nMakePath2D(matrix.getMat(), Native.getPtr(path)));
+        try {
+            Stats.onNativeCall();
+            return new PathEffect(_nMakePath2D(matrix.getMat(), Native.getPtr(path)));
+        } finally {
+            Reference.reachabilityFence(path);
+        }
     }
 
     public static PathEffect makeLine2D(float width, Matrix33 matrix) {

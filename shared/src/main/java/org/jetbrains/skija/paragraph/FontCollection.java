@@ -1,5 +1,6 @@
 package org.jetbrains.skija.paragraph;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
@@ -13,26 +14,42 @@ public class FontCollection extends RefCnt {
     }
 
     public long getFontManagersCount() {
-        Stats.onNativeCall();
-        return _nGetFontManagersCount(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetFontManagersCount(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
     
     public FontCollection setAssetFontManager(FontMgr fontMgr) {
-        Stats.onNativeCall();
-        _nSetAssetFontManager(_ptr, Native.getPtr(fontMgr));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetAssetFontManager(_ptr, Native.getPtr(fontMgr));
+            return this;
+        } finally {
+            Reference.reachabilityFence(fontMgr);
+        }
     }
 
     public FontCollection setDynamicFontManager(FontMgr fontMgr) {
-        Stats.onNativeCall();
-        _nSetDynamicFontManager(_ptr, Native.getPtr(fontMgr));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetDynamicFontManager(_ptr, Native.getPtr(fontMgr));
+            return this;
+        } finally {
+            Reference.reachabilityFence(fontMgr);
+        }
     }
 
     public FontCollection setTestFontManager(FontMgr fontMgr) {
-        Stats.onNativeCall();
-        _nSetTestFontManager(_ptr, Native.getPtr(fontMgr));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetTestFontManager(_ptr, Native.getPtr(fontMgr));
+            return this;
+        } finally {
+            Reference.reachabilityFence(fontMgr);
+        }
     }
 
     public FontCollection setDefaultFontManager(FontMgr fontMgr) {
@@ -40,36 +57,56 @@ public class FontCollection extends RefCnt {
     }
 
     public FontCollection setDefaultFontManager(FontMgr fontMgr, String defaultFamilyName) {
-        Stats.onNativeCall();
-        _nSetDefaultFontManager(_ptr, Native.getPtr(fontMgr), defaultFamilyName);
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetDefaultFontManager(_ptr, Native.getPtr(fontMgr), defaultFamilyName);
+            return this;
+        } finally {
+            Reference.reachabilityFence(fontMgr);
+        }
     }
     
     public FontMgr getFallbackManager() {
-        Stats.onNativeCall();
-        long ptr = _nGetFallbackManager(_ptr);
-        return ptr == 0 ? null : new FontMgr(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nGetFallbackManager(_ptr);
+            return ptr == 0 ? null : new FontMgr(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Typeface[] findTypefaces(String[] familyNames, FontStyle style) {
-        Stats.onNativeCall();
-        long[] ptrs = _nFindTypefaces(_ptr, familyNames, style._value);
-        Typeface[] res = new Typeface[ptrs.length];
-        for (int i = 0; i < ptrs.length; ++i)
-            res[i] = new Typeface(ptrs[i]);
-        return res;
+        try {
+            Stats.onNativeCall();
+            long[] ptrs = _nFindTypefaces(_ptr, familyNames, style._value);
+            Typeface[] res = new Typeface[ptrs.length];
+            for (int i = 0; i < ptrs.length; ++i)
+                res[i] = new Typeface(ptrs[i]);
+            return res;
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Typeface defaultFallback(int unicode, FontStyle style, String locale) {
-        Stats.onNativeCall();
-        long ptr = _nDefaultFallbackChar(_ptr, unicode, style._value, locale);
-        return ptr == 0 ? null : new Typeface(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nDefaultFallbackChar(_ptr, unicode, style._value, locale);
+            return ptr == 0 ? null : new Typeface(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Typeface defaultFallback() {
-        Stats.onNativeCall();
-        long ptr = _nDefaultFallback(_ptr);
-        return ptr == 0 ? null : new Typeface(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nDefaultFallback(_ptr);
+            return ptr == 0 ? null : new Typeface(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public FontCollection setEnableFallback(boolean value) {
@@ -79,8 +116,12 @@ public class FontCollection extends RefCnt {
     }
 
     public ParagraphCache getParagraphCache() {
-        Stats.onNativeCall();
-        return new ParagraphCache(this, _nGetParagraphCache(_ptr));
+        try {
+            Stats.onNativeCall();
+            return new ParagraphCache(this, _nGetParagraphCache(_ptr));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal

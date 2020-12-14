@@ -1,5 +1,6 @@
 package org.jetbrains.skija.paragraph;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
@@ -14,35 +15,60 @@ public class ParagraphStyle extends Managed {
 
     @ApiStatus.Internal @Override
     public boolean _nativeEquals(Native other) {
-        Stats.onNativeCall();
-        return _nEquals(_ptr, Native.getPtr(other));
+        try {
+            Stats.onNativeCall();
+            return _nEquals(_ptr, Native.getPtr(other));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(other);
+        }
     }
 
     public StrutStyle getStrutStyle() {
-        Stats.onNativeCall();
-        return new StrutStyle(_nGetStrutStyle(_ptr));
+        try {
+            Stats.onNativeCall();
+            return new StrutStyle(_nGetStrutStyle(_ptr));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public ParagraphStyle setStrutStyle(StrutStyle s) {
-        Stats.onNativeCall();
-        _nSetStrutStyle(_ptr, Native.getPtr(s));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetStrutStyle(_ptr, Native.getPtr(s));
+            return this;
+        } finally {
+            Reference.reachabilityFence(s);
+        }
     }
 
     public TextStyle getTextStyle() {
-        Stats.onNativeCall();
-        return new TextStyle(_nGetTextStyle(_ptr));
+        try {
+            Stats.onNativeCall();
+            return new TextStyle(_nGetTextStyle(_ptr));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public ParagraphStyle setTextStyle(TextStyle style) {
-        Stats.onNativeCall();
-        _nSetTextStyle(_ptr, Native.getPtr(style));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetTextStyle(_ptr, Native.getPtr(style));
+            return this;
+        } finally {
+            Reference.reachabilityFence(style);
+        }
     }
 
     public Direction getDirection() {
-        Stats.onNativeCall();
-        return Direction.values()[_nGetDirection(_ptr)];
+        try {
+            Stats.onNativeCall();
+            return Direction.values()[_nGetDirection(_ptr)];
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public ParagraphStyle setDirection(Direction style) {
@@ -52,8 +78,12 @@ public class ParagraphStyle extends Managed {
     }
 
     public Alignment getAlignment() {
-        Stats.onNativeCall();
-        return Alignment.values()[_nGetAlignment(_ptr)];
+        try {
+            Stats.onNativeCall();
+            return Alignment.values()[_nGetAlignment(_ptr)];
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public ParagraphStyle setAlignment(Alignment alignment) {
@@ -63,8 +93,12 @@ public class ParagraphStyle extends Managed {
     }
 
     public long getMaxLinesCount() {
-        Stats.onNativeCall();
-        return _nGetMaxLinesCount(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetMaxLinesCount(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public ParagraphStyle setMaxLinesCount(long count) {
@@ -74,8 +108,12 @@ public class ParagraphStyle extends Managed {
     }
 
     public String getEllipsis() {
-        Stats.onNativeCall();
-        return _nGetEllipsis(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetEllipsis(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public ParagraphStyle setEllipsis(String ellipsis) {
@@ -85,8 +123,12 @@ public class ParagraphStyle extends Managed {
     }
 
     public float getHeight() {
-        Stats.onNativeCall();
-        return _nGetHeight(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetHeight(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public ParagraphStyle setHeight(float height) {
@@ -96,8 +138,12 @@ public class ParagraphStyle extends Managed {
     }
 
     public HeightMode getHeightMode() {
-        Stats.onNativeCall();
-        return HeightMode.values()[_nGetHeightMode(_ptr)];
+        try {
+            Stats.onNativeCall();
+            return HeightMode.values()[_nGetHeightMode(_ptr)];
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public ParagraphStyle setHeightMode(HeightMode behavior) {
@@ -107,13 +153,21 @@ public class ParagraphStyle extends Managed {
     }
 
     public Alignment getEffectiveAlignment() {
-        Stats.onNativeCall();
-        return Alignment.values()[_nGetEffectiveAlignment(_ptr)];
+        try {
+            Stats.onNativeCall();
+            return Alignment.values()[_nGetEffectiveAlignment(_ptr)];
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public boolean isHintingEnabled() {
-        Stats.onNativeCall();
-        return _nIsHintingEnabled(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsHintingEnabled(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public ParagraphStyle disableHinting() {

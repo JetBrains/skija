@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -16,8 +17,12 @@ public class MaskFilter extends RefCnt {
     }
 
     public static MaskFilter makeShader(Shader s) {
-        Stats.onNativeCall();
-        return new MaskFilter(_nMakeShader(Native.getPtr(s)));
+        try {
+            Stats.onNativeCall();
+            return new MaskFilter(_nMakeShader(Native.getPtr(s)));
+        } finally {
+            Reference.reachabilityFence(s);
+        }
     }
 
     public static MaskFilter makeTable(byte[] table) {

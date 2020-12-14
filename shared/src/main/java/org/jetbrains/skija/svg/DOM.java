@@ -1,5 +1,6 @@
 package org.jetbrains.skija.svg;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
@@ -10,11 +11,16 @@ public class DOM extends RefCnt {
     public DOM(@NotNull Data data) {
         this(_nMakeFromData(Native.getPtr(data)));
         Stats.onNativeCall();
+        Reference.reachabilityFence(data);
     }
 
     @NotNull
     public Point getContainerSize() {
-        return _nGetContainerSize(_ptr);
+        try {
+            return _nGetContainerSize(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @NotNull @Contract("-> this")
@@ -35,9 +41,13 @@ public class DOM extends RefCnt {
 
     @NotNull @Contract("-> this")
     public DOM render(@NotNull Canvas canvas) {
-        Stats.onNativeCall();
-        _nRender(_ptr, Native.getPtr(canvas));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nRender(_ptr, Native.getPtr(canvas));
+            return this;
+        } finally {
+            Reference.reachabilityFence(canvas);
+        }
     }
 
     @ApiStatus.Internal

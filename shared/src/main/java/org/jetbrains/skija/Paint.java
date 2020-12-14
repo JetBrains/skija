@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -18,12 +19,21 @@ public class Paint extends Managed {
 
     @ApiStatus.Internal @Override
     public boolean _nativeEquals(Native other) {
-        return _nEquals(_ptr, Native.getPtr(other));
+        try {
+            return _nEquals(_ptr, Native.getPtr(other));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(other);
+        }
     }
 
     public boolean isAntiAlias() {
-        Stats.onNativeCall();
-        return _nIsAntiAlias(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsAntiAlias(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Paint setAntiAlias(boolean value) {
@@ -33,8 +43,12 @@ public class Paint extends Managed {
     }
 
     public PaintMode getMode() {
-        Stats.onNativeCall();
-        return PaintMode.values()[_nGetMode(_ptr)];
+        try {
+            Stats.onNativeCall();
+            return PaintMode.values()[_nGetMode(_ptr)];
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Paint setMode(PaintMode style) {
@@ -44,8 +58,12 @@ public class Paint extends Managed {
     }
 
     public int getColor() {
-        Stats.onNativeCall();
-        return _nGetColor(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetColor(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Paint setColor(int color) {
@@ -61,8 +79,12 @@ public class Paint extends Managed {
      * @return  unpremultiplied RGBA
      */
     public Color4f getColor4f() {
-        Stats.onNativeCall();
-        return _nGetColor4f(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetColor4f(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -87,14 +109,22 @@ public class Paint extends Managed {
      * @return            this
      */
     public Paint setColor4f(Color4f color, ColorSpace colorSpace) {
-        Stats.onNativeCall();
-        _nSetColor4f(_ptr, color.getR(), color.getG(), color.getB(), color.getA(), Native.getPtr(colorSpace));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetColor4f(_ptr, color.getR(), color.getG(), color.getB(), color.getA(), Native.getPtr(colorSpace));
+            return this;
+        } finally {
+            Reference.reachabilityFence(colorSpace);
+        }
     }
 
     public float getStrokeWidth() {
-        Stats.onNativeCall();
-        return _nGetStrokeWidth(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetStrokeWidth(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Paint setStrokeWidth(float width) {
@@ -104,8 +134,12 @@ public class Paint extends Managed {
     }
 
     public float getStrokeMiter() {
-        Stats.onNativeCall();
-        return _nGetStrokeMiter(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetStrokeMiter(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Paint setStrokeMiter(float limit) {
@@ -115,8 +149,12 @@ public class Paint extends Managed {
     }
 
     public PaintStrokeCap getStrokeCap() {
-        Stats.onNativeCall();
-        return PaintStrokeCap.values()[_nGetStrokeCap(_ptr)];
+        try {
+            Stats.onNativeCall();
+            return PaintStrokeCap.values()[_nGetStrokeCap(_ptr)];
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Paint setStrokeCap(PaintStrokeCap cap) {
@@ -126,8 +164,12 @@ public class Paint extends Managed {
     }
 
     public PaintStrokeJoin getStrokeJoin() {
-        Stats.onNativeCall();
-        return PaintStrokeJoin.values()[_nGetStrokeJoin(_ptr)];
+        try {
+            Stats.onNativeCall();
+            return PaintStrokeJoin.values()[_nGetStrokeJoin(_ptr)];
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Paint setStrokeJoin(PaintStrokeJoin join) {
@@ -141,11 +183,16 @@ public class Paint extends Managed {
     }
 
     public Path getFillPath(Path src, Rect cull, float resScale) {
-        Stats.onNativeCall();
-        if (cull == null)
-            return new Path(_nGetFillPath(_ptr, Native.getPtr(src), resScale));
-        else
-            return new Path(_nGetFillPathCull(_ptr, Native.getPtr(src), cull._left, cull._top, cull._right, cull._bottom, resScale));
+        try {
+            Stats.onNativeCall();
+            if (cull == null)
+                return new Path(_nGetFillPath(_ptr, Native.getPtr(src), resScale));
+            else
+                return new Path(_nGetFillPathCull(_ptr, Native.getPtr(src), cull._left, cull._top, cull._right, cull._bottom, resScale));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(src);
+        }
     }
 
     /**
@@ -153,9 +200,13 @@ public class Paint extends Managed {
      * @see     <a href="https://fiddle.skia.org/c/@Paint_refShader">https://fiddle.skia.org/c/@Paint_refShader</a>
      */
     public Shader getShader() {
-        Stats.onNativeCall();
-        long shaderPtr = _nGetShader(_ptr);
-        return shaderPtr == 0 ? null : new Shader(shaderPtr);
+        try {
+            Stats.onNativeCall();
+            long shaderPtr = _nGetShader(_ptr);
+            return shaderPtr == 0 ? null : new Shader(shaderPtr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -165,9 +216,13 @@ public class Paint extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Paint_setShader">https://fiddle.skia.org/c/@Paint_setShader</a>
      */
     public Paint setShader(Shader shader) {
-        Stats.onNativeCall();
-        _nSetShader(_ptr, Native.getPtr(shader));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetShader(_ptr, Native.getPtr(shader));
+            return this;
+        } finally {
+            Reference.reachabilityFence(shader);
+        }
     }
 
     /**
@@ -175,9 +230,13 @@ public class Paint extends Managed {
      * @see     <a href="https://fiddle.skia.org/c/@Paint_refColorFilter">https://fiddle.skia.org/c/@Paint_refColorFilter</a>
      */
     public ColorFilter getColorFilter() {
-        Stats.onNativeCall();
-        long colorFilterPtr = _nGetColorFilter(_ptr);
-        return colorFilterPtr == 0 ? null : new ColorFilter(colorFilterPtr);
+        try {
+            Stats.onNativeCall();
+            long colorFilterPtr = _nGetColorFilter(_ptr);
+            return colorFilterPtr == 0 ? null : new ColorFilter(colorFilterPtr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -187,14 +246,22 @@ public class Paint extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Paint_setColorFilter">https://fiddle.skia.org/c/@Paint_setColorFilter</a>
      */
     public Paint setColorFilter(ColorFilter colorFilter) {
-        Stats.onNativeCall();
-        _nSetColorFilter(_ptr, Native.getPtr(colorFilter));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetColorFilter(_ptr, Native.getPtr(colorFilter));
+            return this;
+        } finally {
+            Reference.reachabilityFence(colorFilter);
+        }
     }
 
     public BlendMode getBlendMode() {
-        Stats.onNativeCall();
-        return BlendMode.values()[_nGetBlendMode(_ptr)];
+        try {
+            Stats.onNativeCall();
+            return BlendMode.values()[_nGetBlendMode(_ptr)];
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Paint setBlendMode(BlendMode mode) {
@@ -208,9 +275,13 @@ public class Paint extends Managed {
      * @see     <a href="https://fiddle.skia.org/c/@Paint_refPathEffect">https://fiddle.skia.org/c/@Paint_refPathEffect</a>
      */
     public PathEffect getPathEffect() {
-        Stats.onNativeCall();
-        long pathEffectPtr = _nGetPathEffect(_ptr);
-        return pathEffectPtr == 0 ? null : new PathEffect(pathEffectPtr);
+        try {
+            Stats.onNativeCall();
+            long pathEffectPtr = _nGetPathEffect(_ptr);
+            return pathEffectPtr == 0 ? null : new PathEffect(pathEffectPtr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -220,9 +291,13 @@ public class Paint extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Paint_setPathEffect">https://fiddle.skia.org/c/@Paint_setPathEffect</a>
      */
     public Paint setPathEffect(PathEffect p) {
-        Stats.onNativeCall();
-        _nSetPathEffect(_ptr, Native.getPtr(p));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetPathEffect(_ptr, Native.getPtr(p));
+            return this;
+        } finally {
+            Reference.reachabilityFence(p);
+        }
     }
 
     /**
@@ -230,9 +305,13 @@ public class Paint extends Managed {
      * @see     <a href="https://fiddle.skia.org/c/@Paint_refMaskFilter">https://fiddle.skia.org/c/@Paint_refMaskFilter</a>
      */
     public MaskFilter getMaskFilter() {
-        Stats.onNativeCall();
-        long maskFilterPtr = _nGetMaskFilter(_ptr);
-        return maskFilterPtr == 0 ? null : new MaskFilter(maskFilterPtr);
+        try {
+            Stats.onNativeCall();
+            long maskFilterPtr = _nGetMaskFilter(_ptr);
+            return maskFilterPtr == 0 ? null : new MaskFilter(maskFilterPtr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -243,9 +322,13 @@ public class Paint extends Managed {
      * @see  <a href="https://fiddle.skia.org/c/@Typeface_Methods">https://fiddle.skia.org/c/@Typeface_Methods</a>
      */
     public Paint setMaskFilter(MaskFilter maskFilter) {
-        Stats.onNativeCall();
-        _nSetMaskFilter(_ptr, Native.getPtr(maskFilter));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetMaskFilter(_ptr, Native.getPtr(maskFilter));
+            return this;
+        } finally {
+            Reference.reachabilityFence(maskFilter);
+        }
     }
 
     /**
@@ -253,9 +336,13 @@ public class Paint extends Managed {
      * @see     <a href="https://fiddle.skia.org/c/@Paint_refImageFilter">https://fiddle.skia.org/c/@Paint_refImageFilter</a>
      */
     public ImageFilter getImageFilter() {
-        Stats.onNativeCall();
-        long imageFilterPtr = _nGetImageFilter(_ptr);
-        return imageFilterPtr == 0 ? null : new ImageFilter(imageFilterPtr);
+        try {
+            Stats.onNativeCall();
+            long imageFilterPtr = _nGetImageFilter(_ptr);
+            return imageFilterPtr == 0 ? null : new ImageFilter(imageFilterPtr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -265,14 +352,22 @@ public class Paint extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Paint_setImageFilter">https://fiddle.skia.org/c/@Paint_setImageFilter</a>
      */
     public Paint setImageFilter(ImageFilter imageFilter) {
-        Stats.onNativeCall();
-        _nSetImageFilter(_ptr, Native.getPtr(imageFilter));
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nSetImageFilter(_ptr, Native.getPtr(imageFilter));
+            return this;
+        } finally {
+            Reference.reachabilityFence(imageFilter);
+        }
     }
 
     public FilterQuality getFilterQuality() {
-        Stats.onNativeCall();
-        return FilterQuality.values()[_nGetFilterQuality(_ptr)];
+        try {
+            Stats.onNativeCall();
+            return FilterQuality.values()[_nGetFilterQuality(_ptr)];
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     public Paint setFilterQuality(FilterQuality filterQuality) {

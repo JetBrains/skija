@@ -1,5 +1,6 @@
 package org.jetbrains.skija.impl;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 
 public abstract class Native {
@@ -20,14 +21,21 @@ public abstract class Native {
 
     @Override
     public boolean equals(Object other) {
-        if (this == other)
-            return true;
-        if (!getClass().isInstance(other))
-            return false;
-        Native nOther = (Native) other;
-        if (_ptr == nOther._ptr)
-            return true;
-        return _nativeEquals(nOther);
+        try {
+            if (this == other)
+                return true;
+            if (null == other)
+                return false;
+            if (!getClass().isInstance(other))
+                return false;
+            Native nOther = (Native) other;
+            if (_ptr == nOther._ptr)
+                return true;
+            return _nativeEquals(nOther);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(other);
+        }
     }
 
     @ApiStatus.Internal

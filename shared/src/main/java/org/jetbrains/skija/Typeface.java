@@ -1,6 +1,7 @@
 package org.jetbrains.skija;
 
-import java.util.Arrays;
+import java.lang.ref.*;
+import java.util.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -11,8 +12,12 @@ public class Typeface extends RefCnt {
      * @return  the typeface’s intrinsic style attributes
      */
     public FontStyle getFontStyle() {
-        Stats.onNativeCall();
-        return new FontStyle(_nGetFontStyle(_ptr));
+        try {
+            Stats.onNativeCall();
+            return new FontStyle(_nGetFontStyle(_ptr));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -34,8 +39,12 @@ public class Typeface extends RefCnt {
      * @return  true if the typeface claims to be fixed-pitch
      */
     public boolean isFixedPitch() {
-        Stats.onNativeCall();
-        return _nIsFixedPitch(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nIsFixedPitch(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -44,8 +53,12 @@ public class Typeface extends RefCnt {
      */
     @Nullable
     public FontVariation[] getVariations() {
-        Stats.onNativeCall();
-        return _nGetVariations(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetVariations(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
         /**
@@ -54,16 +67,24 @@ public class Typeface extends RefCnt {
      */
     @Nullable
     public FontVariationAxis[] getVariationAxes() {
-        Stats.onNativeCall();
-        return _nGetVariationAxes(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetVariationAxes(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * @return  a 32bit value for this typeface, unique for the underlying font data. Never 0
      */
     public int getUniqueId() {
-        Stats.onNativeCall();
-        return _nGetUniqueId(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetUniqueId(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -71,7 +92,12 @@ public class Typeface extends RefCnt {
      */
     @ApiStatus.Internal @Override
     public boolean _nativeEquals(Native other) {
-        return _nEquals(_ptr, Native.getPtr(other));
+        try {
+            return _nEquals(_ptr, Native.getPtr(other));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(other);
+        }
     }
 
     /**
@@ -134,11 +160,15 @@ public class Typeface extends RefCnt {
      */
     @NotNull
     public static Typeface makeFromData(Data data, int index) {
-        Stats.onNativeCall();
-        long ptr = _nMakeFromData(Native.getPtr(data), index);
-        if (ptr == 0)
-            throw new IllegalArgumentException("Failed to create Typeface from data " + data);
-        return new Typeface(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nMakeFromData(Native.getPtr(data), index);
+            if (ptr == 0)
+                throw new IllegalArgumentException("Failed to create Typeface from data " + data);
+            return new Typeface(ptr);
+        } finally {
+            Reference.reachabilityFence(data);
+        }
     }
 
     /**
@@ -171,13 +201,17 @@ public class Typeface extends RefCnt {
      * @throws IllegalArgumentException  on failure
      */
     public Typeface makeClone(FontVariation[] variations, int collectionIndex) {
-        if (variations.length == 0)
-            return this;
-        Stats.onNativeCall();
-        long ptr = _nMakeClone(_ptr, variations, collectionIndex);
-        if (ptr == 0)
-            throw new IllegalArgumentException("Failed to clone Typeface " + this + " with " + Arrays.toString(variations));
-        return new Typeface(ptr);
+        try {
+            if (variations.length == 0)
+                return this;
+            Stats.onNativeCall();
+            long ptr = _nMakeClone(_ptr, variations, collectionIndex);
+            if (ptr == 0)
+                throw new IllegalArgumentException("Failed to clone Typeface " + this + " with " + Arrays.toString(variations));
+            return new Typeface(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -195,8 +229,12 @@ public class Typeface extends RefCnt {
      *  @return  the corresponding glyph IDs for each character.
      */
     public short[] getUTF32Glyphs(int[] uni) {
-        Stats.onNativeCall();
-        return _nGetUTF32Glyphs(_ptr, uni);
+        try {
+            Stats.onNativeCall();
+            return _nGetUTF32Glyphs(_ptr, uni);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -204,40 +242,60 @@ public class Typeface extends RefCnt {
      *  @return  the glyph that corresponds to the specified unicode code-point (in UTF32 encoding). If the unichar is not supported, returns 0
      */
     public short getUTF32Glyph(int unichar) {
-        Stats.onNativeCall();
-        return _nGetUTF32Glyph(_ptr, unichar);
+        try {
+            Stats.onNativeCall();
+            return _nGetUTF32Glyph(_ptr, unichar);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * @return  the number of glyphs in the typeface
      */
     public int getGlyphsCount() {
-        Stats.onNativeCall();
-        return _nGetGlyphsCount(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetGlyphsCount(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /** 
      * @return  the number of tables in the font
      */
     public int getTablesCount() {
-        Stats.onNativeCall();
-        return _nGetTablesCount(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetTablesCount(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * @return  the list of table tags in the font
      */
     public String[] getTableTags() {
-        Stats.onNativeCall();
-        return Arrays.stream(_nGetTableTags(_ptr)).mapToObj(FourByteTag::toString).toArray(String[]::new);
+        try {
+            Stats.onNativeCall();
+            return Arrays.stream(_nGetTableTags(_ptr)).mapToObj(FourByteTag::toString).toArray(String[]::new);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * Given a table tag, return the size of its contents, or 0 if not present
      */
     public long getTableSize(String tag) {
-        Stats.onNativeCall();
-        return _nGetTableSize(_ptr, FourByteTag.fromString(tag));
+        try {
+            Stats.onNativeCall();
+            return _nGetTableSize(_ptr, FourByteTag.fromString(tag));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -249,17 +307,25 @@ public class Typeface extends RefCnt {
      */
     @Nullable
     public Data getTableData(String tag) {
-        Stats.onNativeCall();
-        long ptr = _nGetTableData(_ptr, FourByteTag.fromString(tag));
-        return ptr == 0 ? null : new Data(ptr);
+        try {
+            Stats.onNativeCall();
+            long ptr = _nGetTableData(_ptr, FourByteTag.fromString(tag));
+            return ptr == 0 ? null : new Data(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * @return  the units-per-em value for this typeface, or zero if there is an error
      */
     public int getUnitsPerEm() {
-        Stats.onNativeCall();
-        return _nGetUnitsPerEm(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetUnitsPerEm(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -276,24 +342,36 @@ public class Typeface extends RefCnt {
      */
     @Nullable
     public int[] getKerningPairAdjustments(short[] glyphs) {
-        Stats.onNativeCall();
-        return _nGetKerningPairAdjustments(_ptr, glyphs);
+        try {
+            Stats.onNativeCall();
+            return _nGetKerningPairAdjustments(_ptr, glyphs);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * @return  all of the family names specified by the font
      */
     public String[] getFamilyNames() {
-        Stats.onNativeCall();
-        return _nGetFamilyNames(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetFamilyNames(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
      * @return  the family name for this typeface. The language of the name is whatever the host platform chooses
      */
     public String getFamilyName() {
-        Stats.onNativeCall();
-        return _nGetFamilyName(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetFamilyName(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -302,8 +380,12 @@ public class Typeface extends RefCnt {
      * will not take into account any hinting or other size-specific adjustments.
      */
     public Rect getBounds() {
-        Stats.onNativeCall();
-        return _nGetBounds(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetBounds(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal

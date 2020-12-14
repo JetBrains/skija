@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -7,8 +8,13 @@ public class ColorFilter extends RefCnt {
     static { Library.staticLoad(); }
     
     public static ColorFilter makeComposed(ColorFilter outer, ColorFilter inner) {
-        Stats.onNativeCall();
-        return new ColorFilter(_nMakeComposed(Native.getPtr(outer), Native.getPtr(inner)));
+        try {
+            Stats.onNativeCall();
+            return new ColorFilter(_nMakeComposed(Native.getPtr(outer), Native.getPtr(inner)));
+        } finally {
+            Reference.reachabilityFence(outer);
+            Reference.reachabilityFence(inner);
+        }
     }
 
     public static ColorFilter makeBlend(int color, BlendMode mode) {
@@ -45,7 +51,12 @@ public class ColorFilter extends RefCnt {
     }
 
     public static ColorFilter makeLerp(ColorFilter dst, ColorFilter src, float t) {
-        return new ColorFilter(_nMakeLerp(t, Native.getPtr(dst), Native.getPtr(src)));
+        try {
+            return new ColorFilter(_nMakeLerp(t, Native.getPtr(dst), Native.getPtr(src)));
+        } finally {
+            Reference.reachabilityFence(dst);
+            Reference.reachabilityFence(src);
+        }
     }
 
     public static ColorFilter makeLighting(int colorMul, int colorAdd) {

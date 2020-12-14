@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.*;
 import java.io.*;
 import org.jetbrains.skija.impl.*;
 import org.jetbrains.annotations.*;
@@ -19,8 +20,7 @@ public abstract class Drawable extends RefCnt {
 
     public Drawable() {
         super(_nMake());
-        Stats.onNativeCall();
-        
+        Stats.onNativeCall();        
         Stats.onNativeCall();
         _nInit(_ptr);
     }
@@ -52,15 +52,23 @@ public abstract class Drawable extends RefCnt {
      */
     @ApiStatus.NonExtendable
     public Drawable draw(Canvas canvas, @Nullable Matrix33 matrix) {
-        Stats.onNativeCall();
-        _nDraw(_ptr, Native.getPtr(canvas), matrix == null ? null : matrix._mat);
-        return this;
+        try {
+            Stats.onNativeCall();
+            _nDraw(_ptr, Native.getPtr(canvas), matrix == null ? null : matrix._mat);
+            return this;
+        } finally {
+            Reference.reachabilityFence(canvas);
+        }
     }
 
     @ApiStatus.NonExtendable
     public Picture makePictureSnapshot() {
-        Stats.onNativeCall();
-        return new Picture(_nMakePictureSnapshot(_ptr));
+        try {
+            Stats.onNativeCall();
+            return new Picture(_nMakePictureSnapshot(_ptr));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
@@ -71,8 +79,12 @@ public abstract class Drawable extends RefCnt {
      * a new value will be returned the next time it is called.</p>
      */
     public int getGenerationId() {
-        Stats.onNativeCall();
-        return _nGetGenerationId(_ptr);
+        try {
+            Stats.onNativeCall();
+            return _nGetGenerationId(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     /**
