@@ -3,6 +3,7 @@ package org.jetbrains.skija.impl;
 import java.time.*;
 import java.time.format.*;
 import java.util.*;
+import java.util.function.*;
 import org.jetbrains.annotations.*;
 
 public class Log {
@@ -30,27 +31,56 @@ public class Log {
     }
 
     public static void trace(String s) {
-        log(1, "[TRACE] " + s);
+        _log(1, "[TRACE]", s);
     }
 
     public static void debug(String s) {
-        log(2, "[DEBUG] " + s);
+        _log(2, "[DEBUG]", s);
     }
 
     public static void info(String s) {
-        log(3, "[INFO ] " + s);
+        _log(3, "[INFO ]", s);
     }
 
     public static void warn(String s) {
-        log(4, "[WARN ] " + s);
+        _log(4, "[WARN ]", s);
     }
 
     public static void error(String s) {
-        log(5, "[ERROR] " + s);
+        _log(5, "[ERROR]", s);
     }
 
-    public static void log(int level, String s) {
+    public static void trace(Supplier<String> s) {
+        _log(1, "[TRACE]", s);
+    }
+
+    public static void debug(Supplier<String> s) {
+        _log(2, "[DEBUG]", s);
+    }
+
+    public static void info(Supplier<String> s) {
+        _log(3, "[INFO ]", s);
+    }
+
+    public static void warn(Supplier<String> s) {
+        _log(4, "[WARN ]", s);
+    }
+
+    public static void error(Supplier<String> s) {
+        _log(5, "[ERROR]", s);
+    }
+
+    public static String _time() {
+        return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
+    }
+
+    public static void _log(int level, String prefix, String s) {
         if (level >= _level)
-            System.out.println(ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT) + " " + s);
+            System.out.println(_time() + " " + prefix + " " + s);
+    }
+
+    public static void _log(int level, String prefix, Supplier<String> s) {
+        if (level >= _level)
+            System.out.println(_time() + " " + prefix + " " + s.get());
     }
 }

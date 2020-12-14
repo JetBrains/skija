@@ -60,7 +60,7 @@ public class ParagraphCache extends Native {
 
     @ApiStatus.Internal
     public void _validate() {
-        if (_owner._ptr == 0)
+        if (Native.getPtr(_owner) == 0)
             throw new IllegalStateException("ParagraphCache needs owning FontCollection to be alive");
     }
 

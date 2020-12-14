@@ -1732,7 +1732,7 @@ public class Path extends Managed implements Iterable<PathSegment> {
     @Nullable
     public static Path makeCombining(@NotNull Path one, @NotNull Path two, PathOp op) {
         Stats.onNativeCall();
-        long ptr = _nMakeCombining(one._ptr, two._ptr, op.ordinal());
+        long ptr = _nMakeCombining(Native.getPtr(one), Native.getPtr(two), op.ordinal());
         return ptr == 0 ? null : new Path(ptr);
     }
 

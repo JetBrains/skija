@@ -7,8 +7,6 @@ import org.jetbrains.skija.impl.*;
 
 @Data @With @AllArgsConstructor
 public class SurfaceProps {
-    static { Library.staticLoad(); }
-    
     @ApiStatus.Internal 
     public boolean _deviceIndependentFonts;
     

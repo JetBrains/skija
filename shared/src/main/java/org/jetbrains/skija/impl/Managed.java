@@ -1,7 +1,7 @@
 package org.jetbrains.skija.impl;
 
 import org.jetbrains.annotations.*;
-import java.lang.ref.Cleaner;
+import java.lang.ref.*;
 
 public abstract class Managed extends Native implements AutoCloseable {
     @ApiStatus.Internal
@@ -49,6 +49,7 @@ public abstract class Managed extends Native implements AutoCloseable {
         }
 
         public void run() {
+            Log.trace(() -> "Cleaning " + _className + " " + Long.toString(_ptr, 16));
             Stats.onDeallocated(_className);
             Stats.onNativeCall();
             _nInvokeFinalizer(_finalizerPtr, _ptr);
