@@ -275,3 +275,15 @@ std::vector<SkString> skStringVector(JNIEnv* env, jobjectArray arr);
 jobjectArray javaStringArray(JNIEnv* env, const std::vector<SkString>& strings);
 
 void deleteJBytes(void* addr, void*);
+
+// On top level to allow instance sharing accross template instantiations.
+static jfieldID ptrFieldId = nullptr;
+template <typename T>
+T* getNativePtr(JNIEnv* env, jobject native) {
+    if (!ptrFieldId) {
+        jclass nativeClass = env->FindClass("org/jetbrains/skija/impl/Native");
+        ptrFieldId = env->GetFieldID(nativeClass, "_ptr", "J");
+    }
+    return reinterpret_cast<T*>(
+        static_cast<uintptr_t>(native ? env->GetLongField(native, ptrFieldId) : 0));
+}

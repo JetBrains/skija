@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.lang.ref.Reference;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
@@ -258,7 +259,8 @@ public class Canvas extends Managed {
 
     public Canvas drawImage(Image image, float left, float top, Paint paint) {
         Stats.onNativeCall();
-        _nDrawImageIRect(_ptr, Native.getPtr(image), 0, 0, image.getWidth(), image.getHeight(), left, top, left + image.getWidth(), top + image.getHeight(), Native.getPtr(paint), true);
+        long imagePtr = Native.getPtr(image);
+        _nDrawImageIRect(_ptr, image, 0, 0, image.getWidth(), image.getHeight(), left, top, left + image.getWidth(), top + image.getHeight(), Native.getPtr(paint), true);
         return this;
     }
 
@@ -268,7 +270,7 @@ public class Canvas extends Managed {
 
     public Canvas drawImageRect(Image image, Rect dst, Paint paint) {
         Stats.onNativeCall();
-        _nDrawImageIRect(_ptr, Native.getPtr(image), 0, 0, image.getWidth(), image.getHeight(), dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), true);
+        _nDrawImageIRect(_ptr, image, 0, 0, image.getWidth(), image.getHeight(), dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), true);
         return this;
     }
 
@@ -278,7 +280,7 @@ public class Canvas extends Managed {
 
     public Canvas drawImageRect(Image image, Rect src, Rect dst, Paint paint, boolean strict) {
         Stats.onNativeCall();
-        _nDrawImageRect(_ptr, Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
+        _nDrawImageRect(_ptr, image, src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
         return this;
     }
 
@@ -292,7 +294,7 @@ public class Canvas extends Managed {
 
     public Canvas drawImageIRect(Image image, IRect src, Rect dst, Paint paint, boolean strict) {
         Stats.onNativeCall();
-        _nDrawImageIRect(_ptr, Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
+        _nDrawImageIRect(_ptr, image, src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
         return this;
     }
 
@@ -1019,8 +1021,8 @@ public class Canvas extends Managed {
     public static native void _nDrawRRect(long ptr, float left, float top, float right, float bottom, float[] radii, long paintPtr);
     public static native void _nDrawDRRect(long ptr, float ol, float ot, float or, float ob, float[] oradii, float il, float it, float ir, float ib, float[] iradii, long paintPtr);
     public static native void _nDrawPath(long ptr, long nativePath, long paintPtr);
-    public static native void _nDrawImageRect(long ptr, long nativeImage, float sl, float st, float sr, float sb, float dl, float dt, float dr, float db, long paintPtr, boolean strict);
-    public static native void _nDrawImageIRect(long ptr, long nativeImage, int sl, int st, int sr, int sb, float dl, float dt, float dr, float db, long paintPtr, boolean strict);
+    public static native void _nDrawImageRect(long ptr, Image image, float sl, float st, float sr, float sb, float dl, float dt, float dr, float db, long paintPtr, boolean strict);
+    public static native void _nDrawImageIRect(long ptr, Image image, int sl, int st, int sr, int sb, float dl, float dt, float dr, float db, long paintPtr, boolean strict);
     public static native void _nDrawBitmapRect(long ptr, long bitmapPtr, float sl, float st, float sr, float sb, float dl, float dt, float dr, float db, long paintPtr, boolean strict);
     public static native void _nDrawBitmapIRect(long ptr, long bitmapPtr, int sl, int st, int sr, int sb, float dl, float dt, float dr, float db, long paintPtr, boolean strict);
     public static native void _nDrawRegion(long ptr, long nativeRegion, long paintPtr);

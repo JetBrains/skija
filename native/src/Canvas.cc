@@ -96,9 +96,9 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawPath
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawImageRect
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong imagePtr, jfloat sl, jfloat st, jfloat sr, jfloat sb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jlong paintPtr, jboolean strict) {
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jobject imageJvm, jfloat sl, jfloat st, jfloat sr, jfloat sb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jlong paintPtr, jboolean strict) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
-    SkImage* image = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(imagePtr));
+    SkImage* image = getNativePtr<SkImage>(env, imageJvm);
     SkRect src {sl, st, sr, sb};
     SkRect dst {dl, dt, dr, db};
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
@@ -107,9 +107,9 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawImageRe
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawImageIRect
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong imagePtr, jint sl, jint st, jint sr, jint sb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jlong paintPtr, jboolean strict) {
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jobject imageJvm, jint sl, jint st, jint sr, jint sb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jlong paintPtr, jboolean strict) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
-    SkImage* image = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(imagePtr));
+    SkImage* image = getNativePtr<SkImage>(env, imageJvm);
     SkIRect src {sl, st, sr, sb};
     SkRect dst {dl, dt, dr, db};
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
