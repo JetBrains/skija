@@ -155,6 +155,8 @@ public class Paragraph extends Managed {
 
     public LineMetrics[] getLineMetrics() {
         try {
+            if (_text == null)
+                return new LineMetrics[0];
             Stats.onNativeCall();
             return _nGetLineMetrics(_ptr, Native.getPtr(_text));
         } finally {
@@ -202,8 +204,10 @@ public class Paragraph extends Managed {
 
     public Paragraph updateFontSize(int from, int to, float size) {
         try {
-            Stats.onNativeCall();
-            _nUpdateFontSize(_ptr, from, to, size, Native.getPtr(_text));
+            if (_text != null) {
+                Stats.onNativeCall();
+                _nUpdateFontSize(_ptr, from, to, size, Native.getPtr(_text));
+            }
             return this;
         } finally {
             Reference.reachabilityFence(_text);
@@ -212,8 +216,10 @@ public class Paragraph extends Managed {
 
     public Paragraph updateForegroundPaint(int from, int to, Paint paint) {
         try {
-            Stats.onNativeCall();
-            _nUpdateForegroundPaint(_ptr, from, to, Native.getPtr(paint), Native.getPtr(_text));
+            if (_text != null) {
+                Stats.onNativeCall();
+                _nUpdateForegroundPaint(_ptr, from, to, Native.getPtr(paint), Native.getPtr(_text));
+            }
             return this;
         } finally {
             Reference.reachabilityFence(paint);
@@ -223,8 +229,10 @@ public class Paragraph extends Managed {
 
     public Paragraph updateBackgroundPaint(int from, int to, Paint paint) {
         try {
-            Stats.onNativeCall();
-            _nUpdateBackgroundPaint(_ptr, from, to, Native.getPtr(paint), Native.getPtr(_text));
+            if (_text != null) {
+                Stats.onNativeCall();
+                _nUpdateBackgroundPaint(_ptr, from, to, Native.getPtr(paint), Native.getPtr(_text));
+            }
             return this;
         } finally {
             Reference.reachabilityFence(paint);
@@ -234,7 +242,8 @@ public class Paragraph extends Managed {
 
     @ApiStatus.Internal
     public Paragraph(long ptr, ManagedString text) {
-        super(ptr, _FinalizerHolder.PTR); Stats.onNativeCall();
+        super(ptr, _FinalizerHolder.PTR);
+        Stats.onNativeCall();
         _text = text;
     }
 
