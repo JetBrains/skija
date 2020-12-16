@@ -9,8 +9,7 @@ public class TextBlobScene extends Scene {
     private float gap = 40;
 
     public TextBlobScene() {
-        var face = Typeface.makeFromFile("fonts/InterHinted-Regular.ttf");
-        font = new Font(face, 24);
+        font = new Font(inter, 24);
     }
     
     @Override

@@ -356,11 +356,12 @@ class Window {
         scenes.put("Squares",          new SquaresScene());
         scenes.put("SVG",              new SVGScene());
         scenes.put("Swing",            new SwingScene());
-        scenes.put("Text Blob",        new TextBlobScene());
         scenes.put("Text Style",       new TextStyleScene());
+        scenes.put("TextBlob",         new TextBlobScene());
+        scenes.put("TextBlob Bounds",  new TextBlobBoundsScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Paragraph";
+        currentScene = "TextBlob Bounds";
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {

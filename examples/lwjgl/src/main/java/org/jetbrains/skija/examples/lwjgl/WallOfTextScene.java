@@ -14,6 +14,7 @@ public class WallOfTextScene extends Scene {
     private String[] words;
     private String text;
     private Paint fill = new Paint();
+    private Paint boundsStroke = new Paint().setColor(0x803333CC).setMode(PaintMode.STROKE).setStrokeWidth(1);
     private int[] colors;
     private FontCollection fc = null;
 
@@ -36,8 +37,9 @@ public class WallOfTextScene extends Scene {
             "Paragraph with cache",
             "Paragraph no cache"
         };
-        _variantIdx = 8;
+        _variantIdx = 1;
         colors = new int[] {
+            0xFF000000,
             0xFFf94144,
             0xFFf3722c,
             0xFFf8961e,
@@ -99,16 +101,20 @@ public class WallOfTextScene extends Scene {
     void drawByWords(Shaper shaper, Canvas canvas, float padding, float textWidth) {
         var x = padding;
         var y = padding;
+        var space = font.measureTextWidth(" ");
+        var lineHeight = font.getMetrics().getHeight();
         for (int i = 0; i < words.length; ++i) {
             try (var blob = makeBlob(words[i], shaper, Float.POSITIVE_INFINITY);) {
-                var bounds = blob.getBounds();
-                var wordWidth = bounds.getRight();
+                var bounds = blob.getTightBounds();
+                var wordWidth = bounds.getWidth();
                 if (x + wordWidth > textWidth) {
                     x = padding;
-                    y += bounds.getHeight();
+                    y += lineHeight;
                 }
+                fill.setColor(colors[i % colors.length]);
+                canvas.drawRect(bounds.translate(x, y), boundsStroke);
                 canvas.drawTextBlob(blob, x, y, font, fill);
-                x += wordWidth;
+                x += wordWidth + space;
             }
         }
     }

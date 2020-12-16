@@ -99,6 +99,12 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_TextBlob__1nMakeFrom
 }
 
 // Must match SkTextBlobPriv.h
+//
+// Extended Textblob runs have more data after the Pos[] array:
+//
+//    -------------------------------------------------------------------------
+//    ... | RunRecord | Glyphs[] | Pos[] | TextSize | Clusters[] | Text[] | ...
+//    -------------------------------------------------------------------------
 class RunRecordClone {
 public:
     SkFont    fFont;
@@ -214,4 +220,31 @@ extern "C" JNIEXPORT jintArray JNICALL Java_org_jetbrains_skija_TextBlob__1nGetC
         stored += run.fGlyphCount;
     }
     return javaIntArray(env, clusters);
+}
+
+extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_TextBlob__1nGetTightBounds
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkTextBlob* instance = reinterpret_cast<SkTextBlob*>(static_cast<uintptr_t>(ptr));
+    SkTextBlob::Iter iter(*instance);
+    SkTextBlob::Iter::Run run;
+    auto bounds = SkRect::MakeEmpty();
+    SkRect tmpBounds;
+    SkGlyphID glyph;
+    SkPoint pos;
+    bool first = false;
+    while (iter.next(&run)) {
+        // run.fGlyphIndices points directly to runRecord.glyphBuffer(), which comes directly after RunRecord itself
+        auto runRecord = reinterpret_cast<const RunRecordClone*>(run.fGlyphIndices) - 1;
+        if (runRecord->positioning() != 2) // kFull_Positioning
+            return nullptr;
+        
+        runRecord->fFont.measureText(runRecord->glyphBuffer(), runRecord->fCount * sizeof(uint16_t), SkTextEncoding::kGlyphID, &tmpBounds, nullptr);
+        tmpBounds.offset(runRecord->posBuffer()[0], runRecord->posBuffer()[1]);
+        if (first) {
+            bounds.setLTRB(tmpBounds.fLeft, tmpBounds.fTop, tmpBounds.fRight, tmpBounds.fBottom);
+            first = false;
+        } else
+            bounds.join(tmpBounds);
+    }
+    return skija::Rect::fromSkRect(env, bounds);
 }
