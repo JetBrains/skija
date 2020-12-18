@@ -918,7 +918,7 @@ uint32_t skija::UtfIndicesConverter::from8To16(size_t i8) {
         fPos16 = 0;
     }
 
-    while ((size_t) (fPtr8 - fStart8) < i8) {
+    while (fPtr8 < fEnd8 && (size_t) (fPtr8 - fStart8) < i8) {
         SkUnichar u = SkUTF::NextUTF8(&fPtr8, fEnd8);
         fPos16 += (uint32_t) SkUTF::ToUTF16(u);
     }
