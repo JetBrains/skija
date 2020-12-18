@@ -36,7 +36,7 @@ public class ParagraphMetricsScene extends Scene {
     }
 
     public void drawSelection(Canvas canvas, float dx, float dy) {
-        try (TextStyle defaultTs = new TextStyle().setFontSize(24).setColor(0xFF000000);
+        try (TextStyle defaultTs = new TextStyle().setFontSize(24).setColor(0xFF000000).setHeight(1.2f);
              TextStyle largeTs   = new TextStyle().setFontSize(36).setColor(0xFF000000);
              TextStyle smallTs   = new TextStyle().setFontSize(12).setColor(0xFF000000);
              TextStyle ligaTs    = new TextStyle().setFontSize(24).setColor(0xFF000000).setFontFamilies(new String[] { "Interface" });
@@ -75,7 +75,9 @@ public class ParagraphMetricsScene extends Scene {
             pb.addText("  or infinite regress\n");
             pb.popStyle();
 
-            pb.addText("hello мир дружба fi fl 👃 one two ثلاثة 12 👂 34 خمسة\n");
+            pb.addText("hello мир дружба <<<");
+            pb.addPlaceholder(new PlaceholderStyle(50, 2f, PlaceholderAlignment.BASELINE, BaselineMode.ALPHABETIC, 0f));
+            pb.addText(">>> fi fl 👃 one two ثلاثة 12 👂 34 خمسة\n");
             pb.pushStyle(zapfinoTs);
             pb.addText("fiz officiad\n");
             pb.popStyle();

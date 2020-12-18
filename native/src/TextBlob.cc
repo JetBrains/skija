@@ -1,3 +1,4 @@
+
 #include <cstring>
 #include <iostream>
 #include <jni.h>
@@ -212,8 +213,9 @@ extern "C" JNIEXPORT jintArray JNICALL Java_org_jetbrains_skija_TextBlob__1nGetC
         
         skija::UtfIndicesConverter conv(runRecord->textBuffer(), runRecord->textSize());
         clusters.resize(stored + run.fGlyphCount);
+        uint32_t* clusterBuffer = runRecord->clusterBuffer();
         for (int i = 0; i < run.fGlyphCount; ++i)
-            clusters[stored + i] = conv.from8To16(runRecord->clusterBuffer()[i]) + runStart16;
+            clusters[stored + i] = runStart16 + conv.from8To16(clusterBuffer[i]);
         runStart16 += conv.from8To16(runRecord->textSize());
         // memcpy(&clusters[stored], runRecord->clusterBuffer(), run.fGlyphCount * sizeof(uint32_t));
         
@@ -238,8 +240,9 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_TextBlob__1nGetTig
         if (runRecord->positioning() != 2) // kFull_Positioning
             return nullptr;
         
-        runRecord->fFont.measureText(runRecord->glyphBuffer(), runRecord->fCount * sizeof(uint16_t), SkTextEncoding::kGlyphID, &tmpBounds, nullptr);
-        tmpBounds.offset(runRecord->posBuffer()[0], runRecord->posBuffer()[1]);
+        runRecord->fFont.measureText(runRecord->glyphBuffer(), run.fGlyphCount * sizeof(uint16_t), SkTextEncoding::kGlyphID, &tmpBounds, nullptr);
+        SkScalar* posBuffer = runRecord->posBuffer();
+        tmpBounds.offset(posBuffer[0], posBuffer[1]);
         if (first) {
             bounds.setLTRB(tmpBounds.fLeft, tmpBounds.fTop, tmpBounds.fRight, tmpBounds.fBottom);
             first = false;
@@ -265,12 +268,126 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_TextBlob__1nGetBlo
         if (runRecord->positioning() != 2) // kFull_Positioning
             return nullptr;
 
+        SkScalar* posBuffer = runRecord->posBuffer();
         const SkFont& font = runRecord->fFont;
         font.getMetrics(&metrics);
-        bottom = std::max(bottom, runRecord->posBuffer()[1] + metrics.fDescent);
+        bottom = std::max(bottom, posBuffer[1] + metrics.fDescent);
         
-        font.getWidths(&runRecord->glyphBuffer()[runRecord->fCount - 1], 1, &width);
-        right = std::max(right, runRecord->posBuffer()[runRecord->fCount * 2 - 2] + width);
+        font.getWidths(&run.fGlyphIndices[run.fGlyphCount - 1], 1, &width);
+        right = std::max(right, posBuffer[run.fGlyphCount * 2 - 2] + width);
     }
     return skija::Rect::fromSkRect(env, SkRect {0, 0, right, bottom});
+}
+
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_TextBlob__1nGetOffsetAtCoord
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloat x, jfloat y) {
+    SkTextBlob* instance = reinterpret_cast<SkTextBlob*>(static_cast<uintptr_t>(ptr));
+    SkTextBlob::Iter iter(*instance);
+    SkTextBlob::Iter::Run run;
+    uint32_t runStart16 = 0;
+
+    while (iter.next(&run)) {
+        auto runRecord = reinterpret_cast<const RunRecordClone*>(run.fGlyphIndices) - 1;
+        if (runRecord->positioning() != 2 || !runRecord->isExtended()) // kFull_Positioning
+            return -1;
+        skija::UtfIndicesConverter conv(runRecord->textBuffer(), runRecord->textSize());
+        SkScalar* posBuffer = runRecord->posBuffer();
+        
+        // check if we need to skip this line
+        const SkFont& font = runRecord->fFont;
+        SkFontMetrics metrics;
+        font.getMetrics(&metrics);
+        SkScalar lineBottom = posBuffer[1] + metrics.fDescent;
+        if (y > lineBottom) {
+            runStart16 += conv.from8To16(runRecord->textSize());
+            continue;
+        }
+
+        // check if we ended prev line after last char, except for the first li
+        SkScalar lineTop = posBuffer[1] + metrics.fAscent;
+        if (lineTop > 0 && y < lineTop)
+            return runStart16;
+
+        // check last glyph first, since its right boundary is calculated differently
+        SkScalar lastGlyphWidth;
+        font.getWidths(&run.fGlyphIndices[run.fGlyphCount - 1], 1, &lastGlyphWidth);
+        SkScalar lastGlyphCenter = posBuffer[run.fGlyphCount * 2 - 2] + lastGlyphWidth / 2;
+        if (x > lastGlyphCenter) {
+            runStart16 += conv.from8To16(runRecord->textSize());
+            continue;
+        }
+
+        // have to look in this run
+        SkScalar glyphLeft = posBuffer[0];
+        uint32_t idx = 0;
+        for (; idx < run.fGlyphCount - 1; ++idx) {
+            SkScalar glyphRight = posBuffer[(idx + 1) * 2];
+            SkScalar glyphCenter = (glyphLeft + glyphRight) / 2;
+            if (x < glyphCenter)
+                break;
+            glyphLeft = glyphRight;
+        }
+        return runStart16 + conv.from8To16(runRecord->clusterBuffer()[idx]);
+    }
+
+    return runStart16;
+}
+
+extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_TextBlob__1nGetCoordAtOffset
+  (JNIEnv* env, jclass jclass, jlong ptr, jint target16) {
+    SkTextBlob* instance = reinterpret_cast<SkTextBlob*>(static_cast<uintptr_t>(ptr));
+    SkTextBlob::Iter iter(*instance);
+    SkTextBlob::Iter::Run run;
+    uint32_t runStart16 = 0;
+    SkScalar prevGlyphLeft = 0;
+    SkScalar prevGlyphBaseline = 0;
+
+    while (iter.next(&run)) {
+        auto runRecord = reinterpret_cast<const RunRecordClone*>(run.fGlyphIndices) - 1;
+        if (runRecord->positioning() != 2 || !runRecord->isExtended()) // kFull_Positioning
+            return nullptr;
+        const SkFont& font = runRecord->fFont;
+        skija::UtfIndicesConverter conv(runRecord->textBuffer(), runRecord->textSize());
+        SkScalar* posBuffer = runRecord->posBuffer();
+        uint32_t* clusterBuffer = runRecord->clusterBuffer();
+        uint32_t offset16, prevOffset16 = 0;
+        
+        for (int glyphIdx = 0; glyphIdx < run.fGlyphCount + 1; ++glyphIdx) {
+            uint32_t offset8;
+            SkScalar glyphLeft;
+            if (glyphIdx < run.fGlyphCount) {
+                offset8 = clusterBuffer[glyphIdx] - clusterBuffer[0];
+                glyphLeft = posBuffer[glyphIdx * 2];
+            } else {
+                // one step after last glyph
+                offset8 = runRecord->textSize();
+                SkScalar lastGlyphWidth;
+                font.getWidths(&run.fGlyphIndices[run.fGlyphCount - 1], 1, &lastGlyphWidth);
+                glyphLeft = prevGlyphLeft + lastGlyphWidth;
+            }
+
+            offset16 = conv.from8To16(offset8);
+
+            // between prev and this: approximate
+            if (target16 - runStart16 < offset16) {
+                float ratio = (float) ((target16 - runStart16) - prevOffset16) / (float) (offset16 - prevOffset16);
+                return skija::Point::fromSkPoint(env, {(glyphLeft - prevGlyphLeft) * ratio + prevGlyphLeft, posBuffer[1]});
+            }
+
+            // exactly this
+            if (target16 - runStart16 == offset16)
+                return skija::Point::fromSkPoint(env, {glyphLeft, posBuffer[1]});
+
+            prevGlyphLeft = glyphLeft;
+            prevOffset16 = offset16;
+        }
+
+        // to next run
+        runStart16 += offset16;
+        prevGlyphBaseline = posBuffer[1];
+    }
+    
+    // no run matched, should not happen
+    std::cout << "WARN: no run matched " << prevGlyphLeft << " " << prevGlyphBaseline << std::endl;
+    return nullptr; // skija::Point::fromSkPoint(env, {prevGlyphLeft, prevGlyphBaseline});
 }
