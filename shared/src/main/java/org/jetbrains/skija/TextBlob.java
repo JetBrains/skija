@@ -223,6 +223,25 @@ public class TextBlob extends Managed {
         }
     }
 
+   /**
+     * Only works on TextBlobs that come from TextBlobBuilderRunHandler/Shaper default handler.
+     * 
+     * @return  tight bounds around all the glyphs in the TextBlob
+     * @throws  IllegalArgumentException if TextBlob doesn’t have this information
+     */
+    @NotNull
+    public Rect getBlockBounds() {
+        try {
+            Stats.onNativeCall();
+            Rect res = _nGetBlockBounds(_ptr);
+            if (res == null)
+                throw new IllegalArgumentException();
+            return res;
+        } finally {
+            Reference.reachabilityFence(this);
+        }
+    }
+
     @ApiStatus.Internal
     public static class _FinalizerHolder {
         public static final long PTR = _nGetFinalizer();
@@ -241,4 +260,5 @@ public class TextBlob extends Managed {
     @ApiStatus.Internal public static native float[] _nGetPositions(long ptr);
     @ApiStatus.Internal public static native int[] _nGetClusters(long ptr);
     @ApiStatus.Internal public static native Rect _nGetTightBounds(long ptr);
+    @ApiStatus.Internal public static native Rect _nGetBlockBounds(long ptr);
 }

@@ -40,6 +40,7 @@ public class ParagraphMetricsScene extends Scene {
              TextStyle largeTs   = new TextStyle().setFontSize(36).setColor(0xFF000000);
              TextStyle smallTs   = new TextStyle().setFontSize(12).setColor(0xFF000000);
              TextStyle ligaTs    = new TextStyle().setFontSize(24).setColor(0xFF000000).setFontFamilies(new String[] { "Interface" });
+             TextStyle zapfinoTs = new TextStyle().setFontSize(24).setColor(0xFF000000).setFontFamilies(new String[] { "Zapfino" });
              ParagraphStyle ps   = new ParagraphStyle();
              ParagraphBuilder pb = new ParagraphBuilder(ps, fc);
              ParagraphStyle ps2  = new ParagraphStyle().setAlignment(Alignment.RIGHT);)
@@ -71,7 +72,12 @@ public class ParagraphMetricsScene extends Scene {
             pb.pushStyle(defaultTs);
             pb.addText("— Vicious circularity, \n");
             pb.pushStyle(smallTs);
-            pb.addText("  or infinite regress");
+            pb.addText("  or infinite regress\n");
+            pb.popStyle();
+
+            pb.addText("hello мир дружба fi fl 👃 one two ثلاثة 12 👂 34 خمسة\n");
+            pb.pushStyle(zapfinoTs);
+            pb.addText("fiz officiad\n");
             pb.popStyle();
 
             try (Paragraph p = pb.build();) {

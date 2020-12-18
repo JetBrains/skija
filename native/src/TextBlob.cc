@@ -248,3 +248,29 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_TextBlob__1nGetTig
     }
     return skija::Rect::fromSkRect(env, bounds);
 }
+
+extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_TextBlob__1nGetBlockBounds
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkTextBlob* instance = reinterpret_cast<SkTextBlob*>(static_cast<uintptr_t>(ptr));
+    SkTextBlob::Iter iter(*instance);
+    SkTextBlob::Iter::Run run;
+    SkScalar right = 0;
+    SkScalar bottom = 0;
+    SkFontMetrics metrics;
+    SkGlyphID glyph;
+    SkScalar width;
+    while (iter.next(&run)) {
+        // run.fGlyphIndices points directly to runRecord.glyphBuffer(), which comes directly after RunRecord itself
+        auto runRecord = reinterpret_cast<const RunRecordClone*>(run.fGlyphIndices) - 1;
+        if (runRecord->positioning() != 2) // kFull_Positioning
+            return nullptr;
+
+        const SkFont& font = runRecord->fFont;
+        font.getMetrics(&metrics);
+        bottom = std::max(bottom, runRecord->posBuffer()[1] + metrics.fDescent);
+        
+        font.getWidths(&runRecord->glyphBuffer()[runRecord->fCount - 1], 1, &width);
+        right = std::max(right, runRecord->posBuffer()[runRecord->fCount * 2 - 2] + width);
+    }
+    return skija::Rect::fromSkRect(env, SkRect {0, 0, right, bottom});
+}

@@ -11,7 +11,7 @@ public class TextBlobBoundsScene extends Scene {
     private Font zapfino18 = new Font(FontMgr.getDefault().matchFamilyStyle("Zapfino", FontStyle.NORMAL), 18);
 
     public TextBlobBoundsScene() {
-        _variants = new String[] { "Tight", "Loose" };
+        _variants = new String[] { "Block", "Tight", "Loose" };
     }
     
     public void drawLine(Canvas canvas, String text, Font font) {
@@ -33,7 +33,13 @@ public class TextBlobBoundsScene extends Scene {
             try (var shaper = Shaper.makeShapeThenWrap();
                  var blob = shaper.shape(text, font, width);)
             {
-                var bounds = "Tight".equals(variantTitle()) ? blob.getTightBounds() : blob.getBounds();
+                Rect bounds;
+                if ("Block".equals(variantTitle()))
+                    bounds = blob.getBlockBounds();
+                else if ("Tight".equals(variantTitle()))
+                    bounds = blob.getTightBounds();
+                else // if ("Loose".equals(variantTitle()))
+                    bounds = blob.getBounds();
                 canvas.drawCircle(0, 0, 3, stroke);
                 canvas.drawRect(bounds, stroke);
                 canvas.drawTextBlob(blob, 0, 0, font, fill);
@@ -54,6 +60,6 @@ public class TextBlobBoundsScene extends Scene {
         drawLine(canvas, "multiple different lines", inter18, 50);
         drawLine(canvas, new String[] { "ace", "الخطوط", "🧛", "ace الخطوط 🧛" }, inter18);
         drawLine(canvas, "واحد اثنين ثلاثة", inter18);
-        drawLine(canvas, "fiz", zapfino18);
+        drawLine(canvas, new String[] { "fiz", "officiad", "fiz officiad"}, zapfino18);
     }
 }
