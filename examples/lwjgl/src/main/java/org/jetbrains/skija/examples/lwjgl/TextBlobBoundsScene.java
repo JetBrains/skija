@@ -43,6 +43,8 @@ public class TextBlobBoundsScene extends Scene {
                     bounds = blob.getTightBounds();
                 else // if ("Loose".equals(variantTitle()))
                     bounds = blob.getBounds();
+                float firstBaseline = blob.getFirstBaseline();
+                float lastBaseline = blob.getLastBaseline();
                     
                 canvas.translate(-bounds.getLeft(), -bounds.getTop());
                 cursor = cursor.offset(-bounds.getLeft(), -bounds.getTop());
@@ -57,6 +59,8 @@ public class TextBlobBoundsScene extends Scene {
                 
                 // bounds
                 canvas.drawRect(bounds, stroke);
+                canvas.drawLine(0, firstBaseline, bounds.getWidth(), firstBaseline, stroke);
+                canvas.drawLine(0, lastBaseline, bounds.getWidth(), lastBaseline, stroke);
 
                 // text
                 canvas.drawTextBlob(blob, 0, 0, font, fill);

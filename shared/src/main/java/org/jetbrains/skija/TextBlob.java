@@ -245,6 +245,44 @@ public class TextBlob extends Managed {
    /**
      * Only works on TextBlobs that come from TextBlobBuilderRunHandler/Shaper default handler.
      * 
+     * @return  first baseline in TextBlob
+     * @throws  IllegalArgumentException if TextBlob doesn’t have this information
+     */
+    @NotNull
+    public Float getFirstBaseline() {
+        try {
+            Stats.onNativeCall();
+            Float res = _nGetFirstBaseline(_ptr);
+            if (res == null)
+                throw new IllegalArgumentException();
+            return res;
+        } finally {
+            Reference.reachabilityFence(this);
+        }
+    }
+
+   /**
+     * Only works on TextBlobs that come from TextBlobBuilderRunHandler/Shaper default handler.
+     * 
+     * @return  last baseline in TextBlob
+     * @throws  IllegalArgumentException if TextBlob doesn’t have this information
+     */
+    @NotNull
+    public Float getLastBaseline() {
+        try {
+            Stats.onNativeCall();
+            Float res = _nGetLastBaseline(_ptr);
+            if (res == null)
+                throw new IllegalArgumentException();
+            return res;
+        } finally {
+            Reference.reachabilityFence(this);
+        }
+    }
+
+   /**
+     * Only works on TextBlobs that come from TextBlobBuilderRunHandler/Shaper default handler.
+     * 
      * @return  UTF-16 offset of glyph at coordinate (x, y)
      * @throws  IllegalArgumentException if TextBlob doesn’t have this information
      */
@@ -297,6 +335,8 @@ public class TextBlob extends Managed {
     @ApiStatus.Internal public static native int[] _nGetClusters(long ptr);
     @ApiStatus.Internal public static native Rect _nGetTightBounds(long ptr);
     @ApiStatus.Internal public static native Rect _nGetBlockBounds(long ptr);
+    @ApiStatus.Internal public static native Float _nGetFirstBaseline(long ptr);
+    @ApiStatus.Internal public static native Float _nGetLastBaseline(long ptr);
     @ApiStatus.Internal public static native int _nGetOffsetAtCoord(long ptr, float x, float y);
     @ApiStatus.Internal public static native Point _nGetCoordAtOffset(long ptr, int offset);
 }

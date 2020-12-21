@@ -812,7 +812,7 @@ jstring javaString(JNIEnv* env, const char* chars) {
     return javaString(env, chars, strlen(chars));
 }
 
-jobject javaFloat(JNIEnv* env, float val) {
+jobject javaFloat(JNIEnv* env, SkScalar val) {
     return env->NewObject(java::lang::Float::cls, java::lang::Float::ctor, val);
 }
 

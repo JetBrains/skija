@@ -279,6 +279,39 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_TextBlob__1nGetBlo
     return skija::Rect::fromSkRect(env, SkRect {0, 0, right, bottom});
 }
 
+extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_TextBlob__1nGetFirstBaseline
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkTextBlob* instance = reinterpret_cast<SkTextBlob*>(static_cast<uintptr_t>(ptr));
+    SkTextBlob::Iter iter(*instance);
+    SkTextBlob::Iter::Run run;
+    while (iter.next(&run)) {
+        // run.fGlyphIndices points directly to runRecord.glyphBuffer(), which comes directly after RunRecord itself
+        auto runRecord = reinterpret_cast<const RunRecordClone*>(run.fGlyphIndices) - 1;
+        if (runRecord->positioning() != 2) // kFull_Positioning
+            return nullptr;
+
+        return javaFloat(env, runRecord->posBuffer()[1]);
+    }
+    return nullptr;
+}
+
+extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_TextBlob__1nGetLastBaseline
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkTextBlob* instance = reinterpret_cast<SkTextBlob*>(static_cast<uintptr_t>(ptr));
+    SkTextBlob::Iter iter(*instance);
+    SkTextBlob::Iter::Run run;
+    SkScalar baseline = 0;
+    while (iter.next(&run)) {
+        // run.fGlyphIndices points directly to runRecord.glyphBuffer(), which comes directly after RunRecord itself
+        auto runRecord = reinterpret_cast<const RunRecordClone*>(run.fGlyphIndices) - 1;
+        if (runRecord->positioning() != 2) // kFull_Positioning
+            return nullptr;
+
+        baseline = std::max(baseline, runRecord->posBuffer()[1]);
+    }
+    return javaFloat(env, baseline);
+}
+
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_TextBlob__1nGetOffsetAtCoord
   (JNIEnv* env, jclass jclass, jlong ptr, jfloat x, jfloat y) {
     SkTextBlob* instance = reinterpret_cast<SkTextBlob*>(static_cast<uintptr_t>(ptr));

@@ -10,6 +10,7 @@
 #include "SkRefCnt.h"
 #include "SkRect.h"
 #include "SkRRect.h"
+#include "SkScalar.h"
 #include "SkShaper.h"
 #include "SkString.h"
 
@@ -260,7 +261,7 @@ jstring javaString(JNIEnv* env, const SkString& str);
 jstring javaString(JNIEnv* env, const char* chars, size_t len);
 jstring javaString(JNIEnv* env, const char* chars);
 
-jobject javaFloat(JNIEnv* env, float val);
+jobject javaFloat(JNIEnv* env, SkScalar val);
 jlong packTwoInts(int32_t a, int32_t b);
 jlong packIPoint(SkIPoint p);
 jlong packISize(SkISize s);
