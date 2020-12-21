@@ -12,13 +12,31 @@ public class DirectContext extends RefCnt {
         return new DirectContext(_nMakeGL());
     }
 
-    public void flush() {
-        try {
-            Stats.onNativeCall();
-            _nFlush(_ptr);
-        } finally {
-            Reference.reachabilityFence(this);
-        }
+    public DirectContext flush() {
+        Stats.onNativeCall();
+        _nFlush(_ptr);
+        return this;
+    }
+
+    public DirectContext resetAll() {
+        Stats.onNativeCall();
+        _nReset(_ptr, -1);
+        return this;
+    }
+
+    public DirectContext resetGLAll() {
+        Stats.onNativeCall();
+        _nReset(_ptr, 0xffff);
+        return this;
+    }
+
+    public DirectContext resetGL(GLBackendState... states) {
+        Stats.onNativeCall();
+        int flags = 0;
+        for (var state: states)
+            flags |= state._bit;
+        _nReset(_ptr, flags);
+        return this;
     }
 
     @ApiStatus.Internal
@@ -28,4 +46,5 @@ public class DirectContext extends RefCnt {
 
     public static native long _nMakeGL();
     public static native long _nFlush(long ptr);
+    public static native void _nReset(long ptr, int flags);
 }
