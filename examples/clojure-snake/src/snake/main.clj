@@ -9,6 +9,12 @@
 
 (set! *warn-on-reflection* true)
 
+(defn display-scale [window]
+  (let [x (make-array Float/TYPE 1)
+        y (make-array Float/TYPE 1)]
+    (GLFW/glfwGetWindowContentScale window x y)
+    [(first x) (first y)]))
+
 (defn -main [& args]
   (.set (GLFWErrorCallback/createPrint System/err))
   (GLFW/glfwInit)
@@ -34,9 +40,11 @@
 
     (let [context (DirectContext/makeGL)
           fb-id   (GL11/glGetInteger 0x8CA6)
-          target  (BackendRenderTarget/makeGL width height 0 8 fb-id FramebufferFormat/GR_GL_RGBA8)
+          [scale-x scale-y] (display-scale window)
+          target  (BackendRenderTarget/makeGL (* scale-x width) (* scale-y height) 0 8 fb-id FramebufferFormat/GR_GL_RGBA8)
           surface (Surface/makeFromBackendRenderTarget context target SurfaceOrigin/BOTTOM_LEFT SurfaceColorFormat/RGBA_8888 (ColorSpace/getSRGB))
           canvas  (.getCanvas surface)]
+      (.scale canvas scale-x scale-y)
       (loop []
         (when (not (GLFW/glfwWindowShouldClose window))
           (let [layer (.save canvas)]
