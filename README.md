@@ -188,6 +188,11 @@ If Skija is missing a documentation for a particular method or class, check the 
 
 Finally, [LWJGL demo app](/examples/lwjgl) has examples of most of the APIs that are currently implemented.
 
+## Talks
+
+- Overview [youtube.com/watch?v=t1X-Oln1u24](https://www.youtube.com/watch?v=t1X-Oln1u24)
+- Coding game in Skija and Clojure [youtube.com/watch?v=KES-lKTq-3M](https://www.youtube.com/watch?v=KES-lKTq-3M)
+
 ## Building Skija from scratch
 
 Prerequisites: Git, CMake, Ninja, JDK 11+, set $JAVA_HOME, Maven.
