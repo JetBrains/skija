@@ -26,6 +26,7 @@ public class WallOfTextScene extends Scene {
                     .toArray(String[]::new);
         text = String.join(" ", words);
         _variants = new String[] {
+            "TextLine by words",
             "ShapeThenWrap",
             "ShapeThenWrap by words",
             "JVM RunHandler",
@@ -37,7 +38,7 @@ public class WallOfTextScene extends Scene {
             "Paragraph with cache",
             "Paragraph no cache"
         };
-        _variantIdx = 1;
+        _variantIdx = 0;
         colors = new int[] {
             0xFF000000,
             0xFFf94144,
@@ -119,6 +120,26 @@ public class WallOfTextScene extends Scene {
         }
     }
 
+    public void drawTextLinesByWords(Canvas canvas, float padding, float textWidth) {
+        var x = padding;
+        var y = padding;
+        var space = font.measureTextWidth(" ");
+        var lineHeight = font.getMetrics().getHeight();
+        for (int i = 0; i < words.length; ++i) {
+            try (var line = TextLine.make(words[i], font);) {
+                var wordWidth = line.getWidth();
+                if (x + wordWidth > textWidth) {
+                    x = padding;
+                    y += lineHeight;
+                }
+                fill.setColor(colors[i % colors.length]);
+                canvas.drawRect(Rect.makeXYWH(x, y, line.getWidth(), line.getHeight()), boundsStroke);
+                canvas.drawTextLine(line, x, y - line.getAscent(), font, fill);
+                x += wordWidth + space;
+            }
+        }
+    }
+
     public void drawTogether(Shaper shaper, Canvas canvas, float padding, float textWidth) {
         try (var blob = makeBlob(text, shaper, textWidth);) {
             canvas.drawTextBlob(blob, padding, padding, font, fill);
@@ -132,21 +153,24 @@ public class WallOfTextScene extends Scene {
         var fontSize = 14.5f * dpi;
         var variant = _variants[_variantIdx];
 
+        if (font == null)
+            font = new Font(inter, fontSize).setSubpixel(true);
+
+        fill.setColor(colors[_variantIdx]);
+
         if (variant.startsWith("Paragraph"))
             drawParagraph(canvas, fontSize, padding, textWidth);
+        else if (variant.startsWith("TextLine"))
+            drawTextLinesByWords(canvas, padding, textWidth);
         else {
-            if (font == null)
-                font = new Font(inter, fontSize).setSubpixel(true);
-            fill.setColor(colors[_variantIdx]);
-
             Shaper shaper = null;
-            if ("Primitive".equals(variant))
+            if (variant.startsWith("Primitive"))
                 shaper = Shaper.makePrimitive();
-            else if ("ShaperDrivenWrapper".equals(variant))
+            else if (variant.startsWith("ShaperDrivenWrapper"))
                 shaper = Shaper.makeShaperDrivenWrapper();
-            else if ("ShapeDontWrapOrReorder".equals(variant))
+            else if (variant.startsWith("ShapeDontWrapOrReorder"))
                 shaper = Shaper.makeShapeDontWrapOrReorder();
-            else if ("CoreText".equals(variant))
+            else if (variant.startsWith("CoreText"))
                 shaper = "Mac OS X".equals(System.getProperty("os.name")) ? Shaper.makeCoreText() : null;
             else
                 shaper = Shaper.makeShapeThenWrap();

@@ -280,42 +280,6 @@ public class TextBlob extends Managed {
         }
     }
 
-   /**
-     * Only works on TextBlobs that come from TextBlobBuilderRunHandler/Shaper default handler.
-     * 
-     * @return  UTF-16 offset of glyph at coordinate (x, y)
-     * @throws  IllegalArgumentException if TextBlob doesn’t have this information
-     */
-    public int getOffsetAtCoord(float x, float y) {
-        try {
-            Stats.onNativeCall();
-            int offset = _nGetOffsetAtCoord(_ptr, x, y);
-            if (offset == -1)
-                throw new IllegalArgumentException();
-            return offset;
-        } finally {
-            Reference.reachabilityFence(this);
-        }
-    }
-
-    /**
-     * Only works on TextBlobs that come from TextBlobBuilderRunHandler/Shaper default handler.
-     * 
-     * @return  UTF-16 offset of glyph at coordinate (x, y)
-     * @throws  IllegalArgumentException if TextBlob doesn’t have this information
-     */
-    public Point getCoordAtOffset(int offset) {
-        try {
-            Stats.onNativeCall();
-            Point coord = _nGetCoordAtOffset(_ptr, offset);
-            if (coord == null)
-                throw new IllegalArgumentException();
-            return coord;
-        } finally {
-            Reference.reachabilityFence(this);
-        }
-    }
-
     @ApiStatus.Internal
     public static class _FinalizerHolder {
         public static final long PTR = _nGetFinalizer();
@@ -337,6 +301,4 @@ public class TextBlob extends Managed {
     @ApiStatus.Internal public static native Rect _nGetBlockBounds(long ptr);
     @ApiStatus.Internal public static native Float _nGetFirstBaseline(long ptr);
     @ApiStatus.Internal public static native Float _nGetLastBaseline(long ptr);
-    @ApiStatus.Internal public static native int _nGetOffsetAtCoord(long ptr, float x, float y);
-    @ApiStatus.Internal public static native Point _nGetCoordAtOffset(long ptr, int offset);
 }

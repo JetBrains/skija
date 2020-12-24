@@ -358,10 +358,10 @@ class Window {
         scenes.put("Swing",            new SwingScene());
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("TextBlob",         new TextBlobScene());
-        scenes.put("TextBlob Bounds",  new TextBlobBoundsScene());
+        scenes.put("TextLine",         new TextLineScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "TextBlob Bounds";
+        currentScene = "TextLine";
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {

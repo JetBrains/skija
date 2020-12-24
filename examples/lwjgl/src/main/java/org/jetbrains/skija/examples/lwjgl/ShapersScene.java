@@ -15,7 +15,7 @@ public class ShapersScene extends Scene {
 
     public void drawWithShaper(Canvas canvas, float maxWidth, int color, String name, Shaper shaper) {
         fill.setColor(color);
-        String text = "Incomprehensibilities ararar123456 +++ *** <-> " + name;
+        String text = "Incomprehensibilities word word word word ararar123456 +++ <-> *** c̝̣̱̲͈̝ͨ͐̈ͪͨ̃ͥͅh̙̬̿̂a̯͎͍̜͐͌͂̚o̬s͉̰͊̀ " + name;
 
         try (var blob = shaper.shape(text, firaCode11, null, true, maxWidth, new Point(0, 0)); ) {
             canvas.drawTextBlob(blob, 0, 0, firaCode11, fill);
@@ -33,7 +33,7 @@ public class ShapersScene extends Scene {
             canvas.translate(0, blob.getBounds().getHeight());
         }
 
-        features = "ss01[22:25] cv01[22:25] onum[28:31] calt[43:44]=0";
+        features = "ss01[42:45] cv01[42:45] onum[48:51] calt[59:60]=0";
         try (var blob = shaper.shape(text + " " + features, firaCode11, FontFeature.parse(features), true, maxWidth, new Point(0, 0)); ) {
             canvas.drawTextBlob(blob, 0, 0, firaCode11, fill);
             canvas.translate(0, blob.getBounds().getHeight());

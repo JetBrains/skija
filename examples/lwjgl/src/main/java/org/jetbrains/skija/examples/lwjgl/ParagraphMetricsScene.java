@@ -78,6 +78,7 @@ public class ParagraphMetricsScene extends Scene {
             pb.addText("hello мир дружба <<<");
             pb.addPlaceholder(new PlaceholderStyle(50, 2f, PlaceholderAlignment.BASELINE, BaselineMode.ALPHABETIC, 0f));
             pb.addText(">>> fi fl 👃 one two ثلاثة 12 👂 34 خمسة\n");
+            pb.addText("x̆x̞̊x̃ c̝̣̱̲͈̝ͨ͐̈ͪͨ̃ͥͅh̙̬̿̂a̯͎͍̜͐͌͂̚o̬s͉̰͊̀ ");
             pb.pushStyle(zapfinoTs);
             pb.addText("fiz officiad\n");
             pb.popStyle();
