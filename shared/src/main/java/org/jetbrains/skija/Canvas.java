@@ -810,6 +810,19 @@ public class Canvas extends Managed {
         return this;
     }
 
+    /**
+     * Returns the total transformation matrix for the canvas.
+     */
+    public Matrix44 getLocalToDevice() {
+        try {
+            Stats.onNativeCall();
+            float[] mat = _nGetLocalToDevice(_ptr);
+            return new Matrix44(mat);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
+    }
+
     public Canvas clipRect(Rect r, ClipMode mode, boolean antiAlias) {
         Stats.onNativeCall();
         _nClipRect(_ptr, r._left, r._top, r._right, r._bottom, mode.ordinal(), antiAlias);
@@ -1109,6 +1122,7 @@ public class Canvas extends Managed {
     public static native void _nClear(long ptr, int color);
     public static native void _nDrawPaint(long ptr, long paintPtr);
     public static native void _nSetMatrix(long ptr, float[] matrix);
+    public static native float[] _nGetLocalToDevice(long ptr);
     public static native void _nResetMatrix(long ptr);
     public static native void _nClipRect(long ptr, float left, float top, float right, float bottom, int mode, boolean antiAlias);
     public static native void _nClipRRect(long ptr, float left, float top, float right, float bottom, float[] radii, int mode, boolean antiAlias);
