@@ -6,4 +6,5 @@
         org.lwjgl/lwjgl-opengl {:mvn/version "3.2.3"}
         org.lwjgl/lwjgl-opengl$natives-macos {:mvn/version "3.2.3"}
         nrepl/nrepl {:mvn/version "0.8.3"}}
+ :paths ["src"]
  :mvn/repos {"space-maven" {:url "https://packages.jetbrains.team/maven/p/skija/maven"}}}
