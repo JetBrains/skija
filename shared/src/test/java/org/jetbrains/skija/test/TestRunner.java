@@ -47,7 +47,7 @@ public class TestRunner {
         runner.asserts++;
         try {
             if (!Objects.equals(expected, actual))
-                runner.fail("Expected '" + expected + "'" + (expected == null ? "" : " (" + expected.getClass() + ")") + " == '" + actual + "'" + (actual == null ? "" : "(" + actual.getClass() + ")"));
+                runner.fail("Expected '" + expected + "'" + (expected == null ? "" : " (" + expected.getClass() + ")") + " == '" + actual + "'" + (actual == null ? "" : " (" + actual.getClass() + ")"));
             else
                 System.out.print(".");
         } catch(Exception e) {

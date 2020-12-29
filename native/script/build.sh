@@ -16,7 +16,7 @@ cd "$dir/.."
 # Build C++
 mkdir -p build
 pushd build > /dev/null
-cmake -G Ninja -DSKIA_DIR=${skia_dir_abs} ..
+cmake -G Ninja -DCMAKE_BUILD_TYPE=${build_type} --config ${build_type} -DSKIA_DIR=${skia_dir_abs} ..
 ninja
 popd > /dev/null
 
