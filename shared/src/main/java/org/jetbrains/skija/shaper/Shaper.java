@@ -180,12 +180,11 @@ public class Shaper extends Managed {
         return this;
     }
 
-    @Nullable @Contract("_, _, _, _, _, _ -> new")
+    @NotNull @Contract("_, _, _, _, _, _ -> new")
     public TextLine shapeLine(String text, Font font, @Nullable FontFeature[] features, boolean leftToRight) {
         try {
             Stats.onNativeCall();
-            long ptr = _nShapeLine(_ptr, text, Native.getPtr(font), features, leftToRight);
-            return 0 == ptr ? null : new TextLine(ptr);
+            return new TextLine(_nShapeLine(_ptr, text, Native.getPtr(font), features, leftToRight));
         } finally {
             Reference.reachabilityFence(this);
             Reference.reachabilityFence(font);

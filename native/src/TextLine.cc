@@ -53,6 +53,8 @@ extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_TextLine__1nGetHeig
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_TextLine__1nGetTextBlob
   (JNIEnv* env, jclass jclass, jlong ptr) {
     TextLine* instance = reinterpret_cast<TextLine*>(static_cast<uintptr_t>(ptr));
+    if (instance->fBlob == nullptr)
+        return 0;
     instance->fBlob->ref();
     return reinterpret_cast<jlong>(instance->fBlob.get());
 }
@@ -99,6 +101,9 @@ extern "C" JNIEXPORT jintArray JNICALL Java_org_jetbrains_skija_TextLine__1nGetC
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_TextLine__1nGetOffsetAtCoord
   (JNIEnv* env, jclass jclass, jlong ptr, jfloat x) {
     TextLine* instance = reinterpret_cast<TextLine*>(static_cast<uintptr_t>(ptr));
+
+    if (instance->fRuns.empty())
+        return 0;
 
     for (auto& run: instance->fRuns) {
         const SkPoint* pos = run.fPos;

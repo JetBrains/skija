@@ -63,6 +63,8 @@ public:
         SkASSERTF(fLines == 1, "TextLineRunHandler: Expected single line, got %d", fLines);
 
         sk_sp<SkTextBlob> blob = fBuilder.make();
+        if (nullptr == blob.get())
+            return fLine;
         SkTextBlob::Iter iter(*blob);
         SkTextBlob::Iter::Run blobRun;
         int runIdx = 0;
@@ -83,7 +85,6 @@ public:
                 consumed += run.fGlyphCount;
             }
         }
-
         fLine->fBlob = blob;
         return fLine;
     }

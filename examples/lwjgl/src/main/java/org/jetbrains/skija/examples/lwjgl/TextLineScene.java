@@ -87,7 +87,7 @@ public class TextLineScene extends Scene {
                 String positions = "[";
                 for (int i = 0; i < positionsXY.length; i += 2)
                     positions += String.format(Locale.ENGLISH, "%.02f, ", positionsXY[i]);
-                positions = positions.substring(0, positions.length() - 2) +  "] .. " + String.format(Locale.ENGLISH, "%.02f", lineWidth);
+                positions = (positions.length() <= 2 ? positions : positions.substring(0, positions.length() - 2)) +  "] .. " + String.format(Locale.ENGLISH, "%.02f", lineWidth);
                 var tableSize = drawTable(canvas, new String[] {
                     "Chars",     text.chars().mapToObj(c -> String.format("U+%04X", c)).collect(Collectors.joining(" ")),
                     "Clusters",  Arrays.toString(line.getClusters()),
@@ -120,7 +120,7 @@ public class TextLineScene extends Scene {
         Point cursor = new Point(xpos, ypos);
         canvas.translate(20, 20);
         cursor = cursor.offset(-20, -20);
-        cursor = cursor.offset(0, -drawLine(canvas, new String[] { "one", "xyfz", "два", "الخطوط", "🧛", "one xyfz الخطوط два 🧛" }, inter18, cursor));
+        cursor = cursor.offset(0, -drawLine(canvas, new String[] { "", "one", "yf", "два", "الخطوط", "🧛", "one yf الخطوط два 🧛" }, inter18, cursor));
         cursor = cursor.offset(0, -drawLine(canvas, "fiz officiad", zapfino18, cursor)); // swashes
         // cursor = cursor.offset(0, -drawLine(canvas, "sixستةten", inter18, cursor));
         cursor = cursor.offset(0, -drawLine(canvas, new String[] {"الكلب", "sixستةten", "one اثنان 12 واحد two"}, inter18, cursor)); // RTL

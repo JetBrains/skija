@@ -18,12 +18,12 @@ public class TextLine extends Managed {
         public static final long PTR = _nGetFinalizer();
     }
 
-    @Nullable @Contract("_, _ -> new")
+    @NotNull @Contract("_, _ -> new")
     public static TextLine make(String text, Font font) {
         return make(text, font, null, true);
     }
 
-    @Nullable @Contract("_, _, _, _ -> new")
+    @NotNull @Contract("_, _, _, _ -> new")
     public static TextLine make(String text, Font font, @Nullable FontFeature[] features, boolean leftToRight) {
         try (var shaper = Shaper.makeShapeDontWrapOrReorder();) {
             return shaper.shapeLine(text, font, features, leftToRight);
@@ -84,10 +84,12 @@ public class TextLine extends Managed {
         }
     }
 
+    @Nullable
     public TextBlob getTextBlob() {
         Stats.onNativeCall();
         try {
-            return new TextBlob(_nGetTextBlob(_ptr));
+            long res = _nGetTextBlob(_ptr);
+            return res == 0 ? null : new TextBlob(res);
         } finally {
             Reference.reachabilityFence(this);
         }

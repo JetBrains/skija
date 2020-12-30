@@ -102,10 +102,14 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_shaper_Shaper__1nSha
     std::unique_ptr<SkShaper::LanguageRunIterator> languageRunIter(SkShaper::MakeStdLanguageRunIterator(text.c_str(), text.size()));
     if (!languageRunIter) return 0;
 
-    TextLineRunHandler rh(text);
-    instance->shape(text.c_str(), text.size(), *fontRunIter, *bidiRunIter, *scriptRunIter, *languageRunIter, features.data(), features.size(), std::numeric_limits<float>::infinity(), &rh);
-    TextLine* line = rh.makeLine().release();
-    
+    TextLine* line;
+    if (text.size() == 0)
+        line = new TextLine(*font);
+    else {
+        TextLineRunHandler rh(text);
+        instance->shape(text.c_str(), text.size(), *fontRunIter, *bidiRunIter, *scriptRunIter, *languageRunIter, features.data(), features.size(), std::numeric_limits<float>::infinity(), &rh);
+        line = rh.makeLine().release();
+    }
     return reinterpret_cast<jlong>(line);
 }
 

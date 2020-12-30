@@ -396,10 +396,11 @@ public class Canvas extends Managed {
         return this;
     }
 
-    public Canvas drawTextLine(TextLine line, float x, float y, Font font, Paint paint) {
+    public Canvas drawTextLine(@NotNull TextLine line, float x, float y, Font font, Paint paint) {
         Stats.onNativeCall();
         try (TextBlob blob = line.getTextBlob();) {
-            _nDrawTextBlob(_ptr, Native.getPtr(blob), x, y, Native.getPtr(font), Native.getPtr(paint));
+            if (blob != null)
+                _nDrawTextBlob(_ptr, Native.getPtr(blob), x, y, Native.getPtr(font), Native.getPtr(paint));
         }
         Reference.reachabilityFence(font);
         Reference.reachabilityFence(paint);

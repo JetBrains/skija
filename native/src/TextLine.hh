@@ -41,4 +41,16 @@ public:
     SkScalar fWidth = 0;
     std::vector<Run> fRuns;
     sk_sp<SkTextBlob> fBlob;
+    
+    TextLine() {
+    }
+
+    TextLine(const SkFont& font) {
+        SkFontMetrics metrics;
+        font.getMetrics(&metrics);
+        fAscent = metrics.fAscent;
+        fCapHeight = metrics.fCapHeight;
+        fDescent = metrics.fDescent;
+        fLeading = metrics.fLeading;
+    }
 };
