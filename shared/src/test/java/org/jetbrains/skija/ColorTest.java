@@ -23,5 +23,14 @@ public class ColorTest implements Executable {
             assertEquals(new Color4f(color), color4f);
             popStack();
         }
+
+        assertEquals(0x12, Color.getA(0x12345678));
+        assertEquals(0x34, Color.getR(0x12345678));
+        assertEquals(0x56, Color.getG(0x12345678));
+        assertEquals(0x78, Color.getB(0x12345678));
+        assertEquals(0xFE345678, Color.withA(0x12345678, 0xFE));
+        assertEquals(0x12FE5678, Color.withR(0x12345678, 0xFE));
+        assertEquals(0x1234FE78, Color.withG(0x12345678, 0xFE));
+        assertEquals(0x123456FE, Color.withB(0x12345678, 0xFE));
     }
 }

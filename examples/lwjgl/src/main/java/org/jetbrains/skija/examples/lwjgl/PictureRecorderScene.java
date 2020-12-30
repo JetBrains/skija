@@ -138,7 +138,7 @@ class AlmostTransparentFilterCanvas extends PaintFilterCanvas {
 
     @Override
     public boolean onFilter(Paint paint) {
-        paint.setColor(Color.withAlpha(paint.getColor(), 32));
+        paint.setColor(Color.withA(paint.getColor(), 32));
         return true;
     }
 }

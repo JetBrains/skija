@@ -361,7 +361,7 @@ class Window {
         scenes.put("TextLine",         new TextLineScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Font";
+        currentScene = "Geometry";
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {

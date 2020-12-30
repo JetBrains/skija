@@ -141,8 +141,8 @@ public class TextBlobScene extends Scene {
 
         try (var shaper = Shaper.make();
              var blob   = shaper.shape("This TextBlob here is going to span multiple lines. If it doesn’t, please contact application administrator", font, width);
-             var bg     = new Paint().setColor(Color.withAlpha(color, 32));
-             var stroke = new Paint().setColor(Color.withAlpha(color, 64)).setMode(PaintMode.STROKE).setStrokeWidth(1);
+             var bg     = new Paint().setColor(Color.withA(color, 32));
+             var stroke = new Paint().setColor(Color.withA(color, 64)).setMode(PaintMode.STROKE).setStrokeWidth(1);
              var fill   = new Paint().setColor(color);)
         {
             // text bounds

@@ -126,8 +126,8 @@ public class TextLine extends Managed {
     }    
 
     /**
-     * @param   x coordinate in px
-     * @return  UTF-16 offset of glyph
+     * @param x  coordinate in px
+     * @return   UTF-16 offset of glyph
      */
     public int getOffsetAtCoord(float x) {
         try {
@@ -139,8 +139,8 @@ public class TextLine extends Managed {
     }
 
     /**
-     * @param   offset UTF-16 character offset
-     * @return  glyph coordinate
+     * @param offset  UTF-16 character offset
+     * @return        glyph coordinate
      */
     public float getCoordAtOffset(int offset) {
         try {

@@ -91,7 +91,7 @@ Backends:
 APIs:
 
 ```
-Bitmap               ▓▓▓▓▓▓▓▓▓▓    Paint                ▓▓▓▓▓▓▓▓░░
+Bitmap               ▓▓▓▓▓▓▓▓▓▓    Paint                ▓▓▓▓▓▓▓▓▓▓
 Canvas               ▓▓▓▓▓▓▓▓░░    Path                 ▓▓▓▓▓▓▓▓▓▓
 Color                ▓░░░░░░░░░    PathEffects          ▓▓▓▓▓▓▓▓▓▓
 ColorFilter          ▓▓▓▓▓▓▓▓▓▓    PathMeasure          ▓▓▓▓▓▓▓▓▓▓

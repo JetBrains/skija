@@ -1,10 +1,10 @@
 package org.jetbrains.skija;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 @AllArgsConstructor
-@Data
+@lombok.Data
+@With
 public class Color4f {
     public final float _r;
     public final float _g;
@@ -27,10 +27,10 @@ public class Color4f {
     }
 
     public int toColor() {
-        return (((int) (_a * 255f)) << 24)
-          | (((int) (_r * 255f)) << 16)
-          | (((int) (_g * 255f)) << 8)
-          | ((int) (_b * 255f));
+        return ((Math.round(_a * 255f)) << 24)
+          | ((Math.round(_r * 255f)) << 16)
+          | ((Math.round(_g * 255f)) << 8)
+          | (Math.round(_b * 255f));
     }
 
     public float[] flatten() {
