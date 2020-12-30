@@ -24,21 +24,21 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Font__1nMakeDefault
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Font__1nMakeTypeface
   (JNIEnv* env, jclass jclass, jlong typefacePtr) {
     SkTypeface* typeface = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(typefacePtr));
-    SkFont* obj = new SkFont(sk_sp<SkTypeface>(SkRef(typeface)));
+    SkFont* obj = new SkFont(sk_ref_sp<SkTypeface>(typeface));
     return reinterpret_cast<jlong>(obj);
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Font__1nMakeTypefaceSize
   (JNIEnv* env, jclass jclass, jlong typefacePtr, jfloat size) {
     SkTypeface* typeface = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(typefacePtr));
-    SkFont* obj = new SkFont(sk_sp<SkTypeface>(SkRef(typeface)), size);
+    SkFont* obj = new SkFont(sk_ref_sp<SkTypeface>(typeface), size);
     return reinterpret_cast<jlong>(obj);
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Font__1nMakeTypefaceSizeScaleSkew
   (JNIEnv* env, jclass jclass, jlong typefacePtr, jfloat size, jfloat scaleX, jfloat skewX) {
     SkTypeface* typeface = reinterpret_cast<SkTypeface*>(static_cast<uintptr_t>(typefacePtr));
-    SkFont* obj = new SkFont(sk_sp<SkTypeface>(SkRef(typeface)), size, scaleX, skewX);
+    SkFont* obj = new SkFont(sk_ref_sp<SkTypeface>(typeface), size, scaleX, skewX);
     return reinterpret_cast<jlong>(obj);
 }
 

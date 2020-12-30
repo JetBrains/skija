@@ -35,7 +35,6 @@ public class FontScene extends Scene {
         _paint          = new Paint().setColor(0xFF1d3557);
         _stroke         = new Paint().setColor(0xFF2a9d8f).setMode(PaintMode.STROKE).setStrokeWidth(2).setPathEffect(PathEffect.makeDash(new float[] {6, 2}, 0));
         _boundaryPaint  = new Paint().setColor(0xFFe76f51).setMode(PaintMode.STROKE);
-        _defaultFont    = new Font();
     }
 
     public float _drawLine(Canvas canvas, String text, Font font) {
@@ -52,6 +51,7 @@ public class FontScene extends Scene {
     public void recreateFonts(float dpi) {
         if (dpi == _dpi)
             return;
+        _defaultFont    = new Font(null, dpi * 13);
         _inter13        = new Font(_inter, dpi * 13);
         _inter18        = new Font(_inter, dpi * 18);
         _inter13_1_0    = new Font(_inter, dpi * 13, 1, 0);

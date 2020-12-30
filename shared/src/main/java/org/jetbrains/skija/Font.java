@@ -29,19 +29,19 @@ public class Font extends Managed {
     /**
      * Returns Font with Typeface and default size
      *
-     * @param typeface  typeface and style used to draw and measure text
+     * @param typeface  typeface and style used to draw and measure text. Pass null for default
      */
-    public Font(@NotNull Typeface typeface) {
+    public Font(@Nullable Typeface typeface) {
         this(_nMakeTypeface(Native.getPtr(typeface)));
         Stats.onNativeCall();
         Reference.reachabilityFence(typeface);
     }
 
     /**
-     * @param typeface  typeface and style used to draw and measure text
+     * @param typeface  typeface and style used to draw and measure text. Pass null for default
      * @param size      typographic size of the text
      */
-    public Font(@NotNull Typeface typeface, float size) {
+    public Font(@Nullable Typeface typeface, float size) {
         this(_nMakeTypefaceSize(Native.getPtr(typeface), size));
         Stats.onNativeCall();
         Reference.reachabilityFence(typeface);
@@ -52,12 +52,12 @@ public class Font extends Managed {
      * horizontal scale, and horizontal skew. Horizontal scale emulates condensed
      * and expanded fonts. Horizontal skew emulates oblique fonts.
      *
-     * @param typeface  typeface and style used to draw and measure text
+     * @param typeface  typeface and style used to draw and measure text. Pass null for default
      * @param size      typographic size of the text
      * @param scaleX    text horizonral scale
      * @param skewX     additional shear on x-axis relative to y-axis
      */
-    public Font(@NotNull Typeface typeface, float size, float scaleX, float skewX) {
+    public Font(@Nullable Typeface typeface, float size, float scaleX, float skewX) {
         this(_nMakeTypefaceSizeScaleSkew(Native.getPtr(typeface), size, scaleX, skewX));
         Stats.onNativeCall();
         Reference.reachabilityFence(typeface);
