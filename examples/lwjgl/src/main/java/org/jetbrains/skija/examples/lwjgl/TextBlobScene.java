@@ -36,7 +36,7 @@ public class TextBlobScene extends Scene {
         }
 
         try (Paint fill = new Paint().setColor(0xff6a040f)) {
-            canvas.drawTextBlob(TextBlob.makeFromPosH(glyphs, xpos, 20, font), 0, 0, font, fill);
+            canvas.drawTextBlob(TextBlob.makeFromPosH(glyphs, xpos, 20, font), 0, 0, fill);
         }
 
         canvas.translate(0, gap);
@@ -56,7 +56,7 @@ public class TextBlobScene extends Scene {
         }
 
         try (Paint fill = new Paint().setColor(0xffdc2f02)) {
-            canvas.drawTextBlob(TextBlob.makeFromPos(glyphs, pos, font), 0, 20, font, fill);
+            canvas.drawTextBlob(TextBlob.makeFromPos(glyphs, pos, font), 0, 20, fill);
         }
 
         canvas.translate(0, gap);
@@ -93,7 +93,7 @@ public class TextBlobScene extends Scene {
             canvas.save();
             canvas.translate(radius + gap, radius + gap);
             canvas.drawPath(path, stroke);
-            canvas.drawTextBlob(TextBlob.makeFromRSXform(glyphs, xforms, font), 0, 0, font, fill);
+            canvas.drawTextBlob(TextBlob.makeFromRSXform(glyphs, xforms, font), 0, 0, fill);
             canvas.restore();
         }
 
@@ -126,7 +126,7 @@ public class TextBlobScene extends Scene {
 
             try (var blob = builder.build();
                  var fill = new Paint().setColor(0xff454a6f);) {
-                canvas.drawTextBlob(blob, 0, 0, font, fill);
+                canvas.drawTextBlob(blob, 0, 0, fill);
             }
         }
 
@@ -153,7 +153,7 @@ public class TextBlobScene extends Scene {
             canvas.drawRect(Rect.makeLTRB(0, 0, width, bounds.getBottom()), stroke);
 
             // text
-            canvas.drawTextBlob(blob, 0, 0, font, fill);
+            canvas.drawTextBlob(blob, 0, 0, fill);
 
             // intercepts
             float lower = 32;
@@ -168,7 +168,7 @@ public class TextBlobScene extends Scene {
             canvas.translate(0, bounds.getHeight() + gap);
 
             // serialize
-            canvas.drawTextBlob(TextBlob.makeFromData(blob.serializeToData()), 0, 0, font, fill);
+            canvas.drawTextBlob(TextBlob.makeFromData(blob.serializeToData()), 0, 0, fill);
             canvas.translate(0, bounds.getHeight() + gap);
         }
     }

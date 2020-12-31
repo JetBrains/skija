@@ -27,7 +27,7 @@ public class TextLineScene extends Scene {
         float leftHeight = 0;
         for (int i = 0; i < data.length; i += 2) {
             try (var line = TextLine.make(data[i], inter9); ) {
-                canvas.drawTextLine(line, 0, leftHeight - line.getAscent(), inter9, blueFill);
+                canvas.drawTextLine(line, 0, leftHeight - line.getAscent(), blueFill);
                 leftWidth = Math.max(leftWidth, line.getWidth());
                 leftHeight += line.getHeight();
             }
@@ -37,7 +37,7 @@ public class TextLineScene extends Scene {
         float rightHeight = 0;
         for (int i = 1; i < data.length; i += 2) {
             try (var line = TextLine.make(data[i], inter9);) {
-                canvas.drawTextLine(line, leftWidth + 5, rightHeight - line.getAscent(), inter9, blueFill);
+                canvas.drawTextLine(line, leftWidth + 5, rightHeight - line.getAscent(), blueFill);
                 rightWidth = Math.max(rightWidth, line.getWidth());
                 rightHeight += line.getHeight();
             }
@@ -74,7 +74,7 @@ public class TextLineScene extends Scene {
                 canvas.drawRect(Rect.makeLTRB(0, 0, coord, lineHeight), selectionFill);
 
                 // text
-                canvas.drawTextLine(line, 0, baseline, font, fill);
+                canvas.drawTextLine(line, 0, baseline, fill);
 
                 // coords
                 for (int i = 0; i < text.length() + 1; ++i) {

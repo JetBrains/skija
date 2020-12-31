@@ -30,7 +30,7 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_copy_const_SkBitmap">https://fiddle.skia.org/c/@Canvas_copy_const_SkBitmap</a>
      */
-    public Canvas(Bitmap bitmap) {
+    public Canvas(@NotNull Bitmap bitmap) {
         this(bitmap, new SurfaceProps());
     }
 
@@ -48,13 +48,15 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_const_SkBitmap_const_SkSurfaceProps">https://fiddle.skia.org/c/@Canvas_const_SkBitmap_const_SkSurfaceProps</a>
      */
-    public Canvas(Bitmap bitmap, SurfaceProps surfaceProps) {
-        this(_nMakeFromBitmap(Native.getPtr(bitmap), surfaceProps.getFlags(), surfaceProps.getPixelGeometry().ordinal()), true, bitmap);
+    public Canvas(@NotNull Bitmap bitmap, @NotNull SurfaceProps surfaceProps) {
+        this(_nMakeFromBitmap(bitmap._ptr, surfaceProps.getFlags(), surfaceProps.getPixelGeometry().ordinal()), true, bitmap);
         Stats.onNativeCall();
         Reference.reachabilityFence(bitmap);
     }
 
-    public Canvas drawPoint(float x, float y, Paint paint) {
+    @NotNull @Contract("_, _, _ -> this")
+    public Canvas drawPoint(float x, float y, @NotNull Paint paint) {
+        assert paint != null : "Can’t drawPoint with paint == null";
         Stats.onNativeCall();
         _nDrawPoint(_ptr, x, y, Native.getPtr(paint));
         Reference.reachabilityFence(paint);
@@ -82,7 +84,8 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawPoints">https://fiddle.skia.org/c/@Canvas_drawPoints</a>
      */
-    public Canvas drawPoints(Point[] coords, Paint paint) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas drawPoints(@NotNull Point[] coords, @NotNull Paint paint) {
         return drawPoints(Point.flattenArray(coords), paint);
     }
 
@@ -107,7 +110,10 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawPoints">https://fiddle.skia.org/c/@Canvas_drawPoints</a>
      */
-    public Canvas drawPoints(float[] coords, Paint paint) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas drawPoints(@NotNull float[] coords, @NotNull Paint paint) {
+        assert coords != null : "Can’t drawPoints with coords == null";
+        assert paint != null : "Can’t drawPoints with paint == null";
         Stats.onNativeCall();
         _nDrawPoints(_ptr, 0 /* SkCanvas::PointMode::kPoints_PointMode */, coords, Native.getPtr(paint));
         Reference.reachabilityFence(paint);
@@ -133,7 +139,8 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawPoints">https://fiddle.skia.org/c/@Canvas_drawPoints</a>
      */
-    public Canvas drawLines(Point[] coords, Paint paint) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas drawLines(@NotNull Point[] coords, @NotNull Paint paint) {
         return drawLines(Point.flattenArray(coords), paint);
     }
 
@@ -156,7 +163,10 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawPoints">https://fiddle.skia.org/c/@Canvas_drawPoints</a>
      */
-    public Canvas drawLines(float[] coords, Paint paint) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas drawLines(@NotNull float[] coords, @NotNull Paint paint) {
+        assert coords != null : "Can’t drawLines with coords == null";
+        assert paint != null : "Can’t drawLines with paint == null";
         Stats.onNativeCall();
         _nDrawPoints(_ptr, 1 /* SkCanvas::PointMode::kLines_PointMode */, coords, Native.getPtr(paint));
         Reference.reachabilityFence(paint);
@@ -181,7 +191,8 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawPoints">https://fiddle.skia.org/c/@Canvas_drawPoints</a>
      */
-    public Canvas drawPolygon(Point[] coords, Paint paint) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas drawPolygon(@NotNull Point[] coords, @NotNull Paint paint) {
         return drawPolygon(Point.flattenArray(coords), paint);
     }
 
@@ -203,63 +214,88 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawPoints">https://fiddle.skia.org/c/@Canvas_drawPoints</a>
      */
-    public Canvas drawPolygon(float[] coords, Paint paint) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas drawPolygon(@NotNull float[] coords, @NotNull Paint paint) {
+        assert coords != null : "Can’t drawPolygon with coords == null";
+        assert paint != null : "Can’t drawPolygon with paint == null";
         Stats.onNativeCall();
         _nDrawPoints(_ptr, 2 /* SkCanvas::PointMode::kPolygon_PointMode */, coords, Native.getPtr(paint));
         Reference.reachabilityFence(paint);
         return this;
     }
 
-    public Canvas drawLine(float x0, float y0, float x1, float y1, Paint paint) {
+    @NotNull @Contract("_, _, _, _, _ -> this")
+    public Canvas drawLine(float x0, float y0, float x1, float y1, @NotNull Paint paint) {
+        assert paint != null : "Can’t drawLine with paint == null";
         Stats.onNativeCall();
         _nDrawLine(_ptr, x0, y0, x1, y1, Native.getPtr(paint));
         Reference.reachabilityFence(paint);
         return this;
     }
 
-    public Canvas drawArc(float left, float top, float width, float height, float startAngle, float sweepAngle, boolean includeCenter, Paint paint) {
+    @NotNull @Contract("_, _, _, _, _, _, _, _ -> this")
+    public Canvas drawArc(float left, float top, float width, float height, float startAngle, float sweepAngle, boolean includeCenter, @NotNull Paint paint) {
+        assert paint != null : "Can’t drawArc with paint == null";
         Stats.onNativeCall();
         _nDrawArc(_ptr, left, top, width, height, startAngle, sweepAngle, includeCenter, Native.getPtr(paint));
         Reference.reachabilityFence(paint);
         return this;
     }
 
-    public Canvas drawRect(Rect r, Paint paint) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas drawRect(@NotNull Rect r, @NotNull Paint paint) {
+        assert r != null : "Can’t drawRect with r == null";
+        assert paint != null : "Can’t drawRect with paint == null";
         Stats.onNativeCall();
         _nDrawRect(_ptr, r._left, r._top, r._right, r._bottom, Native.getPtr(paint));
         Reference.reachabilityFence(paint);
         return this;
     }
 
-    public Canvas drawOval(Rect r, Paint paint) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas drawOval(@NotNull Rect r, @NotNull Paint paint) {
+        assert r != null : "Can’t drawOval with r == null";
+        assert paint != null : "Can’t drawOval with paint == null";
         Stats.onNativeCall();
         _nDrawOval(_ptr, r._left, r._top, r._right, r._bottom, Native.getPtr(paint));
         Reference.reachabilityFence(paint);
         return this;
     }
 
-    public Canvas drawCircle(float x, float y, float radius, Paint paint) {
+    @NotNull @Contract("_, _, _, _ -> this")
+    public Canvas drawCircle(float x, float y, float radius, @NotNull Paint paint) {
+        assert paint != null : "Can’t drawCircle with paint == null";
         Stats.onNativeCall();
         _nDrawOval(_ptr, x - radius, y - radius, x + radius, y + radius, Native.getPtr(paint));
         Reference.reachabilityFence(paint);
         return this;
     }
 
-    public Canvas drawRRect(RRect r, Paint paint) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas drawRRect(@NotNull RRect r, @NotNull Paint paint) {
+        assert r != null : "Can’t drawRRect with r == null";
+        assert paint != null : "Can’t drawRRect with paint == null";
         Stats.onNativeCall();
         _nDrawRRect(_ptr, r._left, r._top, r._right, r._bottom, r._radii, Native.getPtr(paint));
         Reference.reachabilityFence(paint);
         return this;
     }
 
-    public Canvas drawDRRect(RRect outer, RRect inner, Paint paint) {
+    @NotNull @Contract("_, _, _ -> this")
+    public Canvas drawDRRect(@NotNull RRect outer, @NotNull RRect inner, @NotNull Paint paint) {
+        assert outer != null : "Can’t drawDRRect with outer == null";
+        assert inner != null : "Can’t drawDRRect with inner == null";
+        assert paint != null : "Can’t drawDRRect with paint == null";
         Stats.onNativeCall();
         _nDrawDRRect(_ptr, outer._left, outer._top, outer._right, outer._bottom, outer._radii, inner._left, inner._top, inner._right, inner._bottom, inner._radii, Native.getPtr(paint));
         Reference.reachabilityFence(paint);
         return this;
     }
 
-    public Canvas drawPath(Path path, Paint paint) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas drawPath(@NotNull Path path, @NotNull Paint paint) {
+        assert path != null : "Can’t drawPath with path == null";
+        assert paint != null : "Can’t drawPath with paint == null";
         Stats.onNativeCall();
         _nDrawPath(_ptr, Native.getPtr(path), Native.getPtr(paint));
         Reference.reachabilityFence(path);
@@ -267,11 +303,14 @@ public class Canvas extends Managed {
         return this;
     }
 
-    public Canvas drawImage(Image image, float left, float top) {
+    @NotNull @Contract("_, _, _ -> this")
+    public Canvas drawImage(@NotNull Image image, float left, float top) {
         return drawImage(image, left, top, null);
     }
 
-    public Canvas drawImage(Image image, float left, float top, Paint paint) {
+    @NotNull @Contract("_, _, _, _ -> this")
+    public Canvas drawImage(@NotNull Image image, float left, float top, @Nullable Paint paint) {
+        assert image != null : "Can’t drawImage with image == null";
         Stats.onNativeCall();
         _nDrawImageIRect(_ptr, Native.getPtr(image), 0, 0, image.getWidth(), image.getHeight(), left, top, left + image.getWidth(), top + image.getHeight(), Native.getPtr(paint), true);
         Reference.reachabilityFence(image);
@@ -279,11 +318,15 @@ public class Canvas extends Managed {
         return this;
     }
 
-    public Canvas drawImageRect(Image image, Rect dst) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas drawImageRect(@NotNull Image image, @NotNull Rect dst) {
         return drawImageRect(image, dst, null);
     }
 
-    public Canvas drawImageRect(Image image, Rect dst, Paint paint) {
+    @NotNull @Contract("_, _, _ -> this")
+    public Canvas drawImageRect(@NotNull Image image, @NotNull Rect dst, @Nullable Paint paint) {
+        assert image != null : "Can’t drawImageRect with image == null";
+        assert dst != null : "Can’t drawImageRect with dst == null";
         Stats.onNativeCall();
         _nDrawImageIRect(_ptr, Native.getPtr(image), 0, 0, image.getWidth(), image.getHeight(), dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), true);
         Reference.reachabilityFence(image);
@@ -291,11 +334,16 @@ public class Canvas extends Managed {
         return this;
     }
 
-    public Canvas drawImageRect(Image image, Rect src, Rect dst, Paint paint) {
+    @NotNull @Contract("_, _, _, _ -> this")
+    public Canvas drawImageRect(@NotNull Image image, @NotNull Rect src, @NotNull Rect dst, @Nullable Paint paint) {
         return drawImageRect(image, src, dst, paint, true);
     }
 
-    public Canvas drawImageRect(Image image, Rect src, Rect dst, Paint paint, boolean strict) {
+    @NotNull @Contract("_, _, _, _, _ -> this")
+    public Canvas drawImageRect(@NotNull Image image, @NotNull Rect src, @NotNull Rect dst, @Nullable Paint paint, boolean strict) {
+        assert image != null : "Can’t drawImageRect with image == null";
+        assert src != null : "Can’t drawImageRect with src == null";
+        assert dst != null : "Can’t drawImageRect with dst == null";
         Stats.onNativeCall();
         _nDrawImageRect(_ptr, Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
         Reference.reachabilityFence(image);
@@ -303,15 +351,21 @@ public class Canvas extends Managed {
         return this;
     }
 
-    public Canvas drawImageIRect(Image image, IRect src, Rect dst) {
+    @NotNull @Contract("_, _, _ -> this")
+    public Canvas drawImageIRect(@NotNull Image image, @NotNull IRect src, @NotNull Rect dst) {
         return drawImageIRect(image, src, dst, null);
     }
 
-    public Canvas drawImageIRect(Image image, IRect src, Rect dst, Paint paint) {
+    @NotNull @Contract("_, _, _, _ -> this")
+    public Canvas drawImageIRect(@NotNull Image image, @NotNull IRect src, @NotNull Rect dst, @Nullable Paint paint) {
         return drawImageIRect(image, src, dst, paint, true);
     }
 
-    public Canvas drawImageIRect(Image image, IRect src, Rect dst, Paint paint, boolean strict) {
+    @NotNull @Contract("_, _, _, _, _ -> this")
+    public Canvas drawImageIRect(@NotNull Image image, @NotNull IRect src, @NotNull Rect dst, @Nullable Paint paint, boolean strict) {
+        assert image != null : "Can’t drawImageIRect with image == null";
+        assert src != null : "Can’t drawImageIRect with src == null";
+        assert dst != null : "Can’t drawImageIRect with dst == null";
         Stats.onNativeCall();
         _nDrawImageIRect(_ptr, Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
         Reference.reachabilityFence(image);
@@ -319,11 +373,14 @@ public class Canvas extends Managed {
         return this;
     }
 
-    public Canvas drawBitmap(Bitmap bitmap, float left, float top) {
+    @NotNull @Contract("_, _, _ -> this")
+    public Canvas drawBitmap(@NotNull Bitmap bitmap, float left, float top) {
         return drawBitmap(bitmap, left, top, null);
     }
 
-    public Canvas drawBitmap(Bitmap bitmap, float left, float top, Paint paint) {
+    @NotNull @Contract("_, _, _, _ -> this")
+    public Canvas drawBitmap(@NotNull Bitmap bitmap, float left, float top, @Nullable Paint paint) {
+        assert bitmap != null : "Can’t drawBitmap with bitmap == null";
         Stats.onNativeCall();
         _nDrawBitmapIRect(_ptr, Native.getPtr(bitmap), 0, 0, bitmap.getWidth(), bitmap.getHeight(), left, top, left + bitmap.getWidth(), top + bitmap.getHeight(), Native.getPtr(paint), true);
         Reference.reachabilityFence(bitmap);
@@ -331,11 +388,15 @@ public class Canvas extends Managed {
         return this;
     }
 
-    public Canvas drawBitmapRect(Bitmap bitmap, Rect dst) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas drawBitmapRect(@NotNull Bitmap bitmap, @NotNull Rect dst) {
         return drawBitmapRect(bitmap, dst, null);
     }
 
-    public Canvas drawBitmapRect(Bitmap bitmap, Rect dst, Paint paint) {
+    @NotNull @Contract("_, _, _ -> this")
+    public Canvas drawBitmapRect(@NotNull Bitmap bitmap, @NotNull Rect dst, @Nullable Paint paint) {
+        assert bitmap != null : "Can’t drawBitmapRect with bitmap == null";
+        assert dst != null : "Can’t drawBitmapRect with dst == null";
         Stats.onNativeCall();
         _nDrawBitmapIRect(_ptr, Native.getPtr(bitmap), 0, 0, bitmap.getWidth(), bitmap.getHeight(), dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), true);
         Reference.reachabilityFence(bitmap);
@@ -343,35 +404,53 @@ public class Canvas extends Managed {
         return this;
     }
 
-    public Canvas drawBitmapRect(Bitmap bitmap, Rect src, Rect dst, Paint paint) {
+    @NotNull @Contract("_, _, _, _ -> this")
+    public Canvas drawBitmapRect(@NotNull Bitmap bitmap, @Nullable Rect src, @NotNull Rect dst, @Nullable Paint paint) {
         return drawBitmapRect(bitmap, src, dst, paint, true);
     }
 
-    public Canvas drawBitmapRect(Bitmap bitmap, Rect src, Rect dst, Paint paint, boolean strict) {
+    @NotNull @Contract("_, _, _, _, _ -> this")
+    public Canvas drawBitmapRect(@NotNull Bitmap bitmap, @Nullable Rect src, @NotNull Rect dst, @Nullable Paint paint, boolean strict) {
+        assert bitmap != null : "Can’t drawBitmapRect with bitmap == null";
+        assert dst != null : "Can’t drawBitmapRect with dst == null";
         Stats.onNativeCall();
-        _nDrawBitmapRect(_ptr, Native.getPtr(bitmap), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
+        if (src == null)
+            _nDrawBitmapIRect(_ptr, Native.getPtr(bitmap), 0, 0, bitmap.getWidth(), bitmap.getHeight(), dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
+        else
+            _nDrawBitmapRect(_ptr, Native.getPtr(bitmap), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
         Reference.reachabilityFence(bitmap);
         Reference.reachabilityFence(paint);
         return this;
     }
 
-    public Canvas drawBitmapIRect(Bitmap bitmap, IRect src, Rect dst) {
+    @NotNull @Contract("_, _, _ -> this")
+    public Canvas drawBitmapIRect(@NotNull Bitmap bitmap, @Nullable IRect src, @NotNull Rect dst) {
         return drawBitmapIRect(bitmap, src, dst, null);
     }
 
-    public Canvas drawBitmapIRect(Bitmap bitmap, IRect src, Rect dst, Paint paint) {
+    @NotNull @Contract("_, _, _, _ -> this")
+    public Canvas drawBitmapIRect(@NotNull Bitmap bitmap, @Nullable IRect src, @NotNull Rect dst, @Nullable Paint paint) {
         return drawBitmapIRect(bitmap, src, dst, paint, true);
     }
 
-    public Canvas drawBitmapIRect(Bitmap bitmap, IRect src, Rect dst, Paint paint, boolean strict) {
+    @NotNull @Contract("_, _, _, _, _ -> this")
+    public Canvas drawBitmapIRect(@NotNull Bitmap bitmap, @Nullable IRect src, @NotNull Rect dst, @Nullable Paint paint, boolean strict) {
+        assert bitmap != null : "Can’t drawBitmapIRect with bitmap == null";
+        assert dst != null : "Can’t drawBitmapIRect with dst == null";
         Stats.onNativeCall();
-        _nDrawBitmapIRect(_ptr, Native.getPtr(bitmap), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
+        if (src == null)
+            _nDrawBitmapIRect(_ptr, Native.getPtr(bitmap), 0, 0, bitmap.getWidth(), bitmap.getHeight(), dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
+        else
+            _nDrawBitmapIRect(_ptr, Native.getPtr(bitmap), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
         Reference.reachabilityFence(bitmap);
         Reference.reachabilityFence(paint);
         return this;
     }
 
-    public Canvas drawRegion(Region r, Paint paint) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas drawRegion(@NotNull Region r, @NotNull Paint paint) {
+        assert r != null : "Can’t drawRegion with r == null";
+        assert paint != null : "Can’t drawRegion with paint == null";
         Stats.onNativeCall();
         _nDrawRegion(_ptr, Native.getPtr(r), Native.getPtr(paint));
         Reference.reachabilityFence(r);
@@ -379,7 +458,10 @@ public class Canvas extends Managed {
         return this;
     }
 
-    public Canvas drawString(String s, float x, float y, Font font, Paint paint) {
+    @NotNull @Contract("_, _, _, _, _ -> this")
+    public Canvas drawString(@NotNull String s, float x, float y, Font font, @NotNull Paint paint) {
+        assert s != null : "Can’t drawString with s == null";
+        assert paint != null : "Can’t drawString with paint == null";
         Stats.onNativeCall();
         _nDrawString(_ptr, s, x, y, Native.getPtr(font), Native.getPtr(paint));
         Reference.reachabilityFence(font);
@@ -387,31 +469,36 @@ public class Canvas extends Managed {
         return this;
     }
 
-    public Canvas drawTextBlob(TextBlob blob, float x, float y, Font font, Paint paint) {
+    @NotNull @Contract("_, _, _, _ -> this")
+    public Canvas drawTextBlob(@NotNull TextBlob blob, float x, float y, @NotNull Paint paint) {
+        assert blob != null : "Can’t drawTextBlob with blob == null";
+        assert paint != null : "Can’t drawTextBlob with paint == null";
         Stats.onNativeCall();
-        _nDrawTextBlob(_ptr, Native.getPtr(blob), x, y, Native.getPtr(font), Native.getPtr(paint));
+        _nDrawTextBlob(_ptr, Native.getPtr(blob), x, y, Native.getPtr(paint));
         Reference.reachabilityFence(blob);
-        Reference.reachabilityFence(font);
         Reference.reachabilityFence(paint);
         return this;
     }
 
-    public Canvas drawTextLine(@NotNull TextLine line, float x, float y, Font font, Paint paint) {
-        Stats.onNativeCall();
+    @NotNull @Contract("_, _, _, _ -> this")
+    public Canvas drawTextLine(@NotNull TextLine line, float x, float y, @NotNull Paint paint) {
+        assert line != null : "Can’t drawTextLine with line == null";
+        assert paint != null : "Can’t drawTextLine with paint == null";
         try (TextBlob blob = line.getTextBlob();) {
             if (blob != null)
-                _nDrawTextBlob(_ptr, Native.getPtr(blob), x, y, Native.getPtr(font), Native.getPtr(paint));
+                drawTextBlob(blob, x, y, paint);
         }
-        Reference.reachabilityFence(font);
-        Reference.reachabilityFence(paint);
         return this;
     }
 
-    public Canvas drawPicture(Picture picture) {
+    @NotNull @Contract("_ -> this")
+    public Canvas drawPicture(@NotNull Picture picture) {
         return drawPicture(picture, null, null);
     }
 
-    public Canvas drawPicture(Picture picture, Matrix33 matrix, Paint paint) {
+    @NotNull @Contract("_, _, _ -> this")
+    public Canvas drawPicture(@NotNull Picture picture, @Nullable Matrix33 matrix, @Nullable Paint paint) {
+        assert picture != null : "Can’t drawPicture with picture == null";
         Stats.onNativeCall();
         _nDrawPicture(_ptr, Native.getPtr(picture), matrix == null ? null : matrix._mat, Native.getPtr(paint));
         Reference.reachabilityFence(picture);
@@ -434,6 +521,7 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
+    @NotNull @Contract("_, _, _ -> this")
     public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @NotNull Paint paint) { 
         return drawTriangles(positions, colors, null, null, BlendMode.MODULATE, paint);
     }
@@ -456,7 +544,8 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
-    public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @Nullable Paint paint) {
+    @NotNull @Contract("_, _, _, _, _ -> this")
+    public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull Paint paint) {
         return drawTriangles(positions, colors, texCoords, indices, BlendMode.MODULATE, paint);
     }
 
@@ -479,10 +568,13 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
-    public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull BlendMode mode, @Nullable Paint paint) {
+    @NotNull @Contract("_, _, _, _, _, _ -> this")
+    public Canvas drawTriangles(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull BlendMode mode, @NotNull Paint paint) {
+        assert positions != null : "Can’t drawTriangles with positions == null";
         assert positions.length % 3 == 0 : "Expected positions.length % 3 == 0, got: " + positions.length;
         assert colors == null || colors.length == positions.length : "Expected colors.length == positions.length, got: " + colors.length + " != " + positions.length;
         assert texCoords == null || texCoords.length == positions.length : "Expected texCoords.length == positions.length, got: " + texCoords.length + " != " + positions.length;
+        assert paint != null : "Can’t drawTriangles with paint == null";
         Stats.onNativeCall();
         _nDrawVertices(_ptr, 0 /* kTriangles_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), indices, mode.ordinal(), Native.getPtr(paint));
         Reference.reachabilityFence(paint);
@@ -504,6 +596,7 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
+    @NotNull @Contract("_, _, _ -> this")
     public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @NotNull Paint paint) { 
         return drawTriangleStrip(positions, colors, null, null, BlendMode.MODULATE, paint);
     }
@@ -526,6 +619,7 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
+    @NotNull @Contract("_, _, _, _, _ -> this")
     public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull Paint paint) {
         return drawTriangleStrip(positions, colors, texCoords, indices, BlendMode.MODULATE, paint);
     }
@@ -549,9 +643,13 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
+    @NotNull @Contract("_, _, _, _, _, _ -> this")
     public Canvas drawTriangleStrip(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull BlendMode mode, @NotNull Paint paint) {
+        assert positions != null : "Can’t drawTriangleStrip with positions == null";
         assert colors == null || colors.length == positions.length : "Expected colors.length == positions.length, got: " + colors.length + " != " + positions.length;
         assert texCoords == null || texCoords.length == positions.length : "Expected texCoords.length == positions.length, got: " + texCoords.length + " != " + positions.length;
+        assert mode != null : "Can’t drawTriangles with mode == null";
+        assert paint != null : "Can’t drawTriangles with paint == null";
         Stats.onNativeCall();
         _nDrawVertices(_ptr, 1 /* kTriangleStrip_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), indices, mode.ordinal(), Native.getPtr(paint));
         Reference.reachabilityFence(paint);
@@ -573,6 +671,7 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
+    @NotNull @Contract("_, _, _ -> this")
     public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @NotNull Paint paint) { 
         return drawTriangleFan(positions, colors, null, null, BlendMode.MODULATE, paint);
     }
@@ -595,6 +694,7 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
+    @NotNull @Contract("_, _, _, _, _ -> this")
     public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull Paint paint) {
         return drawTriangleFan(positions, colors, texCoords, indices, BlendMode.MODULATE, paint);
     }
@@ -618,9 +718,13 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices">https://fiddle.skia.org/c/@Canvas_drawVertices</a>
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawVertices_2">https://fiddle.skia.org/c/@Canvas_drawVertices_2</a>
      */
+    @NotNull @Contract("_, _, _, _, _, _ -> this")
     public Canvas drawTriangleFan(@NotNull Point[] positions, @Nullable int[] colors, @Nullable Point[] texCoords, @Nullable short[] indices, @NotNull BlendMode mode, @NotNull Paint paint) {
+        assert positions != null : "Can’t drawTriangleFan with positions == null";
         assert colors == null || colors.length == positions.length : "Expected colors.length == positions.length, got: " + colors.length + " != " + positions.length;
         assert texCoords == null || texCoords.length == positions.length : "Expected texCoords.length == positions.length, got: " + texCoords.length + " != " + positions.length;
+        assert mode != null : "Can’t drawTriangleFan with mode == null";
+        assert paint != null : "Can’t drawTriangleFan with paint == null";
         Stats.onNativeCall();
         _nDrawVertices(_ptr, 2 /* kTriangleFan_VertexMode */, Point.flattenArray(positions), colors, Point.flattenArray(texCoords), indices, mode.ordinal(), Native.getPtr(paint));
         Reference.reachabilityFence(paint);
@@ -650,6 +754,7 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/4cf70f8d194867d053d7e177e5088445">https://fiddle.skia.org/c/4cf70f8d194867d053d7e177e5088445</a>
      */
+    @NotNull @Contract("_, _, _ -> this")
     public Canvas drawPatch(@NotNull Point[] cubics, @NotNull int[] colors, @NotNull Paint paint) {
         return drawPatch(cubics, colors, null, paint);
     }
@@ -682,6 +787,7 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/4cf70f8d194867d053d7e177e5088445">https://fiddle.skia.org/c/4cf70f8d194867d053d7e177e5088445</a>
      */
+    @NotNull @Contract("_, _, _, _ -> this")
     public Canvas drawPatch(@NotNull Point[] cubics, @NotNull int[] colors, @Nullable Point[] texCoords, @NotNull Paint paint) {
         return drawPatch(cubics, colors, texCoords, BlendMode.MODULATE, paint);
     }
@@ -716,10 +822,15 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/4cf70f8d194867d053d7e177e5088445">https://fiddle.skia.org/c/4cf70f8d194867d053d7e177e5088445</a>
      */
+    @NotNull @Contract("_, _, _, _, _ -> this")
     public Canvas drawPatch(@NotNull Point[] cubics, @NotNull int[] colors, @Nullable Point[] texCoords, @NotNull BlendMode mode, @NotNull Paint paint) {
+        assert cubics != null : "Can’t drawPatch with cubics == null";
         assert cubics.length == 12 : "Expected cubics.length == 12, got: " + cubics.length;
+        assert colors != null : "Can’t drawPatch with colors == null";
         assert colors.length == 4 : "Expected colors.length == 4, got: " + colors.length;
         assert texCoords == null || texCoords.length == 4 : "Expected texCoords.length == 4, got: " + texCoords.length;
+        assert mode != null : "Can’t drawPatch with mode == null";
+        assert paint != null : "Can’t drawPatch with paint == null";
         Stats.onNativeCall();
         _nDrawPatch(_ptr, Point.flattenArray(cubics), colors, Point.flattenArray(texCoords), mode.ordinal(), Native.getPtr(paint));
         Reference.reachabilityFence(paint);
@@ -737,6 +848,7 @@ public class Canvas extends Managed {
      * @param drawable  custom struct encapsulating drawing commands
      * @return          this
      */
+    @NotNull @Contract("_ -> this")
     public Canvas drawDrawable(@NotNull Drawable drawable) {
         return drawDrawable(drawable, null);
     }
@@ -756,6 +868,7 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawDrawable_2">https://fiddle.skia.org/c/@Canvas_drawDrawable_2</a>
      */
+    @NotNull @Contract("_, _, _ -> this")
     public Canvas drawDrawable(@NotNull Drawable drawable, float x, float y) {
         return drawDrawable(drawable, Matrix33.makeTranslate(x, y));
     }
@@ -775,20 +888,25 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_drawDrawable">https://fiddle.skia.org/c/@Canvas_drawDrawable</a>
      */
+    @NotNull @Contract("_, _ -> this")
     public Canvas drawDrawable(@NotNull Drawable drawable, @Nullable Matrix33 matrix) {
+        assert drawable != null : "Can’t drawDrawable with drawable == null";
         Stats.onNativeCall();
         _nDrawDrawable(_ptr, Native.getPtr(drawable), matrix == null ? null : matrix._mat);
         Reference.reachabilityFence(drawable);
         return this;
     }
 
+    @NotNull @Contract("_ -> this")
     public Canvas clear(int color) {
         Stats.onNativeCall();
         _nClear(_ptr, color);
         return this;
     }
 
-    public Canvas drawPaint(Paint paint) {
+    @NotNull @Contract("_ -> this")
+    public Canvas drawPaint(@NotNull Paint paint) {
+        assert paint != null : "Can’t drawPaint with paint == null";
         Stats.onNativeCall();
         _nDrawPaint(_ptr, Native.getPtr(paint));
         Reference.reachabilityFence(paint);
@@ -803,7 +921,9 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_setMatrix">https://fiddle.skia.org/c/@Canvas_setMatrix</a>
      */
+    @NotNull @Contract("_ -> this")
     public Canvas setMatrix(@NotNull Matrix33 matrix) {
+        assert matrix != null : "Can’t setMatrix with matrix == null";
         Stats.onNativeCall();
         _nSetMatrix(_ptr, matrix._mat);
         return this;
@@ -815,7 +935,9 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_resetMatrix">https://fiddle.skia.org/c/@Canvas_resetMatrix</a>
      */
+    @NotNull @Contract("_ -> this")
     public Canvas resetMatrix(@NotNull Matrix33 matrix) {
+        assert matrix != null : "Can’t resetMatrix with matrix == null";
         Stats.onNativeCall();
         _nResetMatrix(_ptr);
         return this;
@@ -824,6 +946,7 @@ public class Canvas extends Managed {
     /**
      * Returns the total transformation matrix for the canvas.
      */
+    @NotNull @Contract("_ -> new")
     public Matrix44 getLocalToDevice() {
         try {
             Stats.onNativeCall();
@@ -834,95 +957,125 @@ public class Canvas extends Managed {
         }
     }
 
-    public Canvas clipRect(Rect r, ClipMode mode, boolean antiAlias) {
+    @NotNull @Contract("_, _, _ -> this")
+    public Canvas clipRect(@NotNull Rect r, @NotNull ClipMode mode, boolean antiAlias) {
+        assert r != null : "Can’t clipRect with r == null";
+        assert mode != null : "Can’t clipRect with mode == null";
         Stats.onNativeCall();
         _nClipRect(_ptr, r._left, r._top, r._right, r._bottom, mode.ordinal(), antiAlias);
         return this;
     }
 
-    public Canvas clipRect(Rect r, ClipMode mode) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas clipRect(@NotNull Rect r, @NotNull ClipMode mode) {
         return clipRect(r, mode, false);
     }
 
-    public Canvas clipRect(Rect r, boolean antiAlias) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas clipRect(@NotNull Rect r, boolean antiAlias) {
         return clipRect(r, ClipMode.INTERSECT, antiAlias);
     }
 
-    public Canvas clipRect(Rect r) {
+    @NotNull @Contract("_ -> this")
+    public Canvas clipRect(@NotNull Rect r) {
         return clipRect(r, ClipMode.INTERSECT, false);
     }
 
-    public Canvas clipRRect(RRect r, ClipMode mode, boolean antiAlias) {
+    @NotNull @Contract("_, _, _ -> this")
+    public Canvas clipRRect(@NotNull RRect r, @NotNull ClipMode mode, boolean antiAlias) {
+        assert r != null : "Can’t clipRRect with r == null";
+        assert mode != null : "Can’t clipRRect with mode == null";
         Stats.onNativeCall();
         _nClipRRect(_ptr, r._left, r._top, r._right, r._bottom, r._radii, mode.ordinal(), antiAlias);
         return this;
     }
 
-    public Canvas clipRRect(RRect r, ClipMode mode) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas clipRRect(@NotNull RRect r, @NotNull ClipMode mode) {
         return clipRRect(r, mode, false);
     }
 
-    public Canvas clipRRect(RRect r, boolean antiAlias) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas clipRRect(@NotNull RRect r, boolean antiAlias) {
         return clipRRect(r, ClipMode.INTERSECT, antiAlias);
     }
 
-    public Canvas clipRRect(RRect r) {
+    @NotNull @Contract("_ -> this")
+    public Canvas clipRRect(@NotNull RRect r) {
         return clipRRect(r, ClipMode.INTERSECT, false);
     }
 
-    public Canvas clipPath(Path p, ClipMode mode, boolean antiAlias) {
+    @NotNull @Contract("_, _, _ -> this")
+    public Canvas clipPath(@NotNull Path p, @NotNull ClipMode mode, boolean antiAlias) {
+        assert p != null : "Can’t clipPath with p == null";
+        assert mode != null : "Can’t clipPath with mode == null";
         Stats.onNativeCall();
         _nClipPath(_ptr, Native.getPtr(p), mode.ordinal(), antiAlias);
         Reference.reachabilityFence(p);
         return this;
     }
 
-    public Canvas clipPath(Path p, ClipMode mode) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas clipPath(@NotNull Path p, @NotNull ClipMode mode) {
         return clipPath(p, mode, false);
     }
 
-    public Canvas clipPath(Path p, boolean antiAlias) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas clipPath(@NotNull Path p, boolean antiAlias) {
         return clipPath(p, ClipMode.INTERSECT, antiAlias);
     }
 
-    public Canvas clipPath(Path p) {
+    @NotNull @Contract("_ -> this")
+    public Canvas clipPath(@NotNull Path p) {
         return clipPath(p, ClipMode.INTERSECT, false);
     }
 
-    public Canvas clipRegion(Region r, ClipMode mode) {
+    @NotNull @Contract("_, _ -> this")
+    public Canvas clipRegion(@NotNull Region r, @NotNull ClipMode mode) {
+        assert r != null : "Can’t clipRegion with r == null";
+        assert mode != null : "Can’t clipRegion with mode == null";
         Stats.onNativeCall();
         _nClipRegion(_ptr, Native.getPtr(r), mode.ordinal());
         Reference.reachabilityFence(r);
         return this;
     }
 
-    public Canvas clipRegion(Region r) {
+    @NotNull @Contract("_ -> this")
+    public Canvas clipRegion(@NotNull Region r) {
         return clipRegion(r, ClipMode.INTERSECT);
     }
 
+    @NotNull @Contract("_, _ -> this")
     public Canvas translate(float dx, float dy) {
         return concat(Matrix33.makeTranslate(dx, dy));
     }
 
+    @NotNull @Contract("_, _ -> this")
     public Canvas scale(float sx, float sy) {
         return concat(Matrix33.makeScale(sx, sy));
     }
 
+    @NotNull @Contract("_ -> this")
     public Canvas rotate(float deg) {
         return concat(Matrix33.makeRotate(deg));
     }
 
+    @NotNull @Contract("_, _ -> this")
     public Canvas skew(float sx, float sy) {
         return concat(Matrix33.makeSkew(sx, sy));
     }
 
-    public Canvas concat(Matrix33 matrix) {
+    @NotNull @Contract("_ -> this")
+    public Canvas concat(@NotNull Matrix33 matrix) {
+        assert matrix != null : "Can’t concat with matrix == null";
         Stats.onNativeCall();
         _nConcat(_ptr, matrix.getMat());
         return this;
     }
 
-    public Canvas concat(Matrix44 matrix) {
+    @NotNull @Contract("_ -> this")
+    public Canvas concat(@NotNull Matrix44 matrix) {
+        assert matrix != null : "Can’t concat with matrix == null";
         Stats.onNativeCall();
         _nConcat44(_ptr, matrix.getMat());
         return this;
@@ -966,8 +1119,9 @@ public class Canvas extends Managed {
      * 
      * @see <a href="https://fiddle.skia.org/c/@Canvas_readPixels_3">https://fiddle.skia.org/c/@Canvas_readPixels_3</a>
      */
-    public boolean readPixels(Bitmap bitmap, int srcX, int srcY) {
+    public boolean readPixels(@NotNull Bitmap bitmap, int srcX, int srcY) {
         try {
+            assert bitmap != null : "Can’t readPixels with bitmap == null";
             Stats.onNativeCall();
             return _nReadPixels(_ptr, Native.getPtr(bitmap), srcX, srcY);
         } finally {
@@ -1017,8 +1171,9 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@State_Stack_a">https://fiddle.skia.org/c/@State_Stack_a</a>
      * @see <a href="https://fiddle.skia.org/c/@State_Stack_b">https://fiddle.skia.org/c/@State_Stack_b</a>
     */
-    public boolean writePixels(Bitmap bitmap, int x, int y) {
+    public boolean writePixels(@NotNull Bitmap bitmap, int x, int y) {
         try {
+            assert bitmap != null : "Can’t writePixels with bitmap == null";
             Stats.onNativeCall();
             return _nWritePixels(_ptr, Native.getPtr(bitmap), x, y);
         } finally {
@@ -1036,7 +1191,7 @@ public class Canvas extends Managed {
         }
     }
 
-    public int saveLayer(float left, float top, float right, float bottom, Paint paint) {
+    public int saveLayer(float left, float top, float right, float bottom, @Nullable Paint paint) {
         try {
             Stats.onNativeCall();
             return _nSaveLayerRect(_ptr, left, top, right, bottom, Native.getPtr(paint));
@@ -1091,12 +1246,14 @@ public class Canvas extends Managed {
         }
     }
 
+    @NotNull @Contract("-> this")
     public Canvas restore() {
         Stats.onNativeCall();
         _nRestore(_ptr);
         return this;
     }
 
+    @NotNull @Contract("_ -> this")
     public Canvas restoreToCount(int saveCount) {
         Stats.onNativeCall();
         _nRestoreToCount(_ptr, saveCount);
@@ -1125,7 +1282,7 @@ public class Canvas extends Managed {
     public static native void _nDrawBitmapIRect(long ptr, long bitmapPtr, int sl, int st, int sr, int sb, float dl, float dt, float dr, float db, long paintPtr, boolean strict);
     public static native void _nDrawRegion(long ptr, long nativeRegion, long paintPtr);
     public static native void _nDrawString(long ptr, String string, float x, float y, long font, long paint);
-    public static native void _nDrawTextBlob(long ptr, long blob, float x, float y, long font, long paint);
+    public static native void _nDrawTextBlob(long ptr, long blob, float x, float y, long paint);
     public static native void _nDrawPicture(long ptr, long picturePtr, float[] matrix, long paintPtr);
     public static native void _nDrawVertices(long ptr, int verticesMode, float[] cubics, int[] colors, float[] texCoords, short[] indices, int blendMode, long paintPtr);
     public static native void _nDrawPatch(long ptr, float[] cubics, int[] colors, float[] texCoords, int blendMode, long paintPtr);

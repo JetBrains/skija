@@ -41,7 +41,7 @@ public class FontScene extends Scene {
         var blob = Shaper.make().shape(text, font);
         if (blob != null) {
             var bounds = blob.getBounds();
-            canvas.drawTextBlob(blob, 0, 0, font, _paint);
+            canvas.drawTextBlob(blob, 0, 0, _paint);
             canvas.translate(0, bounds.getHeight());
             return bounds.getHeight();
         }

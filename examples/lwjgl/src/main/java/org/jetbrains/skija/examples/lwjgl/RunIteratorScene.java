@@ -122,7 +122,7 @@ public class RunIteratorScene extends Scene {
         var blob = handler.makeBlob();
         if (blob != null) {
             try (blob) {
-                canvas.drawTextBlob(blob, 0, 0, lato36, textFill);
+                canvas.drawTextBlob(blob, 0, 0, textFill);
             
                 for (var run: handler._runs) {
                     canvas.drawRect(run.getBounds(), boundsStroke);

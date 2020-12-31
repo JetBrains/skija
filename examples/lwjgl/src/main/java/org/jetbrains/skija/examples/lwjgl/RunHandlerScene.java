@@ -29,7 +29,7 @@ public class RunHandlerScene extends Scene {
             // TextBlobBuilderRunHandler
             shaper.shape(text, lato36, FontMgr.getDefault(), null, true, width - 40, tbHandler);
             try (var blob = tbHandler.makeBlob()) {
-                canvas.drawTextBlob(blob, 0, 0, lato36, textFill);
+                canvas.drawTextBlob(blob, 0, 0, textFill);
                 canvas.translate(0, blob.getBounds().getBottom() + 20);
             }
 
@@ -37,7 +37,7 @@ public class RunHandlerScene extends Scene {
             shaper.shape(text, lato36, FontMgr.getDefault(), null, true, width - 40, handler);
             
             try (var blob = handler.makeBlob()) {
-                canvas.drawTextBlob(blob, 0, 0, lato36, textFill);
+                canvas.drawTextBlob(blob, 0, 0, textFill);
             }
 
             List<Rect> taken = new ArrayList<>();
@@ -81,7 +81,7 @@ public class RunHandlerScene extends Scene {
                                 // draw details
                                 canvas.drawRect(detailsBorder, boundsFill);
                                 canvas.drawLine(runBounds.getLeft(), runBounds.getBottom(), detailsBorder.getLeft(), detailsBorder.getBottom(), boundsStroke);
-                                canvas.drawTextBlob(detailsBlob, detailsInner.getLeft(), detailsInner.getTop(), inter9, textFill);
+                                canvas.drawTextBlob(detailsBlob, detailsInner.getLeft(), detailsInner.getTop(), textFill);
                                 taken.add(detailsOuter);
                                 maxBottom = Math.max(maxBottom, detailsOuter.getBottom());
                                 break;

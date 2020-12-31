@@ -114,7 +114,7 @@ public class WallOfTextScene extends Scene {
                 }
                 fill.setColor(colors[i % colors.length]);
                 canvas.drawRect(bounds.translate(x, y), boundsStroke);
-                canvas.drawTextBlob(blob, x, y, font, fill);
+                canvas.drawTextBlob(blob, x, y, fill);
                 x += wordWidth + space;
             }
         }
@@ -134,7 +134,7 @@ public class WallOfTextScene extends Scene {
                 }
                 fill.setColor(colors[i % colors.length]);
                 canvas.drawRect(Rect.makeXYWH(x, y, line.getWidth(), line.getHeight()), boundsStroke);
-                canvas.drawTextLine(line, x, y - line.getAscent(), font, fill);
+                canvas.drawTextLine(line, x, y - line.getAscent(), fill);
                 x += wordWidth + space;
             }
         }
@@ -142,7 +142,7 @@ public class WallOfTextScene extends Scene {
 
     public void drawTogether(Shaper shaper, Canvas canvas, float padding, float textWidth) {
         try (var blob = makeBlob(text, shaper, textWidth);) {
-            canvas.drawTextBlob(blob, padding, padding, font, fill);
+            canvas.drawTextBlob(blob, padding, padding, fill);
         }
     }
 
