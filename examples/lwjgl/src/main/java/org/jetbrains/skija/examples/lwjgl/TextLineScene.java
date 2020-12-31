@@ -13,11 +13,13 @@ public class TextLineScene extends Scene {
     private Paint strokeRed = new Paint().setColor(0x80CC3333).setMode(PaintMode.STROKE).setStrokeWidth(1);
     private Font inter9 = new Font(inter, 9).setSubpixel(true);
     private Font inter18 = new Font(inter, 36);
-    private Font zapfino18 = new Font(FontMgr.getDefault().matchFamilyStyle("Zapfino", FontStyle.NORMAL), 18);
-    private Font emoji36 = new Font(FontMgr.getDefault().matchFamilyStyle("Apple Color Emoji", FontStyle.NORMAL), 36);
+    private Font zapfino18;
+    private Font emoji36 = new Font(FontMgr.getDefault().matchFamilyStyleCharacter(null, FontStyle.NORMAL, null, "🧛".codePointAt(0)), 36);
     
     public TextLineScene() {
         _variants = new String[] { "Subpixel", "No subpixel" };
+        if ("Mac OS X".equals(System.getProperty("os.name")))
+            zapfino18 = new Font(FontMgr.getDefault().matchFamilyStyle("Zapfino", FontStyle.NORMAL), 18);
     }
 
     public Point drawTable(Canvas canvas, String[] data) {
@@ -111,17 +113,21 @@ public class TextLineScene extends Scene {
 
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
-        for (var font: new Font[] { inter18, zapfino18, emoji36 })
-            if ("Subpixel".equals(_variants[_variantIdx]) && !font.isSubpixel())
-                font.setSubpixel(true);
-            else if ("No subpixel".equals(_variants[_variantIdx]) && font.isSubpixel())
-                font.setSubpixel(false);
+        for (var font: new Font[] { inter18, zapfino18, emoji36 }) {
+            if (font != null) {
+                if ("Subpixel".equals(_variants[_variantIdx]) && !font.isSubpixel())
+                    font.setSubpixel(true);
+                else if ("No subpixel".equals(_variants[_variantIdx]) && font.isSubpixel())
+                    font.setSubpixel(false);
+            }
+        }
 
         Point cursor = new Point(xpos, ypos);
         canvas.translate(20, 20);
         cursor = cursor.offset(-20, -20);
         cursor = cursor.offset(0, -drawLine(canvas, new String[] { "", "one", "yf", "два", "الخطوط", "🧛", "one yf الخطوط два 🧛" }, inter18, cursor));
-        cursor = cursor.offset(0, -drawLine(canvas, "fiz officiad", zapfino18, cursor)); // swashes
+        if (zapfino18 != null)
+            cursor = cursor.offset(0, -drawLine(canvas, "fiz officiad", zapfino18, cursor)); // swashes
         // cursor = cursor.offset(0, -drawLine(canvas, "sixستةten", inter18, cursor));
         cursor = cursor.offset(0, -drawLine(canvas, new String[] {"الكلب", "sixستةten", "one اثنان 12 واحد two"}, inter18, cursor)); // RTL
         cursor = cursor.offset(0, -drawLine(canvas, new String[] {"<->", "a<->b", "🧑🏿", "a🧑🏿b"}, inter18, cursor)); // Ligatures
