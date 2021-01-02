@@ -126,7 +126,7 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_TextLine__1nGetOffset
     return instance->fRuns.back().fEnd16;
 }
 
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_TextLine__1nGetCoordAtOffset
+extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_TextLine__1nGetCoordAtOffset
   (JNIEnv* env, jclass jclass, jlong ptr, jint offset16) {
     TextLine* instance = reinterpret_cast<TextLine*>(static_cast<uintptr_t>(ptr));
 
