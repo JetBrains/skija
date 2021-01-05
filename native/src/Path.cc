@@ -6,10 +6,15 @@
 #include "SkPath.h"
 #include "SkPathOps.h"
 #include "interop.hh"
+#include "include/utils/SkParsePath.h"
 
 static void deletePath(SkPath* path) {
     // std::cout << "Deleting [SkPath " << path << "]" << std::endl;
     delete path;
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path__1nGetFinalizer(JNIEnv* env, jclass jclass) {
+    return static_cast<jlong>(reinterpret_cast<uintptr_t>(&deletePath));
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path__1nMake(JNIEnv* env, jclass jclass) {
@@ -17,8 +22,16 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path__1nMake(JNIEnv*
     return reinterpret_cast<jlong>(obj);
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path__1nGetFinalizer(JNIEnv* env, jclass jclass) {
-    return static_cast<jlong>(reinterpret_cast<uintptr_t>(&deletePath));
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Path__1nMakeFromSVGString
+  (JNIEnv* env, jclass jclass, jstring d) {
+    SkPath* obj = new SkPath();
+    SkString s = skString(env, d);
+    if (SkParsePath::FromSVGString(s.c_str(), obj))
+        return reinterpret_cast<jlong>(obj);
+    else {
+        delete obj;
+        return 0;
+    }
 }
 
 extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Path__1nEquals(JNIEnv* env, jclass jclass, jlong aPtr, jlong bPtr) {

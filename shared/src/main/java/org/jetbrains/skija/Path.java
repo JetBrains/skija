@@ -25,6 +25,11 @@ import org.jetbrains.skija.impl.*;
  */
 public class Path extends Managed implements Iterable<PathSegment> {
     static { Library.staticLoad(); }
+
+    @ApiStatus.Internal
+    public static class _FinalizerHolder {
+        public static final long PTR = _nGetFinalizer();
+    }
     
     /**
      * Constructs an empty Path. By default, Path has no verbs, no {@link Point}, and no weights.
@@ -33,6 +38,15 @@ public class Path extends Managed implements Iterable<PathSegment> {
     public Path() {
         this(_nMake());
         Stats.onNativeCall();
+    }
+
+    @NotNull
+    public static Path makeFromSVGString(String svg) {
+        long res = _nMakeFromSVGString(svg);
+        if (res == 0)
+            throw new IllegalArgumentException("Failed to parse SVG Path string: " + svg);
+        else
+            return new Path(res);
     }
 
     /**
@@ -1941,13 +1955,9 @@ public class Path extends Managed implements Iterable<PathSegment> {
         super(ptr, _FinalizerHolder.PTR);
     }
 
-    @ApiStatus.Internal
-    public static class _FinalizerHolder {
-        public static final long PTR = _nGetFinalizer();
-    }
-
-    public static native long    _nMake();
     public static native long    _nGetFinalizer();
+    public static native long    _nMake();
+    public static native long    _nMakeFromSVGString(String s);
     public static native boolean _nEquals(long aPtr, long bPtr);
     public static native boolean _nIsInterpolatable(long ptr, long comparePtr);
     public static native long    _nMakeLerp(long ptr, long endingPtr, float weight);
@@ -1955,7 +1965,7 @@ public class Path extends Managed implements Iterable<PathSegment> {
     public static native void    _nSetFillMode(long ptr, int fillMode);
     public static native boolean _nIsConvex(long ptr);
     public static native Rect    _nIsOval(long ptr);
-    public static native RRect _nIsRRect(long ptr);
+    public static native RRect   _nIsRRect(long ptr);
     public static native void    _nReset(long ptr);
     public static native void    _nRewind(long ptr);
     public static native boolean _nIsEmpty(long ptr);

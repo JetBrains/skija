@@ -17,7 +17,7 @@ LOMBOK=~/.m2/repository/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar
 
 if [[ ! -f $LOMBOK ]] ; then
     mkdir -p `dirname $LOMBOK`
-    curl --fail --location --show-error https://repo1.maven.org/maven2/org/jetbrains/annotations/19.0.0/annotations-19.0.0.jar > $LOMBOK
+    curl --fail --location --show-error https://repo1.maven.org/maven2/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar > $LOMBOK
 fi
 
 XARG=""
