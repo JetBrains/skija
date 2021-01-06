@@ -355,6 +355,7 @@ class Window {
         scenes.put("RunIterator",      new RunIteratorScene());
         scenes.put("Squares",          new SquaresScene());
         scenes.put("SVG",              new SVGScene());
+        scenes.put("SVG Scaling",      new SVGScalingScene());
         scenes.put("Swing",            new SwingScene());
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("TextBlob",         new TextBlobScene());

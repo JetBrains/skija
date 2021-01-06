@@ -22,22 +22,13 @@ public class SVGScene extends Scene {
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         if (_dom != null) {
             Point size = _dom.getContainerSize();
-            if (size.isEmpty())
-                _dom.setContainerSize(Math.min(width, height), Math.min(width, height));
-            else if (size.getX() > width || size.getY() > height || (size.getX() < width - 50 && size.getY() < height - 50)) {
-                float ratio = size.getX() / size.getY();
-                float w = width - 40;
-                float h = w / ratio;
-                if (h > height - 40) {
-                    w = w / h * (height - 40);
-                    h = height - 40;
-                }
-
-                _dom.setContainerSize(w, h);
+            if (size.isEmpty()) {
+                size = new Point(width - 50, height - 50);
+                _dom.setContainerSize(size);
             }
-
-            size = _dom.getContainerSize();
-            canvas.translate((width - size.getX()) / 2, (height - size.getY()) / 2);
+            float scale = Math.min((width - 50) / size.getX(), (height - 50) / size.getY());
+            canvas.translate((width - size.getX() * scale) / 2f, (height - size.getY() * scale) / 2f);
+            canvas.scale(scale, scale);
             _dom.render(canvas);
         } else if (_error != null) {
             Scene.drawStringCentered(canvas, _error.getMessage(), width / 2, height / 2, Scene.inter13, Scene.blackFill);
