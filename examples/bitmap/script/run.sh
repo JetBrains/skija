@@ -2,14 +2,14 @@
 set -o errexit -o nounset -o pipefail
 cd "`dirname $0`/.."
 
-native=~/.m2/repository/org/jetbrains/skija/skija-native/0.0.0-SNAPSHOT/skija-native-0.0.0-SNAPSHOT.jar
 shared=~/.m2/repository/org/jetbrains/skija/skija-shared/0.0.0-SNAPSHOT/skija-shared-0.0.0-SNAPSHOT.jar
-
-if [[ ! -f $native ]] ; then
-    ../../native/script/install.sh
-fi
+native=~/.m2/repository/org/jetbrains/skija/skija-native/0.0.0-SNAPSHOT/skija-native-0.0.0-SNAPSHOT.jar
 
 if [[ ! -f $shared ]] ; then
+    ../../shared/script/install.sh
+fi
+
+if [[ ! -f $native ]] ; then
     ../../native/script/install.sh
 fi
 
