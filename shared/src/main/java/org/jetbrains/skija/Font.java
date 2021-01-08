@@ -77,6 +77,7 @@ public class Font extends Managed {
         }
     }
 
+    @ApiStatus.Internal
     public static Font makeClone(long ptr) {
         Stats.onNativeCall();
         return new Font(_nMakeClone(ptr));

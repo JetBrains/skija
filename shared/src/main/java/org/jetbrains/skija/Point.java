@@ -7,7 +7,10 @@ import org.jetbrains.annotations.*;
 public class Point {
     public static final Point ZERO = new Point(0, 0);
 
+    @ApiStatus.Internal
     public final float _x;
+    
+    @ApiStatus.Internal
     public final float _y;
 
     @Contract("null -> null; !null -> new")
@@ -31,8 +34,15 @@ public class Point {
         return arr;
     }
 
+    @NotNull
     public Point offset(float dx, float dy) {
         return new Point(_x + dx, _y + dy);
+    }
+
+    @NotNull
+    public Point offset(@NotNull Point vec) {
+        assert vec != null : "Point::offset expected other != null";
+        return offset(vec._x, vec._y);
     }
 
     public boolean isEmpty() {

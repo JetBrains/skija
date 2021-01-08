@@ -63,7 +63,7 @@ public class BitmapScene extends Scene {
                 {
                     canvas.save();
                     canvas.translate(extended.getLeft(), extended.getTop());
-                    var targetRelative = target.translate(-extended.getLeft(), -extended.getTop()).toRect();
+                    var targetRelative = target.offset(-extended.getLeft(), -extended.getTop()).toRect();
                     canvas.clipRect(targetRelative);
                     canvas.drawRect(Rect.makeXYWH(0, 0, extended.getWidth(), extended.getHeight()), fill);
                     canvas.restore();

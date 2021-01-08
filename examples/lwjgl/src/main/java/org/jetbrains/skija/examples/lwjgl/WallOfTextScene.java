@@ -113,7 +113,7 @@ public class WallOfTextScene extends Scene {
                     y += lineHeight;
                 }
                 fill.setColor(colors[i % colors.length]);
-                canvas.drawRect(bounds.translate(x, y), boundsStroke);
+                canvas.drawRect(bounds.offset(x, y), boundsStroke);
                 canvas.drawTextBlob(blob, x, y, fill);
                 x += wordWidth + space;
             }

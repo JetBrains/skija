@@ -39,6 +39,7 @@ public class Paint extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Paint_copy_const_SkPaint">https://fiddle.skia.org/c/@Paint_copy_const_SkPaint</a>
      */
+    @NotNull @Contract("-> new")
     public Paint makeClone() {
         try {
             Stats.onNativeCall();
@@ -86,6 +87,7 @@ public class Paint extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Paint_reset">https://fiddle.skia.org/c/@Paint_reset</a>
      */
+    @NotNull @Contract("-> this")
     public Paint reset() {
         Stats.onNativeCall();
         _nReset(_ptr);
@@ -111,6 +113,7 @@ public class Paint extends Managed {
      * 
      * @param value  setting for antialiasing
      */
+    @NotNull @Contract("_ -> this")
     public Paint setAntiAlias(boolean value) {
         Stats.onNativeCall();
         _nSetAntiAlias(_ptr, value);
@@ -135,6 +138,7 @@ public class Paint extends Managed {
      * @param value  setting for ditering
      * @return       this
      */
+    @NotNull @Contract("_ -> this")
     public Paint setDither(boolean value) {
         Stats.onNativeCall();
         _nSetDither(_ptr, value);
@@ -147,6 +151,7 @@ public class Paint extends Managed {
      * 
      * @return this
      */
+    @NotNull
     public FilterQuality getFilterQuality() {
         try {
             Stats.onNativeCall();
@@ -164,7 +169,9 @@ public class Paint extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Color_Methods">https://fiddle.skia.org/c/@Color_Methods</a>
      * @see <a href="https://fiddle.skia.org/c/@Paint_setFilterQuality">https://fiddle.skia.org/c/@Paint_setFilterQuality</a>
      */
-    public Paint setFilterQuality(FilterQuality filterQuality) {
+    @NotNull @Contract("!null -> this; null -> fail")
+    public Paint setFilterQuality(@NotNull FilterQuality filterQuality) {
+        assert filterQuality != null : "Paint::setFilterQuality expected filterQuality != null";
         Stats.onNativeCall();
         _nSetFilterQuality(_ptr, filterQuality.ordinal());
         return this;
@@ -173,6 +180,7 @@ public class Paint extends Managed {
     /**
      * @return  whether the geometry is filled, stroked, or filled and stroked.
      */
+    @NotNull
     public PaintMode getMode() {
         try {
             Stats.onNativeCall();
@@ -188,7 +196,9 @@ public class Paint extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Paint_setStyle">https://fiddle.skia.org/c/@Paint_setStyle</a>
      * @see <a href="https://fiddle.skia.org/c/@Stroke_Width">https://fiddle.skia.org/c/@Stroke_Width</a>
      */
-    public Paint setMode(PaintMode style) {
+    @NotNull @Contract("!null -> this; null -> fail")
+    public Paint setMode(@NotNull PaintMode style) {
+        assert style != null : "Paint::setMode expected style != null";
         Stats.onNativeCall();
         _nSetMode(_ptr, style.ordinal());
         return this;
@@ -200,6 +210,7 @@ public class Paint extends Managed {
      * @param value  stroke or fill
      * @return       this
      */
+    @NotNull @Contract("_ -> this")
     public Paint setStroke(boolean value) {
         return setMode(value ? PaintMode.STROKE : PaintMode.FILL);
     }
@@ -226,6 +237,7 @@ public class Paint extends Managed {
      *
      * @return  unpremultiplied RGBA
      */
+    @NotNull
     public Color4f getColor4f() {
         try {
             Stats.onNativeCall();
@@ -243,6 +255,7 @@ public class Paint extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Paint_setColor">https://fiddle.skia.org/c/@Paint_setColor</a>
      */
+    @NotNull @Contract("_ -> this")
     public Paint setColor(int color) {
         Stats.onNativeCall();
         _nSetColor(_ptr, color);
@@ -256,7 +269,8 @@ public class Paint extends Managed {
      * @param color       unpremultiplied RGBA
      * @return            this
      */
-    public Paint setColor4f(Color4f color) {
+    @NotNull @Contract("!null -> this; null -> fail")
+    public Paint setColor4f(@NotNull Color4f color) {
         return setColor4f(color, null);
     }
 
@@ -270,8 +284,10 @@ public class Paint extends Managed {
      * @param colorSpace  SkColorSpace describing the encoding of color
      * @return            this
      */
-    public Paint setColor4f(Color4f color, ColorSpace colorSpace) {
+    @NotNull @Contract("!null, _ -> this; null, _ -> fail")
+    public Paint setColor4f(@NotNull Color4f color, @Nullable ColorSpace colorSpace) {
         try {
+            assert color != null : "Paint::setColor4f expected color != null";
             Stats.onNativeCall();
             _nSetColor4f(_ptr, color.getR(), color.getG(), color.getB(), color.getA(), Native.getPtr(colorSpace));
             return this;
@@ -308,6 +324,7 @@ public class Paint extends Managed {
      * @param a  alpha component of color
      * @return   this
      */
+    @NotNull @Contract("_ -> this")
     public Paint setAlphaf(float a) {
         return setColor4f(getColor4f().withA(a));
     }
@@ -322,6 +339,7 @@ public class Paint extends Managed {
      * @param a  alpha component of color
      * @return   this
      */
+    @NotNull @Contract("_ -> this")
     public Paint setAlpha(int a) {
         return setAlphaf(a / 255f);
     }
@@ -337,6 +355,7 @@ public class Paint extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Paint_setARGB">https://fiddle.skia.org/c/@Paint_setARGB</a>
      */
+    @NotNull @Contract("_, _, _, _ -> this")
     public Paint setARGB(int a, int r, int g, int b) {
         Stats.onNativeCall();
         _nSetColor4f(_ptr, r / 255f, g / 255f, b / 255f, a / 255f, 0);
@@ -368,6 +387,7 @@ public class Paint extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Miter_Limit">https://fiddle.skia.org/c/@Miter_Limit</a>
      * @see <a href="https://fiddle.skia.org/c/@Paint_setStrokeWidth">https://fiddle.skia.org/c/@Paint_setStrokeWidth</a>
      */
+    @NotNull @Contract("_ -> this")
     public Paint setStrokeWidth(float width) {
         Stats.onNativeCall();
         _nSetStrokeWidth(_ptr, width);
@@ -398,6 +418,7 @@ public class Paint extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Paint_setStrokeMiter">https://fiddle.skia.org/c/@Paint_setStrokeMiter</a>
      */
+    @NotNull @Contract("_ -> this")
     public Paint setStrokeMiter(float miter) {
         Stats.onNativeCall();
         _nSetStrokeMiter(_ptr, miter);
@@ -407,6 +428,7 @@ public class Paint extends Managed {
     /**
      * @return  the geometry drawn at the beginning and end of strokes.
      */
+    @NotNull @Contract("-> this")
     public PaintStrokeCap getStrokeCap() {
         try {
             Stats.onNativeCall();
@@ -424,7 +446,9 @@ public class Paint extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Paint_setStrokeCap_a">https://fiddle.skia.org/c/@Paint_setStrokeCap_a</a>
      * @see <a href="https://fiddle.skia.org/c/@Paint_setStrokeCap_b">https://fiddle.skia.org/c/@Paint_setStrokeCap_b</a>
      */
-    public Paint setStrokeCap(PaintStrokeCap cap) {
+    @NotNull @Contract("!null -> this; null -> fail")
+    public Paint setStrokeCap(@NotNull PaintStrokeCap cap) {
+        assert cap != null : "Paint::setStrokeCap expected cap != null";
         Stats.onNativeCall();
         _nSetStrokeCap(_ptr, cap.ordinal());
         return this;
@@ -433,6 +457,7 @@ public class Paint extends Managed {
     /**
      * @return  the geometry drawn at the corners of strokes.
      */
+    @NotNull @Contract("-> this")
     public PaintStrokeJoin getStrokeJoin() {
         try {
             Stats.onNativeCall();
@@ -449,7 +474,9 @@ public class Paint extends Managed {
      * 
      * @see <a href="https://fiddle.skia.org/c/@Paint_setStrokeJoin">https://fiddle.skia.org/c/@Paint_setStrokeJoin</a>
      */
-    public Paint setStrokeJoin(PaintStrokeJoin join) {
+    @NotNull @Contract("!null -> this; null -> fail")
+    public Paint setStrokeJoin(@NotNull PaintStrokeJoin join) {
+        assert join != null : "Paint::setStrokeJoin expected join != null";
         Stats.onNativeCall();
         _nSetStrokeJoin(_ptr, join.ordinal());
         return this;
@@ -461,7 +488,8 @@ public class Paint extends Managed {
      * @param src       Path read to create a filled version
      * @return          resulting Path
      */
-    public Path getFillPath(Path src) {
+    @NotNull @Contract("!null -> new; null -> fail")
+    public Path getFillPath(@NotNull Path src) {
         return getFillPath(src, null, 1);
     }
 
@@ -474,8 +502,10 @@ public class Paint extends Managed {
      *                  to favor speed and size
      * @return          resulting Path
      */
-    public Path getFillPath(Path src, Rect cull, float resScale) {
+    @NotNull @Contract("!null, _, _ -> new; null, _, _ -> fail")
+    public Path getFillPath(@NotNull Path src, @Nullable Rect cull, float resScale) {
         try {
+            assert src != null : "Paint::getFillPath expected src != null";
             Stats.onNativeCall();
             if (cull == null)
                 return new Path(_nGetFillPath(_ptr, Native.getPtr(src), resScale));
@@ -491,6 +521,7 @@ public class Paint extends Managed {
      * @return  {@link Shader} or null
      * @see     <a href="https://fiddle.skia.org/c/@Paint_refShader">https://fiddle.skia.org/c/@Paint_refShader</a>
      */
+    @Nullable
     public Shader getShader() {
         try {
             Stats.onNativeCall();
@@ -507,7 +538,8 @@ public class Paint extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Color_Filter_Methods">https://fiddle.skia.org/c/@Color_Filter_Methods</a>
      * @see <a href="https://fiddle.skia.org/c/@Paint_setShader">https://fiddle.skia.org/c/@Paint_setShader</a>
      */
-    public Paint setShader(Shader shader) {
+    @NotNull @Contract("_ -> this")
+    public Paint setShader(@Nullable Shader shader) {
         try {
             Stats.onNativeCall();
             _nSetShader(_ptr, Native.getPtr(shader));
@@ -521,6 +553,7 @@ public class Paint extends Managed {
      * @return  {@link ColorFilter} or null
      * @see     <a href="https://fiddle.skia.org/c/@Paint_refColorFilter">https://fiddle.skia.org/c/@Paint_refColorFilter</a>
      */
+    @Nullable
     public ColorFilter getColorFilter() {
         try {
             Stats.onNativeCall();
@@ -537,7 +570,8 @@ public class Paint extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Blend_Mode_Methods">https://fiddle.skia.org/c/@Blend_Mode_Methods</a>
      * @see <a href="https://fiddle.skia.org/c/@Paint_setColorFilter">https://fiddle.skia.org/c/@Paint_setColorFilter</a>
      */
-    public Paint setColorFilter(ColorFilter colorFilter) {
+    @NotNull @Contract("_ -> this")
+    public Paint setColorFilter(@Nullable ColorFilter colorFilter) {
         try {
             Stats.onNativeCall();
             _nSetColorFilter(_ptr, Native.getPtr(colorFilter));
@@ -552,6 +586,7 @@ public class Paint extends Managed {
      *
      * @return  mode used to combine source color with destination color
      */
+    @NotNull
     public BlendMode getBlendMode() {
         try {
             Stats.onNativeCall();
@@ -574,7 +609,9 @@ public class Paint extends Managed {
      * @param mode  BlendMode used to combine source color and destination
      * @return      this
      */
-    public Paint setBlendMode(BlendMode mode) {
+    @NotNull @Contract("!null -> this; null -> fail")
+    public Paint setBlendMode(@NotNull BlendMode mode) {
+        assert mode != null : "Paint::setBlendMode expected mode != null";
         Stats.onNativeCall();
         _nSetBlendMode(_ptr, mode.ordinal());
         return this;
@@ -584,6 +621,7 @@ public class Paint extends Managed {
      * @return  {@link PathEffect} or null
      * @see     <a href="https://fiddle.skia.org/c/@Paint_refPathEffect">https://fiddle.skia.org/c/@Paint_refPathEffect</a>
      */
+    @Nullable
     public PathEffect getPathEffect() {
         try {
             Stats.onNativeCall();
@@ -600,7 +638,8 @@ public class Paint extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Mask_Filter_Methods">https://fiddle.skia.org/c/@Mask_Filter_Methods</a>
      * @see <a href="https://fiddle.skia.org/c/@Paint_setPathEffect">https://fiddle.skia.org/c/@Paint_setPathEffect</a>
      */
-    public Paint setPathEffect(PathEffect p) {
+    @NotNull @Contract("_ -> this")
+    public Paint setPathEffect(@Nullable PathEffect p) {
         try {
             Stats.onNativeCall();
             _nSetPathEffect(_ptr, Native.getPtr(p));
@@ -614,6 +653,7 @@ public class Paint extends Managed {
      * @return  {@link MaskFilter} if previously set, null otherwise
      * @see     <a href="https://fiddle.skia.org/c/@Paint_refMaskFilter">https://fiddle.skia.org/c/@Paint_refMaskFilter</a>
      */
+    @Nullable
     public MaskFilter getMaskFilter() {
         try {
             Stats.onNativeCall();
@@ -631,7 +671,8 @@ public class Paint extends Managed {
      * @see  <a href="https://fiddle.skia.org/c/@Paint_setMaskFilter">https://fiddle.skia.org/c/@Paint_setMaskFilter</a>
      * @see  <a href="https://fiddle.skia.org/c/@Typeface_Methods">https://fiddle.skia.org/c/@Typeface_Methods</a>
      */
-    public Paint setMaskFilter(MaskFilter maskFilter) {
+    @NotNull @Contract("_ -> this")
+    public Paint setMaskFilter(@Nullable MaskFilter maskFilter) {
         try {
             Stats.onNativeCall();
             _nSetMaskFilter(_ptr, Native.getPtr(maskFilter));
@@ -645,6 +686,7 @@ public class Paint extends Managed {
      * @return  {@link ImageFilter} or null
      * @see     <a href="https://fiddle.skia.org/c/@Paint_refImageFilter">https://fiddle.skia.org/c/@Paint_refImageFilter</a>
      */
+    @Nullable
     public ImageFilter getImageFilter() {
         try {
             Stats.onNativeCall();
@@ -661,7 +703,8 @@ public class Paint extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Draw_Looper_Methods">https://fiddle.skia.org/c/@Draw_Looper_Methods</a>
      * @see <a href="https://fiddle.skia.org/c/@Paint_setImageFilter">https://fiddle.skia.org/c/@Paint_setImageFilter</a>
      */
-    public Paint setImageFilter(ImageFilter imageFilter) {
+    @NotNull @Contract("_ -> this")
+    public Paint setImageFilter(@Nullable ImageFilter imageFilter) {
         try {
             Stats.onNativeCall();
             _nSetImageFilter(_ptr, Native.getPtr(imageFilter));

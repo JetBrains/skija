@@ -30,32 +30,59 @@ public class Rect {
         return _bottom - _top;
     }
 
-    @Nullable
+    @NotNull @Contract("_, _, _, _ -> new")
     public static Rect makeLTRB(float l, float t, float r, float b) {
-        return l <= r && t <= b ? new Rect(l, t, r, b) : null;
+        if (l > r)
+            throw new IllegalArgumentException("Rect::makeLTRB expected l <= r, got " + l + " > " + r);
+        if (t > b)
+            throw new IllegalArgumentException("Rect::makeLTRB expected t <= b, got " + t + " > " + b);
+        return new Rect(l, t, r, b);
     }
 
-    @Nullable
+    @NotNull @Contract("_, _ -> new")
     public static Rect makeWH(float w, float h) {
-        return w >= 0 && h >= 0 ? new Rect(0, 0, w, h) : null;
+        if (w < 0)
+            throw new IllegalArgumentException("Rect::makeWH expected w >= 0, got: " + w);
+        if (h < 0)
+            throw new IllegalArgumentException("Rect::makeWH expected h >= 0, got: " + h);
+        return new Rect(0, 0, w, h);
     }
 
-    @Nullable
+    @NotNull @Contract("_, _ -> new")
+    public static Rect makeWH(@NotNull Point size) {
+        assert size != null : "Rect::makeWH expected size != null";
+        return makeWH(size._x, size._y);
+    }
+
+    @NotNull @Contract("_, _, _, _ -> new")
     public static Rect makeXYWH(float l, float t, float w, float h) {
-        return w >= 0 && h >= 0 ? new Rect(l, t, l + w, t + h) : null;
+        if (w < 0)
+            throw new IllegalArgumentException("Rect::makeXYWH expected w >= 0, got: " + w);
+        if (h < 0)
+            throw new IllegalArgumentException("Rect::makeXYWH expected h >= 0, got: " + h);
+        return new Rect(l, t, l + w, t + h);
     }
 
     @Nullable
-    public Rect intersect(Rect other) {
+    public Rect intersect(@NotNull Rect other) {
+        assert other != null : "Rect::intersect expected other != null";
         if (_right <= other._left || other._right <= _left || _bottom <= other._top || other._bottom <= _top)
             return null;
         return new Rect(Math.max(_left, other._left), Math.max(_top, other._top), Math.min(_right, other._right), Math.min(_bottom, other._bottom));
     }
 
-    public Rect translate(float dx, float dy) {
+    @NotNull
+    public Rect offset(float dx, float dy) {
         return new Rect(_left + dx, _top + dy, _right + dx, _bottom + dy);
     }
 
+    @NotNull
+    public Rect offset(@NotNull Point vec) {
+        assert vec != null : "Rect::offset expected vec != null";
+        return offset(vec._x, vec._y);
+    }
+
+    @NotNull @Contract("-> new")
     public IRect toIRect() {
         return new IRect((int) _left, (int) _top, (int) _right, (int) _bottom);
     }
