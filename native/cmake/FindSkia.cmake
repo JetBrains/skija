@@ -60,6 +60,18 @@ add_library(svg INTERFACE)
 target_link_libraries(svg INTERFACE ${SKIA_SVG_LIBRARY})
 find_path(SKIA_SVG_INCLUDE_DIR SkSVGDOM.h HINTS "${SKIA_DIR}/modules/svg/include")
 
+# SKOTTIE
+find_library(SKIA_SKOTTIE_LIBRARY skottie PATH "${SKIA_LIBRARY_DIR}")
+add_library(skottie INTERFACE)
+target_link_libraries(skottie INTERFACE ${SKIA_SKOTTIE_LIBRARY})
+find_path(SKIA_SKOTTIE_INCLUDE_DIR Skottie.h HINTS "${SKIA_DIR}/modules/skottie/include")
+
+# SKSG
+find_library(SKIA_SKSG_LIBRARY sksg PATH "${SKIA_LIBRARY_DIR}")
+add_library(sksg INTERFACE)
+target_link_libraries(sksg INTERFACE ${SKIA_SKSG_LIBRARY})
+find_path(SKIA_SKSG_INCLUDE_DIR SkSGInvalidationController.h HINTS "${SKIA_DIR}/modules/sksg/include")
+
 find_path(SKIA_CONFIG_INCLUDE_DIR SkUserConfig.h HINTS "${SKIA_DIR}/include/config")
 find_path(SKIA_CORE_INCLUDE_DIR SkCanvas.h HINTS "${SKIA_DIR}/include/core")
 find_path(SKIA_PATHOPS_INCLUDE_DIR SkPathOps.h HINTS "${SKIA_DIR}/include/pathops")
@@ -96,7 +108,9 @@ target_include_directories(skia INTERFACE
   ${SKPARAGRAPH_INCLUDE_DIR}
   ${FREETYPE_INCLUDE_DIRS}
   ${HARFBUZZ_INCLUDE_DIRS}
-  ${SKIA_SVG_INCLUDE_DIR})
+  ${SKIA_SVG_INCLUDE_DIR}
+  ${SKIA_SKOTTIE_INCLUDE_DIR}
+  ${SKIA_SKSG_INCLUDE_DIR})
 if(WIN32)
   target_include_directories(skia INTERFACE
     ${SKIA_ANGLE_INCLUDE_DIR})

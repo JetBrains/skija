@@ -362,6 +362,7 @@ class Window {
         scenes.put("TextLine",         new TextLineScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
+        scenes.put("Skottie",          new SkottieScene());
         currentScene = "SVG";
         t0 = System.nanoTime();
 

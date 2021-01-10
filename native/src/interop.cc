@@ -123,6 +123,23 @@ namespace skija {
         }
     }
 
+    namespace skottie {
+        namespace Logger {
+            jclass cls;
+            jmethodID log;
+
+            void onLoad(JNIEnv* env) {
+                jclass local = env->FindClass("org/jetbrains/skija/skottie/Logger");
+                cls = static_cast<jclass>(env->NewGlobalRef(local));
+                log = env->GetMethodID(cls, "log", "(Lorg/jetbrains/skija/skottie/Logger$Level;Ljava/lang/String;Ljava/lang/String;)V");
+            }
+
+            void onUnload(JNIEnv* env) {
+                env->DeleteGlobalRef(cls);
+            }
+        }
+    }
+
     namespace FontFamilyName {
         jclass cls;
         jmethodID ctor;
@@ -637,6 +654,7 @@ namespace skija {
         Rect::onLoad(env);
         RRect::onLoad(env);
         RSXform::onLoad(env);
+        skottie::Logger::onLoad(env);
 
         impl::Native::onLoad(env);
     }
@@ -659,6 +677,7 @@ namespace skija {
         FontFamilyName::onUnload(env);
         Drawable::onUnload(env);
         Color4f::onUnload(env);
+        skottie::Logger::onUnload(env);
     }
 }
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray matrixArray) {

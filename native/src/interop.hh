@@ -251,6 +251,15 @@ namespace skija {
         size_t from16To8(uint32_t i16);
         uint32_t from8To16(size_t i8);
     };
+
+    namespace skottie {
+        namespace Logger {
+            extern jclass cls;
+            extern jmethodID log;
+            void onLoad(JNIEnv* env);
+            void onUnload(JNIEnv* env);
+        }
+    }
 }
 
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray arr);
