@@ -7,7 +7,7 @@ import org.jetbrains.skija.impl.*;
 
 /**
  * <p>A Logger subclass can be used to receive
- * {@link #Animation.Builder} parsing errors and warnings.</p>
+ * {@link AnimationBuilder} parsing errors and warnings.</p>
  */
 public abstract class Logger extends RefCnt {
     static { Library.staticLoad(); }

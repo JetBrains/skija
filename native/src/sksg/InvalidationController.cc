@@ -13,7 +13,13 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_sksg_InvalidationCon
     return static_cast<jlong>(reinterpret_cast<uintptr_t>(&deleteInvalidationController));
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_sksg_InvalidationController__1nInval
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_sksg_InvalidationController__1nMake
+  (JNIEnv* env, jclass jclass) {
+    InvalidationController* instance = new InvalidationController();
+    return reinterpret_cast<jlong>(instance);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_sksg_InvalidationController__1nInvalidate
   (JNIEnv* env, jclass jclass, jlong ptr, jfloat left, jfloat top, jfloat right, jfloat bottom, jfloatArray matrixArr) {
     InvalidationController* instance = reinterpret_cast<InvalidationController*>(static_cast<uintptr_t>(ptr));
     SkRect bounds {left, top, right, bottom};

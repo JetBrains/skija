@@ -15,10 +15,10 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_skottie_Animation__1
     return static_cast<jlong>(reinterpret_cast<uintptr_t>(&deleteAnimation));
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_skottie_Animation__1nMake
-  (JNIEnv* env, jclass jclass, jlong dataPtr) {
-    SkString* data = reinterpret_cast<SkString*>(static_cast<uintptr_t>(dataPtr));
-    sk_sp<Animation> instance = Animation::Make(data->c_str(), data->size());
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_skottie_Animation__1nMakeFromString
+  (JNIEnv* env, jclass jclass, jstring dataStr) {
+    SkString data = skString(env, dataStr);
+    sk_sp<Animation> instance = Animation::Make(data.c_str(), data.size());
     return reinterpret_cast<jlong>(instance.release());
 }
 
@@ -38,13 +38,6 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_skottie_Animation__1
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_skottie_Animation__1nRender
-  (JNIEnv* env, jclass jclass, jlong ptr, jlong canvasPtr) {
-    Animation* instance = reinterpret_cast<Animation*>(static_cast<uintptr_t>(ptr));
-    SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
-    instance->render(canvas, nullptr);
-}
-
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_skottie_Animation__1nRenderRect
   (JNIEnv* env, jclass jclass, jlong ptr, jlong canvasPtr, jfloat left, jfloat top, jfloat right, jfloat bottom, jint flags) {
     Animation* instance = reinterpret_cast<Animation*>(static_cast<uintptr_t>(ptr));
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
@@ -53,55 +46,54 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_skottie_Animation__1n
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_skottie_Animation__1nSeek
-  (JNIEnv* env, jclass jclass, jlong ptr, jfloat t, jlong invalidationControllerPtr) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloat t, jlong icPtr) {
     Animation* instance = reinterpret_cast<Animation*>(static_cast<uintptr_t>(ptr));
-    sksg::InvalidationController* controller = reinterpret_cast<sksg::InvalidationController*>(static_cast<uintptr_t>(invalidationControllerPtr));
+    sksg::InvalidationController* controller = reinterpret_cast<sksg::InvalidationController*>(static_cast<uintptr_t>(icPtr));
     instance->seek(t, controller);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_skottie_Animation__1nSeekFrame
-  (JNIEnv* env, jclass jclass, jlong ptr, jdouble t, jlong invalidationControllerPtr) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloat t, jlong icPtr) {
     Animation* instance = reinterpret_cast<Animation*>(static_cast<uintptr_t>(ptr));
-    sksg::InvalidationController* controller = reinterpret_cast<sksg::InvalidationController*>(static_cast<uintptr_t>(invalidationControllerPtr));
-    instance->seekFrame(t, controller);
+    sksg::InvalidationController* controller = reinterpret_cast<sksg::InvalidationController*>(static_cast<uintptr_t>(icPtr));
+    instance->seekFrame((double) t, controller);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_skottie_Animation__1nSeekFrameTime
-  (JNIEnv* env, jclass jclass, jlong ptr, jdouble t, jlong invalidationControllerPtr) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloat t, jlong icPtr) {
     Animation* instance = reinterpret_cast<Animation*>(static_cast<uintptr_t>(ptr));
-    sksg::InvalidationController* controller = reinterpret_cast<sksg::InvalidationController*>(static_cast<uintptr_t>(invalidationControllerPtr));
-    instance->seekFrameTime(t, controller);
+    sksg::InvalidationController* controller = reinterpret_cast<sksg::InvalidationController*>(static_cast<uintptr_t>(icPtr));
+    instance->seekFrameTime((double) t, controller);
 }
 
-extern "C" JNIEXPORT jdouble JNICALL Java_org_jetbrains_skija_skottie_Animation__1nGetDuration
+extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_skottie_Animation__1nGetDuration
   (JNIEnv* env, jclass jclass, jlong ptr) {
     Animation* instance = reinterpret_cast<Animation*>(static_cast<uintptr_t>(ptr));
-    return instance->duration();
+    return (jfloat) instance->duration();
 }
 
-extern "C" JNIEXPORT jdouble JNICALL Java_org_jetbrains_skija_skottie_Animation__1nGetFps
+extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_skottie_Animation__1nGetFPS
   (JNIEnv* env, jclass jclass, jlong ptr) {
     Animation* instance = reinterpret_cast<Animation*>(static_cast<uintptr_t>(ptr));
-    return instance->fps();
+    return (jfloat) instance->fps();
 }
 
-extern "C" JNIEXPORT jdouble JNICALL Java_org_jetbrains_skija_skottie_Animation__1nGetInPoint
+extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_skottie_Animation__1nGetInPoint
   (JNIEnv* env, jclass jclass, jlong ptr) {
     Animation* instance = reinterpret_cast<Animation*>(static_cast<uintptr_t>(ptr));
-    return instance->inPoint();
+    return (jfloat) instance->inPoint();
 }
 
-extern "C" JNIEXPORT jdouble JNICALL Java_org_jetbrains_skija_skottie_Animation__1nGetOutPoint
+extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_skottie_Animation__1nGetOutPoint
   (JNIEnv* env, jclass jclass, jlong ptr) {
     Animation* instance = reinterpret_cast<Animation*>(static_cast<uintptr_t>(ptr));
-    return instance->outPoint();
+    return (jfloat) instance->outPoint();
 }
 
 extern "C" JNIEXPORT jstring JNICALL Java_org_jetbrains_skija_skottie_Animation__1nGetVersion
   (JNIEnv* env, jclass jclass, jlong ptr) {
     Animation* instance = reinterpret_cast<Animation*>(static_cast<uintptr_t>(ptr));
-    SkString version = instance->version();
-    return javaString(env, version);
+    return javaString(env, instance->version());
 }
 
 extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_skottie_Animation__1nGetSize

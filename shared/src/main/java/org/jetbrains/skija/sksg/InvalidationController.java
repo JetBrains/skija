@@ -22,15 +22,18 @@ public class InvalidationController extends Managed {
         public static final long PTR = _nGetFinalizer();
     }
 
-    public void inval(float left, float top, float right, float bottom, @Nullable Matrix33 matrix) {
-        try {
-            Stats.onNativeCall();
-            _nInval(_ptr, left, top, right, bottom, matrix == null ? Matrix33.IDENTITY._mat : matrix._mat);
-        } finally {
-            Reference.reachabilityFence(this);
-        }
+    public InvalidationController() {
+        this(_nMake());
     }
 
+    @NotNull @Contract("-> this")
+    public InvalidationController invalidate(float left, float top, float right, float bottom, @Nullable Matrix33 matrix) {
+        Stats.onNativeCall();
+        _nInvalidate(_ptr, left, top, right, bottom, matrix == null ? Matrix33.IDENTITY._mat : matrix._mat);
+        return this;
+    }
+
+    @NotNull
     public Rect getBounds() {
         try {
             Stats.onNativeCall();
@@ -40,17 +43,16 @@ public class InvalidationController extends Managed {
         }
     }
 
-    public void reset() {
-        try {
-            Stats.onNativeCall();
-            _nReset(_ptr);
-        } finally {
-            Reference.reachabilityFence(this);
-        }
+    @NotNull @Contract("-> this")
+    public InvalidationController reset() {
+        Stats.onNativeCall();
+        _nReset(_ptr);
+        return this;
     }
 
     public static native long _nGetFinalizer();
-    public static native void _nInval(long ptr, float left, float top, float right, float bottom, float[] matrix);
+    public static native long _nMake();
+    public static native void _nInvalidate(long ptr, float left, float top, float right, float bottom, float[] matrix);
     public static native Rect _nGetBounds(long ptr);
     public static native void _nReset(long ptr);
 }

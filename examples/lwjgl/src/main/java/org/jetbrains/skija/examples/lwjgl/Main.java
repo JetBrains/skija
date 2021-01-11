@@ -348,11 +348,12 @@ class Window {
         scenes.put("Paths",            new PathsScene());
         scenes.put("Picture Recorder", new PictureRecorderScene());
         scenes.put("Pythagoras",       new PythagorasScene());
+        scenes.put("RunHandler",       new RunHandlerScene());
+        scenes.put("RunIterator",      new RunIteratorScene());
         scenes.put("Shaders",          new ShadersScene());
         scenes.put("Shadow Utils",     new ShadowUtilsScene());
         scenes.put("Shapers",          new ShapersScene());
-        scenes.put("RunHandler",       new RunHandlerScene());
-        scenes.put("RunIterator",      new RunIteratorScene());
+        scenes.put("Skottie",          new SkottieScene());
         scenes.put("Squares",          new SquaresScene());
         scenes.put("SVG",              new SVGScene());
         scenes.put("SVG Scaling",      new SVGScalingScene());
@@ -362,8 +363,7 @@ class Window {
         scenes.put("TextLine",         new TextLineScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        scenes.put("Skottie",          new SkottieScene());
-        currentScene = "SVG";
+        currentScene = "Skottie";
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {

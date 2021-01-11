@@ -72,6 +72,16 @@ public class Rect {
     }
 
     @NotNull
+    public Rect scale(float scale) {
+        return scale(scale, scale);
+    }
+
+    @NotNull
+    public Rect scale(float sx, float sy) {
+        return new Rect(_left * sx, _top * sy, _right * sx, _bottom * sy);
+    }
+
+    @NotNull
     public Rect offset(float dx, float dy) {
         return new Rect(_left + dx, _top + dy, _right + dx, _bottom + dy);
     }

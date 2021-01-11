@@ -19,17 +19,19 @@ public class Animation extends Managed {
         public static final long PTR = _nGetFinalizer();
     }
 
-    @NotNull
-    public static Animation make(@NotNull ManagedString data) {
+    @NotNull @Contract("!null -> new; null -> fail")
+    public static Animation makeFromString(@NotNull String data) {
+        assert data != null : "Can’t Animation::makeFromString with data == null";
         Stats.onNativeCall();
-        long ptr = _nMake(Native.getPtr(data));
+        long ptr = _nMakeFromString(data);
         if (ptr == 0)
             throw new IllegalArgumentException("Failed to create Animation from string=\"" + data.toString() + "\"");
         return new Animation(ptr);
     }
 
-    @NotNull
-    public static Animation makeFromFile(String path) {
+    @NotNull @Contract("!null -> new; null -> fail")
+    public static Animation makeFromFile(@NotNull String path) {
+        assert path != null : "Can’t Animation::makeFromFile with path == null";
         Stats.onNativeCall();
         long ptr = _nMakeFromFile(path);
         if (ptr == 0)
@@ -37,8 +39,9 @@ public class Animation extends Managed {
         return new Animation(ptr);
     }
 
-    @NotNull
+    @NotNull @Contract("!null -> new; null -> fail")
     public static Animation makeFromData(@NotNull Data data) {
+        assert data != null : "Can’t Animation::makeFromData with data == null";
         Stats.onNativeCall();
         long ptr = _nMakeFromData(Native.getPtr(data));
         if (ptr == 0)
@@ -52,16 +55,12 @@ public class Animation extends Managed {
      * <p>It is undefined behavior to call render() on a newly created Animation
      * before specifying an initial frame via one of the seek() variants.</p>
      *
-     * @param canvas destination canvas
+     * @param canvas  destination canvas
+     * @return        this
      */
-    public void render(Canvas canvas) {
-        try {
-            Stats.onNativeCall();
-            _nRender(_ptr, Native.getPtr(canvas));
-        } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(canvas);
-        }
+    @NotNull @Contract("!null -> this; null -> fail")
+    public Animation render(@NotNull Canvas canvas) {
+        return render(canvas, Rect.makeXYWH(0, 0, getWidth(), getHeight()));
     }
 
     /**
@@ -70,14 +69,14 @@ public class Animation extends Managed {
      * <p>It is undefined behavior to call render() on a newly created Animation
      * before specifying an initial frame via one of the seek() variants.</p>
      *
-     * @param canvas destination canvas
-     * @param left   destination rect left
-     * @param top    destination rect top
-     * @param right  destination rect right
-     * @param bottom destination rect bottm
+     * @param canvas  destination canvas
+     * @param offset  destination offset
+     * @return        this
      */
-    public void render(Canvas canvas, float left, float top, float right, float bottom) {
-        render(canvas, left, top, right, bottom, new RenderFlag[0]);
+    @NotNull @Contract("_, _, _ -> this")
+    public Animation render(@NotNull Canvas canvas, @NotNull Point offset) {
+        assert offset != null : "Can’t Animation::render with offset == null";
+        return render(canvas, offset._x, offset._y);
     }
 
     /**
@@ -86,22 +85,39 @@ public class Animation extends Managed {
      * <p>It is undefined behavior to call render() on a newly created Animation
      * before specifying an initial frame via one of the seek() variants.</p>
      *
-     * @param canvas      destination canvas
-     * @param left        destination rect left
-     * @param top         destination rect top
-     * @param right       destination rect right
-     * @param bottom      destination rect bottm
-     * @param renderFlags render flags
+     * @param canvas  destination canvas
+     * @param left    destination offset left
+     * @param top     destination offset top
+     * @return        this
      */
-    public void render(Canvas canvas, float left, float top, float right, float bottom, RenderFlag... renderFlags) {
+    @NotNull @Contract("_, _, _ -> this")
+    public Animation render(@NotNull Canvas canvas, float left, float top) {
+        return render(canvas, Rect.makeXYWH(left, top, getWidth(), getHeight()));
+    }
+
+    /**
+     * <p>Draws the current animation frame</p>
+     *
+     * <p>It is undefined behavior to call render() on a newly created Animation
+     * before specifying an initial frame via one of the seek() variants.</p>
+     *
+     * @param canvas       destination canvas
+     * @param dst          destination rect
+     * @param renderFlags  render flags
+     * @return             this
+     */
+    @NotNull @Contract("_, _, _ -> this")
+    public Animation render(@NotNull Canvas canvas, @NotNull Rect dst, RenderFlag... renderFlags) {
         try {
+            assert canvas != null : "Can’t Animation::render with canvas == null";
+            assert dst != null : "Can’t Animation::render with dst == null";
             Stats.onNativeCall();
             int flags = 0;
-            for (var flag : renderFlags)
+            for (var flag: renderFlags)
                 flags |= flag._flag;
-            _nRenderRect(_ptr, Native.getPtr(canvas), left, top, right, bottom, flags);
+            _nRender(_ptr, Native.getPtr(canvas), dst._left, dst._top, dst._right, dst._bottom, flags);
+            return this;
         } finally {
-            Reference.reachabilityFence(this);
             Reference.reachabilityFence(canvas);
         }
     }
@@ -109,36 +125,66 @@ public class Animation extends Managed {
     /**
      * <p>Updates the animation state for |t|.</p>
      *
-     * @param t                      normalized [0..1] frame selector (0 -> first frame, 1 -> final frame)
-     * @param invalidationController invalidation controller (dirty region tracking)
+     * @param t   normalized [0..1] frame selector (0 → first frame, 1 → final frame)
+     * @return    this
      */
-    public void seek(float t, InvalidationController invalidationController) {
+    @NotNull @Contract("_ -> this")
+    public Animation seek(float t) {
+        return seek(t, null);
+    }
+
+    /**
+     * <p>Updates the animation state for |t|.</p>
+     *
+     * @param t   normalized [0..1] frame selector (0 → first frame, 1 → final frame)
+     * @param ic  invalidation controller (dirty region tracking)
+     * @return    this
+     */
+    @NotNull @Contract("_, _ -> this")
+    public Animation seek(float t, @Nullable InvalidationController ic) {
         try {
             Stats.onNativeCall();
-            _nSeek(_ptr, t, Native.getPtr(invalidationController));
+            _nSeek(_ptr, t, Native.getPtr(ic));
+            return this;
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(invalidationController);
+            Reference.reachabilityFence(ic);
         }
     }
 
     /**
      * <p>Update the animation state to match |t|, specified as a frame index i.e.
-     * relative to {@link getDuration()} * {@link getFps()}.</p>
+     * relative to {@link getDuration()} * {@link getFPS()}.</p>
      *
      * <p>Fractional values are allowed and meaningful - e.g.
-     * 0.0 -> first frame 1.0 -> second frame 0.5 -> halfway between first and second frame</p>
+     * 0.0 → first frame 1.0 → second frame 0.5 → halfway between first and second frame</p>
      *
-     * @param t                      frame index
-     * @param invalidationController invalidation controller (dirty region tracking)
+     * @param t   frame index
+     * @return    this
      */
-    public void seekFrame(double t, InvalidationController invalidationController) {
+    @NotNull @Contract("_ -> this")
+    public Animation seekFrame(float t) {
+        return seekFrame(t, null);
+    }
+
+    /**
+     * <p>Update the animation state to match |t|, specified as a frame index i.e.
+     * relative to {@link getDuration()} * {@link getFPS()}.</p>
+     *
+     * <p>Fractional values are allowed and meaningful - e.g.
+     * 0.0 → first frame 1.0 → second frame 0.5 → halfway between first and second frame</p>
+     *
+     * @param t   frame index
+     * @param ic  invalidation controller (dirty region tracking)
+     * @return    this
+     */
+    @NotNull @Contract("_, _ -> this")
+    public Animation seekFrame(float t, @Nullable InvalidationController ic) {
         try {
             Stats.onNativeCall();
-            _nSeekFrame(_ptr, t, Native.getPtr(invalidationController));
+            _nSeekFrame(_ptr, t, Native.getPtr(ic));
+            return this;
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(invalidationController);
+            Reference.reachabilityFence(ic);
         }
     }
 
@@ -146,23 +192,37 @@ public class Animation extends Managed {
      * <p>Update the animation state to match t, specifed in frame time i.e.
      * relative to {@link getDuration()}.</p>
      *
-     * @param t                      frame time
-     * @param invalidationController invalidation controller (dirty region tracking)
+     * @param t   frame time
+     * @return    this
      */
-    public void seekFrameTime(double t, InvalidationController invalidationController) {
+    @NotNull @Contract("_ -> this")
+    public Animation seekFrameTime(float t) {
+        return seekFrameTime(t, null);
+    }
+
+    /**
+     * <p>Update the animation state to match t, specifed in frame time i.e.
+     * relative to {@link getDuration()}.</p>
+     *
+     * @param t   frame time
+     * @param ic  invalidation controller (dirty region tracking)
+     * @return    this
+     */
+    @NotNull @Contract("_, _ -> this")
+    public Animation seekFrameTime(float t, @Nullable InvalidationController ic) {
         try {
             Stats.onNativeCall();
-            _nSeekFrameTime(_ptr, t, Native.getPtr(invalidationController));
+            _nSeekFrameTime(_ptr, t, Native.getPtr(ic));
+            return this;
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(invalidationController);
+            Reference.reachabilityFence(ic);
         }
     }
 
     /**
-     * <p>Returns the animation duration in seconds.</p>
+     * @return  the animation duration in seconds
      */
-    public double getDuration() {
+    public float getDuration() {
         try {
             Stats.onNativeCall();
             return _nGetDuration(_ptr);
@@ -172,21 +232,21 @@ public class Animation extends Managed {
     }
 
     /**
-     * <p>Returns the animation frame rate (frames / second).</p>
+     * @return  the animation frame rate (frames / second)
      */
-    public double getFps() {
+    public float getFPS() {
         try {
             Stats.onNativeCall();
-            return _nGetFps(_ptr);
+            return _nGetFPS(_ptr);
         } finally {
             Reference.reachabilityFence(this);
         }
     }
 
     /**
-     * <p>Animation in point, in frame index units.</p>
+     * @return  Animation in point, in frame index units
      */
-    public double getInPoint() {
+    public float getInPoint() {
         try {
             Stats.onNativeCall();
             return _nGetInPoint(_ptr);
@@ -196,9 +256,9 @@ public class Animation extends Managed {
     }
 
     /**
-     * <p>Animation out point, in frame index units.</p>
+     * @return  Animation out point, in frame index units
      */
-    public double getOutPoint() {
+    public float getOutPoint() {
         try {
             Stats.onNativeCall();
             return _nGetOutPoint(_ptr);
@@ -207,6 +267,7 @@ public class Animation extends Managed {
         }
     }
 
+    @NotNull
     public String getVersion() {
         try {
             Stats.onNativeCall();
@@ -216,119 +277,38 @@ public class Animation extends Managed {
         }
     }
 
+    @ApiStatus.Internal @Nullable public Point _size = null;
+
     @NotNull
     public Point getSize() {
-        try {
-            return _nGetSize(_ptr);
-        } finally {
-            Reference.reachabilityFence(this);
+        if (_size == null) {
+            _size = _nGetSize(_ptr);
         }
+        return _size;
     }
 
-    public static native long _nGetFinalizer();
-    public static native long _nMake(long textPtr);
-    public static native long _nMakeFromFile(String path);
-    public static native long _nMakeFromData(long dataPtr);
-    public static native void _nRender(long ptr, long canvasPtr);
-    public static native void _nRenderRect(long ptr, long canvasPtr, float left, float top, float right, float bottom, int flags);
-    public static native void _nSeek(long ptr, float t, long invalidationControllerPtr);
-    public static native void _nSeekFrame(long ptr, double t, long invalidationControllerPtr);
-    public static native void _nSeekFrameTime(long ptr, double t, long invalidationControllerPtr);
-    public static native double _nGetDuration(long ptr);
-    public static native double _nGetFps(long ptr);
-    public static native double _nGetInPoint(long ptr);
-    public static native double _nGetOutPoint(long ptr);
-    public static native String _nGetVersion(long ptr);
-    public static native Point _nGetSize(long ptr);
-
-    public static class Builder extends Managed {
-        static { Library.staticLoad(); }
-
-        @ApiStatus.Internal
-        public Builder(long ptr) {
-            super(ptr, _FinalizerHolder.PTR);
-        }
-
-        @ApiStatus.Internal
-        public static class _FinalizerHolder {
-            public static final long PTR = _nGetFinalizer();
-        }
-
-        public Builder() {
-            this(new AnimationBuilderFlag[0]);
-        }
-
-        public Builder(AnimationBuilderFlag... builderFlags) {
-            this(_nCreateInstance(computeFlagsValue(builderFlags)));
-            Stats.onNativeCall();
-        }
-
-        private static int computeFlagsValue(AnimationBuilderFlag... builderFlags) {
-            int flags = 0;
-            for (var flag : builderFlags)
-                flags |= flag._flag;
-            return flags;
-        }
-
-        /**
-         * <p>Specify a font manager for loading animation fonts.</p>
-         */
-        public Builder setFontManager(FontMgr fontMgr) {
-            try {
-                Stats.onNativeCall();
-                _nSetFontManager(_ptr, Native.getPtr(fontMgr));
-                return this;
-            } finally {
-                Reference.reachabilityFence(fontMgr);
-            }
-        }
-
-        /**
-         * <p>Register a {@link #Logger} with this builder.</p>
-         */
-        public Builder setLogger(Logger logger) {
-            try {
-                Stats.onNativeCall();
-                _nSetLogger(_ptr, Native.getPtr(logger));
-                return this;
-            } finally {
-                Reference.reachabilityFence(logger);
-            }
-        }
-
-        @NotNull
-        public Animation make(@NotNull ManagedString data) {
-            Stats.onNativeCall();
-            long ptr = _nMake(Native.getPtr(data));
-            if (ptr == 0)
-                throw new IllegalArgumentException("Failed to create Animation from string=\"" + data.toString() + "\"");
-            return new Animation(ptr);
-        }
-
-        @NotNull
-        public Animation makeFromFile(String path) {
-            Stats.onNativeCall();
-            long ptr = _nMakeFromFile(path);
-            if (ptr == 0)
-                throw new IllegalArgumentException("Failed to create Animation from path=\"" + path + "\"");
-            return new Animation(ptr);
-        }
-
-        @NotNull
-        public Animation makeFromData(@NotNull Data data) {
-            Stats.onNativeCall();
-            long ptr = _nMakeFromData(Native.getPtr(data));
-            if (ptr == 0)
-                throw new IllegalArgumentException("Failed to create Animation from data.");
-            return new Animation(ptr);
-        }
-
-        public static native long _nGetFinalizer();
-        public static native long _nCreateInstance(int flags);
-        public static native void _nSetFontManager(long ptr, long fontMgrPtr);
-        public static native void _nSetLogger(long ptr, long loggerPtr);
-        public static native long _nMake(long textPtr);
-        public static native long _nMakeFromFile(String path);
-        public static native long _nMakeFromData(long dataPtr);
+    public float getWidth() {
+        return getSize()._x;
     }
+
+    public float getHeight() {
+        return getSize()._y;
+    }
+
+    @ApiStatus.Internal public static native long _nGetFinalizer();
+    @ApiStatus.Internal public static native long _nMakeFromString(String data);
+    @ApiStatus.Internal public static native long _nMakeFromFile(String path);
+    @ApiStatus.Internal public static native long _nMakeFromData(long dataPtr);
+    @ApiStatus.Internal public static native void _nRender(long ptr, long canvasPtr, float left, float top, float right, float bottom, int flags);
+    @ApiStatus.Internal public static native void _nSeek(long ptr, float t, long icPtr);
+    @ApiStatus.Internal public static native void _nSeekFrame(long ptr, float t, long icPtr);
+    @ApiStatus.Internal public static native void _nSeekFrameTime(long ptr, float t, long icPtr);
+    @ApiStatus.Internal public static native float _nGetDuration(long ptr);
+    @ApiStatus.Internal public static native float _nGetFPS(long ptr);
+    @ApiStatus.Internal public static native float _nGetInPoint(long ptr);
+    @ApiStatus.Internal public static native float _nGetOutPoint(long ptr);
+    @ApiStatus.Internal public static native String _nGetVersion(long ptr);
+    @ApiStatus.Internal public static native Point _nGetSize(long ptr);
+
+   
 }

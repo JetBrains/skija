@@ -45,6 +45,16 @@ public class Point {
         return offset(vec._x, vec._y);
     }
 
+    @NotNull
+    public Point scale(float scale) {
+        return scale(scale, scale);
+    }
+
+    @NotNull
+    public Point scale(float sx, float sy) {
+        return new Point(_x * sx, _y * sy);
+    }
+
     public boolean isEmpty() {
         return _x <= 0 || _y <= 0;
     }

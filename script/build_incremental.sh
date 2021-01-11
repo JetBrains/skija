@@ -52,6 +52,10 @@ find src/main/java/org/jetbrains/skija/shaper -name '*.class' | xargs $XARG -I '
 mkdir -p target/classes/org/jetbrains/skija/svg
 find src/main/java/org/jetbrains/skija/svg -name '*.class' | xargs $XARG -I '{}' mv '{}' target/classes/org/jetbrains/skija/svg
 
+# move sksg
+mkdir -p target/classes/org/jetbrains/skija/sksg
+find src/main/java/org/jetbrains/skija/sksg -name '*.class' | xargs $XARG -I '{}' mv '{}' target/classes/org/jetbrains/skija/sksg
+
 # move skottie
 mkdir -p target/classes/org/jetbrains/skija/skottie
 find src/main/java/org/jetbrains/skija/skottie -name '*.class' | xargs $XARG -I '{}' mv '{}' target/classes/org/jetbrains/skija/skottie
