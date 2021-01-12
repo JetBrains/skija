@@ -1,7 +1,7 @@
 #!/bin/bash
 set -o errexit -o nounset -o pipefail
 
-skia_release=m88-64fc64c948
+skia_release=m88-21ebdec517
 build_type=${build_type:-Release}
 
 OS=`uname`

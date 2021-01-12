@@ -22,7 +22,7 @@ public class RunHandlerScene extends Scene {
         canvas.translate(20, 20);
         var text = "hello мир дружба fi fl 👃 one two ثلاثة 12 👂 34 خمسة";
 
-        try (var shaper  = Shaper.makeShapeThenWrap(); // Shaper.makeCoreText();
+        try (var shaper = Shaper.makeShapeThenWrap(); // Shaper.makeCoreText();
              var tbHandler = new TextBlobBuilderRunHandler(text, new Point(0, 0));
              var handler = new DebugTextBlobHandler().withRuns();)
         {

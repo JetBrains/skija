@@ -4,6 +4,11 @@ import org.jetbrains.skija.*;
 
 public class PixelGridScene extends Scene {
     @Override
+    public boolean scale() {
+        return false;
+    }
+
+    @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         canvas.translate(20, 20);
 
