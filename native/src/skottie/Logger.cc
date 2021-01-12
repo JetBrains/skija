@@ -1,5 +1,5 @@
 #include <jni.h>
-#include "../interop.hh"
+#include "interop.hh"
 #include "Skottie.h"
 
 using namespace skottie;
@@ -20,18 +20,16 @@ public:
 
 public:
     void log(Level level, const char message[], const char* json = nullptr) override {
-        jclass loggerLevelClass = fEnv->FindClass("org/jetbrains/skija/skottie/Logger$Level");
-        jmethodID valuesMethod = fEnv->GetStaticMethodID(loggerLevelClass, "values", "()[Lorg/jetbrains/skija/skottie/Logger$Level;");
-        jobjectArray loggerLevelValues = static_cast<jobjectArray>(fEnv->CallStaticObjectMethod(loggerLevelClass, valuesMethod));
-
-        int ordinal = static_cast<int>(level);
-        jobject javaLoggerLevel = static_cast<jobject>(fEnv->GetObjectArrayElement(loggerLevelValues, ordinal));
-        jstring javaStringMessage = javaString(fEnv, message);
-        jstring javaStringJson = nullptr;
-        if (json) {
-            javaStringJson = javaString(fEnv, json);
+        jobject levelObj;
+        switch (level) {
+            case Logger::Level::kWarning:
+                levelObj = skija::skottie::LogLevel::WARNING;
+                break;
+            default:
+                levelObj = skija::skottie::LogLevel::ERROR;
         }
-        fEnv->CallVoidMethod(fObject, skija::skottie::Logger::log, javaLoggerLevel, javaStringMessage, javaStringJson);
+
+        fEnv->CallVoidMethod(fObject, skija::skottie::Logger::log, levelObj, javaString(fEnv, message), javaString(fEnv, json));
     }
 
 private:

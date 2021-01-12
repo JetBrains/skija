@@ -1,6 +1,7 @@
 #include <jni.h>
 #include "../interop.hh"
 #include "../shaper/interop.hh"
+#include "../skottie/interop.hh"
 #include "../paragraph/interop.hh"
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
@@ -17,6 +18,7 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_impl_Library__1nAfter
     java::onLoad(env);
     skija::onLoad(env);
     skija::shaper::onLoad(env);
+    skija::skottie::onLoad(env);
     skija::paragraph::onLoad(env);
 }
 
@@ -26,6 +28,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
         return;
 
     skija::paragraph::onUnload(env);
+    skija::skottie::onUnload(env);
     skija::shaper::onUnload(env);
     skija::onUnload(env);
     java::onUnload(env);

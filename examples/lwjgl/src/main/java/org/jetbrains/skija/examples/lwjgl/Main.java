@@ -347,6 +347,7 @@ class Window {
         scenes.put("Path Effects",     new PathEffectsScene());
         scenes.put("Paths",            new PathsScene());
         scenes.put("Picture Recorder", new PictureRecorderScene());
+        scenes.put("Pixel Grid",       new PixelGridScene());
         scenes.put("Pythagoras",       new PythagorasScene());
         scenes.put("RunHandler",       new RunHandlerScene());
         scenes.put("RunIterator",      new RunIteratorScene());

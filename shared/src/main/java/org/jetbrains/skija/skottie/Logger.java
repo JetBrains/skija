@@ -12,11 +12,6 @@ import org.jetbrains.skija.impl.*;
 public abstract class Logger extends RefCnt {
     static { Library.staticLoad(); }
 
-    public enum Level {
-        WARNING,
-        ERROR;
-    }
-
     public Logger() {
         super(_nMake());
         Stats.onNativeCall();
@@ -25,7 +20,7 @@ public abstract class Logger extends RefCnt {
     }
 
     @ApiStatus.OverrideOnly
-    public abstract void log(Level level, String message, @Nullable String json);
+    public abstract void log(LogLevel level, String message, @Nullable String json);
 
     @ApiStatus.Internal public static native long _nMake();
     @ApiStatus.Internal public        native void _nInit(long ptr);

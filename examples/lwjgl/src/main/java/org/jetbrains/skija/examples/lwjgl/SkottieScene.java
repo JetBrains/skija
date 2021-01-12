@@ -18,8 +18,8 @@ public class SkottieScene extends Scene {
 
     private Logger logger = new Logger() {
         @Override
-        public void log(Logger.Level level, String message, String json) {
-            error = message + " in " + json;
+        public void log(LogLevel level, String message, String json) {
+            error = "[" + level + "] " + message + " in " + json;
         }
     };
 

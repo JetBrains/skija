@@ -123,23 +123,6 @@ namespace skija {
         }
     }
 
-    namespace skottie {
-        namespace Logger {
-            jclass cls;
-            jmethodID log;
-
-            void onLoad(JNIEnv* env) {
-                jclass local = env->FindClass("org/jetbrains/skija/skottie/Logger");
-                cls = static_cast<jclass>(env->NewGlobalRef(local));
-                log = env->GetMethodID(cls, "log", "(Lorg/jetbrains/skija/skottie/Logger$Level;Ljava/lang/String;Ljava/lang/String;)V");
-            }
-
-            void onUnload(JNIEnv* env) {
-                env->DeleteGlobalRef(cls);
-            }
-        }
-    }
-
     namespace FontFamilyName {
         jclass cls;
         jmethodID ctor;
@@ -654,8 +637,7 @@ namespace skija {
         Rect::onLoad(env);
         RRect::onLoad(env);
         RSXform::onLoad(env);
-        skottie::Logger::onLoad(env);
-
+        
         impl::Native::onLoad(env);
     }
 
@@ -677,7 +659,6 @@ namespace skija {
         FontFamilyName::onUnload(env);
         Drawable::onUnload(env);
         Color4f::onUnload(env);
-        skottie::Logger::onUnload(env);
     }
 }
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray matrixArray) {
@@ -821,6 +802,8 @@ jstring javaString(JNIEnv* env, const SkString& str) {
 }
 
 jstring javaString(JNIEnv* env, const char* chars, size_t len) {
+    if (!chars || !len)
+        return nullptr;
     int utf16Units = SkUTF::UTF8ToUTF16(nullptr, 0, chars, len);
     auto utf16 = std::unique_ptr<uint16_t[]>(new uint16_t[utf16Units]);
     SkUTF::UTF8ToUTF16(utf16.get(), utf16Units, chars, len);
@@ -828,7 +811,7 @@ jstring javaString(JNIEnv* env, const char* chars, size_t len) {
 }
 
 jstring javaString(JNIEnv* env, const char* chars) {
-    return javaString(env, chars, strlen(chars));
+    return chars ? javaString(env, chars, strlen(chars)) : nullptr;
 }
 
 jobject javaFloat(JNIEnv* env, SkScalar val) {
