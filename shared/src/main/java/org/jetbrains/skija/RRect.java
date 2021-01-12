@@ -1,11 +1,10 @@
 package org.jetbrains.skija;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import java.util.*;
+import lombok.*;
 import org.jetbrains.annotations.*;
 
 @EqualsAndHashCode(callSuper = true)
-@ToString
 public class RRect extends Rect {
     public final float[] _radii;
 
@@ -69,5 +68,10 @@ public class RRect extends Rect {
 
     public static RRect makePillXYWH(float l, float t, float w, float h) {
         return new RRect(l, t, l + w, t + h, new float[] { Math.min(w, h) / 2f } );
+    }
+
+    @Override
+    public String toString() {
+        return "RRect(_left=" + _left + ", _top=" + _top + ", _right=" + _right + ", _bottom=" + _bottom + ", _radii=" + Arrays.toString(_radii) + ")";
     }
 }
