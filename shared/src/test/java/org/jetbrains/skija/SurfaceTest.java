@@ -6,9 +6,7 @@ import static org.jetbrains.skija.test.TestRunner.*;
 public class SurfaceTest implements Executable {
     @Override
     public void execute() throws Exception {
-        try (var nullSurface = Surface.makeRasterN32Premul(0, 0)) {
-            assertEquals(null, nullSurface);
-        }
+        assertThrows(IllegalArgumentException.class, () -> Surface.makeRasterN32Premul(0, 0));
         try (var surface = Surface.makeRasterN32Premul(100, 200)) {
             assertEquals(100, surface.getWidth());
             assertEquals(200, surface.getHeight());

@@ -10,6 +10,171 @@ public class Surface extends RefCnt {
     }
 
     /**
+     * <p>Allocates raster Surface. Canvas returned by Surface draws directly into pixels.</p>
+     *
+     * <p>Surface is returned if all parameters are valid. Valid parameters include:</p>
+     * 
+     * <ul><li>info dimensions are greater than zero;</li>
+     * <li>info contains ColorType and AlphaType supported by raster surface;</li>
+     * <li>pixelsPtr is not 0;</li>
+     * <li>rowBytes is large enough to contain info width pixels of ColorType.</li></ul>
+     *
+     * <p>Pixel buffer size should be info height times computed rowBytes.</p>
+     * 
+     * <p>Pixels are not initialized.</p>
+     * 
+     * <p>To access pixels after drawing, peekPixels() or readPixels().</p>
+     *
+     * @param imageInfo     width, height, ColorType, AlphaType, ColorSpace,
+     *                      of raster surface; width and height must be greater than zero
+     * @param pixelsPtr     pointer to destination pixels buffer
+     * @param rowBytes      memory address of destination native pixels buffer
+     * @return              created Surface
+     */    @NotNull @Contract("_, _, _ -> new")
+    public static Surface makeRasterDirect(@NotNull ImageInfo imageInfo,
+                                           long pixelsPtr,
+                                           long rowBytes) {
+        return makeRasterDirect(imageInfo, pixelsPtr, rowBytes, null);
+    }
+
+    /**
+     * <p>Allocates raster Surface. Canvas returned by Surface draws directly into pixels.</p>
+     *
+     * <p>Surface is returned if all parameters are valid. Valid parameters include:</p>
+     * 
+     * <ul><li>info dimensions are greater than zero;</li>
+     * <li>info contains ColorType and AlphaType supported by raster surface;</li>
+     * <li>pixelsPtr is not 0;</li>
+     * <li>rowBytes is large enough to contain info width pixels of ColorType.</li></ul>
+     *
+     * <p>Pixel buffer size should be info height times computed rowBytes.</p>
+     * 
+     * <p>Pixels are not initialized.</p>
+     * 
+     * <p>To access pixels after drawing, peekPixels() or readPixels().</p>
+     *
+     * @param imageInfo     width, height, ColorType, AlphaType, ColorSpace,
+     *                      of raster surface; width and height must be greater than zero
+     * @param pixelsPtr     pointer to destination pixels buffer
+     * @param rowBytes      memory address of destination native pixels buffer
+     * @param surfaceProps  LCD striping orientation and setting for device independent fonts;
+     *                      may be null
+     * @return              created Surface
+     */
+    @NotNull @Contract("_, _, _, _ -> new")
+    public static Surface makeRasterDirect(@NotNull ImageInfo imageInfo,
+                                           long pixelsPtr,
+                                           long rowBytes,
+                                           @Nullable SurfaceProps surfaceProps) {
+        try {
+            assert imageInfo != null : "Can’t makeRasterDirect with imageInfo == null";
+            Stats.onNativeCall();
+            long ptr = _nMakeRasterDirect(
+                imageInfo._width,
+                imageInfo._height,
+                imageInfo._colorInfo._colorType.ordinal(),
+                imageInfo._colorInfo._alphaType.ordinal(),
+                Native.getPtr(imageInfo._colorInfo._colorSpace),
+                pixelsPtr,
+                rowBytes,
+                surfaceProps);
+            if (ptr == 0)
+                throw new IllegalArgumentException(String.format("Failed Surface.makeRasterDirect(%s, %d, %d, %s)", imageInfo, pixelsPtr, rowBytes, surfaceProps));
+            return new Surface(ptr);
+        } finally {
+            Reference.reachabilityFence(imageInfo._colorInfo._colorSpace);
+        }
+    }
+
+    /**
+     * <p>Allocates raster Surface. Canvas returned by Surface draws directly into pixels.
+     * Allocates and zeroes pixel memory. Pixel memory size is imageInfo.height() times imageInfo.minRowBytes().
+     * Pixel memory is deleted when Surface is deleted.</p>
+     * 
+     * <p>Surface is returned if all parameters are valid. Valid parameters include:</p>
+     * 
+     * <ul><li>info dimensions are greater than zero;</li>
+     * <li>info contains ColorType and AlphaType supported by raster surface;</li></ul>
+     * 
+     * @param imageInfo     width, height, ColorType, AlphaType, ColorSpace,
+     *                      of raster surface; width and height must be greater than zero
+     * @return              new Surface
+     */
+    @NotNull @Contract("_, _, _ -> new")
+    public static Surface makeRaster(@NotNull ImageInfo imageInfo) {
+        return makeRaster(imageInfo, 0, null);
+    }
+
+    /**
+     * <p>Allocates raster Surface. Canvas returned by Surface draws directly into pixels.
+     * Allocates and zeroes pixel memory. Pixel memory size is imageInfo.height() times
+     * rowBytes, or times imageInfo.minRowBytes() if rowBytes is zero.
+     * Pixel memory is deleted when Surface is deleted.</p>
+     * 
+     * <p>Surface is returned if all parameters are valid. Valid parameters include:</p>
+     * 
+     * <ul><li>info dimensions are greater than zero;</li>
+     * <li>info contains ColorType and AlphaType supported by raster surface;</li>
+     * <li>rowBytes is large enough to contain info width pixels of ColorType, or is zero.</li></ul>
+     * 
+     * <p>If rowBytes is zero, a suitable value will be chosen internally.</p>
+     * 
+     * @param imageInfo     width, height, ColorType, AlphaType, ColorSpace,
+     *                      of raster surface; width and height must be greater than zero
+     * @param rowBytes      interval from one Surface row to the next; may be zero
+     * @return              new Surface
+     */
+    @NotNull @Contract("_, _, _ -> new")
+    public static Surface makeRaster(@NotNull ImageInfo imageInfo,
+                                     long rowBytes) {
+        return makeRaster(imageInfo, rowBytes, null);
+    }
+
+    /**
+     * <p>Allocates raster Surface. Canvas returned by Surface draws directly into pixels.
+     * Allocates and zeroes pixel memory. Pixel memory size is imageInfo.height() times
+     * rowBytes, or times imageInfo.minRowBytes() if rowBytes is zero.
+     * Pixel memory is deleted when Surface is deleted.</p>
+     * 
+     * <p>Surface is returned if all parameters are valid. Valid parameters include:</p>
+     * 
+     * <ul><li>info dimensions are greater than zero;</li>
+     * <li>info contains ColorType and AlphaType supported by raster surface;</li>
+     * <li>rowBytes is large enough to contain info width pixels of ColorType, or is zero.</li></ul>
+     * 
+     * <p>If rowBytes is zero, a suitable value will be chosen internally.</p>
+     * 
+     * @param imageInfo     width, height, ColorType, AlphaType, ColorSpace,
+     *                      of raster surface; width and height must be greater than zero
+     * @param rowBytes      interval from one Surface row to the next; may be zero
+     * @param surfaceProps  LCD striping orientation and setting for device independent fonts;
+     *                      may be null
+     * @return              new Surface
+     */
+    @NotNull @Contract("_, _, _ -> new")
+    public static Surface makeRaster(@NotNull ImageInfo imageInfo,
+                                     long rowBytes,
+                                     @Nullable SurfaceProps surfaceProps) {
+        try {
+            assert imageInfo != null : "Can’t makeRaster with imageInfo == null";
+            Stats.onNativeCall();
+            long ptr = _nMakeRaster(
+                imageInfo._width,
+                imageInfo._height,
+                imageInfo._colorInfo._colorType.ordinal(),
+                imageInfo._colorInfo._alphaType.ordinal(),
+                Native.getPtr(imageInfo._colorInfo._colorSpace),
+                rowBytes,
+                surfaceProps);
+            if (ptr == 0)
+                throw new IllegalArgumentException(String.format("Failed Surface.makeRaster(%s, %d, %s)", imageInfo, rowBytes, surfaceProps));
+            return new Surface(ptr);
+        } finally {
+            Reference.reachabilityFence(imageInfo._colorInfo._colorSpace);
+        }
+    }
+
+    /**
      * <p>Wraps a GPU-backed buffer into {@link Surface}.</p>
      *
      * <p>Caller must ensure backendRenderTarget is valid for the lifetime of returned {@link Surface}.</p>
@@ -28,12 +193,22 @@ public class Surface extends RefCnt {
      * @return Surface if all parameters are valid; otherwise, null
      * @see <a href="https://fiddle.skia.org/c/@Surface_MakeFromBackendTexture">https://fiddle.skia.org/c/@Surface_MakeFromBackendTexture</a>
      */
-    @Nullable
-    public static Surface makeFromBackendRenderTarget(DirectContext context, BackendRenderTarget rt, SurfaceOrigin origin, SurfaceColorFormat colorFormat, @Nullable ColorSpace colorSpace) {
+    @NotNull
+    public static Surface makeFromBackendRenderTarget(@NotNull DirectContext context,
+                                                      @NotNull BackendRenderTarget rt,
+                                                      @NotNull SurfaceOrigin origin,
+                                                      @NotNull SurfaceColorFormat colorFormat,
+                                                      @Nullable ColorSpace colorSpace) {
         try {
+            assert context != null : "Can’t makeFromBackendRenderTarget with context == null";
+            assert rt != null : "Can’t makeFromBackendRenderTarget with rt == null";
+            assert origin != null : "Can’t makeFromBackendRenderTarget with origin == null";
+            assert colorFormat != null : "Can’t makeFromBackendRenderTarget with colorFormat == null";
             Stats.onNativeCall();
             long ptr = _nMakeFromBackendRenderTarget(Native.getPtr(context), Native.getPtr(rt), origin.ordinal(), colorFormat.ordinal(), Native.getPtr(colorSpace));
-            return ptr == 0 ? null : new Surface(ptr);
+            if (ptr == 0)
+                throw new IllegalArgumentException(String.format("Failed Surface.makeFromBackendRenderTarget(%s, %s, %s, %s, %s)", context, rt, origin, colorFormat, colorSpace));
+            return new Surface(ptr);
         } finally {
             Reference.reachabilityFence(context);
             Reference.reachabilityFence(rt);
@@ -59,11 +234,169 @@ public class Surface extends RefCnt {
      * @return Surface if all parameters are valid; otherwise, null
      * @see <a href="https://fiddle.skia.org/c/@Surface_MakeRasterN32Premul">https://fiddle.skia.org/c/@Surface_MakeRasterN32Premul</a>
      */
-    @Nullable
+    @NotNull
     public static Surface makeRasterN32Premul(int width, int height) {
         Stats.onNativeCall();
         long ptr = _nMakeRasterN32Premul(width, height);
-        return ptr == 0 ? null : new Surface(ptr);
+        if (ptr == 0)
+            throw new IllegalArgumentException(String.format("Failed Surface.makeRasterN32Premul(%d, %d)", width, height));
+        return new Surface(ptr);
+    }
+
+    /**
+     * <p>Returns Surface on GPU indicated by context. Allocates memory for
+     * pixels, based on the width, height, and ColorType in ImageInfo.
+     * describes the pixel format in ColorType, and transparency in
+     * AlphaType, and color matching in ColorSpace.</p>
+     *
+     * @param context               GPU context
+     * @param budgeted              selects whether allocation for pixels is tracked by context
+     * @param imageInfo             width, height, ColorType, AlphaType, ColorSpace;
+     *                              width, or height, or both, may be zero
+     * @return                      new SkSurface
+     */
+    @NotNull @Contract("_, _, _ -> new")
+    public static Surface makeRenderTarget(@NotNull DirectContext context,
+                                           boolean budgeted,
+                                           @NotNull ImageInfo imageInfo) {
+        return makeRenderTarget(context, budgeted, imageInfo, 0, SurfaceOrigin.BOTTOM_LEFT, null, false);
+    }
+
+    /**
+     * <p>Returns Surface on GPU indicated by context. Allocates memory for
+     * pixels, based on the width, height, and ColorType in ImageInfo.
+     * describes the pixel format in ColorType, and transparency in
+     * AlphaType, and color matching in ColorSpace.</p>
+     *
+     * <p>sampleCount requests the number of samples per pixel.
+     * Pass zero to disable multi-sample anti-aliasing.  The request is rounded
+     * up to the next supported count, or rounded down if it is larger than the
+     * maximum supported count.</p>
+     *
+     * @param context               GPU context
+     * @param budgeted              selects whether allocation for pixels is tracked by context
+     * @param imageInfo             width, height, ColorType, AlphaType, ColorSpace;
+     *                              width, or height, or both, may be zero
+     * @param sampleCount           samples per pixel, or 0 to disable full scene anti-aliasing
+     * @param surfaceProps          LCD striping orientation and setting for device independent
+     *                               fonts; may be null
+     * @return                      new SkSurface
+     */
+    @NotNull @Contract("_, _, _, _, _ -> new")
+    public static Surface makeRenderTarget(@NotNull DirectContext context,
+                                           boolean budgeted,
+                                           @NotNull ImageInfo imageInfo,
+                                           int sampleCount,
+                                           @Nullable SurfaceProps surfaceProps) {
+        return makeRenderTarget(context, budgeted, imageInfo, sampleCount, SurfaceOrigin.BOTTOM_LEFT, surfaceProps, false);
+    }
+
+    /**
+     * <p>Returns Surface on GPU indicated by context. Allocates memory for
+     * pixels, based on the width, height, and ColorType in ImageInfo.
+     * describes the pixel format in ColorType, and transparency in
+     * AlphaType, and color matching in ColorSpace.</p>
+     *
+     * <p>sampleCount requests the number of samples per pixel.
+     * Pass zero to disable multi-sample anti-aliasing.  The request is rounded
+     * up to the next supported count, or rounded down if it is larger than the
+     * maximum supported count.</p>
+     *
+     * @param context               GPU context
+     * @param budgeted              selects whether allocation for pixels is tracked by context
+     * @param imageInfo             width, height, ColorType, AlphaType, ColorSpace;
+     *                              width, or height, or both, may be zero
+     * @param sampleCount           samples per pixel, or 0 to disable full scene anti-aliasing
+     * @param origin                pins either the top-left or the bottom-left corner to the origin.
+     * @param surfaceProps          LCD striping orientation and setting for device independent
+     *                               fonts; may be null
+     * @return                      new SkSurface
+     */
+    @NotNull @Contract("_, _, _, _, _, _ -> new")
+    public static Surface makeRenderTarget(@NotNull DirectContext context,
+                                           boolean budgeted,
+                                           @NotNull ImageInfo imageInfo,
+                                           int sampleCount,
+                                           @NotNull SurfaceOrigin origin,
+                                           @Nullable SurfaceProps surfaceProps) {
+        return makeRenderTarget(context, budgeted, imageInfo, sampleCount, origin, surfaceProps, false);
+    }
+
+    /**
+     * <p>Returns Surface on GPU indicated by context. Allocates memory for
+     * pixels, based on the width, height, and ColorType in ImageInfo.
+     * describes the pixel format in ColorType, and transparency in
+     * AlphaType, and color matching in ColorSpace.</p>
+     *
+     * <p>sampleCount requests the number of samples per pixel.
+     * Pass zero to disable multi-sample anti-aliasing.  The request is rounded
+     * up to the next supported count, or rounded down if it is larger than the
+     * maximum supported count.</p>
+     *
+     * <p>shouldCreateWithMips hints that Image returned by {@link #makeImageSnapshot()} is mip map.</p>
+     *
+     * @param context               GPU context
+     * @param budgeted              selects whether allocation for pixels is tracked by context
+     * @param imageInfo             width, height, ColorType, AlphaType, ColorSpace;
+     *                              width, or height, or both, may be zero
+     * @param sampleCount           samples per pixel, or 0 to disable full scene anti-aliasing
+     * @param origin                pins either the top-left or the bottom-left corner to the origin.
+     * @param surfaceProps          LCD striping orientation and setting for device independent
+     *                               fonts; may be null
+     * @param shouldCreateWithMips  hint that SkSurface will host mip map images
+     * @return                      new SkSurface
+     */
+    @NotNull @Contract("_, _, _, _, _, _, _ -> new")
+    public static Surface makeRenderTarget(@NotNull DirectContext context,
+                                           boolean budgeted,
+                                           @NotNull ImageInfo imageInfo,
+                                           int sampleCount,
+                                           @NotNull SurfaceOrigin origin,
+                                           @Nullable SurfaceProps surfaceProps,
+                                           boolean shouldCreateWithMips) {
+        try {
+            assert context != null : "Can’t makeFromBackendRenderTarget with context == null";
+            assert imageInfo != null : "Can’t makeFromBackendRenderTarget with imageInfo == null";
+            assert origin != null : "Can’t makeFromBackendRenderTarget with origin == null";            
+            Stats.onNativeCall();
+            long ptr = _nMakeRenderTarget(
+                Native.getPtr(context),
+                budgeted,
+                imageInfo._width,
+                imageInfo._height,
+                imageInfo._colorInfo._colorType.ordinal(),
+                imageInfo._colorInfo._alphaType.ordinal(),
+                Native.getPtr(imageInfo._colorInfo._colorSpace),
+                sampleCount,
+                origin.ordinal(),
+                surfaceProps,
+                shouldCreateWithMips);
+            if (ptr == 0)
+                throw new IllegalArgumentException(String.format("Failed Surface.makeRenderTarget(%s, %b, %s, %d, %s, %s, %b)", context, budgeted, imageInfo, sampleCount, origin, surfaceProps, shouldCreateWithMips));
+            return new Surface(ptr);
+        } finally {
+            Reference.reachabilityFence(context);
+            Reference.reachabilityFence(imageInfo._colorInfo._colorSpace);
+        }
+    }
+
+    /** 
+     * Returns Surface without backing pixels. Drawing to Canvas returned from Surface
+     * has no effect. Calling makeImageSnapshot() on returned Surface returns null.
+     *
+     * @param width   one or greater
+     * @param height  one or greater
+     * @return        Surface if width and height are positive
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Surface_MakeNull">https://fiddle.skia.org/c/@Surface_MakeNull</a>
+     */
+    @NotNull @Contract("_, _ -> new")
+    public static Surface makeNull(int width, int height) {
+        Stats.onNativeCall();
+        long ptr = _nMakeNull(width, height);
+        if (ptr == 0)
+            throw new IllegalArgumentException(String.format("Failed Surface.makeNull(%d, %d)", width, height));
+        return new Surface(ptr);
     }
 
     /**
@@ -429,8 +762,12 @@ public class Surface extends RefCnt {
         super(ptr);
     }
 
-    public static native long _nMakeFromBackendRenderTarget(long pContext, long pBackendRenderTarget, int surfaceOrigin, int colorType, long colorSpacePtr);
+    public static native long _nMakeRasterDirect(int width, int height, int colorType, int alphaType, long colorSpacePtr, long pixelsPtr, long rowBytes, SurfaceProps surfaceProps);
+    public static native long _nMakeRaster(int width, int height, int colorType, int alphaType, long colorSpacePtr, long rowBytes, SurfaceProps surfaceProps);
     public static native long _nMakeRasterN32Premul(int width, int height);
+    public static native long _nMakeFromBackendRenderTarget(long pContext, long pBackendRenderTarget, int surfaceOrigin, int colorType, long colorSpacePtr);
+    public static native long _nMakeRenderTarget(long contextPtr, boolean budgeted, int width, int height, int colorType, int alphaType, long colorSpacePtr, int sampleCount, int surfaceOrigin, SurfaceProps surfaceProps, boolean shouldCreateWithMips);
+    public static native long _nMakeNull(int width, int height);
     public static native int _nGetWidth(long ptr);
     public static native int _nGetHeight(long ptr);
     public static native ImageInfo _nGetImageInfo(long ptr);

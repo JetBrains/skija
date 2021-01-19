@@ -21,7 +21,11 @@ public class SurfaceProps {
         this(false, geo);
     }
 
-    @ApiStatus.Internal public int getFlags() {
+    @ApiStatus.Internal public int _getFlags() {
         return 0 | (_deviceIndependentFonts ? 1 : 0); 
+    }
+
+    @ApiStatus.Internal public int _getPixelGeometryOrdinal() {
+        return _pixelGeometry.ordinal();
     }
 }

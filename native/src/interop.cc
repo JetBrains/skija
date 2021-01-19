@@ -600,6 +600,25 @@ namespace skija {
         }
     }
 
+    namespace SurfaceProps {
+        jmethodID _getFlags;
+        jmethodID _getPixelGeometryOrdinal;
+
+        void onLoad(JNIEnv* env) {
+            jclass cls = env->FindClass("org/jetbrains/skija/SurfaceProps");
+            _getFlags = env->GetMethodID(cls, "_getFlags", "()I");
+            _getPixelGeometryOrdinal = env->GetMethodID(cls, "_getPixelGeometryOrdinal", "()I");
+        }
+
+        std::unique_ptr<SkSurfaceProps> toSkSurfaceProps(JNIEnv* env, jobject surfacePropsObj) {
+            if (surfacePropsObj == nullptr)
+                return std::unique_ptr<SkSurfaceProps>(nullptr);
+            uint32_t flags = static_cast<uint32_t>(env->CallIntMethod(surfacePropsObj, _getFlags));
+            SkPixelGeometry geom = static_cast<SkPixelGeometry>(env->CallIntMethod(surfacePropsObj, _getPixelGeometryOrdinal));
+            return std::make_unique<SkSurfaceProps>(flags, geom);
+        }
+    }
+
     namespace impl {
         namespace Native {
             jfieldID _ptr;

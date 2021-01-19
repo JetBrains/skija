@@ -364,7 +364,7 @@ class Window {
         scenes.put("TextLine",         new TextLineScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Pixel Grid";
+        currentScene = "Paragraph Metrics";
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {

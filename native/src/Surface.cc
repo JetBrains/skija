@@ -4,6 +4,58 @@
 #include "SkSurface.h"
 #include "interop.hh"
 
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeRasterDirect
+  (JNIEnv* env, jclass jclass,
+    jint width, jint height, jint colorType, jint alphaType, jlong colorSpacePtr,
+    jlong pixelsPtr, jlong rowBytes, 
+    jobject surfacePropsObj)
+{
+    SkColorSpace* colorSpace = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr));
+    SkImageInfo imageInfo = SkImageInfo::Make(width,
+                                              height,
+                                              static_cast<SkColorType>(colorType),
+                                              static_cast<SkAlphaType>(alphaType),
+                                              sk_ref_sp<SkColorSpace>(colorSpace));
+    std::unique_ptr<SkSurfaceProps> surfaceProps = skija::SurfaceProps::toSkSurfaceProps(env, surfacePropsObj);
+
+    sk_sp<SkSurface> instance = SkSurface::MakeRasterDirect(
+      imageInfo,
+      reinterpret_cast<void*>(static_cast<uintptr_t>(pixelsPtr)),
+      rowBytes,
+      surfaceProps.get());
+    return reinterpret_cast<jlong>(instance.release());
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeRaster
+  (JNIEnv* env, jclass jclass,
+    jint width, jint height, jint colorType, jint alphaType, jlong colorSpacePtr,
+    jlong rowBytes, 
+    jobject surfacePropsObj)
+{
+    SkColorSpace* colorSpace = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr));
+    SkImageInfo imageInfo = SkImageInfo::Make(width,
+                                              height,
+                                              static_cast<SkColorType>(colorType),
+                                              static_cast<SkAlphaType>(alphaType),
+                                              sk_ref_sp<SkColorSpace>(colorSpace));
+    std::unique_ptr<SkSurfaceProps> surfaceProps = skija::SurfaceProps::toSkSurfaceProps(env, surfacePropsObj);
+
+    sk_sp<SkSurface> instance = SkSurface::MakeRaster(
+      imageInfo,
+      rowBytes,
+      surfaceProps.get());
+    return reinterpret_cast<jlong>(instance.release());
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeRasterN32Premul
+  (JNIEnv* env, jclass jclass, jint width, jint height) {
+    sk_sp<SkSurface> surface = SkSurface::MakeRasterN32Premul(
+        width, height,
+        /* const SkSurfaceProps* */ nullptr
+    );
+    return reinterpret_cast<jlong>(surface.release());
+}
+
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeFromBackendRenderTarget
   (JNIEnv* env, jclass jclass, jlong pContext, jlong pBackendRenderTarget, jint surfaceOrigin, jint colorType, jlong colorSpacePtr) {
     GrDirectContext* context = reinterpret_cast<GrDirectContext*>(static_cast<uintptr_t>(pContext));
@@ -27,13 +79,35 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeFromB
     return reinterpret_cast<jlong>(surface.release());
 }
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeRasterN32Premul
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeRenderTarget
+  (JNIEnv* env, jclass jclass, jlong contextPtr, jboolean budgeted, 
+    jint width, jint height, jint colorType, jint alphaType, jlong colorSpacePtr,
+    jint sampleCount, jint surfaceOrigin, 
+    jobject surfacePropsObj,
+    jboolean shouldCreateWithMips)
+{
+    GrDirectContext* context = reinterpret_cast<GrDirectContext*>(static_cast<uintptr_t>(contextPtr));
+    SkColorSpace* colorSpace = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr));
+    SkImageInfo imageInfo = SkImageInfo::Make(width,
+                                              height,
+                                              static_cast<SkColorType>(colorType),
+                                              static_cast<SkAlphaType>(alphaType),
+                                              sk_ref_sp<SkColorSpace>(colorSpace));
+    std::unique_ptr<SkSurfaceProps> surfaceProps = skija::SurfaceProps::toSkSurfaceProps(env, surfacePropsObj);
+
+    sk_sp<SkSurface> instance = SkSurface::MakeRenderTarget(
+      context, budgeted ? SkBudgeted::kYes : SkBudgeted::kNo,
+      imageInfo,
+      sampleCount, static_cast<GrSurfaceOrigin>(surfaceOrigin),
+      surfaceProps.get(),
+      shouldCreateWithMips);
+    return reinterpret_cast<jlong>(instance.release());
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeNull
   (JNIEnv* env, jclass jclass, jint width, jint height) {
-    sk_sp<SkSurface> surface = SkSurface::MakeRasterN32Premul(
-        width, height,
-        /* const SkSurfaceProps* */ nullptr
-    );
-    return reinterpret_cast<jlong>(surface.release());
+  sk_sp<SkSurface> instance = SkSurface::MakeNull(width, height);
+  return reinterpret_cast<jlong>(instance.release());
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nGetCanvas

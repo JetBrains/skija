@@ -49,7 +49,7 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_const_SkBitmap_const_SkSurfaceProps">https://fiddle.skia.org/c/@Canvas_const_SkBitmap_const_SkSurfaceProps</a>
      */
     public Canvas(@NotNull Bitmap bitmap, @NotNull SurfaceProps surfaceProps) {
-        this(_nMakeFromBitmap(bitmap._ptr, surfaceProps.getFlags(), surfaceProps.getPixelGeometry().ordinal()), true, bitmap);
+        this(_nMakeFromBitmap(bitmap._ptr, surfaceProps._getFlags(), surfaceProps._pixelGeometry.ordinal()), true, bitmap);
         Stats.onNativeCall();
         Reference.reachabilityFence(bitmap);
     }

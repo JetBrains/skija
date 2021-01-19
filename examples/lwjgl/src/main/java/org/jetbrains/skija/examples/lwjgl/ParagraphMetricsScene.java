@@ -29,10 +29,20 @@ public class ParagraphMetricsScene extends Scene {
 
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
+        canvas.save();
         canvas.translate(30, 30);
         drawSelection(canvas, xpos - 30f, ypos - 30f);
-        canvas.translate(0, 30);
+        canvas.restore();
+
+        canvas.save();
+        canvas.translate(30, height / 2 + 15);
         drawIndices(canvas);
+        canvas.restore();
+
+        canvas.save();
+        canvas.translate(width / 2 + 15, 30);
+        drawPositions(canvas);
+        canvas.restore();
     }
 
     public void drawSelection(Canvas canvas, float dx, float dy) {
@@ -114,30 +124,8 @@ public class ParagraphMetricsScene extends Scene {
                 }
                 p.paint(canvas, 0, 0);
                 canvas.drawString("idx: " + glyphx, 630, 20, inter13, detailsFill);
-                canvas.translate(0, p.getHeight());
             }
         }
-    }
-
-    public void paintParagraph(Canvas canvas, Paragraph paragraph) {
-        paragraph.layout(600f);
-        paragraph.paint(canvas, 0, 0);
-        for (LineMetrics lm: paragraph.getLineMetrics()) {
-            canvas.drawRect(Rect.makeXYWH((float) lm.getLeft(),
-                                          (float) (lm.getBaseline() - lm.getAscent()),
-                                          (float) lm.getWidth(),
-                                          (float) (lm.getAscent() + lm.getDescent())), boundariesStroke);
-            canvas.drawLine((float) lm.getLeft(), (float) lm.getBaseline(), (float) (lm.getLeft() + lm.getWidth()), (float) lm.getBaseline(), boundariesStroke);
-
-            canvas.drawString(
-                String.format("start=%d, end w/o space=%d, end=%d, end w/ newline=%d",
-                    lm.getStartIndex(),
-                    lm.getEndExcludingWhitespaces(),
-                    lm.getEndIndex(),
-                    lm.getEndIncludingNewline()),
-                150, (float) lm.getBaseline(), inter13, detailsFill);
-        }
-        canvas.translate(0, paragraph.getHeight());
     }
 
     public void drawIndices(Canvas canvas) {
@@ -160,7 +148,62 @@ public class ParagraphMetricsScene extends Scene {
 
             pb.addText(text);
             try (Paragraph paragraph = pb.build();) {               
-                paintParagraph(canvas, paragraph);
+                paragraph.layout(600f);
+                paragraph.paint(canvas, 0, 0);
+                for (LineMetrics lm: paragraph.getLineMetrics()) {
+                    canvas.drawRect(Rect.makeXYWH((float) lm.getLeft(),
+                                                  (float) (lm.getBaseline() - lm.getAscent()),
+                                                  (float) lm.getWidth(),
+                                                  (float) (lm.getAscent() + lm.getDescent())), boundariesStroke);
+                    canvas.drawLine((float) lm.getLeft(), (float) lm.getBaseline(), (float) (lm.getLeft() + lm.getWidth()), (float) lm.getBaseline(), boundariesStroke);
+
+                    canvas.drawString(
+                        String.format("start=%d, end w/o space=%d, end=%d, end w/ newline=%d",
+                            lm.getStartIndex(),
+                            lm.getEndExcludingWhitespaces(),
+                            lm.getEndIndex(),
+                            lm.getEndIncludingNewline()),
+                        150, (float) lm.getBaseline(), inter13, detailsFill);
+                }
+            }
+        }
+    }
+
+    public void drawPositions(Canvas canvas) {
+        for (String text: new String[] {
+            "ggg",
+            "жжж",
+            "𨭎",
+            "𨭎𨭎",
+            "ggg𨭎𨭎𨭎",
+            "👩",
+            "ggg👩👩👩",
+            "👨👩👧👦",
+            "👩‍👩‍👧‍👧",
+            "👩‍👩‍👧‍👧👩‍👩‍👧‍👧👩‍👩‍👧‍👧",
+            "sixستةten",
+            "x̆x̞̊x̃",
+            "<->"
+        }) {
+            try (TextStyle defaultTs = new TextStyle().setFontSize(16).setColor(0xFF000000).setFontFamilies(new String[] { "Interface" }).setHeight(1.5f);
+                 ParagraphStyle ps   = new ParagraphStyle();
+                 ParagraphBuilder pb = new ParagraphBuilder(ps, fc);)
+            {
+                pb.pushStyle(defaultTs);
+                pb.addText(text);
+                try (Paragraph paragraph = pb.build();) {
+                    paragraph.layout(600f);
+                    paragraph.paint(canvas, 0, 0);
+
+                    LineMetrics lm = paragraph.getLineMetrics()[0];
+                    String s = "";
+                    for (int x = 0; x < lm.getWidth() + 10; ++x) {
+                        s += paragraph.getGlyphPositionAtCoordinate(x, (float) lm.getBaseline()).getPosition() + " ";
+                    }
+                    canvas.drawString(s, 100, (float) lm.getBaseline(), inter13, detailsFill);
+
+                    canvas.translate(0, paragraph.getHeight());
+                }
             }
         }
     }

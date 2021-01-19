@@ -13,6 +13,7 @@
 #include "SkScalar.h"
 #include "SkShaper.h"
 #include "SkString.h"
+#include "SkSurfaceProps.h"
 
 namespace java {
     namespace lang {
@@ -224,6 +225,13 @@ namespace skija {
         extern jmethodID ctor;
         void onLoad(JNIEnv* env);
         void onUnload(JNIEnv* env);
+    }
+
+    namespace SurfaceProps {
+        extern jmethodID _getFlags;
+        extern jmethodID _getPixelGeometryOrdinal;
+        void onLoad(JNIEnv* env);
+        std::unique_ptr<SkSurfaceProps> toSkSurfaceProps(JNIEnv* env, jobject surfacePropsObj);
     }
 
     namespace impl {
