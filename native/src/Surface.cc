@@ -56,6 +56,11 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeRaste
     return reinterpret_cast<jlong>(surface.release());
 }
 
+static void releaseDirectContext(void* releaseContext) {
+  GrDirectContext* context = reinterpret_cast<GrDirectContext*>(releaseContext);
+  context->unref();
+}
+
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeFromBackendRenderTarget
   (JNIEnv* env, jclass jclass, jlong pContext, jlong pBackendRenderTarget, jint surfaceOrigin, jint colorType, jlong colorSpacePtr) {
     GrDirectContext* context = reinterpret_cast<GrDirectContext*>(static_cast<uintptr_t>(pContext));
@@ -66,6 +71,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeFromB
     // SkSurfaceProps props{SkSurfaceProps::kLegacyFontHost_InitType};
     SkSurfaceProps props(0, SkPixelGeometry::kRGB_V_SkPixelGeometry);
 
+    context->ref();
     sk_sp<SkSurface> surface = SkSurface::MakeFromBackendRenderTarget(
         static_cast<GrRecordingContext*>(context),
         *backendRenderTarget,
@@ -73,8 +79,8 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeFromB
         skColorType,
         colorSpace,
         &props,
-        /* RenderTargetReleaseProc */ nullptr,
-        /* ReleaseContext */ nullptr
+        releaseDirectContext,
+        context
     );
     return reinterpret_cast<jlong>(surface.release());
 }
