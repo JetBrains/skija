@@ -26,6 +26,12 @@ extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_TextLine__1nGetCapH
     return instance->fCapHeight;
 }
 
+extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_TextLine__1nGetXHeight
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    TextLine* instance = reinterpret_cast<TextLine*>(static_cast<uintptr_t>(ptr));
+    return instance->fXHeight;
+}
+
 extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_TextLine__1nGetDescent
   (JNIEnv* env, jclass jclass, jlong ptr) {
     TextLine* instance = reinterpret_cast<TextLine*>(static_cast<uintptr_t>(ptr));

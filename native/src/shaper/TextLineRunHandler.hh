@@ -21,6 +21,7 @@ public:
         info.fFont.getMetrics(&metrics);
         fLine->fAscent = std::min(fLine->fAscent, metrics.fAscent);
         fLine->fCapHeight = std::max(fLine->fCapHeight, metrics.fCapHeight);
+        fLine->fXHeight = std::max(fLine->fXHeight, metrics.fXHeight);
         fLine->fDescent = std::max(fLine->fDescent, metrics.fDescent);
         fLine->fLeading = std::max(fLine->fLeading, metrics.fLeading);
         fLine->fWidth += info.fAdvance.fX;

@@ -48,6 +48,15 @@ public class TextLine extends Managed {
         }
     }
 
+    public float getXHeight() {
+        Stats.onNativeCall();
+        try {
+            return _nGetXHeight(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
+    }
+
     public float getDescent() {
         Stats.onNativeCall();
         try {
@@ -154,6 +163,7 @@ public class TextLine extends Managed {
     @ApiStatus.Internal public static native long  _nGetFinalizer();
     @ApiStatus.Internal public static native float _nGetAscent(long ptr);
     @ApiStatus.Internal public static native float _nGetCapHeight(long ptr);
+    @ApiStatus.Internal public static native float _nGetXHeight(long ptr);
     @ApiStatus.Internal public static native float _nGetDescent(long ptr);
     @ApiStatus.Internal public static native float _nGetLeading(long ptr);
     @ApiStatus.Internal public static native float _nGetWidth(long ptr);

@@ -22,7 +22,7 @@ public class TextStyleScene extends Scene {
             try (Paragraph p = pb.build();) {
                 p.layout(Float.POSITIVE_INFINITY);
                 p.paint(canvas, 0, 0);
-                canvas.translate(0, p.getHeight());
+                canvas.translate(0, p.getHeight() + 5);
             }
         }
     }
@@ -65,10 +65,12 @@ public class TextStyleScene extends Scene {
             drawLine(canvas, "Sometime too hot the eye of heaven shines,", ts);
         }
 
-        d = DecorationStyle.NONE.withUnderline(true).withColor(0xFF3A1C71).withLineStyle(DecorationLineStyle.DOTTED);
-        try (var ts = new TextStyle().setColor(0xFF000000).setDecorationStyle(d)) {
-            assert d.equals(ts.getDecorationStyle());
-            drawLine(canvas, "And often is his gold complexion dimm'd;", ts);
+        for (var lineStyle: DecorationLineStyle.values()) {
+            d = DecorationStyle.NONE.withUnderline(true).withColor(0xFF3A1C71).withLineStyle(lineStyle);
+            try (var ts = new TextStyle().setColor(0xFF000000).setDecorationStyle(d)) {
+                assert d.equals(ts.getDecorationStyle());
+                drawLine(canvas, "And often is his gold complexion dimm'd; (opaque gyroscope)", ts);
+            }
         }
 
         d = DecorationStyle.NONE.withOverline(true).withLineThrough(true).withColor(0xFFD76D77).withThicknessMultiplier(3);

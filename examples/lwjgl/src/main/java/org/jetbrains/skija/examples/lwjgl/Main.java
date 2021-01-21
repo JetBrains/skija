@@ -362,9 +362,10 @@ class Window {
         scenes.put("Text Style",       new TextStyleScene());
         scenes.put("TextBlob",         new TextBlobScene());
         scenes.put("TextLine",         new TextLineScene());
+        scenes.put("TextLine Decorations", new TextLineDecorationsScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "Paragraph Metrics";
+        currentScene = "TextLine Decorations";
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {

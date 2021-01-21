@@ -36,6 +36,7 @@ public:
     size_t   fGlyphCount = 0;
     SkScalar fAscent = 0;
     SkScalar fCapHeight = 0;
+    SkScalar fXHeight = 0;
     SkScalar fDescent = 0;
     SkScalar fLeading = 0;
     SkScalar fWidth = 0;
@@ -50,6 +51,7 @@ public:
         font.getMetrics(&metrics);
         fAscent = metrics.fAscent;
         fCapHeight = metrics.fCapHeight;
+        fXHeight = metrics.fXHeight;
         fDescent = metrics.fDescent;
         fLeading = metrics.fLeading;
     }
