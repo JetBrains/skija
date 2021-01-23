@@ -10,6 +10,10 @@ fi
 skia_dir_abs=$(cd $SKIA_DIR; pwd)
 echo "Using Skia from $skia_dir_abs"
 build_type=${build_type:-Release}
+arch="x64"
+if [ $(uname) == "Darwin" ] && [ $(uname -m) == "arm64" ]; then
+    arch="arm64"
+fi
 
 cd "$dir/.."
 
@@ -21,6 +25,6 @@ ninja
 popd > /dev/null
 
 # Copy icudtl.dat
-[[ -e ${skia_dir_abs}/out/${build_type}-x64/icudtl.dat ]] && cp ${skia_dir_abs}/out/${build_type}-x64/icudtl.dat build
+[[ -e ${skia_dir_abs}/out/${build_type}-${arch}/icudtl.dat ]] && cp ${skia_dir_abs}/out/${build_type}-${arch}/icudtl.dat build
 
 exit 0

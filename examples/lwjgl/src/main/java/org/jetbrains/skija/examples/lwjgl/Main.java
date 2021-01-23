@@ -365,7 +365,7 @@ class Window {
         scenes.put("TextLine Decorations", new TextLineDecorationsScene());
         scenes.put("Wall of Text",     new WallOfTextScene());
         scenes.put("Watches",          new WatchesScene());
-        currentScene = "TextLine Decorations";
+        currentScene = "SVG";
         t0 = System.nanoTime();
 
         while (!glfwWindowShouldClose(window)) {

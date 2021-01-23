@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="grad" gradientUnits="objectBoundingBox">
+      <stop offset="10%" stop-color="#00e4fb" />
+      <stop offset="90%" stop-color="#fc0359" />
+    </linearGradient>
+    <rect id="rect" x="34" y="0" width="30" height="20" />
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <rect x="0" y="0" width="30" height="20" fill="url(#grad)" />
+    <use fill="url(#grad)" xlink:href="#rect"/>
+    <polygon points="0 22 31 32 0 42" fill="url(#grad)" />
+    <circle cx="49" cy="30" r="15%" fill="url(#grad)" />
+    <path d="M0,54 L31,44 L31,64 Z" fill="url(#grad)" />
+    <text x="34" y="55" font-family="Verdana" font-size="12" fill="url(#grad)">Text</text>
+  </g>
+</svg>

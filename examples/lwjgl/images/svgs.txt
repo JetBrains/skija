@@ -1,3 +1,6 @@
+file:images/svg/percents.svg
+file:images/svg/gradients.svg
+file:images/svg/idea.svg
 https://upload.wikimedia.org/wikipedia/commons/f/fd/Ghostscript_Tiger.svg
 https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/car.svg
 https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/rg1024_green_grapes.svg
