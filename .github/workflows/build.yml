@@ -47,9 +47,9 @@ jobs:
       - run: ./native/script/build.sh
       - uses: actions/upload-artifact@v2
         with:
-          name: skija-macos
+          name: skija-macos-x64
           path: native/build/*.dylib
-      - run: ./ci/deploy_macos.sh
+      - run: ./ci/deploy_macos_x64.sh
         env:
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
 

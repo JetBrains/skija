@@ -21,7 +21,8 @@
             <resource>
                 <directory>build</directory>
                 <includes>
-                    <include>libskija.dylib</include>
+                    <include>libskija_x64.dylib</include>
+                    <include>libskija_arm64.dylib</include>
                     <include>libskija.so</include>
                     <include>skija.dll</include>
                     <include>icudtl.dat</include>

@@ -3,6 +3,14 @@ project(skija C CXX)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64" OR "${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "AMD64")
+    set(SKIA_ARCH "x64")
+elseif("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "arm64")
+    set(SKIA_ARCH "arm64")
+else()
+    set(SKIA_ARCH "x86")
+endif()
+
 # Sources
 
 file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/*.cc)
@@ -32,6 +40,7 @@ if(APPLE)
     add_definitions(-DSK_ENABLE_API_AVAILABLE
         -DSK_METAL
         -DSK_SHAPER_CORETEXT_AVAILABLE)
+    set_target_properties(skija PROPERTIES OUTPUT_NAME "skija_${SKIA_ARCH}")
 
 elseif(UNIX)
     target_include_directories(skija PRIVATE $ENV{JAVA_HOME}/include $ENV{JAVA_HOME}/include/linux)

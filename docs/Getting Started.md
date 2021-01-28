@@ -5,12 +5,13 @@
 Add ONE of these dependencies to your ant/maven/gradle/bazel:
 
 ```
-org.jetbrains.skija:skija-windows:0.0.0
-org.jetbrains.skija:skija-linux:0.0.0
-org.jetbrains.skija:skija-macos:0.0.0
+org.jetbrains.skija:skija-windows:${version}
+org.jetbrains.skija:skija-linux:${version}
+org.jetbrains.skija:skija-macos-x64:${version}
+org.jetbrains.skija:skija-macos-arm64:${version}
 ```
 
-(Replace `0.0.0` with ![version](https://img.shields.io/badge/dynamic/xml?style=flat-square&label=latest&color=success&url=https%3A%2F%2Fpackages.jetbrains.team%2Fmaven%2Fp%2Fskija%2Fmaven%2Forg%2Fjetbrains%2Fskija%2Fskija-macos%2Fmaven-metadata.xml&query=//release))
+(Replace `${version}` with ![version](https://img.shields.io/badge/dynamic/xml?style=flat-square&label=latest&color=success&url=https%3A%2F%2Fpackages.jetbrains.team%2Fmaven%2Fp%2Fskija%2Fmaven%2Forg%2Fjetbrains%2Fskija%2Fskija-macos-x64%2Fmaven-metadata.xml&query=//release))
 
 The repository url is https://packages.jetbrains.team/maven/p/skija/maven
 

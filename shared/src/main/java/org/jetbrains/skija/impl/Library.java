@@ -36,7 +36,8 @@ public class Library {
         String os = System.getProperty("os.name").toLowerCase();
         
         if (os.contains("mac") || os.contains("darwin")) {
-            File library = _extract("/", "libskija.dylib", tempDir);
+            String file = "aarch64".equals(System.getProperty("os.arch")) ? "libskija_arm64.dylib" : "libskija_x64.dylib";
+            File library = _extract("/", file, tempDir);
             System.load(library.getAbsolutePath());
         } else if (os.contains("windows")) {
             _extract("/", "icudtl.dat", tempDir);
