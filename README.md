@@ -85,7 +85,7 @@ Backends:
 
 - [x] Bitmap
 - [x] OpenGL
-- [x] Metal (example pending)
+- [ ] Metal (example pending)
 - [ ] Vulkan
 
 APIs:
@@ -189,10 +189,11 @@ If Skija is missing a documentation for a particular method or class, check the 
 
 Finally, [LWJGL demo app](/examples/lwjgl) has examples of most of the APIs that are currently implemented.
 
-## Talks
+## Resources
 
 - Overview [youtube.com/watch?v=t1X-Oln1u24](https://www.youtube.com/watch?v=t1X-Oln1u24)
 - Coding game in Skija and Clojure [youtube.com/watch?v=KES-lKTq-3M](https://www.youtube.com/watch?v=KES-lKTq-3M)
+- SWT and Skija on Raspberry Pi [spket.com/blog/native-gui-app-with-swt-and-skija-on-raspberry-pi](https://www.spket.com/blog/native-gui-app-with-swt-and-skija-on-raspberry-pi/)
 
 ## Building Skija from scratch
 
