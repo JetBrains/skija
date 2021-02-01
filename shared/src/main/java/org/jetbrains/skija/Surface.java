@@ -9,6 +9,9 @@ public class Surface extends RefCnt {
         Library.staticLoad();
     }
 
+    @ApiStatus.Internal public final DirectContext _context;
+    @ApiStatus.Internal public final BackendRenderTarget _renderTarget;
+
     /**
      * <p>Allocates raster Surface. Canvas returned by Surface draws directly into pixels.</p>
      *
@@ -30,7 +33,8 @@ public class Surface extends RefCnt {
      * @param pixelsPtr     pointer to destination pixels buffer
      * @param rowBytes      memory address of destination native pixels buffer
      * @return              created Surface
-     */    @NotNull @Contract("_, _, _ -> new")
+     */
+    @NotNull @Contract("_, _, _ -> new")
     public static Surface makeRasterDirect(@NotNull ImageInfo imageInfo,
                                            long pixelsPtr,
                                            long rowBytes) {
@@ -208,7 +212,7 @@ public class Surface extends RefCnt {
             long ptr = _nMakeFromBackendRenderTarget(Native.getPtr(context), Native.getPtr(rt), origin.ordinal(), colorFormat.ordinal(), Native.getPtr(colorSpace));
             if (ptr == 0)
                 throw new IllegalArgumentException(String.format("Failed Surface.makeFromBackendRenderTarget(%s, %s, %s, %s, %s)", context, rt, origin, colorFormat, colorSpace));
-            return new Surface(ptr);
+            return new Surface(ptr, context, rt);
         } finally {
             Reference.reachabilityFence(context);
             Reference.reachabilityFence(rt);
@@ -373,7 +377,7 @@ public class Surface extends RefCnt {
                 shouldCreateWithMips);
             if (ptr == 0)
                 throw new IllegalArgumentException(String.format("Failed Surface.makeRenderTarget(%s, %b, %s, %d, %s, %s, %b)", context, budgeted, imageInfo, sampleCount, origin, surfaceProps, shouldCreateWithMips));
-            return new Surface(ptr);
+            return new Surface(ptr, context);
         } finally {
             Reference.reachabilityFence(context);
             Reference.reachabilityFence(imageInfo._colorInfo._colorSpace);
@@ -760,6 +764,22 @@ public class Surface extends RefCnt {
     @ApiStatus.Internal
     public Surface(long ptr) {
         super(ptr);
+        _context = null;
+        _renderTarget = null;
+    }
+
+    @ApiStatus.Internal
+    public Surface(long ptr, DirectContext context) {
+        super(ptr);
+        _context = context;
+        _renderTarget = null;
+    }
+
+    @ApiStatus.Internal
+    public Surface(long ptr, DirectContext context, BackendRenderTarget renderTarget) {
+        super(ptr);
+        _context = context;
+        _renderTarget = renderTarget;
     }
 
     public static native long _nMakeRasterDirect(int width, int height, int colorType, int alphaType, long colorSpacePtr, long pixelsPtr, long rowBytes, SurfaceProps surfaceProps);
