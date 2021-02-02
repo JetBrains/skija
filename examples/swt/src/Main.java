@@ -59,7 +59,7 @@ public class Main {
         display.dispose();
     }
 
-protected void release() {
+    protected void release() {
         if (surface != null) {
             surface.close();
             surface = null;

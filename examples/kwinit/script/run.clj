@@ -12,6 +12,18 @@
     #"windows"      :windows
     #"(unix|linux)" :linux))
 
+(defn run! [opts & cmd]
+  (let [cmd' (keep identity cmd)
+        {:keys [dir out err env]
+         :or {dir "", out System/out, err :string, env {}}} opts
+        dir' (.getPath (io/file working-dir dir))
+        env' (merge (into {} (System/getenv)) env)
+        _    (println (str/join " " cmd'))
+        res  (ps/process cmd' {:dir dir', :out out, :err err, :env env'})]
+    (if (identical? :string err)
+      (ps/check res)
+      @res)))
+
 (defn fetch-maven
   ([group name version]
    (fetch-maven group name version {:repo "https://repo1.maven.org/maven2"}))
@@ -37,50 +49,36 @@
      ;     :linux   "skija-linux")
      ;   "0.89.3"
      ;   "https://packages.jetbrains.team/maven/p/skija/maven")
-     (fetch-maven "org.eclipse.platform" 
-       (case os
-         :macos   "org.eclipse.swt.cocoa.macosx.x86_64"
-         :windows "org.eclipse.swt.win32.win32.x86_64"
-         :linux   "org.eclipse.swt.gtk.linux.x86_64")
-       "3.115.100")]
+     (fetch-maven "com.google.code.gson" "gson" "2.8.6")
+    ]
     (map #(.getPath (.getCanonicalFile %)))
     (str/join (System/getProperty "path.separator"))))
 
 (def sources
-  (->> (io/file working-dir "src")
+  (->> (io/file working-dir "src_java")
     (file-seq)
     (filter #(str/ends-with? (.getName %) ".java"))
     (mapv #(.getPath %))))
 
+;; build native
+(run! {} "cargo" "build" "--release" "--lib")
+
 ;; compile
-(.mkdirs (io/file working-dir "target" "classes"))
-(->
-  (ps/process
-    (concat
-      ["javac" 
-       "-encoding" "UTF8"
-       "--release" "11"
-       "-cp" classpath
-       "-d" "target/classes"]
-      sources)
-    {:dir working-dir
-     :out System/out
-     :err :string})
-  (ps/check))
+; (.mkdirs (io/file working-dir "target" "classes"))
+(apply run! {} "javac" "-encoding" "UTF8" "--release" "11" "-cp" classpath "-d" "target/classes" sources)
 
 ;; run
-(->
-  (ps/process
-    (concat
-      ["java" "-cp" (str "target/classes" (System/getProperty "path.separator") classpath)]
-      (when (= :macos os)
-        ["-XstartOnFirstThread"])
-      #_["-Djava.awt.headless=true"
-       "-ea"
-       "-esa"
-       "-Dskija.logLevel=DEBUG"]
-      ["org.jetbrains.skija.examples.swt.Main"])
-    {:dir working-dir
-     :out System/out
-     :err System/out})
-  (deref))
+(run!
+  {:err System/err
+   :env (cond-> {"RUST_BACKTRACE" "1"}
+          (= :windows os) (assoc "KWINIT_ANGLE" "1"))}
+  "java"
+  "-cp" (str "target/classes" (System/getProperty "path.separator") classpath)
+  (when (= :macos os) "-XstartOnFirstThread")
+  "-Djava.awt.headless=true"
+  "-ea"
+  "-esa"
+  "-Dskija.logLevel=DEBUG"
+  "noria.kwinit.impl.Main")
+
+'DONE
