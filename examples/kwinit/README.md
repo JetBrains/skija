@@ -1,4 +1,4 @@
-This demo displays most of the Skia/Skija APIs and is an excellent learning resource.
+Example based on [winit](https://github.com/rust-windowing/winit)/[glutin](https://github.com/rust-windowing/glutin/).
 
 How to run:
 

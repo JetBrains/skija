@@ -12,10 +12,10 @@
 
 (util/set-working-dir! (.getParent (io/file script-dir)))
 
-;; build native
-(util/run! {} "cargo" "build" "--release" "--lib")
-
 ;; compile
+(def classifier
+  (str "natives-" (name util/os)))
+
 (def classpath
   (->>
     [(io/file (util/working-dir) ".." ".." "native" "build")
@@ -29,21 +29,25 @@
      ;   "0.89.3"
      ;   "https://packages.jetbrains.team/maven/p/skija/maven")
      (util/fetch-maven "org.projectlombok" "lombok" "1.18.12")
-     (util/fetch-maven "com.google.code.gson" "gson" "2.8.6")]
+     (util/fetch-maven "com.google.code.gson" "gson" "2.8.6")
+     (util/fetch-maven "org.lwjgl" "lwjgl" "3.2.3")
+     (util/fetch-maven "org.lwjgl" "lwjgl-glfw" "3.2.3")
+     (util/fetch-maven "org.lwjgl" "lwjgl-opengl" "3.2.3")
+     (util/fetch-maven "org.lwjgl" "lwjgl" "3.2.3" {:classifier classifier})
+     (util/fetch-maven "org.lwjgl" "lwjgl-glfw" "3.2.3" {:classifier classifier})
+     (util/fetch-maven "org.lwjgl" "lwjgl-opengl" "3.2.3" {:classifier classifier})]
     (map #(.getPath (.getCanonicalFile %)))
     (str/join util/path-separator)))
 
 (def sources
   (concat
     (util/glob "../scenes/src/**.java")
-    (util/glob "src_java/**.java")))
+    (util/glob "src/**.java")))
 
 (apply util/run! {} "javac" "-encoding" "UTF8" "--release" "11" "-cp" classpath "-d" "target/classes" sources)
 
 ;; run
-(apply util/run!
-  {:env {"RUST_BACKTRACE" "1"
-         "KWINIT_ANGLE"   (when (= :windows util/os) "1")}}
+(apply util/run! {}
   "java"
   "-cp" (str "target/classes" util/path-separator classpath)
   (when (= :macos util/os) "-XstartOnFirstThread")
@@ -51,7 +55,7 @@
   "-ea"
   "-esa"
   "-Dskija.logLevel=DEBUG"
-  "noria.kwinit.impl.Main"
+  "org.jetbrains.skija.examples.lwjgl.Main"
   *command-line-args*)
 
 nil

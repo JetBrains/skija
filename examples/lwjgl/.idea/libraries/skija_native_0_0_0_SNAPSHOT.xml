@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="skija-native-0.0.0-SNAPSHOT">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/skija/skija-native/0.0.0-SNAPSHOT/skija-native-0.0.0-SNAPSHOT.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

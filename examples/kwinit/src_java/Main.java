@@ -3,21 +3,50 @@ package noria.kwinit.impl;
 import com.google.gson.*;
 import java.nio.charset.*;
 import java.nio.file.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.stream.*;
 import org.jetbrains.skija.*;
+import org.jetbrains.skija.examples.scenes.*;
 
 public class Main {
+    public static boolean verbose = false;
+
+    public static void main(String[] args) throws Exception {
+        verbose = Arrays.stream(args).anyMatch("--verbose"::equals);
+        System.load(java.nio.file.Path.of("target/release/libkwinit.dylib").toAbsolutePath().toString());
+        new Main().run();
+    }
+
+    public static void log(Object... msg) {
+        if (verbose)
+            System.out.println(Arrays.stream(msg).map(Object::toString).collect(Collectors.joining(" ")));
+    }
+
     public long window = -1;
     public float scale = 1f;
-    public int width = 800;
-    public int height = 600;
+    public int width = 1280;
+    public int height = 800;
+    public float mouseX, mouseY, screenStartX, screenStartY, outerX, outerY;
+    public boolean leftMouse = false;
+    public boolean shift = false;
+    public boolean ctrl = false;
+    public boolean alt = false;
+    public boolean logo = false;
     public DirectContext context;
     public BackendRenderTarget renderTarget;
     public Surface surface;
     public Canvas canvas;
+    public String os;
 
-    public static void main(String[] args) throws Exception {
-        System.load(java.nio.file.Path.of("target/release/libkwinit.dylib").toAbsolutePath().toString());
-        new Main().run();
+    public Main() {
+        var osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("mac") || osName.contains("darwin"))
+            os = "macOS";
+        else if (os.contains("windows"))
+            os = "Windows";
+        else if (os.contains("nux") || os.contains("nix"))
+            os = "Linux";
     }
 
     public void run() {
@@ -38,37 +67,61 @@ public class Main {
                     event = event.get("event").getAsJsonObject();
                     type = event.get("type").getAsString();
                     if ("CloseRequested".equals(type))
-                        System.exit(0);
+                        onClose();
                     else if ("Resized".equals(type)) {
-                        width = event.get("size").getAsJsonObject().get("width").getAsInt();
-                        height = event.get("size").getAsJsonObject().get("height").getAsInt();
-                        resize();
+                        onResize(event.get("size").getAsJsonObject().get("width").getAsInt(),
+                                 event.get("size").getAsJsonObject().get("height").getAsInt());
+                    } else if ("KeyboardInput".equals(type)) {
+                        event = event.get("input").getAsJsonObject();
+                        if ("Pressed".equals(event.get("state").getAsString())) {
+                            var keyCode = event.get("virtual_key_code").getAsString();
+                            onKeyDown(keyCode);
+                        } else
+                            log("KeyboardInput", event);
+                    } else if ("ModifiersChanged".equals(type)) {
+                        event = event.get("state").getAsJsonObject();
+                        onModifiersChange(event.get("shift").getAsBoolean(),
+                                          event.get("ctrl").getAsBoolean(),
+                                          event.get("alt").getAsBoolean(),
+                                          event.get("logo").getAsBoolean());
+                    } else if ("MouseInput".equals(type)) {
+                        var button = event.get("button").getAsString();
+                        var state = event.get("state").getAsString();
+                        if ("Pressed".equals(state))
+                            onMouseDown(button);
+                        else if ("Released".equals(state))
+                            onMouseUp(button);
+                        else
+                            log("MouseInput", event);
+                    } else if ("CursorMoved".equals(type)) {
+                        var position = event.get("position").getAsJsonObject();
+                        var screenPosition = event.get("screen_relative_position").getAsJsonObject();
+                        onMouseMove(position.get("x").getAsFloat(), position.get("y").getAsFloat(),
+                                    screenPosition.get("x").getAsFloat(), screenPosition.get("y").getAsFloat());
                     } else
-                        System.out.println("WidnowEvent " + event);
+                        log("WidnowEvent", event);
                 } else
-                    System.out.println("Unknown event " + event);
+                    log("Unknown event", event);
             }
         },
         (window) -> {
-            draw();
-            context.flush();
-            ExternalAPI.requestRedraw(window);
+            onDraw();
         });
     }
 
-    public void draw() {
-        canvas.clear(0xFFFFFFFF);
-        canvas.save();
-        canvas.translate(width * scale / 2, height * scale / 2);
-        canvas.rotate(System.currentTimeMillis() % 5000 / 5000f * 360f);
-        canvas.drawRect(Rect.makeLTRB(-100 * scale, -100 * scale, 100 * scale, 100 * scale), new Paint().setColor(0xFFCC3333));
-        canvas.restore();
+    public void onClose() {
+        ExternalAPI.destroyWindow(window);
+        ExternalAPI.stopApplication();
     }
 
-    public void resize() {
-        canvas = null;
-        if (surface != null) { surface.close(); surface = null; }
-        if (renderTarget != null) { renderTarget.close(); renderTarget = null; }
+    public void onResize(int width, int height) {
+        this.width = width;
+        this.height = height;
+
+        if (surface != null)
+            surface.close();
+        if (renderTarget != null)
+            renderTarget.close();
 
         renderTarget = BackendRenderTarget.makeGL(
                          (int) (width * scale),
@@ -88,18 +141,82 @@ public class Main {
         canvas = surface.getCanvas();
     }
 
+    public void onModifiersChange(boolean shift, boolean ctrl, boolean alt, boolean logo) {
+         this.shift = shift;
+         this.ctrl = ctrl;
+         this.alt = alt;
+         this.logo = logo;
+    }
+
+    public void onKeyDown(String keyCode) {
+        if ("Left".equals(keyCode))
+            Scenes.prevScene();
+        else if ("Right".equals(keyCode))
+            Scenes.nextScene();
+        else if ("Up".equals(keyCode))
+            Scenes.currentScene().changeVariant(-1);
+        else if ("Down".equals(keyCode))
+            Scenes.currentScene().changeVariant(1);
+        else if ("S".equals(keyCode)) {
+            Scenes.stats = !Scenes.stats;
+            Stats.enabled = Scenes.stats;
+        } else if ("macOS".equals(os) && logo && "Q".equals(keyCode))
+            onClose();
+        else if (("Windows".equals(os) || "Linux".equals(os)) && ((alt && "F4".equals(keyCode)) || (ctrl && "W".equals(keyCode))))
+            onClose();
+        else
+            log("KeyDown", keyCode);
+    }
+
+    public void onMouseMove(float x, float y, float screenX, float screenY) {
+        mouseX = x;
+        mouseY = y;
+        if (leftMouse) {
+            outerX = screenX - screenStartX;
+            outerY = screenY - screenStartY;
+            ExternalAPI.fireUserEvent(2);
+        }
+    }
+
+    public void onMouseDown(String button) {
+        leftMouse = true;
+        screenStartX = mouseX;
+        screenStartY = mouseY;
+    }
+
+    public void onMouseUp(String button) {
+        leftMouse = false;
+        screenStartX = 0f;
+        screenStartY = 0f;
+    }
+
+    public void onDraw() {
+        Scenes.draw(canvas, width, height, scale, (int) mouseX, (int) mouseY);
+        context.flush();
+        ExternalAPI.fireUserEvent(1);
+    }
+
     public void handleUserEvent(int cookie) {
         switch (cookie) {
             case 0:
                 window = ExternalAPI.createWindow("{\"inner_size\":{\"width\": " + width + ".0, \"height\": " + height + ".0},"
                                                   + "\"position\":{\"x\":100.0,\"y\":100.0},"
                                                   + "\"title\":\"Skija KWinit Example\"}");
+                Stats.enabled = true;
                 context = DirectContext.makeGL();
                 scale = (float) ExternalAPI.getScaleFactor(window);
-                resize();
+                mouseX = width / 2f;
+                mouseY = height / 2f;
+                onResize(width, height);
+                break;
+            case 1:
+                ExternalAPI.requestRedraw(window);
+                break;
+            case 2:
+                ExternalAPI.setOuterPosition(window, outerX, outerY);
                 break;
             default:
-                System.out.println("Unknown user event " + cookie);
+                log("Unknown user event", cookie);
         }
     }
 }

@@ -1055,6 +1055,10 @@ public class Canvas extends Managed {
         return concat(Matrix33.makeScale(sx, sy));
     }
 
+    /**
+     * @param deg  angle in degrees
+     * @return     this
+     */
     @NotNull @Contract("_ -> this")
     public Canvas rotate(float deg) {
         return concat(Matrix33.makeRotate(deg));
