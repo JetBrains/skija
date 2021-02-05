@@ -3,17 +3,14 @@ on:
     branches:
       - master
     paths-ignore:
-      - '.idea/**'
       - 'docs/**'
       - 'examples/**'
       - 'extras/**'
-      - 'script/**'
       - .dockerignore
       - .gitignore
       - Dockerfile
       - LICENSE
       - README.md
-      - skija.iml
 
 env:
   babashka-release: '0.2.8'

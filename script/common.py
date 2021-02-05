@@ -10,7 +10,8 @@ skija_native_artifact_id = 'skija-' + ('macos-' + machine if system == 'macos' e
 def fetch(url, file):
   if not os.path.exists(file):
     print('Downloading', url)
-    os.makedirs(os.path.dirname(file), exist_ok = True)
+    if os.path.dirname(file):
+      os.makedirs(os.path.dirname(file), exist_ok = True)
     # if url.startswith('https://packages.jetbrains.team/'):
     #   subprocess.check_call(["curl", "--fail", "--location", '--show-error', url, '--output', file])
     # else:
