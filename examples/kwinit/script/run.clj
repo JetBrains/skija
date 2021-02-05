@@ -21,13 +21,7 @@
     [(io/file (util/working-dir) ".." ".." "native" "build")
      (io/file (util/working-dir) ".." ".." "shared" "target" "classes")
      ; (fetch-maven "org.jetbrains.skija" "skija-shared" "0.89.3" "https://packages.jetbrains.team/maven/p/skija/maven")
-     ; (fetch-maven "org.jetbrains.skija"
-     ;   (case os
-     ;     :macos   "skija-macos"
-     ;     :windows "skija-windows"
-     ;     :linux   "skija-linux")
-     ;   "0.89.3"
-     ;   "https://packages.jetbrains.team/maven/p/skija/maven")
+     ; (fetch-maven "org.jetbrains.skija" (str "skija-" (name util/platform)) "0.89.3" "https://packages.jetbrains.team/maven/p/skija/maven")
      (util/fetch-maven "org.projectlombok" "lombok" "1.18.12")
      (util/fetch-maven "com.google.code.gson" "gson" "2.8.6")]
     (map #(.getPath (.getCanonicalFile %)))
@@ -43,10 +37,10 @@
 ;; run
 (apply util/run!
   {:env {"RUST_BACKTRACE" "1"
-         "KWINIT_ANGLE"   (when (= :windows util/os) "1")}}
+         "KWINIT_ANGLE"   (when (= "windows" util/platform) "1")}}
   "java"
   "-cp" (str "target/classes" util/path-separator classpath)
-  (when (= :macos util/os) "-XstartOnFirstThread")
+  (when (= "macos" util/platform) "-XstartOnFirstThread")
   "-Djava.awt.headless=true"
   "-ea"
   "-esa"

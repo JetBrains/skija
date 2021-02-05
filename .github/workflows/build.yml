@@ -15,6 +15,9 @@ on:
       - README.md
       - skija.iml
 
+env:
+  babashka-release: '0.2.8'
+
 jobs:
   shared:
     runs-on: ubuntu-latest
@@ -44,7 +47,10 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.0.8'
-      - run: ./native/script/build.sh
+      - run: |
+          curl --fail --location --silent --show-error https://github.com/babashka/babashka/releases/download/v${{ env.babashka-release }}/babashka-${{ env.babashka-release }}-macos-amd64.zip --output babashka-${{ env.babashka-release }}-macos-amd64.zip
+          unzip -qq babashka-${{ env.babashka-release }}-macos-amd64.zip
+          ./bb native/script/build.clj
       - uses: actions/upload-artifact@v2
         with:
           name: skija-macos-x64
@@ -65,7 +71,10 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - run: ./native/script/build.sh
+      - run: |
+          curl --fail --location --silent --show-error https://github.com/babashka/babashka/releases/download/v${{ env.babashka-release }}/babashka-${{ env.babashka-release }}-linux-static-amd64.zip --output babashka-${{ env.babashka-release }}-linux-static-amd64.zip
+          unzip -qq babashka-${{ env.babashka-release }}-linux-static-amd64.zip
+          ./bb native/script/build.clj
       - uses: actions/upload-artifact@v2
         with:
           name: skija-linux
@@ -88,7 +97,10 @@ jobs:
         with:
           java-version: '11.0.8'
       - shell: bash
-        run: ./native/script/build.sh
+        run: |
+          curl --fail --location --silent --show-error https://github.com/babashka/babashka/releases/download/v${{ env.babashka-release }}/babashka-${{ env.babashka-release }}-windows-amd64.zip --output babashka-${{ env.babashka-release }}-windows-amd64.zip
+          unzip -qq babashka-${{ env.babashka-release }}-windows-amd64.zip
+          ./bb.exe native/script/build.clj
       - uses: actions/upload-artifact@v2
         with:
           name: skija-windows

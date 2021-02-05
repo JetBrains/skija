@@ -14,22 +14,16 @@
 
 ;; compile
 (def classifier
-  (str "natives-" (name util/os)))
+  (str "natives-" (name util/platform)))
 
 (def classpath
   (->>
     [(io/file (util/working-dir) ".." ".." "native" "build")
      (io/file (util/working-dir) ".." ".." "shared" "target" "classes")
      ; (fetch-maven "org.jetbrains.skija" "skija-shared" "0.89.3" "https://packages.jetbrains.team/maven/p/skija/maven")
-     ; (fetch-maven "org.jetbrains.skija"
-     ;   (case os
-     ;     :macos   "skija-macos"
-     ;     :windows "skija-windows"
-     ;     :linux   "skija-linux")
-     ;   "0.89.3"
-     ;   "https://packages.jetbrains.team/maven/p/skija/maven")
+     ; (fetch-maven "org.jetbrains.skija" (str "skija-" (name util/platform)) "0.89.3" "https://packages.jetbrains.team/maven/p/skija/maven")
      (util/fetch-maven "org.eclipse.platform" 
-       (case util/os
+       (case util/platform
          :macos   "org.eclipse.swt.cocoa.macosx.x86_64"
          :windows "org.eclipse.swt.win32.win32.x86_64"
          :linux   "org.eclipse.swt.gtk.linux.x86_64")
@@ -46,7 +40,7 @@
 (apply util/run! {}
   "java"
   "-cp" (str "target/classes" util/path-separator classpath)
-  (when (= :macos util/os) "-XstartOnFirstThread")
+  (when (= :macos util/platform) "-XstartOnFirstThread")
   "-Djava.awt.headless=true"
   "-ea"
   "-esa"
