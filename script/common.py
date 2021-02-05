@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-import argparse, os, pathlib, platform, re, shutil, subprocess, sys, urllib.request, zipfile
+import argparse, os, platform, re, shutil, subprocess, sys, urllib.request, zipfile
 
 system = {'Darwin': 'macos', 'Linux': 'linux', 'Windows': 'windows'}[platform.system()]
 machine = {'AMD64': 'x64', 'x86_64': 'x64', 'arm64': 'arm64'}[platform.machine()]
@@ -20,7 +20,7 @@ def fetch(url, file):
 
 def fetch_maven(group, name, version, classifier=None, repo='https://repo1.maven.org/maven2'):
   path = '/'.join([group.replace('.', '/'), name, version, name + '-' + version + ('-' + classifier if classifier else '') + '.jar'])
-  file = os.path.join(pathlib.Path.home(), '.m2', 'repository', path)
+  file = os.path.join(os.path.expanduser('~'), '.m2', 'repository', path)
   fetch(repo + '/' + path, file)
   return file
 

@@ -95,7 +95,8 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.0.8'
-      - run: python3 native/script/build.py
+      - shell: bash
+        run: python3 native/script/build.py
       - uses: actions/upload-artifact@v2
         with:
           name: skija-windows
@@ -107,6 +108,7 @@ jobs:
           name: skija-shared
       - shell: bash
         run: python3 shared/script/test.py --skija-shared skija-shared-$(python3 script/revision.py).jar
-      - run: python3 native/script/deploy.py
+      - shell: bash
+        run: python3 native/script/deploy.py
         env:
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
