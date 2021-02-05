@@ -72,8 +72,8 @@ jobs:
         with:
           fetch-depth: 0
       - run: |
-          curl --fail --location --silent --show-error https://github.com/babashka/babashka/releases/download/v${{ env.babashka-release }}/babashka-${{ env.babashka-release }}-linux-static-amd64.zip --output babashka-${{ env.babashka-release }}-linux-static-amd64.zip
-          unzip -qq babashka-${{ env.babashka-release }}-linux-static-amd64.zip
+          curl --fail --location --silent --show-error https://github.com/babashka/babashka/releases/download/v${{ env.babashka-release }}/babashka-${{ env.babashka-release }}-linux-amd64.zip --output babashka-${{ env.babashka-release }}-linux-amd64.zip
+          unzip -qq babashka-${{ env.babashka-release }}-linux-amd64.zip
           ./bb native/script/build.clj
       - uses: actions/upload-artifact@v2
         with:
