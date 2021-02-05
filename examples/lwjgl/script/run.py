@@ -36,7 +36,7 @@ def main():
 
   os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
 
-  sources = glob.glob('src/**/*.java', recursive=True) + glob.glob('../scenes/src/**/*.java', recursive=True)
+  sources = common.glob('src_java', '*.java') + common.glob('../scenes/src', '*.java')
   common.javac(classpath, sources, 'target/classes')
 
   # Java

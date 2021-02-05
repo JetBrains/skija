@@ -33,7 +33,7 @@ def main(args):
 
   os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
 
-  sources = glob.glob('src/**/*.java', recursive=True)
+  sources = common.glob('src', '*.java')
   common.javac(classpath, sources, 'target/classes')
 
   # Java

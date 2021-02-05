@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-import argparse, os, platform, re, shutil, subprocess, sys, urllib.request, zipfile
+import argparse, os, pathlib, platform, re, shutil, subprocess, sys, urllib.request, zipfile
 
 system = {'Darwin': 'macos', 'Linux': 'linux', 'Windows': 'windows'}[platform.system()]
 machine = {'AMD64': 'x64', 'x86_64': 'x64', 'arm64': 'arm64'}[platform.machine()]
@@ -52,3 +52,6 @@ def revision():
   if match:
     return match.group(1) + ".0"
   raise Exception("Can’t parse revision: " + desc)
+
+def glob(dir, pattern):
+  return [str(x) for x in pathlib.Path(dir).rglob(pattern)]

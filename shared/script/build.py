@@ -10,7 +10,7 @@ def main():
     common.fetch_maven('org.projectlombok', 'lombok', '1.18.16'),
     common.fetch_maven('org.jetbrains', 'annotations', '19.0.0')
   ]
-  sources = glob.glob('src/main/java/**/*.java', recursive=True)
+  sources = common.glob('src/main/java', '*.java')
   print('Compiling', 'shared/src/main/java/**/*.java')
   common.javac(classpath, sources, 'target/classes')
   common.popd()

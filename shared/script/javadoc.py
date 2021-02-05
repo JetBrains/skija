@@ -21,7 +21,7 @@ def main():
     '-d', 'target/generated-sources/delombok'])
 
   print('Generating', '../docs/apidocs/**')
-  sources = glob.glob('target/generated-sources/delombok/**/*.java', recursive = True)
+  sources = common.glob('target/generated-sources/delombok', '*.java')
   subprocess.check_call([
     'javadoc',
     '--class-path', common.classpath_separator.join(classpath),

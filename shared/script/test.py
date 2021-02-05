@@ -28,7 +28,7 @@ def main():
     skija_shared,
     skija_native,
   ]
-  sources = glob.glob('src/test/java/**/*.java', recursive=True)
+  sources = common.glob('src/test/java', '*.java')
   common.javac(classpath, sources, 'target/test-classes')
 
   subprocess.check_call([
