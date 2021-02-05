@@ -1,7 +1,13 @@
-This demo displays most of the Skia/Skija APIs and is an excellent learning resource.
+This demo displays most of the Skia/Skija APIs rendered via LWJGL and is an excellent learning resource.
 
-How to run:
+Run with version from Maven:
 
-1. Build Skija with `../../script/build.sh`
-2. Download and install [Babashka](https://github.com/babashka/babashka)
-3. Run `bb script/run.clj`
+```
+python3 script/run.py --skija-version 0.89.1
+```
+
+Build Skija locally and run with local version:
+
+```
+python3 script/run.py
+```

@@ -197,28 +197,14 @@ Finally, [LWJGL demo app](/examples/lwjgl) has examples of most of the APIs that
 
 ## Building Skija from scratch
 
-Prerequisites: Git, CMake, Ninja, JDK 11+, set $JAVA_HOME, Maven.
+Prerequisites: Git, CMake, Ninja, JDK 11+, $JAVA_HOME, Python 3.
 
 Checkout:
 
 ```sh
 git clone https://github.com/JetBrains/skija.git
 cd skija
-./script/install.sh
-```
-
-This will install local versions of these Skija artifacts:
-
-```
-org.jetbrains.skija:skija-shared:0.0.0-SNAPSHOT
-org.jetbrains.skija:skija-native:0.0.0-SNAPSHOT
-```
-
-Optionally, you can specify different Skia location:
-
-```
-export SKIA_DIR=~/Downloads/Skia-m87-4893488-macos-Release-x64
-./script/install.sh
+./script/build.py
 ```
 
 For building Skia itself, see https://github.com/JetBrains/skia-build/

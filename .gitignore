@@ -6,3 +6,4 @@ build
 *.log
 *.zip
 examples/bitmap/output.png
+__pycache__

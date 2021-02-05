@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.*;
 import org.jetbrains.skija.*;
+import org.jetbrains.skija.impl.*;
 import org.jetbrains.skija.examples.scenes.*;
 
 public class Main {
@@ -160,6 +161,9 @@ public class Main {
         else if ("S".equals(keyCode)) {
             Scenes.stats = !Scenes.stats;
             Stats.enabled = Scenes.stats;
+        } else if ("G".equals(keyCode)) {
+            System.out.println("Before GC " + Stats.allocated);
+            System.gc();
         } else if ("macOS".equals(os) && logo && "Q".equals(keyCode))
             onClose();
         else if (("Windows".equals(os) || "Linux".equals(os)) && ((alt && "F4".equals(keyCode)) || (ctrl && "W".equals(keyCode))))

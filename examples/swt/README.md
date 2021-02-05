@@ -1,7 +1,13 @@
 A simple SWT example, inspired by [spket/skiawt](https://github.com/spket/skiawt).
 
-How to run:
+Run with version from Maven:
 
-1. Build Skija with `../../script/build.sh`
-2. Download and install [Babashka](https://github.com/babashka/babashka)
-3. Run `bb script/run.clj`
+```
+python3 script/run.py --skija-version 0.89.1
+```
+
+Build Skija locally and run with local version:
+
+```
+python3 script/run.py
+```
