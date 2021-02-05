@@ -17,7 +17,7 @@ def main():
     f.write(pom.replace('0.0.0-SNAPSHOT', rev))
 
   subprocess.check_call([
-    'mvn',
+    'mvn.cmd' if common.system == 'windows' else 'mvn',
     '--batch-mode',
     '-DskipTests',
     'lombok:delombok',
@@ -27,7 +27,7 @@ def main():
   ])
 
   subprocess.check_call([
-    'mvn',
+    'mvn.cmd' if common.system == 'windows' else 'mvn',
     '--batch-mode',
     '--settings', 'settings.xml',
     '-DskipTests',
