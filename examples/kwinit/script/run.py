@@ -9,7 +9,7 @@ def main():
   parser = argparse.ArgumentParser()
   parser.add_argument('--skija-version')
   parser.add_argument('--verbose', action='store_true')
-  (args, _) = parser.parse_known_args()
+  args = parser.parse_args()
 
   # Javac
   classpath = [
@@ -23,7 +23,7 @@ def main():
       common.fetch_maven('org.jetbrains.skija', common.skija_native_artifact_id, args.skija_version, repo='https://packages.jetbrains.team/maven/p/skija/maven'),
     ]
   else:
-    native_build.main()
+    # native_build.main()
     classpath += [
       os.path.join('..', '..', 'native', 'build'),
       os.path.join('..', '..', 'shared', 'target', 'classes')

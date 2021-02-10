@@ -15,7 +15,6 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         verbose = Arrays.stream(args).anyMatch("--verbose"::equals);
-        System.load(java.nio.file.Path.of("target/release/libkwinit.dylib").toAbsolutePath().toString());
         new Main().run();
     }
 
@@ -42,12 +41,20 @@ public class Main {
 
     public Main() {
         var osName = System.getProperty("os.name").toLowerCase();
-        if (osName.contains("mac") || osName.contains("darwin"))
+        String library;
+        if (osName.contains("mac") || osName.contains("darwin")) {
             os = "macOS";
-        else if (os.contains("windows"))
+            library = "target/release/libkwinit.dylib";
+        } else if (osName.contains("windows")) {
             os = "Windows";
-        else if (os.contains("nux") || os.contains("nix"))
+            library = "target\\release\\kwinit.dll";
+        } else if (osName.contains("nux") || osName.contains("nix")) {
             os = "Linux";
+            library = "target/release/libkwinit.so";
+        } else
+            throw new RuntimeException("Unknown operation system");
+
+        System.load(java.nio.file.Path.of(library).toAbsolutePath().toString());
     }
 
     public void run() {
@@ -96,9 +103,17 @@ public class Main {
                             log("MouseInput", event);
                     } else if ("CursorMoved".equals(type)) {
                         var position = event.get("position").getAsJsonObject();
-                        var screenPosition = event.get("screen_relative_position").getAsJsonObject();
-                        onMouseMove(position.get("x").getAsFloat(), position.get("y").getAsFloat(),
-                                    screenPosition.get("x").getAsFloat(), screenPosition.get("y").getAsFloat());
+                        var x = position.get("x").getAsFloat();
+                        var y = position.get("y").getAsFloat();
+                        float relx = x, rely = y;
+                        if (event.has("screen_relative_position") && event.get("screen_relative_position").isJsonObject()) {
+                            var screenPosition = event.get("screen_relative_position").getAsJsonObject();
+                            if (screenPosition.has("x"))
+                                relx = screenPosition.get("x").getAsFloat();
+                            if (screenPosition.has("y"))
+                                rely = screenPosition.get("y").getAsFloat();
+                        }
+                        onMouseMove(x, y, relx, rely);
                     } else
                         log("WidnowEvent", event);
                 } else

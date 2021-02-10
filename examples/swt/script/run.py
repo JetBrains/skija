@@ -3,12 +3,11 @@
 import argparse, glob, os, platform, shutil, subprocess, sys, urllib.request, zipfile
 sys.path.append(os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 import script.common as common 
-import native.script.build as native_build
 
-def main(args):
+def main():
   parser = argparse.ArgumentParser()
   parser.add_argument('--skija-version')
-  (args, _) = parser.parse_known_args()
+  args = parser.parse_args()
 
   # Javac
   swt_artifact = {'macos': 'org.eclipse.swt.cocoa.macosx.x86_64',
@@ -25,7 +24,6 @@ def main(args):
       common.fetch_maven('org.jetbrains.skija', common.skija_native_artifact_id, args.skija_version, repo='https://packages.jetbrains.team/maven/p/skija/maven'),
     ]
   else:
-    native_build.main()
     classpath += [
       os.path.join('..', '..', 'native', 'build'),
       os.path.join('..', '..', 'shared', 'target', 'classes')
