@@ -8,21 +8,16 @@ classpath_separator = ';' if system == 'windows' else ':'
 skija_native_artifact_id = 'skija-' + ('macos-' + machine if system == 'macos' else system)
 verbose = '--verbose' in sys.argv
 
-def run(args, **kwargs):
+def check_call(args, **kwargs):
   t0 = time.time()
-  res = subprocess.run(args, **kwargs)
+  res = subprocess.check_call(args, **kwargs)
   if verbose:
     print('[', round((time.time() - t0) * 1000), 'ms', ']', ' '.join(args))
   return res
 
-def check_call(args, **kwargs):
-  kwargs['check'] = True
-  run(args, **kwargs)
-
 def check_output(args, **kwargs):
-  kwargs['check'] = True
   kwargs['stdout'] = subprocess.PIPE
-  return run(args, **kwargs).stdout
+  return check_call(args, **kwargs).stdout
 
 def fetch(url, file):
   if not os.path.exists(file):

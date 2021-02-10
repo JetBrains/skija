@@ -43,7 +43,7 @@ def main():
   if 'windows' == common.system:
     env['KWINIT_ANGLE'] = '1'
 
-  common.run([
+  common.check_call([
     'java',
     '--class-path', common.classpath_separator.join(['target/classes'] + classpath)]
     + (['-XstartOnFirstThread'] if 'macos' == common.system else [])
@@ -52,7 +52,6 @@ def main():
     '-enablesystemassertions',
     '-Dskija.logLevel=DEBUG',
     'noria.kwinit.impl.Main'] + (["--verbose"] if args.verbose else []),
-    check=True,
     env=env)
 
   return 0
