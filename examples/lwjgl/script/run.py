@@ -7,7 +7,7 @@ import script.common as common
 def main():
   parser = argparse.ArgumentParser()
   parser.add_argument('--skija-version')
-  args = parser.parse_args()
+  (args, _) = parser.parse_known_args()
 
   # Javac
   lwjgl_classifier = "natives-" + common.system
@@ -38,16 +38,15 @@ def main():
   common.javac(classpath, sources, 'target/classes')
 
   # Java
-  subprocess.run([
+  common.check_call([
     'java',
     '--class-path', common.classpath_separator.join(['target/classes'] + classpath)]
     + (['-XstartOnFirstThread'] if 'macos' == common.system else [])
     + ['-Djava.awt.headless=true',
-    '-ea',
-    '-esa',
+    '-enableassertions',
+    '-enablesystemassertions',
     '-Dskija.logLevel=DEBUG',
-    'org.jetbrains.skija.examples.lwjgl.Main'],
-    check=True)
+    'org.jetbrains.skija.examples.lwjgl.Main'])
 
   return 0
 

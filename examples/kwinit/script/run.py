@@ -9,7 +9,7 @@ def main():
   parser = argparse.ArgumentParser()
   parser.add_argument('--skija-version')
   parser.add_argument('--verbose', action='store_true')
-  args = parser.parse_args()
+  (args, _) = parser.parse_known_args()
 
   # Javac
   classpath = [
@@ -35,7 +35,7 @@ def main():
   common.javac(classpath, sources, 'target/classes')
 
   # Rust
-  subprocess.check_call(['cargo', 'build', '--release', '--lib'])
+  common.check_call(['cargo', 'build', '--release', '--lib'])
 
   # Java
   env = os.environ.copy()
@@ -43,13 +43,13 @@ def main():
   if 'windows' == common.system:
     env['KWINIT_ANGLE'] = '1'
 
-  subprocess.run([
+  common.run([
     'java',
     '--class-path', common.classpath_separator.join(['target/classes'] + classpath)]
     + (['-XstartOnFirstThread'] if 'macos' == common.system else [])
     + ['-Djava.awt.headless=true',
-    '-ea',
-    '-esa',
+    '-enableassertions',
+    '-enablesystemassertions',
     '-Dskija.logLevel=DEBUG',
     'noria.kwinit.impl.Main'] + (["--verbose"] if args.verbose else []),
     check=True,

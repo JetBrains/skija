@@ -16,7 +16,7 @@ def main():
   with open('pom.xml', 'w') as f:
     f.write(pom.replace('0.0.0-SNAPSHOT', rev))
 
-  subprocess.check_call([
+  common.check_call([
     'mvn.cmd' if common.system == 'windows' else 'mvn',
     '--batch-mode',
     '-DskipTests',
@@ -26,7 +26,7 @@ def main():
     'source:jar'
   ])
 
-  subprocess.check_call([
+  common.check_call([
     'mvn.cmd' if common.system == 'windows' else 'mvn',
     '--batch-mode',
     '--settings', 'settings.xml',

@@ -1,11 +1,28 @@
 #! /usr/bin/env python3
 
-import argparse, os, pathlib, platform, re, shutil, subprocess, sys, urllib.request, zipfile
+import argparse, os, pathlib, platform, re, shutil, subprocess, sys, time, urllib.request, zipfile
 
 system = {'Darwin': 'macos', 'Linux': 'linux', 'Windows': 'windows'}[platform.system()]
 machine = {'AMD64': 'x64', 'x86_64': 'x64', 'arm64': 'arm64'}[platform.machine()]
 classpath_separator = ';' if system == 'windows' else ':'
 skija_native_artifact_id = 'skija-' + ('macos-' + machine if system == 'macos' else system)
+verbose = '--verbose' in sys.argv
+
+def run(args, **kwargs):
+  t0 = time.time()
+  res = subprocess.run(args, **kwargs)
+  if verbose:
+    print('[', round((time.time() - t0) * 1000), 'ms', ']', ' '.join(args))
+  return res
+
+def check_call(args, **kwargs):
+  kwargs['check'] = True
+  run(args, **kwargs)
+
+def check_output(args, **kwargs):
+  kwargs['check'] = True
+  kwargs['stdout'] = subprocess.PIPE
+  return run(args, **kwargs).stdout
 
 def fetch(url, file):
   if not os.path.exists(file):
@@ -13,7 +30,7 @@ def fetch(url, file):
     if os.path.dirname(file):
       os.makedirs(os.path.dirname(file), exist_ok = True)
     # if url.startswith('https://packages.jetbrains.team/'):
-    #   subprocess.check_call(["curl", "--fail", "--location", '--show-error', url, '--output', file])
+    #   check_call(["curl", "--fail", "--location", '--show-error', url, '--output', file])
     # else:
     with open(file, 'wb') as f:
       f.write(urllib.request.urlopen(url).read())
@@ -25,14 +42,19 @@ def fetch_maven(group, name, version, classifier=None, repo='https://repo1.maven
   return file
 
 def javac(classpath, sources, target):
-  subprocess.check_call([
-    'javac',
-    '-encoding', 'UTF8',
-    '--release', '11',
-    # '-Xlint:deprecation',
-    # '-Xlint:unchecked',
-    '--class-path', classpath_separator.join(classpath),
-    '-d', target] + sources)
+  classes = {path.stem: path.stat().st_mtime for path in pathlib.Path(target).rglob('*.class') if '$' not in path.stem}
+  newer = lambda path: path.stem not in classes or path.stat().st_mtime > classes.get(path.stem)
+  new_sources = [path for path in sources if newer(pathlib.Path(path))]
+  if new_sources:
+    print('Compiling', len(new_sources), 'java files to', target)
+    check_call([
+      'javac',
+      '-encoding', 'UTF8',
+      '--release', '11',
+      # '-Xlint:deprecation',
+      # '-Xlint:unchecked',
+      '--class-path', classpath_separator.join(classpath + [target]),
+      '-d', target] + new_sources)
 
 dir_stack = []
 
@@ -44,7 +66,7 @@ def popd():
   os.chdir(dir_stack.pop())
 
 def revision():
-  desc = subprocess.check_output(["git", "describe", "--tags", "--match", "*.*.0"], cwd = os.path.dirname(__file__)).decode("utf-8") 
+  desc = check_output(["git", "describe", "--tags", "--match", "*.*.0"], cwd = os.path.dirname(__file__)).decode("utf-8") 
   match = re.match("([0-9]+.[0-9]+).0-([0-9]+)-[a-z0-9]+", desc)
   if match:
     return match.group(1) + "." + match.group(2)

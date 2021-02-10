@@ -32,7 +32,7 @@ def main():
 
   # CMake
   os.makedirs("build", exist_ok = True)
-  subprocess.check_call([
+  common.check_call([
     "cmake",
     "-G", "Ninja",
     "-DCMAKE_BUILD_TYPE=" + build_type,
@@ -42,7 +42,7 @@ def main():
     cwd="build")
 
   # Ninja
-  subprocess.check_call(["ninja"], cwd="build")
+  common.check_call(["ninja"], cwd="build")
 
   # icudtl
   icudtl_src = skia_dir + "/out/" + build_type + "-" + common.machine + "/icudtl.dat"

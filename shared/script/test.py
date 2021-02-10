@@ -31,7 +31,7 @@ def main():
   sources = common.glob('src/test/java', '*.java')
   common.javac(classpath, sources, 'target/test-classes')
 
-  subprocess.check_call([
+  common.check_call([
     'java',
     '--class-path', common.classpath_separator.join(classpath + ['target/test-classes']),
     '-ea',

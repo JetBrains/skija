@@ -13,7 +13,7 @@ def main():
   ]
 
   print('Generating', 'target/generated-sources/delombok/**.java')
-  subprocess.check_call(['java',
+  common.check_call(['java',
     '--class-path', common.classpath_separator.join(classpath),
     'lombok.launch.Main',
     'delombok',
@@ -22,7 +22,7 @@ def main():
 
   print('Generating', '../docs/apidocs/**')
   sources = common.glob('target/generated-sources/delombok', '*.java')
-  subprocess.check_call([
+  common.check_call([
     'javadoc',
     '--class-path', common.classpath_separator.join(classpath),
     '-d', '../docs/apidocs',

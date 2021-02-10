@@ -7,8 +7,8 @@ import org.jetbrains.skija.impl.*;
 public class Image extends RefCnt {
     static { Library.staticLoad(); }
     
-    public int _width = -1;
-    public int _height = -1;
+    @ApiStatus.Internal public int _width = -1;
+    @ApiStatus.Internal public int _height = -1;
 
     public static Image makeFromEncoded(byte[] bytes) {
         Stats.onNativeCall();
@@ -85,12 +85,67 @@ public class Image extends RefCnt {
         }
     }
 
+    @NotNull
+    public Shader makeShader() {
+        return makeShader(FilterTileMode.CLAMP, FilterTileMode.CLAMP, SamplingMode.DEFAULT, null);
+    }
+
+    @NotNull
+    public Shader makeShader(@Nullable Matrix33 localMatrix) {
+        return makeShader(FilterTileMode.CLAMP, FilterTileMode.CLAMP, SamplingMode.DEFAULT, localMatrix);
+    }
+
+    @NotNull
+    public Shader makeShader(@NotNull FilterTileMode tm) {
+        return makeShader(tm, tm, SamplingMode.DEFAULT, null);
+    }
+
+    @NotNull
+    public Shader makeShader(@NotNull FilterTileMode tmx, @NotNull FilterTileMode tmy) {
+        return makeShader(tmx, tmy, SamplingMode.DEFAULT, null);
+    }
+
+    @NotNull
+    public Shader makeShader(@NotNull FilterTileMode tmx,
+                             @NotNull FilterTileMode tmy,
+                             @Nullable Matrix33 localMatrix) {
+        return makeShader(tmx, tmy, SamplingMode.DEFAULT, localMatrix);
+    }
+
+    @NotNull
+    public Shader makeShader(@NotNull FilterTileMode tmx,
+                             @NotNull FilterTileMode tmy,
+                             @NotNull SamplingMode sampling,
+                             @Nullable Matrix33 localMatrix) {
+        try {
+            assert tmx != null : "Can’t Bitmap.makeShader with tmx == null";
+            assert tmy != null : "Can’t Bitmap.makeShader with tmy == null";
+            assert sampling != null : "Can’t Bitmap.makeShader with sampling == null";
+            Stats.onNativeCall();
+            long ptr;
+            if (sampling instanceof SamplingMode.FilterMipmap) {
+                var s = (SamplingMode.FilterMipmap) sampling;
+                ptr = _nMakeShader(_ptr, tmx.ordinal(), tmy.ordinal(), s._filterMode.ordinal(), s._mipmapMode.ordinal(), localMatrix == null ? null : localMatrix._mat);
+            } else if (sampling instanceof SamplingMode.CubicResampler) {
+                var s = (SamplingMode.CubicResampler) sampling;
+                ptr = _nMakeShaderCubic(_ptr, tmx.ordinal(), tmy.ordinal(), s._B, s._C, localMatrix == null ? null : localMatrix._mat);
+            } else {
+                throw new IllegalArgumentException("Unknown sampling class: " + sampling);
+            }
+            return new Shader(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
+    }
+
     @ApiStatus.Internal
     public Image(long ptr) {
         super(ptr);
     }
 
-    public static native long _nMakeFromEncoded(byte[] bytes);
-    public static native long _nGetDimensions(long ptr);
-    public static native long _nEncodeToData(long ptr, int format, int quality);
+    @ApiStatus.Internal public static native long _nMakeFromEncoded(byte[] bytes);
+    @ApiStatus.Internal public static native long _nGetDimensions(long ptr);
+    @ApiStatus.Internal public static native long _nEncodeToData(long ptr, int format, int quality);
+    @ApiStatus.Internal public static native long    _nMakeShader(long ptr, int tmx, int tmy, int filterMode, int mipmapMode, float[] localMatrix);
+    @ApiStatus.Internal public static native long    _nMakeShaderCubic(long ptr, int tmx, int tmy, float B, float C, float[] localMatrix);
 }
