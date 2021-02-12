@@ -132,6 +132,33 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_TextLine__1nGetOffset
     return instance->fRuns.back().fEnd16;
 }
 
+extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_TextLine__1nGetLeftOffsetAtCoord
+  (JNIEnv* env, jclass jclass, jlong ptr, jfloat x) {
+    TextLine* instance = reinterpret_cast<TextLine*>(static_cast<uintptr_t>(ptr));
+
+    if (instance->fRuns.empty())
+        return 0;
+
+    for (auto& run: instance->fRuns) {
+        const SkPoint* pos = run.fPos;
+        SkScalar glyphLeft = pos[0].fX;
+        uint32_t idx = 0;
+        for (; idx < run.fGlyphCount; ++idx) {
+            SkScalar glyphRight = idx < run.fGlyphCount - 1 ? pos[idx + 1].fX : run.fPosition + run.fWidth;
+
+            if (SkScalarNearlyEqual(glyphRight, glyphLeft))
+                continue;
+
+            if (x < glyphRight)
+                return run.fClusters[idx];
+
+            glyphLeft = glyphRight;
+        }
+    }
+
+    return instance->fRuns.back().fEnd16;
+}
+
 extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_TextLine__1nGetCoordAtOffset
   (JNIEnv* env, jclass jclass, jlong ptr, jint offset16) {
     TextLine* instance = reinterpret_cast<TextLine*>(static_cast<uintptr_t>(ptr));

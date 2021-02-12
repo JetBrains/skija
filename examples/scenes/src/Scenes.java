@@ -6,7 +6,7 @@ import org.jetbrains.skija.*;
 
 public class Scenes {
     public static TreeMap<String, Scene> scenes;
-    public static String currentScene = "DecorationsBench";
+    public static String currentScene = "Text Line";
     public static HUD hud = new HUD();
     public static boolean vsync = true;
     public static boolean stats = true;
@@ -72,6 +72,8 @@ public class Scenes {
 
     public static Scene setScene(String scene) {
         currentScene = scene;
+        if (!scenes.containsKey(scene))
+            throw new IllegalArgumentException("Unknown scene: " + scene);
         if (scenes.get(scene) == null)
             scenes.put(scene, newScene(scene));
         return scenes.get(scene);

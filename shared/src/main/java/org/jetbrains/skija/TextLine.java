@@ -148,6 +148,19 @@ public class TextLine extends Managed {
     }
 
     /**
+     * @param x  coordinate in px
+     * @return   UTF-16 offset of glyph strictly left of coord
+     */
+    public int getLeftOffsetAtCoord(float x) {
+        try {
+            Stats.onNativeCall();
+            return _nGetLeftOffsetAtCoord(_ptr, x);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
+    }
+
+    /**
      * @param offset  UTF-16 character offset
      * @return        glyph coordinate
      */
@@ -173,5 +186,6 @@ public class TextLine extends Managed {
     @ApiStatus.Internal public static native float[] _nGetPositions(long ptr);
     @ApiStatus.Internal public static native int[]   _nGetClusters(long ptr);
     @ApiStatus.Internal public static native int   _nGetOffsetAtCoord(long ptr, float x);
+    @ApiStatus.Internal public static native int   _nGetLeftOffsetAtCoord(long ptr, float x);
     @ApiStatus.Internal public static native float _nGetCoordAtOffset(long ptr, int offset);
 }

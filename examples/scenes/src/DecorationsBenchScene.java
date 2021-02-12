@@ -79,7 +79,7 @@ public class DecorationsBenchScene extends Scene {
             coords[i * 2] = i * 2;
             coords[i * 2 + 1] = i % 2 == 0 ? 0 : 3;
         }
-        canvas.clipRect(Rect.makeLTRB(left - offset, 0, right - offset, 3));
+        canvas.clipRect(Rect.makeLTRB(left - offset, -2, right - offset, 5));
         canvas.drawPolygon(coords, odd ? pathStrokeOdd : pathStrokeEven);
         canvas.restore();
     }

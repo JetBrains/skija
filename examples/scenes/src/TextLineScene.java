@@ -73,6 +73,11 @@ public class TextLineScene extends Scene {
                 float coord = line.getCoordAtOffset(offset);
                 canvas.drawRect(Rect.makeLTRB(0, 0, coord, lineHeight), selectionFill);
 
+                // strict left selection
+                int leftOffset = line.getLeftOffsetAtCoord(cursor.getX());
+                coord = line.getCoordAtOffset(leftOffset);
+                canvas.drawRect(Rect.makeLTRB(0, 0, coord, lineHeight), selectionFill);
+
                 // text
                 canvas.drawTextLine(line, 0, baseline, fill);
 
@@ -96,7 +101,7 @@ public class TextLineScene extends Scene {
                     "Glyphs",    Arrays.toString(line.getGlyphs()),
                     "Positions", positions,
                     "Coord",     Integer.toString((int) cursor.getX()),
-                    "Offset",    offset + " / " + text.length(),
+                    "Offset",    offset + " (" + leftOffset + ")  / " + text.length(),
                 });
                 canvas.restore();
 
