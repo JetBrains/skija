@@ -3,6 +3,7 @@
 - As close to Skia API as possible. Exceptions:
   - Methods that don’t make sense (C++ specific, etc)
   - Fix minor inconsistencies in naming
+  - Methods that would clash with the Java ones (e.g. `SkPath#close` would clash with `Managed#close`, so it became `Path#closePath` in Skija)
 - Skia modules -> org.jetbrains.skija.* subpackages
 
 # General naming conventions
