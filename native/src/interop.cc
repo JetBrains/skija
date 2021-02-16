@@ -656,6 +656,7 @@ namespace skija {
         Rect::onLoad(env);
         RRect::onLoad(env);
         RSXform::onLoad(env);
+        SurfaceProps::onLoad(env);
         
         impl::Native::onLoad(env);
     }

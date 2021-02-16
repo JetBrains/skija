@@ -189,12 +189,12 @@ public class Surface extends RefCnt {
      * and colorSpace must be present. Further, backendRenderTarget width and height must not exceed
      * context capabilities, and the context must be able to support back-end render targets.</p>
      *
-     * @param context     GPU context
-     * @param rt          texture residing on GPU
-     * @param origin      surfaceOrigin pins either the top-left or the bottom-left corner to the origin.
-     * @param colorFormat color format
-     * @param colorSpace  range of colors; may be null
-     * @return Surface if all parameters are valid; otherwise, null
+     * @param context       GPU context
+     * @param rt            texture residing on GPU
+     * @param origin        surfaceOrigin pins either the top-left or the bottom-left corner to the origin.
+     * @param colorFormat   color format
+     * @param colorSpace    range of colors; may be null
+     * @return              Surface if all parameters are valid; otherwise, null
      * @see <a href="https://fiddle.skia.org/c/@Surface_MakeFromBackendTexture">https://fiddle.skia.org/c/@Surface_MakeFromBackendTexture</a>
      */
     @NotNull
@@ -203,13 +203,42 @@ public class Surface extends RefCnt {
                                                       @NotNull SurfaceOrigin origin,
                                                       @NotNull SurfaceColorFormat colorFormat,
                                                       @Nullable ColorSpace colorSpace) {
+        return makeFromBackendRenderTarget(context, rt, origin, colorFormat, colorSpace, null);
+    }
+    /**
+     * <p>Wraps a GPU-backed buffer into {@link Surface}.</p>
+     *
+     * <p>Caller must ensure backendRenderTarget is valid for the lifetime of returned {@link Surface}.</p>
+     *
+     * <p>{@link Surface} is returned if all parameters are valid. backendRenderTarget is valid if its pixel
+     * configuration agrees with colorSpace and context;
+     * for instance, if backendRenderTarget has an sRGB configuration, then context must support sRGB,
+     * and colorSpace must be present. Further, backendRenderTarget width and height must not exceed
+     * context capabilities, and the context must be able to support back-end render targets.</p>
+     *
+     * @param context       GPU context
+     * @param rt            texture residing on GPU
+     * @param origin        surfaceOrigin pins either the top-left or the bottom-left corner to the origin.
+     * @param colorFormat   color format
+     * @param colorSpace    range of colors; may be null
+     * @param surfaceProps  LCD striping orientation and setting for device independent fonts; may be null
+     * @return              Surface if all parameters are valid; otherwise, null
+     * @see <a href="https://fiddle.skia.org/c/@Surface_MakeFromBackendTexture">https://fiddle.skia.org/c/@Surface_MakeFromBackendTexture</a>
+     */
+    @NotNull
+    public static Surface makeFromBackendRenderTarget(@NotNull DirectContext context,
+                                                      @NotNull BackendRenderTarget rt,
+                                                      @NotNull SurfaceOrigin origin,
+                                                      @NotNull SurfaceColorFormat colorFormat,
+                                                      @Nullable ColorSpace colorSpace,
+                                                      @Nullable SurfaceProps surfaceProps) {
         try {
             assert context != null : "Can’t makeFromBackendRenderTarget with context == null";
             assert rt != null : "Can’t makeFromBackendRenderTarget with rt == null";
             assert origin != null : "Can’t makeFromBackendRenderTarget with origin == null";
             assert colorFormat != null : "Can’t makeFromBackendRenderTarget with colorFormat == null";
             Stats.onNativeCall();
-            long ptr = _nMakeFromBackendRenderTarget(Native.getPtr(context), Native.getPtr(rt), origin.ordinal(), colorFormat.ordinal(), Native.getPtr(colorSpace));
+            long ptr = _nMakeFromBackendRenderTarget(Native.getPtr(context), Native.getPtr(rt), origin.ordinal(), colorFormat.ordinal(), Native.getPtr(colorSpace), surfaceProps);
             if (ptr == 0)
                 throw new IllegalArgumentException(String.format("Failed Surface.makeFromBackendRenderTarget(%s, %s, %s, %s, %s)", context, rt, origin, colorFormat, colorSpace));
             return new Surface(ptr, context, rt);
@@ -785,7 +814,7 @@ public class Surface extends RefCnt {
     public static native long _nMakeRasterDirect(int width, int height, int colorType, int alphaType, long colorSpacePtr, long pixelsPtr, long rowBytes, SurfaceProps surfaceProps);
     public static native long _nMakeRaster(int width, int height, int colorType, int alphaType, long colorSpacePtr, long rowBytes, SurfaceProps surfaceProps);
     public static native long _nMakeRasterN32Premul(int width, int height);
-    public static native long _nMakeFromBackendRenderTarget(long pContext, long pBackendRenderTarget, int surfaceOrigin, int colorType, long colorSpacePtr);
+    public static native long _nMakeFromBackendRenderTarget(long pContext, long pBackendRenderTarget, int surfaceOrigin, int colorType, long colorSpacePtr, SurfaceProps surfaceProps);
     public static native long _nMakeRenderTarget(long contextPtr, boolean budgeted, int width, int height, int colorType, int alphaType, long colorSpacePtr, int sampleCount, int surfaceOrigin, SurfaceProps surfaceProps, boolean shouldCreateWithMips);
     public static native long _nMakeNull(int width, int height);
     public static native int _nGetWidth(long ptr);

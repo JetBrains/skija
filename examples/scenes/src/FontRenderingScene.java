@@ -15,7 +15,7 @@ public class FontRenderingScene extends Scene {
         _inter       = Typeface.makeFromFile(file("fonts/Inter-Regular.otf"));
         _interV      = Typeface.makeFromFile(file("fonts/Inter-V.ttf"));
         _interHinted = inter;
-        _paint       = new Paint().setColor(0xFF1d3557);
+        _paint       = new Paint().setColor(0xFF000000);
         _variants    = new String[] { "Identity", "Scaled" };
     }
 
@@ -34,7 +34,7 @@ public class FontRenderingScene extends Scene {
     public void draw(Canvas canvas, int windowWidth, int windowHeight, float dpi, int xpos, int ypos) {
         float scale = "Identity".equals(variantTitle()) ? dpi : 1f;
         canvas.translate(30 * scale, 30 * scale);
-        drawModes(canvas, scale);
+        drawModes(canvas, windowWidth, scale);
     }
 
     @Override
@@ -42,30 +42,36 @@ public class FontRenderingScene extends Scene {
         return "Scaled".equals(variantTitle());
     }
 
-    public void drawModes(Canvas canvas, float scale) {
-        String common = "1006 Component Fix Position Scrolling ";
+    public void drawModes(Canvas canvas, int windowWidth, float scale) {
+        String common = "iiijjjlllppp ";
 
         for (var typeface: Pair.arrayOf("", _inter,
                                         "Hinted ", _interHinted,
                                         "Variable ", _interV))
         {
-            for (var subpixel: Pair.arrayOf("", false, "Subpixel ", true)) {
-                for (var linear: Pair.arrayOf("", false, "LinearMetrics ", true)) {
-                    for (var hinting: Pair.arrayOf("Hinting=NONE ",   FontHinting.NONE,
-                                                   "Hinting=SLIGHT ", FontHinting.SLIGHT,
-                                                   "Hinting=NORMAL ", FontHinting.NORMAL,
-                                                   "Hinting=FULL ",   FontHinting.FULL)) {
-                        try (var font = new Font(typeface.getSecond(), 11 * scale)) {
-                            font.setSubpixel(subpixel.getSecond());
-                            font.setMetricsLinear(linear.getSecond());
-                            if (hinting.getSecond() != null)
-                                font.setHinting(hinting.getSecond());
-                            _drawLine(canvas, common + "Inter " + (11 * scale) + " " + typeface.getFirst() + subpixel.getFirst() + linear.getFirst() + hinting.getFirst(), font);
+            canvas.save();
+            for (var edging: Pair.arrayOf("Grayscale ", FontEdging.ANTI_ALIAS, "LCD ", FontEdging.SUBPIXEL_ANTI_ALIAS)) {
+                for (var subpixel: Pair.arrayOf("", false, "Subpixel ", true)) {
+                    for (var linear: Pair.arrayOf("", false, "LinearMetrics ", true)) {
+                        for (var hinting: Pair.arrayOf("Hinting=NONE ",   FontHinting.NONE,
+                                                       "Hinting=SLIGHT ", FontHinting.SLIGHT,
+                                                       "Hinting=NORMAL ", FontHinting.NORMAL,
+                                                       "Hinting=FULL ",   FontHinting.FULL)) {
+                            try (var font = new Font(typeface.getSecond(), 11 * scale)) {
+                                font.setEdging(edging.getSecond());
+                                font.setSubpixel(subpixel.getSecond());
+                                font.setMetricsLinear(linear.getSecond());
+                                if (hinting.getSecond() != null)
+                                    font.setHinting(hinting.getSecond());
+                                _drawLine(canvas, common + "Inter " + (11 * scale) + " " + edging.getFirst() + typeface.getFirst() + subpixel.getFirst() + linear.getFirst() + hinting.getFirst(), font);
+                            }
                         }
+                        canvas.translate(0, 20);
                     }
                 }
             }
-            canvas.translate(0, 20 * scale);
+            canvas.restore();
+            canvas.translate(((windowWidth - 80) / 3  + 20) * scale, 0);
         }
     }
 }

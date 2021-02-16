@@ -18,7 +18,7 @@ public class DecorationsBenchScene extends Scene {
 
     public DecorationsBenchScene() {
         _variants = new String[] { "Path Effect", "Path", "Image" };
-        _variantIdx = 1;
+        _variantIdx = 2;
     }
 
     @Override

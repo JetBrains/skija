@@ -74,7 +74,7 @@ public class Main {
         release();
         Rectangle rect = glCanvas.getClientArea();
         renderTarget = BackendRenderTarget.makeGL(rect.width, rect.height, /*samples*/0, /*stencil*/8, /*fbid*/0, FramebufferFormat.GR_GL_RGBA8);
-        surface = Surface.makeFromBackendRenderTarget(context, renderTarget, SurfaceOrigin.BOTTOM_LEFT, SurfaceColorFormat.RGBA_8888, ColorSpace.getDisplayP3());
+        surface = Surface.makeFromBackendRenderTarget(context, renderTarget, SurfaceOrigin.BOTTOM_LEFT, SurfaceColorFormat.RGBA_8888, ColorSpace.getDisplayP3(), new SurfaceProps(PixelGeometry.RGB_H));
     }
     
     protected void onPaint(Event event) {

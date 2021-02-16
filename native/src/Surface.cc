@@ -57,14 +57,13 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeRaste
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeFromBackendRenderTarget
-  (JNIEnv* env, jclass jclass, jlong pContext, jlong pBackendRenderTarget, jint surfaceOrigin, jint colorType, jlong colorSpacePtr) {
+  (JNIEnv* env, jclass jclass, jlong pContext, jlong pBackendRenderTarget, jint surfaceOrigin, jint colorType, jlong colorSpacePtr, jobject surfacePropsObj) {
     GrDirectContext* context = reinterpret_cast<GrDirectContext*>(static_cast<uintptr_t>(pContext));
     GrBackendRenderTarget* backendRenderTarget = reinterpret_cast<GrBackendRenderTarget*>(static_cast<uintptr_t>(pBackendRenderTarget));
     GrSurfaceOrigin grSurfaceOrigin = static_cast<GrSurfaceOrigin>(surfaceOrigin);
     SkColorType skColorType = static_cast<SkColorType>(colorType);
     sk_sp<SkColorSpace> colorSpace = sk_ref_sp<SkColorSpace>(reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr)));
-    // SkSurfaceProps props{SkSurfaceProps::kLegacyFontHost_InitType};
-    SkSurfaceProps props(0, SkPixelGeometry::kRGB_V_SkPixelGeometry);
+    std::unique_ptr<SkSurfaceProps> surfaceProps = skija::SurfaceProps::toSkSurfaceProps(env, surfacePropsObj);
 
     sk_sp<SkSurface> surface = SkSurface::MakeFromBackendRenderTarget(
         static_cast<GrRecordingContext*>(context),
@@ -72,7 +71,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeFromB
         grSurfaceOrigin,
         skColorType,
         colorSpace,
-        &props,
+        surfaceProps.get(),
         /* RenderTargetReleaseProc */ nullptr,
         /* ReleaseContext */ nullptr
     );

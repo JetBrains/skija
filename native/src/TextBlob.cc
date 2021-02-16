@@ -230,8 +230,6 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_TextBlob__1nGetTig
     SkTextBlob::Iter::Run run;
     auto bounds = SkRect::MakeEmpty();
     SkRect tmpBounds;
-    SkGlyphID glyph;
-    SkPoint pos;
     while (iter.next(&run)) {
         // run.fGlyphIndices points directly to runRecord.glyphBuffer(), which comes directly after RunRecord itself
         auto runRecord = reinterpret_cast<const RunRecordClone*>(run.fGlyphIndices) - 1;
@@ -253,7 +251,6 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_TextBlob__1nGetBlo
     SkTextBlob::Iter::Run run;
     auto bounds = SkRect::MakeEmpty();
     SkFontMetrics metrics;
-    SkGlyphID glyph;
     
     while (iter.next(&run)) {
         // run.fGlyphIndices points directly to runRecord.glyphBuffer(), which comes directly after RunRecord itself

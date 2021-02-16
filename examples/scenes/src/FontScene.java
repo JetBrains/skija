@@ -32,7 +32,7 @@ public class FontScene extends Scene {
         _jbMono         = Typeface.makeFromFile(file("fonts/JetBrainsMono-Regular.ttf"));
         _testKern       = Typeface.makeFromFile(file("fonts/TestKERNOne.otf"));
         _testSubpixel   = Typeface.makeFromFile(file("fonts/TestSubpixel-Regular.otf"));
-        _paint          = new Paint().setColor(0xFF1d3557);
+        _paint          = new Paint().setColor(0xFF000000);
         _stroke         = new Paint().setColor(0xFF2a9d8f).setMode(PaintMode.STROKE).setStrokeWidth(2).setPathEffect(PathEffect.makeDash(new float[] {6, 2}, 0));
         _boundaryPaint  = new Paint().setColor(0xFFe76f51).setMode(PaintMode.STROKE);
     }

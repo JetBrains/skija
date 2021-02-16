@@ -8,10 +8,10 @@ import org.jetbrains.skija.impl.*;
 @Data @With @AllArgsConstructor
 public class SurfaceProps {
     @ApiStatus.Internal 
-    public boolean _deviceIndependentFonts;
+    public final boolean _deviceIndependentFonts;
     
     @ApiStatus.Internal 
-    public PixelGeometry _pixelGeometry;
+    public final PixelGeometry _pixelGeometry;
 
     public SurfaceProps() {
         this(false, PixelGeometry.UNKNOWN);
@@ -21,11 +21,13 @@ public class SurfaceProps {
         this(false, geo);
     }
 
-    @ApiStatus.Internal public int _getFlags() {
+    @ApiStatus.Internal
+    public int _getFlags() {
         return 0 | (_deviceIndependentFonts ? 1 : 0); 
     }
 
-    @ApiStatus.Internal public int _getPixelGeometryOrdinal() {
+    @ApiStatus.Internal
+    public int _getPixelGeometryOrdinal() {
         return _pixelGeometry.ordinal();
     }
 }

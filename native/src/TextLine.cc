@@ -129,7 +129,7 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_TextLine__1nGetOffset
         }
     }
 
-    return instance->fRuns.back().fEnd16;
+    return (jint) instance->fRuns.back().fEnd16;
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_TextLine__1nGetLeftOffsetAtCoord

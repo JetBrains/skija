@@ -132,7 +132,8 @@ class Window {
                     renderTarget,
                     SurfaceOrigin.BOTTOM_LEFT,
                     SurfaceColorFormat.RGBA_8888,
-                    ColorSpace.getDisplayP3()); // TODO load monitor profile
+                    ColorSpace.getDisplayP3(),  // TODO load monitor profile
+                    new SurfaceProps(PixelGeometry.RGB_H));
 
         canvas = surface.getCanvas();
     }
@@ -177,10 +178,10 @@ class Window {
             if (action == GLFW_PRESS) {
                 switch (key) {
                     case GLFW_KEY_LEFT:
-                        Scenes.nextScene();
+                        Scenes.prevScene();
                         break; 
                     case GLFW_KEY_RIGHT:
-                        Scenes.prevScene();
+                        Scenes.nextScene();
                         break;
                     case GLFW_KEY_UP:
                         Scenes.currentScene().changeVariant(-1);

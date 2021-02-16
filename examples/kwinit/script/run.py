@@ -40,8 +40,8 @@ def main():
   # Java
   env = os.environ.copy()
   env['RUST_BACKTRACE'] = '1'
-  if 'windows' == common.system:
-    env['KWINIT_ANGLE'] = '1'
+  # if 'windows' == common.system:
+  #   env['KWINIT_ANGLE'] = '1'
 
   common.check_call([
     'java',
