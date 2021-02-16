@@ -49,115 +49,59 @@ struct KWindow {
 struct WindowAttributes {
   inner_size: LogicalSize<f32>,
   position: LogicalPosition<f32>,
-  title: String
+  title: String,
+  macos_traffic_light_center: Option<LogicalPosition<f64>>
 }
 
 impl KWindow {
-
     fn new(event_loop_window_target: &EventLoopWindowTarget<i64>,
            attributes: WindowAttributes,
-           window_id: KWindowId) -> Self {
+           window_id: KWindowId) -> Self
+    {
 
-     let window_builder = WindowBuilder::new()
-         .with_title(attributes.title)
-         .with_resizable(true)
-         .with_inner_size(attributes.inner_size)
-         .with_visible(false);
+        let window_builder = WindowBuilder::new()
+            .with_title(attributes.title)
+            .with_resizable(true)
+            .with_inner_size(attributes.inner_size)
+            .with_visible(false);
 
-     let context_builder = glutin::ContextBuilder::new()
-         .with_vsync(true)
-         .with_gl(glutin::GlRequest::GlThenGles {
-             opengl_version: (3, 2),
-             opengles_version: (3, 0),
-         });
+        let context_builder = glutin::ContextBuilder::new()
+            .with_vsync(true)
+            .with_gl(glutin::GlRequest::GlThenGles {
+                opengl_version: (3, 2),
+                opengles_version: (3, 0),
+            });
 
-    //  let opts = if cfg!(macos) {
-    //      if transparent_titlebar {
-    //          PhotonWindowOptions {
-    //              macos_transparent_titlebar: true,
-    //              macos_buttons_x: None,
-    //              macos_buttons_y: None,
-    //          }
-    //      } else {
-    //          PhotonWindowOptions::default()
-    //      }
-    //  } else {
-    //      PhotonWindowOptions::default()
-    //  };
+        let context = create_windowed_context_wrapper(window_builder, context_builder, event_loop_window_target);
+        let window = context.window();
+        #[cfg(target_os = "windows")] unsafe { remove_system_title_bar(window); }
+        window.set_visible(true);
+        window.set_outer_position(attributes.position);
 
+        #[cfg(target_os = "macos")] {
+            unsafe {
+                use cocoa::appkit::*;
+                use cocoa::foundation::{NSPoint, NSRect, NSSize};
+                use objc::*;
 
-     let context = create_windowed_context_wrapper(window_builder, context_builder, event_loop_window_target);
-     let window = context.window();
-     #[cfg(target_os = "windows")] unsafe { remove_system_title_bar(window); }
-     window.set_visible(true);
-     window.set_outer_position(attributes.position);
+                let nswindow = window.ns_window() as *mut objc::runtime::Object;
+                NSWindow::setTitleVisibility_(nswindow, NSWindowTitleVisibility::NSWindowTitleHidden);
+                NSWindow::setTitlebarAppearsTransparent_(nswindow, YES);
+             
+                // always show `fullscreen` green traffic light button instead of `maximize/zoom` button
+                let behavior_mask = NSWindow::collectionBehavior(nswindow);
+                NSWindow::setCollectionBehavior_(nswindow, behavior_mask | NSWindowCollectionBehavior::NSWindowCollectionBehaviorFullScreenPrimary);
+                let mask = NSWindow::styleMask(nswindow);
+                NSWindow::setStyleMask_(nswindow, mask | NSWindowStyleMask::NSFullSizeContentViewWindowMask);
+                NSWindow::setMovable_(nswindow, NO);
+            }
+        }
 
-     #[cfg(target_os = "macos")]
-     {
-         unsafe {
-             use cocoa::appkit::*;
-
-             let nswindow = window.ns_window() as *mut objc::runtime::Object;
-             NSWindow::setTitleVisibility_(nswindow, NSWindowTitleVisibility::NSWindowTitleHidden);
-             NSWindow::setTitlebarAppearsTransparent_(nswindow, YES);
-             let mask = NSWindow::styleMask(nswindow);
-             NSWindow::setStyleMask_(nswindow, mask | NSWindowStyleMask::NSFullSizeContentViewWindowMask);
-             // always show `fullscreen` green traffic light button instead of `maximize/zoom` button
-             let behavior_mask = NSWindow::collectionBehavior(nswindow);
-             NSWindow::setCollectionBehavior_(nswindow, behavior_mask | NSWindowCollectionBehavior::NSWindowCollectionBehaviorFullScreenPrimary);
-
-             NSWindow::setMovable_(nswindow, NO);
-
-            //  if opts.macos_buttons_x.is_some() && opts.macos_buttons_y.is_some() {
-            //      let tl_offset_x = opts.macos_buttons_x.unwrap();
-            //      let tl_offset_y = opts.macos_buttons_y.unwrap();
-
-            //      // https://github.com/electron/electron/pull/21781/files
-            //      let close = NSWindow::standardWindowButton_(nswindow, NSWindowCloseButton);
-            //      let miniaturize = NSWindow::standardWindowButton_(nswindow, NSWindowMiniaturizeButton);
-            //      let zoom = NSWindow::standardWindowButton_(nswindow, NSWindowZoomButton);
-
-            //      let titlebar_container_view = NSView::superview(NSView::superview(close));
-
-            //      // todo hide buttons when exiting fullscreen so they don't jump
-            //      let _: () = msg_send![titlebar_container_view, setHidden:false];
-            //      let btn_height = NSView::frame(close).size.height;
-            //      let titlebar_frame_height = btn_height + tl_offset_y;
-            //      let titlebar_frame = NSView::frame(titlebar_container_view);
-
-            //      let frame = NSRect {
-            //          origin: NSPoint {
-            //              x: titlebar_frame.origin.x,
-            //              y: NSView::frame(nswindow).size.height - titlebar_frame_height,
-            //          },
-            //          size: NSSize {
-            //              width: titlebar_frame.size.width,
-            //              height: titlebar_frame_height,
-            //          },
-            //      };
-            //      let _: () = msg_send![titlebar_container_view, setFrame:frame];
-
-            //      let btns = vec![close, miniaturize, zoom];
-            //      let space_between = NSView::frame(miniaturize).origin.x - NSView::frame(close).origin.x;
-            //      for i in 0..btns.len() {
-            //          let btn = btns[i];
-            //          let btn_frame = NSView::frame(btn);
-
-            //          let origin = NSPoint {
-            //              x: tl_offset_x + (i as f64 * space_between),
-            //              y: btn_frame.origin.y,
-            //          };
-            //          let _: () = msg_send![btn, setFrameOrigin:origin];
-            //      }
-            //  }
-         }
-     }
-
-     KWindow { 
-        context, 
-        _id: window_id
+        KWindow { 
+            context, 
+            _id: window_id
+        }
     }
- }
 }
 
 #[derive(Default)]
@@ -622,6 +566,70 @@ pub extern "system" fn Java_noria_kwinit_impl_ExternalAPI_showNotification(env: 
     });
 }
 
+#[no_mangle]
+#[allow(non_snake_case)]
+pub extern "system" fn Java_noria_kwinit_impl_ExternalAPI_macosMoveStandardWindowButtons(env: JNIEnv,
+                                                                                         _obj: JObject,
+                                                                                         window_id: jlong,
+                                                                                         x: jfloat,
+                                                                                         y: jfloat) {
+    #[cfg(target_os = "macos")] {
+        use cocoa::appkit::*;
+        use cocoa::base::nil;
+        use cocoa::foundation::{NSPoint, NSRect, NSSize};
+        use cocoa::appkit::NSWindowButton::*;
+        use objc::*;
+        with_panic_logger(&env, |_env| {
+            WINDOWS_MAP.with(|windows_map_cell| {
+                let mut windows_map_ref = windows_map_cell.borrow_mut();
+                let windows_map = windows_map_ref.as_mut().expect("accessing event loop from non-main thread ot before event loop has started");
+                if let Some(kwindow) = windows_map.windows.get_mut(&KWindowId(window_id)) {
+                    unsafe {
+                        let nswindow = kwindow.context.window().ns_window() as *mut objc::runtime::Object;
+
+                        let close = NSWindow::standardWindowButton_(nswindow, NSWindowCloseButton);
+                        let miniaturize = NSWindow::standardWindowButton_(nswindow, NSWindowMiniaturizeButton);
+                        let zoom = NSWindow::standardWindowButton_(nswindow, NSWindowZoomButton);
+
+                        // kill old buttons parent so that hovering over old position does not activates them 
+                        let _: () = msg_send![NSView::superview(NSView::superview(close)), removeFromSuperview];
+
+                        // buttons can’t be positioned individually
+                        // so we take their old offset and account for it in our new view
+                        let miniaturize_frame = NSView::frame(miniaturize);
+                        let zoom_frame = NSView::frame(zoom);
+                        let semaphore_frame = NSRect {
+                            origin: NSPoint {
+                                x: x as f64 - miniaturize_frame.origin.x - miniaturize_frame.size.width / 2.0,
+                                y: NSView::frame(nswindow).size.height - y as f64 - miniaturize_frame.origin.y - miniaturize_frame.size.height / 2.0,
+                            },
+                            size: NSSize {
+                                width: zoom_frame.origin.x + zoom_frame.size.width,
+                                height: zoom_frame.origin.x + zoom_frame.size.width,
+                            }
+                        };
+                        let semaphore = NSView::initWithFrame_(NSView::alloc(nil), semaphore_frame);
+                        // glue our view to the top left corner
+                        NSView::setAutoresizingMask_(semaphore, NSViewMaxXMargin | NSViewMinYMargin);
+                        NSView::setWantsLayer(semaphore, YES);
+                        NSView::addSubview_(semaphore, close);
+                        NSView::addSubview_(semaphore, miniaturize);
+                        NSView::addSubview_(semaphore, zoom);
+                        NSView::addSubview_(NSView::superview(NSWindow::contentView(nswindow)), semaphore);
+
+                        // https://stackoverflow.com/a/36292700
+                        // briefly change window size and back so that hover areas resets, only needed after exiting fullscreen
+                        let window_frame = NSWindow::frame(nswindow);
+                        let modified_window_frame = NSRect {origin: window_frame.origin, size: NSSize {width: window_frame.size.width + 1.0, height: window_frame.size.height + 1.0}};
+                        let _: () = msg_send![nswindow, setFrame:modified_window_frame display:NO animate:NO];
+                        let _: () = msg_send![nswindow, setFrame:window_frame display:NO animate:YES];
+                    }
+                };
+            })
+        })
+    };
+}
+
 fn create_event_loop() -> EventLoop<i64> {
     #[cfg(target_os = "linux")] {
         use glutin::platform::unix::EventLoopExtUnix;
@@ -728,6 +736,10 @@ pub extern "system" fn Java_noria_kwinit_impl_ExternalAPI_runEventLoop(env: JNIE
     
                     Event::LoopDestroyed => {
                         Some(KWEvent::LoopDestroyed)
+                    }
+
+                    Event::Quit => {
+                        Some(KWEvent::Quit)
                     }
     
                     Event::DeviceEvent { .. } => {

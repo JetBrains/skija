@@ -43,7 +43,7 @@ version = "0.2"
 features = ["exception"]
 
 [patch.crates-io]
-winit = { git = "https://github.com/JetBrains/winit", rev = "39f69c326d4bd8a6e227113d79899b1abb18a626" }
+winit = { git = "https://github.com/JetBrains/winit", rev = "50b2abac1f885bfbca122a1cc36aa3a31d356fc8" }
 
 [lib]
 crate-type = ["cdylib"]

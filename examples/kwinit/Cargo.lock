@@ -2069,7 +2069,7 @@ checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 [[package]]
 name = "winit"
 version = "0.23.0"
-source = "git+https://github.com/JetBrains/winit?rev=39f69c326d4bd8a6e227113d79899b1abb18a626#39f69c326d4bd8a6e227113d79899b1abb18a626"
+source = "git+https://github.com/JetBrains/winit?rev=50b2abac1f885bfbca122a1cc36aa3a31d356fc8#50b2abac1f885bfbca122a1cc36aa3a31d356fc8"
 dependencies = [
  "bitflags 1.2.1",
  "cocoa 0.24.0",

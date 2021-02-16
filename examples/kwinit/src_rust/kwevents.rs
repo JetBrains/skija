@@ -26,6 +26,7 @@ pub enum KWEvent {
     Suspended,
     Resumed,
     LoopDestroyed,
+    Quit
 }
 
 #[derive(Debug, PartialEq, Serialize)]

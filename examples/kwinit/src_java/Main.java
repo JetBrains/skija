@@ -114,6 +114,10 @@ public class Main {
                                 rely = screenPosition.get("y").getAsFloat();
                         }
                         onMouseMove(x, y, relx, rely);
+                    } else if ("ChangedFullscreen".equals(type)) {
+                        var fullscreen = event.get("fullscreen").getAsBoolean();
+                        if (!fullscreen) 
+                            ExternalAPI.fireUserEvent(3);
                     } else
                         log("WidnowEvent", event);
                 } else
@@ -212,6 +216,12 @@ public class Main {
 
     public void onDraw() {
         Scenes.draw(canvas, width, height, scale, (int) mouseX, (int) mouseY);
+        canvas.save();
+        canvas.scale(scale, scale);
+        try (var paint = new Paint().setColor(0x10000000)) {
+            canvas.drawRRect(RRect.makeXYWH(14, 14, 64, 24, 12), paint);
+        }
+        canvas.restore();
         context.flush();
         ExternalAPI.fireUserEvent(1);
     }
@@ -219,9 +229,11 @@ public class Main {
     public void handleUserEvent(int cookie) {
         switch (cookie) {
             case 0:
-                window = ExternalAPI.createWindow("{\"inner_size\":{\"width\": " + width + ".0, \"height\": " + height + ".0},"
-                                                  + "\"position\":{\"x\":100.0,\"y\":100.0},"
-                                                  + "\"title\":\"Skija KWinit Example\"}");
+                var windowAttrs = ("{'inner_size':{'width': " + width + ".0, 'height': " + height + ".0},"
+                                   + "'position':{'x':100.0,'y':100.0},"
+                                   + "'title':'Skija KWinit Example'}").replaceAll("'", "\"");
+                window = ExternalAPI.createWindow(windowAttrs);
+                ExternalAPI.fireUserEvent(3);
                 Stats.enabled = true;
                 context = DirectContext.makeGL();
                 scale = (float) ExternalAPI.getScaleFactor(window);
@@ -234,6 +246,9 @@ public class Main {
                 break;
             case 2:
                 ExternalAPI.setOuterPosition(window, outerX, outerY);
+                break;
+            case 3:
+                ExternalAPI.macosMoveStandardWindowButtons(window, 46, 26);
                 break;
             default:
                 log("Unknown user event", cookie);

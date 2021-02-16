@@ -14,6 +14,8 @@ public class ExternalAPI {
     public static native void    destroyWindow(long window);
     public static native void    stopApplication();
 
+    public static native void    macosMoveStandardWindowButtons(long window, float center_x, float center_y);
+
     // public static native  getInnerSize(windowId: Long): String
     // public static native  setInnerSize(windowId: Long, width: Float, height: Float)
     // public static native  resize(windowId: Long, width: Long, height: Long)
