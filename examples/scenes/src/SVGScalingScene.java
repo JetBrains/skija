@@ -23,7 +23,7 @@ public class SVGScalingScene extends Scene {
             canvas.drawString(img, 0, -20, inter13, fill);
 
             try (var data = Data.makeFromFileName(file(img));
-                 var svg = new DOM(data);)
+                 var svg = new SVGDOM(data);)
             {
                 var containerSize = svg.getContainerSize();
                 if (!containerSize.isEmpty())
@@ -38,7 +38,7 @@ public class SVGScalingScene extends Scene {
         }
     }
 
-    public void drawIcon(Canvas canvas, Point size, DOM svg) {
+    public void drawIcon(Canvas canvas, Point size, SVGDOM svg) {
         svg.setContainerSize(size);
         svg.render(canvas);
         canvas.drawRect(Rect.makeWH(size.getX(), size.getY()), border);

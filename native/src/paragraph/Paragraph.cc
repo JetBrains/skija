@@ -88,6 +88,7 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Par
         TextBox box = rects[i];
         jobject boxObj = env->NewObject(skija::paragraph::TextBox::cls, skija::paragraph::TextBox::ctor, box.rect.fLeft, box.rect.fTop, box.rect.fRight, box.rect.fBottom, static_cast<jint>(box.direction));
         env->SetObjectArrayElement(rectsArray, i, boxObj);
+        env->DeleteLocalRef(boxObj);
     }
     return rectsArray;
 }
@@ -101,6 +102,7 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Par
         TextBox box = rects[i];
         jobject boxObj = env->NewObject(skija::paragraph::TextBox::cls, skija::paragraph::TextBox::ctor, box.rect.fLeft, box.rect.fTop, box.rect.fRight, box.rect.fBottom, static_cast<jint>(box.direction));
         env->SetObjectArrayElement(rectsArray, i, boxObj);
+        env->DeleteLocalRef(boxObj);
     }
     return rectsArray;
 }
@@ -138,6 +140,7 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Par
         size_t endIncludingNewline = conv.from8To16(lm.fEndIncludingNewline);
         jobject lmObj = env->NewObject(skija::paragraph::LineMetrics::cls, skija::paragraph::LineMetrics::ctor, startIndex, endIndex, endExcludingWhitespaces, endIncludingNewline, lm.fHardBreak, lm.fAscent, lm.fDescent, lm.fUnscaledAscent, lm.fHeight, lm.fWidth, lm.fLeft, lm.fBaseline, lm.fLineNumber);
         env->SetObjectArrayElement(resArray, i, lmObj);
+        env->DeleteLocalRef(lmObj);
     }
     return resArray;
 }

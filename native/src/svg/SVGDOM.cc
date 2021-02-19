@@ -5,7 +5,7 @@
 #include "SkStream.h"
 #include "SkSVGDOM.h"
 
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_svg_DOM__1nMakeFromData
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_svg_SVGDOM__1nMakeFromData
   (JNIEnv* env, jclass jclass, jlong dataPtr) {
     SkData* data = reinterpret_cast<SkData*>(static_cast<uintptr_t>(dataPtr));
     
@@ -14,20 +14,20 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_svg_DOM__1nMakeFromD
     return reinterpret_cast<jlong>(instance.release());
 }
 
-extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_svg_DOM__1nGetContainerSize
+extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_svg_SVGDOM__1nGetContainerSize
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkSVGDOM* instance = reinterpret_cast<SkSVGDOM*>(static_cast<uintptr_t>(ptr));
     const SkSize& size = instance->containerSize();
     return skija::Point::make(env, size.fWidth, size.fHeight);
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_svg_DOM__1nSetContainerSize
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_svg_SVGDOM__1nSetContainerSize
   (JNIEnv* env, jclass jclass, jlong ptr, jfloat width, jfloat height) {
     SkSVGDOM* instance = reinterpret_cast<SkSVGDOM*>(static_cast<uintptr_t>(ptr));
     instance->setContainerSize(SkSize{width, height});
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_svg_DOM__1nRender
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_svg_SVGDOM__1nRender
   (JNIEnv* env, jclass jclass, jlong ptr, jlong canvasPtr) {
     SkSVGDOM* instance = reinterpret_cast<SkSVGDOM*>(static_cast<uintptr_t>(ptr));
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));

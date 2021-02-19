@@ -16,6 +16,14 @@
 #include "SkSurfaceProps.h"
 
 namespace java {
+    namespace io {
+        namespace OutputStream {
+            extern jmethodID write;
+            extern jmethodID flush;
+            void onLoad(JNIEnv* env);
+        }
+    }
+
     namespace lang {
         namespace Float {
             extern jclass cls;
@@ -28,6 +36,12 @@ namespace java {
             extern jclass cls;
             void onLoad(JNIEnv* env);
             void onUnload(JNIEnv* env);
+        }
+
+        namespace Throwable {
+            extern jmethodID printStackTrace;
+            void onLoad(JNIEnv* env);
+            bool exceptionThrown(JNIEnv* env);
         }
     }
 

@@ -10,7 +10,7 @@ import org.jetbrains.skija.svg.*;
 
 public class SVGScene extends Scene {
     public Thread _thread = null;
-    public DOM _dom = null;
+    public SVGDOM _dom = null;
     public Throwable _error = null;
 
     @SneakyThrows
@@ -55,7 +55,7 @@ public class SVGScene extends Scene {
                 in.transferTo(out);
                 if (_thread == this) {
                     try (var data = org.jetbrains.skija.Data.makeFromBytes(out.toByteArray());) {
-                        _dom = new DOM(data);
+                        _dom = new SVGDOM(data);
                     }
                 }
             } catch (Exception e) {

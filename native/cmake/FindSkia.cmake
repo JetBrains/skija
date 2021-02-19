@@ -70,6 +70,7 @@ find_path(SKIA_SKSG_INCLUDE_DIR SkSGInvalidationController.h HINTS "${SKIA_DIR}/
 find_path(SKIA_CONFIG_INCLUDE_DIR SkUserConfig.h HINTS "${SKIA_DIR}/include/config")
 find_path(SKIA_CORE_INCLUDE_DIR SkCanvas.h HINTS "${SKIA_DIR}/include/core")
 find_path(SKIA_PATHOPS_INCLUDE_DIR SkPathOps.h HINTS "${SKIA_DIR}/include/pathops")
+find_path(SKIA_CORE_SVG_INCLUDE_DIR SkSVGCanvas.h HINTS "${SKIA_DIR}/include/svg")
 find_path(SKIA_UTILS_INCLUDE_DIR SkRandom.h HINTS "${SKIA_DIR}/include/utils")
 find_path(SKIA_CODEC_INCLUDE_DIR SkCodec.h HINTS "${SKIA_DIR}/include/codec")
 find_path(SKIA_EFFECTS_INCLUDE_DIR SkImageSource.h HINTS "${SKIA_DIR}/include/effects")
@@ -92,7 +93,7 @@ target_include_directories(skia INTERFACE
   ${SKIA_CONFIG_INCLUDE_DIR}
   ${SKIA_CORE_INCLUDE_DIR}
   ${SKIA_PATHOPS_INCLUDE_DIR}
-  ${SKIA_PORTS_INCLUDE_DIR}
+  ${SKIA_CORE_SVG_INCLUDE_DIR}
   ${SKIA_UTILS_INCLUDE_DIR}
   ${SKIA_CODEC_INCLUDE_DIR}
   ${SKIA_EFFECTS_INCLUDE_DIR}

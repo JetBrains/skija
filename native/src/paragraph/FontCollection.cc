@@ -68,6 +68,7 @@ extern "C" JNIEXPORT jlongArray JNICALL Java_org_jetbrains_skija_paragraph_FontC
     for (int i = 0; i < len; ++i) {
         jstring str = static_cast<jstring>(env->GetObjectArrayElement(familyNamesArray, i));
         familyNames.push_back(skString(env, str));
+        env->DeleteLocalRef(str);
     }
 
     vector<sk_sp<SkTypeface>> found = instance->findTypefaces(familyNames, skija::FontStyle::fromJava(fontStyle));

@@ -352,6 +352,7 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_Font__1nGetPa
             orig->transform(mx, path);
             jobject pathObj = ctx->env->NewObject(skija::Path::cls, skija::Path::ctor, reinterpret_cast<jlong>(path));
             ctx->env->SetObjectArrayElement(ctx->paths, ctx->idx, pathObj);
+            ctx->env->DeleteLocalRef(pathObj);
             ++ctx->idx;
         }
     }, &ctx);

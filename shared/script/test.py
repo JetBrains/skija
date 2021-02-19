@@ -36,6 +36,7 @@ def main():
     '--class-path', common.classpath_separator.join(classpath + ['target/test-classes']),
     '-ea',
     '-esa',
+    '-Xcheck:jni',
     'org.jetbrains.skija.TestSuite',
   ])
 

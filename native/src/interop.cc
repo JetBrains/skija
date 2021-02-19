@@ -9,6 +9,20 @@
 #include "paragraph/interop.hh"
 
 namespace java {
+    namespace io {
+        namespace OutputStream {
+            jclass cls;
+            jmethodID write;
+            jmethodID flush;
+
+            void onLoad(JNIEnv* env) {
+                jclass cls = env->FindClass("java/io/OutputStream");
+                write = env->GetMethodID(cls, "write", "([BII)V");
+                flush = env->GetMethodID(cls, "flush", "()V");
+            }
+        }
+    }
+
     namespace lang {
         namespace Float {
             jclass cls;
@@ -35,6 +49,25 @@ namespace java {
 
             void onUnload(JNIEnv* env) {
                 env->DeleteGlobalRef(cls);
+            }
+        }
+
+        namespace Throwable {
+            jmethodID printStackTrace;
+
+            void onLoad(JNIEnv* env) {
+                jclass cls = env->FindClass("java/lang/Throwable");
+                printStackTrace = env->GetMethodID(cls, "printStackTrace", "()V");
+            }
+
+            bool exceptionThrown(JNIEnv* env) {
+                if (env->ExceptionCheck()) {
+                    jthrowable th = env->ExceptionOccurred();
+                    env->CallVoidMethod(th, printStackTrace);
+                    env->ExceptionCheck(); // ignore
+                    return true;
+                } else
+                    return false;
             }
         }
     }
@@ -76,8 +109,10 @@ namespace java {
     }
 
     void onLoad(JNIEnv* env) {
+        io::OutputStream::onLoad(env);
         lang::Float::onLoad(env);
         lang::String::onLoad(env);
+        lang::Throwable::onLoad(env);
         util::Iterator::onLoad(env);
         util::function::BooleanSupplier::onLoad(env);
     }
@@ -169,6 +204,7 @@ namespace skija {
                                static_cast<uint32_t>(env->GetIntField(featureObj, skija::FontFeature::value)),
                                static_cast<size_t>(env->GetLongField(featureObj, skija::FontFeature::start)),
                                static_cast<size_t>(env->GetLongField(featureObj, skija::FontFeature::end))};
+                env->DeleteLocalRef(featureObj);
             }
             return features;
         }
@@ -889,6 +925,7 @@ std::vector<SkString> skStringVector(JNIEnv* env, jobjectArray arr) {
         for (jint i = 0; i < len; ++i) {
             jstring str = static_cast<jstring>(env->GetObjectArrayElement(arr, i));
             res[i] = skString(env, str);
+            env->DeleteLocalRef(str);
         }
         return res;
     }

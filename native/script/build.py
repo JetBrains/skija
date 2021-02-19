@@ -39,10 +39,10 @@ def main():
     "--config", build_type,
     "-DSKIA_DIR=" + skia_dir,
     ".."],
-    cwd="build")
+    cwd=os.path.abspath('build'))
 
   # Ninja
-  common.check_call(["ninja"], cwd="build")
+  common.check_call(["ninja"], cwd=os.path.abspath('build'))
 
   # icudtl
   icudtl_src = skia_dir + "/out/" + build_type + "-" + common.machine + "/icudtl.dat"

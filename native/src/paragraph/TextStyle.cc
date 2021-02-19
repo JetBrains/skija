@@ -133,7 +133,9 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Tex
     jobjectArray shadowsArr = env->NewObjectArray((jsize) shadows.size(), skija::paragraph::Shadow::cls, nullptr);
     for (int i = 0; i < shadows.size(); ++i) {
         const TextShadow& s = shadows[i];
-        env->SetObjectArrayElement(shadowsArr, i, env->NewObject(skija::paragraph::Shadow::cls, skija::paragraph::Shadow::ctor, s.fColor, s.fOffset.fX, s.fOffset.fY, s.fBlurRadius));
+        auto shadowObj = env->NewObject(skija::paragraph::Shadow::cls, skija::paragraph::Shadow::ctor, s.fColor, s.fOffset.fX, s.fOffset.fY, s.fBlurRadius);
+        env->SetObjectArrayElement(shadowsArr, i, shadowObj);
+        env->DeleteLocalRef(shadowObj);
     }
     return shadowsArr;
 }
@@ -157,7 +159,9 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_paragraph_Tex
     jobjectArray fontFeaturesArr = env->NewObjectArray((jsize) fontFeatures.size(), skija::FontFeature::cls, nullptr);
     for (int i = 0; i < fontFeatures.size(); ++i) {
         const FontFeature& ff = fontFeatures[i];
-        env->SetObjectArrayElement(fontFeaturesArr, i, env->NewObject(skija::FontFeature::cls, skija::FontFeature::ctor, javaString(env, ff.fName), ff.fValue));
+        auto featureObj = env->NewObject(skija::FontFeature::cls, skija::FontFeature::ctor, javaString(env, ff.fName), ff.fValue);
+        env->SetObjectArrayElement(fontFeaturesArr, i, featureObj);
+        env->DeleteLocalRef(featureObj);
     }
     return fontFeaturesArr;
 }

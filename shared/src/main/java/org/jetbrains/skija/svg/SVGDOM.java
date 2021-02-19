@@ -5,10 +5,10 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
 
-public class DOM extends RefCnt {
+public class SVGDOM extends RefCnt {
     static { Library.staticLoad(); }
 
-    public DOM(@NotNull Data data) {
+    public SVGDOM(@NotNull Data data) {
         this(_nMakeFromData(Native.getPtr(data)));
         Stats.onNativeCall();
         Reference.reachabilityFence(data);
@@ -24,14 +24,14 @@ public class DOM extends RefCnt {
     }
 
     @NotNull @Contract("-> this")
-    public DOM setContainerSize(float width, float height) {
+    public SVGDOM setContainerSize(float width, float height) {
         Stats.onNativeCall();
         _nSetContainerSize(_ptr, width, height);
         return this;
     }
 
     @NotNull @Contract("-> this")
-    public DOM setContainerSize(Point size) {
+    public SVGDOM setContainerSize(Point size) {
         Stats.onNativeCall();
         _nSetContainerSize(_ptr, size._x, size._y);
         return this;
@@ -40,7 +40,7 @@ public class DOM extends RefCnt {
     // sk_sp<SkSVGNode>* findNodeById(const char* id);
 
     @NotNull @Contract("-> this")
-    public DOM render(@NotNull Canvas canvas) {
+    public SVGDOM render(@NotNull Canvas canvas) {
         try {
             Stats.onNativeCall();
             _nRender(_ptr, Native.getPtr(canvas));
@@ -51,7 +51,7 @@ public class DOM extends RefCnt {
     }
 
     @ApiStatus.Internal
-    public DOM(long ptr) {
+    public SVGDOM(long ptr) {
         super(ptr);
     }
 

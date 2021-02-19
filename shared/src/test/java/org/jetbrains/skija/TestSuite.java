@@ -2,6 +2,7 @@ package org.jetbrains.skija;
 
 import org.jetbrains.skija.test.TestRunner;
 import org.jetbrains.skija.paragraph.*;
+import org.jetbrains.skija.svg.*;
 
 public class TestSuite {
     public static void main(String[] args) {
@@ -19,6 +20,9 @@ public class TestSuite {
 
         TestRunner.testClass(FontCollectionTest.class);
         TestRunner.testClass(TextStyleTest.class);
+
+        TestRunner.testClass(SVGCanvasTest.class);
+
         // TestRunner.testClass(TestTest.class);
         int res = TestRunner.finishTesting();
         System.exit(res > 0 ? 1 : 0);
