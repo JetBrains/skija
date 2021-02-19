@@ -615,7 +615,7 @@ pub extern "system" fn Java_noria_kwinit_impl_ExternalAPI_macosMoveStandardWindo
                         NSView::addSubview_(semaphore, close);
                         NSView::addSubview_(semaphore, miniaturize);
                         NSView::addSubview_(semaphore, zoom);
-                        NSView::addSubview_(NSView::superview(NSWindow::contentView(nswindow)), semaphore);
+                        NSView::addSubview_(NSWindow::contentView(nswindow), semaphore);
 
                         // https://stackoverflow.com/a/36292700
                         // briefly change window size and back so that hover areas resets, only needed after exiting fullscreen
