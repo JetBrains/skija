@@ -50,6 +50,7 @@ elseif(WIN32)
     set(CMAKE_CXX_COMPILER cl)
 
     target_include_directories(skija PRIVATE $ENV{JAVA_HOME}/include $ENV{JAVA_HOME}/include/win32)
+    target_link_libraries(skija d3d12 dxgi d3dcompiler)
 
     # target_compile_options(skija PRIVATE /MT)
     # set_property(TARGET skija PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
