@@ -586,13 +586,17 @@ pub extern "system" fn Java_noria_kwinit_impl_ExternalAPI_macosMoveStandardWindo
                 if let Some(kwindow) = windows_map.windows.get_mut(&KWindowId(window_id)) {
                     unsafe {
                         let nswindow = kwindow.context.window().ns_window() as *mut objc::runtime::Object;
+                        let content_view = NSWindow::contentView(nswindow);
 
                         let close = NSWindow::standardWindowButton_(nswindow, NSWindowCloseButton);
                         let miniaturize = NSWindow::standardWindowButton_(nswindow, NSWindowMiniaturizeButton);
                         let zoom = NSWindow::standardWindowButton_(nswindow, NSWindowZoomButton);
 
                         // kill old buttons parent so that hovering over old position does not activates them 
-                        let _: () = msg_send![NSView::superview(NSView::superview(close)), removeFromSuperview];
+                        let super_super_view = NSView::superview(NSView::superview(close));
+                        if content_view != super_super_view {
+                            let _: () = msg_send![super_super_view, removeFromSuperview];
+                        }
 
                         // buttons can’t be positioned individually
                         // so we take their old offset and account for it in our new view
@@ -615,7 +619,7 @@ pub extern "system" fn Java_noria_kwinit_impl_ExternalAPI_macosMoveStandardWindo
                         NSView::addSubview_(semaphore, close);
                         NSView::addSubview_(semaphore, miniaturize);
                         NSView::addSubview_(semaphore, zoom);
-                        NSView::addSubview_(NSWindow::contentView(nswindow), semaphore);
+                        NSView::addSubview_(content_view, semaphore);
 
                         // https://stackoverflow.com/a/36292700
                         // briefly change window size and back so that hover areas resets, only needed after exiting fullscreen
