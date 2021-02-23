@@ -16,7 +16,6 @@ public class ParagraphMetricsScene extends Scene {
         fc.setDefaultFontManager(FontMgr.getDefault());
         
         TypefaceFontProvider fm = new TypefaceFontProvider();
-        Typeface jbMono = Typeface.makeFromFile(file("fonts/JetBrainsMono-Regular.ttf"));
         fm.registerTypeface(jbMono);
         fm.registerTypeface(inter, "Interface");
         fc.setAssetFontManager(fm);
