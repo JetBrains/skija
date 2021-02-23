@@ -13,10 +13,11 @@ public class TextShapeBenchScene extends Scene {
 
     public TextShapeBenchScene() {
         _variants = new String[] {
-            "Tabs Paragraph", "Tabs TextLine",
-            "Emoji Paragraph", "Emoji TextLine",
-            "Greek Paragraph", "Greek TextLine", 
-            "Notdef Paragraph", "Notdef TextLine"
+            "Tabs Paragraph",    "Tabs Paragraph No-Cache",    "Tabs TextLine",
+            "Emoji Paragraph",   "Emoji Paragraph No-Cache",   "Emoji TextLine",
+            "Greek Paragraph",   "Greek Paragraph No-Cache",   "Greek TextLine", 
+            "Notdef Paragraph",  "Notdef Paragraph No-Cache",  "Notdef TextLine",
+            "English Paragraph", "English Paragraph No-Cache", "English TextLine",
         };
     
         font = new Font(jbMono, 10).setSubpixel(true);
@@ -27,7 +28,6 @@ public class TextShapeBenchScene extends Scene {
         TypefaceFontProvider fm = new TypefaceFontProvider();
         fm.registerTypeface(jbMono);
         fc.setAssetFontManager(fm);
-        fc.getParagraphCache().setEnabled(false);
     }
 
     @Override
@@ -37,14 +37,17 @@ public class TextShapeBenchScene extends Scene {
         if ("Tabs".equals(variant[0]))
             text = "										";
         else if ("Emoji".equals(variant[0]))
-            text = "😀 😃 😄 😁 😆 😅 😂 🤣 🥲 ☺️";
+            text = "😀 😃 😄 😁 😆 😅 😂 ☺️ 😇 😍";
         else if ("Greek".equals(variant[0]))
             text = "ἔοικα γοῦν τούτου γε σμικρῷ τινι αὐτῷ τούτῳ σοφώτερος εἶναι, ὅτι ἃ μὴ οἶδα οὐδὲ οἴομαι εἰδέναι";
         else if ("Notdef".equals(variant[0]))
             text = "\u20C0\u20C0\u20C0\u20C0\u20C0\u20C0\u20C0\u20C0\u20C0\u20C0";
+        else if ("English".equals(variant[0]))
+            text = "In girum imus nocte et consumimur igni";
 
         if ("Paragraph".equals(variant[1])) {
-            fc.getParagraphCache().reset();
+            if (variant.length > 2) // No-Cache
+                fc.getParagraphCache().reset();
             for (int y = 20; y < height - 20; y += 20) {
                 try (TextStyle ts = new TextStyle().setColor(0xFF000000).setFontFamilies(new String [] {"JetBrains Mono"}).setFontSize(10);
                      ParagraphStyle ps = new ParagraphStyle();
