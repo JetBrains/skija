@@ -10,6 +10,9 @@ public class TextShapeBenchScene extends Scene {
     public final Font font;
     public final FontMetrics metrics;
     public final FontCollection fc;
+    public final Paint redStroke = new Paint().setColor(0x80CC3333).setMode(PaintMode.STROKE).setStrokeWidth(1);
+    public float fontSize = 20;
+    public float padding = fontSize * 2;
 
     public TextShapeBenchScene() {
         _variants = new String[] {
@@ -19,8 +22,9 @@ public class TextShapeBenchScene extends Scene {
             "Notdef Paragraph",  "Notdef Paragraph No-Cache",  "Notdef TextLine",
             "English Paragraph", "English Paragraph No-Cache", "English TextLine",
         };
+        _variantIdx = 8;
     
-        font = new Font(jbMono, 10).setSubpixel(true);
+        font = new Font(jbMono, fontSize).setSubpixel(true);
         metrics = font.getMetrics();
 
         fc = new FontCollection();
@@ -48,24 +52,31 @@ public class TextShapeBenchScene extends Scene {
         if ("Paragraph".equals(variant[1])) {
             if (variant.length > 2) // No-Cache
                 fc.getParagraphCache().reset();
-            for (int y = 20; y < height - 20; y += 20) {
-                try (TextStyle ts = new TextStyle().setColor(0xFF000000).setFontFamilies(new String [] {"JetBrains Mono"}).setFontSize(10);
+            for (int i = 1; true; ++i) {
+                float y = i * padding;
+                if (y > height - padding) break;
+                try (TextStyle ts = new TextStyle().setColor(0xFF000000).setFontFamilies(new String [] {"JetBrains Mono"}).setFontSize(fontSize);
                      ParagraphStyle ps = new ParagraphStyle();
                      ParagraphBuilder pb = new ParagraphBuilder(ps, fc);)
                 {
                     pb.pushStyle(ts);
-                    pb.addText(y + " [" + text + "]");
+                    pb.addText(i + " [" + text + "]");
                     try (Paragraph p = pb.build();) {
                         p.layout(Float.POSITIVE_INFINITY);
-                        p.paint(canvas, 20, y);
+                        p.paint(canvas, padding, y);
                     }
                 }
             }
         } else {
             try (var shaper = Shaper.makeShapeDontWrapOrReorder();) {
-                for (int y = 20; y < height - 20; y += 20) {
-                    try (var line = shaper.shapeLine(y + " [" + text + "]", font, null, true);) {
-                        canvas.drawTextLine(line, 20, y - metrics.getAscent(), blackFill);
+                for (int i = 1; true; ++i) {
+                    float y = i * padding;
+                    if (y > height - padding) break;
+                    try (var line = shaper.shapeLine(i + " [" + text + "]", font, null, true);) {
+                        canvas.drawTextLine(line, padding, y - metrics.getAscent(), blackFill);
+                        canvas.drawRect(Rect.makeXYWH(padding, y, line.getWidth(), metrics.getHeight()), redStroke);
+                        for (float x: line.getRunPositions())
+                            canvas.drawLine(padding + x, y, padding + x, y + metrics.getHeight(), redStroke);
                     }
                 }
             }

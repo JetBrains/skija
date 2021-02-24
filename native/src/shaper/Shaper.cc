@@ -5,6 +5,7 @@
 #include "interop.hh"
 #include "SkShaper.h"
 #include "src/utils/SkUTF.h"
+#include "FontRunIterator.hh"
 #include "TextLineRunHandler.hh"
 
 static void deleteShaper(SkShaper* instance) {
@@ -89,7 +90,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_shaper_Shaper__1nSha
     SkFont* font = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(fontPtr));
     std::vector<SkShaper::Feature> features = skija::FontFeature::fromJavaArray(env, featuresArr);
 
-    std::unique_ptr<SkShaper::FontRunIterator> fontRunIter(SkShaper::MakeFontMgrRunIterator(text.c_str(), text.size(), *font, SkFontMgr::RefDefault()));
+    std::unique_ptr<SkShaper::FontRunIterator> fontRunIter(new FontRunIterator(text.c_str(), text.size(), *font, SkFontMgr::RefDefault()));
     if (!fontRunIter) return 0;
 
     uint8_t defaultBiDiLevel = leftToRight ? 0xfe /* UBIDI_DEFAULT_LTR */ : 0xff /* UBIDI_DEFAULT_RTL */; // unicode/ubidi.h

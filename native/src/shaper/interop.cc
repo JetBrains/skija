@@ -2,6 +2,7 @@
 #include "interop.hh"
 #include "SkFont.h"
 #include "SkShaper.h"
+#include "SkLoadICU.h"
 
 namespace skija {
     namespace shaper {
@@ -176,6 +177,8 @@ namespace skija {
             RunInfo::onLoad(env);
             ScriptRun::onLoad(env);
             TextBlobBuilderRunHandler::onLoad(env);
+
+            SkLoadICU();
         }
 
         void onUnload(JNIEnv* env) {

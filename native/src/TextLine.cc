@@ -91,6 +91,15 @@ extern "C" JNIEXPORT jfloatArray JNICALL Java_org_jetbrains_skija_TextLine__1nGe
     return javaFloatArray(env, positions);
 }
 
+extern "C" JNIEXPORT jfloatArray JNICALL Java_org_jetbrains_skija_TextLine__1nGetRunPositions
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    TextLine* instance = reinterpret_cast<TextLine*>(static_cast<uintptr_t>(ptr));
+    std::vector<jfloat> positions(instance->fRuns.size());
+    for (size_t idx = 0; idx < positions.size(); ++idx)
+        positions[idx] = instance->fRuns[idx].fPosition;
+    return javaFloatArray(env, positions);
+}
+
 extern "C" JNIEXPORT jintArray JNICALL Java_org_jetbrains_skija_TextLine__1nGetClusters
   (JNIEnv* env, jclass jclass, jlong ptr) {
     TextLine* instance = reinterpret_cast<TextLine*>(static_cast<uintptr_t>(ptr));

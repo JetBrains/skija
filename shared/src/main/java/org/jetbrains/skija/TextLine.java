@@ -125,6 +125,18 @@ public class TextLine extends Managed {
         }
     }
 
+    /**
+     * @return  [x0, x1, ...]
+     */
+    public float[] getRunPositions() {
+        Stats.onNativeCall();
+        try {
+            return _nGetRunPositions(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
+    }
+
     public int[] getClusters() {
         Stats.onNativeCall();
         try {
@@ -184,6 +196,7 @@ public class TextLine extends Managed {
     @ApiStatus.Internal public static native long  _nGetTextBlob(long ptr);
     @ApiStatus.Internal public static native short[] _nGetGlyphs(long ptr);
     @ApiStatus.Internal public static native float[] _nGetPositions(long ptr);
+    @ApiStatus.Internal public static native float[] _nGetRunPositions(long ptr);
     @ApiStatus.Internal public static native int[]   _nGetClusters(long ptr);
     @ApiStatus.Internal public static native int   _nGetOffsetAtCoord(long ptr, float x);
     @ApiStatus.Internal public static native int   _nGetLeftOffsetAtCoord(long ptr, float x);

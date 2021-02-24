@@ -106,7 +106,11 @@ target_include_directories(skia INTERFACE
   ${HARFBUZZ_INCLUDE_DIRS}
   ${SKIA_SVG_INCLUDE_DIR}
   ${SKIA_SKOTTIE_INCLUDE_DIR}
-  ${SKIA_SKSG_INCLUDE_DIR})
+  ${SKIA_SKSG_INCLUDE_DIR}
+  ${SKIA_DIR}/third_party/externals/icu/source/common
+  ${SKIA_DIR}/third_party/icu
+)
+
 if(WIN32)
   target_include_directories(skia INTERFACE
     ${SKIA_ANGLE_INCLUDE_DIR})

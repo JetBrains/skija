@@ -8,7 +8,7 @@ def main():
   parser = argparse.ArgumentParser()
   parser.add_argument('--debug', action='store_true')
   parser.add_argument('--skia-dir')
-  parser.add_argument('--skia-release', default='m89-19889d74fa')
+  parser.add_argument('--skia-release', default='m89-109bfc9052')
   (args, _) = parser.parse_known_args()
 
   build_type = 'Debug' if args.debug else 'Release'
