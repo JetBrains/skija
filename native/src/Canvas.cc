@@ -49,10 +49,10 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawLine
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawArc
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloat left, jfloat top, jfloat width, jfloat height, jfloat startAngle, jfloat sweepAngle, jboolean includeCenter, jlong paintPtr) {
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jfloat left, jfloat top, jfloat right, jfloat bottom, jfloat startAngle, jfloat sweepAngle, jboolean includeCenter, jlong paintPtr) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
-    canvas->drawArc({left, top, left+width, top+height}, startAngle, sweepAngle, includeCenter, *paint);
+    canvas->drawArc({left, top, right, bottom}, startAngle, sweepAngle, includeCenter, *paint);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawRect

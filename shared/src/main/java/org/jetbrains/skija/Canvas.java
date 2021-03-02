@@ -234,10 +234,10 @@ public class Canvas extends Managed {
     }
 
     @NotNull @Contract("_, _, _, _, _, _, _, _ -> this")
-    public Canvas drawArc(float left, float top, float width, float height, float startAngle, float sweepAngle, boolean includeCenter, @NotNull Paint paint) {
+    public Canvas drawArc(float left, float top, float right, float bottom, float startAngle, float sweepAngle, boolean includeCenter, @NotNull Paint paint) {
         assert paint != null : "Can’t drawArc with paint == null";
         Stats.onNativeCall();
-        _nDrawArc(_ptr, left, top, width, height, startAngle, sweepAngle, includeCenter, Native.getPtr(paint));
+        _nDrawArc(_ptr, left, top, right, bottom, startAngle, sweepAngle, includeCenter, Native.getPtr(paint));
         Reference.reachabilityFence(paint);
         return this;
     }
@@ -1274,7 +1274,7 @@ public class Canvas extends Managed {
     public static native void _nDrawPoint(long ptr, float x, float y, long paintPtr);
     public static native void _nDrawPoints(long ptr, int mode, float[] coords, long paintPtr);
     public static native void _nDrawLine(long ptr, float x0, float y0, float x1, float y1, long paintPtr);
-    public static native void _nDrawArc(long ptr, float left, float top, float width, float height, float startAngle, float sweepAngle, boolean includeCenter, long paintPtr);
+    public static native void _nDrawArc(long ptr, float left, float top, float right, float bottom, float startAngle, float sweepAngle, boolean includeCenter, long paintPtr);
     public static native void _nDrawRect(long ptr, float left, float top, float right, float bottom, long paintPtr);
     public static native void _nDrawOval(long ptr, float left, float top, float right, float bottom, long paint);
     public static native void _nDrawRRect(long ptr, float left, float top, float right, float bottom, float[] radii, long paintPtr);

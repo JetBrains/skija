@@ -654,14 +654,14 @@ class SkiaGraphics extends java.awt.Graphics2D {
     public void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
         log("[+] drawArc");
         paint.setMode(PaintMode.STROKE);
-        canvas.drawArc(x, y, width, height, startAngle, arcAngle, false, paint);
+        canvas.drawArc(x, y, x + width, y + height, startAngle, arcAngle, false, paint);
         paint.setMode(PaintMode.FILL);
     }
 
     @Override
     public void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
         log("[+] fillArc");
-        canvas.drawArc(x, y, width, height, startAngle, arcAngle, false, paint);
+        canvas.drawArc(x, y, x + width, y + height, startAngle, arcAngle, false, paint);
     }
 
     @Override
