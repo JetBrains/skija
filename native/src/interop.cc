@@ -302,6 +302,15 @@ namespace skija {
         void onUnload(JNIEnv* env) {
             env->DeleteGlobalRef(cls);
         }
+
+        jobject toJava(JNIEnv* env, const SkImageInfo& info) {
+            return env->NewObject(cls, ctor,
+                info.width(),
+                info.height(),
+                static_cast<jint>(info.colorType()),
+                static_cast<jint>(info.alphaType()),
+                reinterpret_cast<jlong>(info.refColorSpace().release()));
+        }
     }
 
     namespace IPoint {

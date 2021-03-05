@@ -20,10 +20,6 @@ public class ColorFiltersScene extends Scene {
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         canvas.translate(30, 30);
 
-        float percent = Math.abs((System.currentTimeMillis() % 3000) / 10f - 150f) - 25f;
-        percent = Math.round(Math.max(0f, Math.min(100f, percent)));
-        float ratio = percent / 100f;
-
         byte[] tablePosterize = new byte[256];
         for (int i = 0; i < 256; ++i)
             tablePosterize[i] = (byte) (i & 0x80);
@@ -48,12 +44,12 @@ public class ColorFiltersScene extends Scene {
                     0,     0,     0,     1, 0
                 )),
                 ColorFilter.makeHSLAMatrix(new ColorMatrix(
-                    0, 0, 0, 0, ratio,
+                    0, 0, 0, 0, phase(),
                     0, 1, 0, 0, 0,
                     0, 0, 1, 0, 0,
                     0, 0, 0, 1, 0
                 )),
-                ColorFilter.makeLerp(ColorFilter.makeBlend(0x80CC3333, BlendMode.SRC_OVER), ColorFilter.makeBlend(0x803333CC, BlendMode.SRC_OVER), ratio),
+                ColorFilter.makeLerp(ColorFilter.makeBlend(0x80CC3333, BlendMode.SRC_OVER), ColorFilter.makeBlend(0x803333CC, BlendMode.SRC_OVER), phase()),
                 ColorFilter.makeLighting(0x80CC3333, 0x803333CC),
             },
 

@@ -4,6 +4,7 @@
 #include <vector>
 #include "SkFontMetrics.h"
 #include "SkFontStyle.h"
+#include "SkImageInfo.h"
 #include "SkMatrix.h"
 #include "SkM44.h"
 #include "SkPaint.h"
@@ -138,6 +139,7 @@ namespace skija {
         extern jmethodID ctor;
         void onLoad(JNIEnv* env);
         void onUnload(JNIEnv* env);
+        jobject toJava(JNIEnv* env, const SkImageInfo& imageInfo);
     }
 
     namespace IPoint {

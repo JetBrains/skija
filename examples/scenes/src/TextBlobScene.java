@@ -48,7 +48,7 @@ public class TextBlobScene extends Scene {
         float distance = 0;
 
         Point[] pos = new Point[glyphs.length];
-        float offset = System.currentTimeMillis() % 1000 / 1000f * 2 * (float) Math.PI;
+        float offset = phase() * 2 * (float) Math.PI;
 
         for (int i = 0; i < pos.length; ++i) {
             pos[i] = new Point(distance, (float) Math.sin(distance + offset) * 3);
@@ -68,7 +68,6 @@ public class TextBlobScene extends Scene {
         RSXform[] xforms = new RSXform[glyphs.length];
 
         float radius = 50;
-        int period = 3000;
 
         try (Path path = new Path().addCircle(0, 0, radius);
              PathMeasure measure = new PathMeasure(path);
@@ -76,8 +75,7 @@ public class TextBlobScene extends Scene {
              Paint stroke = new Paint().setColor(0xff3a86ff).setMode(PaintMode.STROKE).setStrokeWidth(1f);)
         {
             float length = measure.getLength();
-            float relativeOffset = System.currentTimeMillis() % period / (float) period;
-            float distance = relativeOffset * length;
+            float distance = phase() * length;
 
             for (int i=0; i < xforms.length; ++i) {
                 float w = widths[i];
@@ -134,9 +132,7 @@ public class TextBlobScene extends Scene {
     }
 
     public void drawBounds(Canvas canvas) {
-        float percent = Math.abs((System.currentTimeMillis() % 10000) / 33f - 150f) - 25f;
-        percent = Math.round(Math.max(0f, Math.min(100f, percent)));
-        float width = 100 + percent * 3;
+        float width = 100 + phase() * 300;
         int color = 0xFF454A6F;
 
         try (var shaper = Shaper.make();

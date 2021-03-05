@@ -50,4 +50,11 @@ public abstract class Scene {
             outer.getTop() + (outer.getHeight() - innerHeight) / 2f - metrics.getAscent(),
             font, paint);
     }
+
+    public static float phase() {
+        var angle = (System.currentTimeMillis() % 5000) / 5000.0 * Math.PI * 2.0;
+        var phase = Math.sin(angle) * 1.2;
+        phase = Math.min(1.0, Math.max(-1.0, phase));
+        return (float) (phase + 1) / 2f;
+    }
 }

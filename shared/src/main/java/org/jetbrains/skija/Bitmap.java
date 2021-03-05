@@ -5,8 +5,11 @@ import lombok.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
-public class Bitmap extends Managed {
+public class Bitmap extends Managed implements HasImageInfo {
     static { Library.staticLoad(); }
+
+    @ApiStatus.Internal
+    public ImageInfo _imageInfo = null;
     
     @ApiStatus.Internal
     public Bitmap(long ptr) {
@@ -45,6 +48,19 @@ public class Bitmap extends Managed {
         }
     }
 
+    @NotNull @Contract("-> new")
+    public static Bitmap makeFromImage(@NotNull Image image) {
+        assert image != null : "Can’t makeFromImage with image == null";
+        var bitmap = new Bitmap();
+        bitmap.allocPixels(image.getImageInfo());
+        if (image.readPixels(bitmap))
+            return bitmap;
+        else {
+            bitmap.close();
+            throw new RuntimeException("Failed to readPixels from " + image);
+        }
+    }
+
     /**
      * Swaps the fields of the two bitmaps.
      *
@@ -55,72 +71,24 @@ public class Bitmap extends Managed {
     public void swap(@NotNull Bitmap other) {
         Stats.onNativeCall();
         _nSwap(_ptr, Native.getPtr(other));
+        _imageInfo = null;
         Reference.reachabilityFence(this);
         Reference.reachabilityFence(other);
     }
 
-    @NotNull
+    @Override @NotNull
     public ImageInfo getImageInfo() {
         try {
-            Stats.onNativeCall();
-            return _nGetImageInfo(_ptr);
+            if (_imageInfo == null) {
+                Stats.onNativeCall();
+                _imageInfo = _nGetImageInfo(_ptr);
+            }
+            return _imageInfo;
         } finally {
             Reference.reachabilityFence(this);
-        }
+        }        
     }
 
-    /**
-     * Returns pixel count in each row. Should be equal or less than
-     * getRowBytes() / getImageInfo().getBytesPerPixel().
-     *
-     * May be less than getPixelRef().getWidth(). Will not exceed getPixelRef().getWidth() less
-     *
-     * @return  pixel width in ImageInfo
-     */
-    public int getWidth() {
-        return getImageInfo()._width;
-    }
-
-    /**
-     * Returns pixel row count.
-     *
-     * Maybe be less than getPixelRef().getHeight(). Will not exceed getPixelRef().getHeight()
-     *
-     * @return  pixel height in ImageInfo
-    */
-    public int getHeight() {
-        return getImageInfo()._height;
-    }
-
-    @NotNull
-    public ColorInfo getColorInfo() {
-        return getImageInfo()._colorInfo;
-    }    
-
-    @NotNull
-    public ColorType getColorType() {
-        return getImageInfo()._colorInfo._colorType;
-    }    
-
-    @NotNull
-    public ColorAlphaType getAlphaType() {
-        return getImageInfo()._colorInfo._alphaType;
-    }
-
-    @Nullable
-    public ColorSpace getColorSpace() {
-        return getImageInfo()._colorInfo._colorSpace;
-    }
-
-    /**
-     * Returns number of bytes per pixel required by ColorType.
-     * Returns zero if colorType is {@link ColorType#UNKNOWN}.
-     *
-     * @return  bytes in pixel
-     */
-    public int getBytesPerPixel() {
-        return getImageInfo().getBytesPerPixel();
-    }
 
     /**
      * Returns number of pixels that fit on row. Should be greater than or equal to
@@ -135,28 +103,6 @@ public class Bitmap extends Managed {
         } finally {
             Reference.reachabilityFence(this);
         }
-    }
-
-    /**
-     * Returns bit shift converting row bytes to row pixels.
-     * Returns zero for {@link ColorType#UNKNOWN}.
-     * 
-     * @return  one of: 0, 1, 2, 3; left shift to convert pixels to bytes
-     */
-    public int getShiftPerPixel() {
-        return getImageInfo().getShiftPerPixel();
-    }
-
-    /**
-     * Returns true if either getWidth() or getHeight() are zero.
-     *
-     * Does not check if PixelRef is null; call {@link drawsNothing()} to check
-     * getWidth(), getHeight(), and PixelRef.
-     *
-     * @return  true if dimensions do not enclose area
-     */
-    public boolean isEmpty() {
-        return getImageInfo().isEmpty();
     }
 
     /**
@@ -238,6 +184,7 @@ public class Bitmap extends Managed {
     public boolean setAlphaType(ColorAlphaType alphaType) {
         try {
             Stats.onNativeCall();
+            _imageInfo = null;
             return _nSetAlphaType(_ptr, alphaType.ordinal());
         } finally {
             Reference.reachabilityFence(this);
@@ -296,20 +243,6 @@ public class Bitmap extends Managed {
     }
 
     /**
-     * <p>Returns true if ColorAlphaType is set to hint that all pixels are opaque; their
-     * alpha value is implicitly or explicitly 1.0. If true, and all pixels are
-     * not opaque, Skia may draw incorrectly.</p>
-     * 
-     * <p>Does not check if SkColorType allows alpha, or if any pixel value has
-     * transparency.</p>
-     *
-     * @return  true if ImageInfo ColorAlphaType is {@link ColorAlphaType#OPAQUE}
-     */
-    public boolean isOpaque() {
-        return getImageInfo()._colorInfo.isOpaque();
-    }
-
-    /**
      * <p>Resets to its initial state; all fields are set to zero, as if Bitmap had
      * been initialized by Bitmap().</p>
      *
@@ -324,6 +257,7 @@ public class Bitmap extends Managed {
     @NotNull @Contract("-> this")
     public Bitmap reset() {
         Stats.onNativeCall();
+        _imageInfo = null;
         _nReset(_ptr);
         return this;
     }
@@ -400,6 +334,7 @@ public class Bitmap extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Bitmap_setInfo">https://fiddle.skia.org/c/@Bitmap_setInfo</a>
      */
     public boolean setImageInfo(@NotNull ImageInfo imageInfo) {
+        _imageInfo = null;
         return setImageInfo(imageInfo, 0);
     }
 
@@ -436,6 +371,7 @@ public class Bitmap extends Managed {
      */
     public boolean setImageInfo(@NotNull ImageInfo imageInfo, long rowBytes) {
         try {
+            _imageInfo = null;
             Stats.onNativeCall();
             return _nSetImageInfo(_ptr,
                 imageInfo._width,
@@ -468,6 +404,7 @@ public class Bitmap extends Managed {
      */
     public boolean allocPixelsFlags(@NotNull ImageInfo imageInfo, boolean zeroPixels) {
         try {
+            _imageInfo = null;
             Stats.onNativeCall();
             return _nAllocPixelsFlags(_ptr,
                 imageInfo._width,
@@ -501,6 +438,7 @@ public class Bitmap extends Managed {
     */
     public boolean allocPixels(@NotNull ImageInfo info, long rowBytes) {
         try {
+            _imageInfo = null;
             Stats.onNativeCall();
             return _nAllocPixelsRowBytes(_ptr,
                 info._width,
@@ -577,6 +515,10 @@ public class Bitmap extends Managed {
         return allocPixels(ImageInfo.makeN32(width, height, opaque ? ColorAlphaType.OPAQUE : ColorAlphaType.PREMUL));
     }
 
+    public boolean installPixels(byte[] pixels) {
+        return installPixels(getImageInfo(), pixels, getRowBytes());
+    }
+
     /**
      * <p>Sets ImageInfo to info following the rules in setImageInfo(), and creates PixelRef
      * containing pixels and rowBytes.</p>
@@ -593,6 +535,7 @@ public class Bitmap extends Managed {
                                  @Nullable byte[] pixels,
                                  long rowBytes) {
         try {
+            _imageInfo = null;
             Stats.onNativeCall();
             return _nInstallPixels(_ptr, 
                 info._width,
@@ -618,6 +561,7 @@ public class Bitmap extends Managed {
      */
     public boolean allocPixels() {
         try {
+            _imageInfo = null;
             Stats.onNativeCall();
             return _nAllocPixels(_ptr);
         } finally {
@@ -688,6 +632,7 @@ public class Bitmap extends Managed {
     @NotNull @Contract("_, _, _ -> this")
     public Bitmap setPixelRef(@Nullable PixelRef pixelRef, int dx, int dy) {
         try {
+            _imageInfo = null;
             Stats.onNativeCall();
             _nSetPixelRef(_ptr, Native.getPtr(pixelRef), dx, dy);
             return this;
@@ -868,6 +813,11 @@ public class Bitmap extends Managed {
         }
     }
 
+    @Nullable
+    public byte[] readPixels() {
+        return readPixels(getImageInfo(), getRowBytes(), 0, 0);
+    }
+
     /** 
      * <p>Copies a rect of pixels from Bitmap. Copy starts at (srcX, srcY),
      * and does not exceed Bitmap (getWidth(), getHeight()).</p>
@@ -1014,6 +964,7 @@ public class Bitmap extends Managed {
     @ApiStatus.Internal public static native long    _nMake();
     @ApiStatus.Internal public static native long    _nMakeClone(long ptr);
     @ApiStatus.Internal public static native void    _nSwap(long ptr, long otherPtr);
+    @ApiStatus.Internal public static native long    _nGetPixmap(long ptr);
     @ApiStatus.Internal public static native ImageInfo _nGetImageInfo(long ptr);
     @ApiStatus.Internal public static native int     _nGetRowBytesAsPixels(long ptr);
     @ApiStatus.Internal public static native boolean _nIsNull(long ptr);

@@ -35,13 +35,7 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Bitmap__1nSwap
 extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Bitmap__1nGetImageInfo
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
-    const SkImageInfo& info = instance->info();
-    return env->NewObject(skija::ImageInfo::cls, skija::ImageInfo::ctor,
-        info.width(),
-        info.height(),
-        static_cast<jint>(info.colorType()),
-        static_cast<jint>(info.alphaType()),
-        reinterpret_cast<jlong>(info.refColorSpace().release()));
+    return skija::ImageInfo::toJava(env, instance->info());
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Bitmap__1nGetRowBytesAsPixels
