@@ -58,9 +58,13 @@ The ultimate goal for Skija is to feel as a Java library and not having to think
 
 [Robert Felker](https://twitter.com/BlueAquilae/status/1322696020329902082) demos:
 
-|![](extras/Elso-W-XYAEKmFg.jpg)|![](extras/Elso-WKXgAUK-zU.jpg)|
+|![](extras/Elso-W-XYAEKmFg.jpg)|![](extras/Ev-CCy_XMAEM51f.jpg)|
 |---|---|
 |![](extras/Elso-WsWoAExiUF.jpg)|![](extras/Elso-WfWMAED8dc.jpg)|
+
+[Harold](https://www.instagram.com/_hrrld/) videos:
+
+![](extras/110151060-3a840480-7d9d-11eb-9996-a8dc1ed1ab6a.jpg)
 
 [Skija demo app](examples/lwjgl):
 
