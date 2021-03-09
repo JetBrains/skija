@@ -957,6 +957,11 @@ public class Canvas extends Managed {
         }
     }
 
+    @NotNull @Contract("_ -> new")
+    public Matrix33 getLocalToDeviceAsMatrix33() {
+        return getLocalToDevice().asMatrix33();
+    }
+
     @NotNull @Contract("_, _, _ -> this")
     public Canvas clipRect(@NotNull Rect r, @NotNull ClipMode mode, boolean antiAlias) {
         assert r != null : "Can’t clipRect with r == null";

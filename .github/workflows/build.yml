@@ -12,9 +12,6 @@ on:
       - LICENSE
       - README.md
 
-env:
-  babashka-release: '0.2.8'
-
 jobs:
   shared:
     runs-on: ubuntu-latest
