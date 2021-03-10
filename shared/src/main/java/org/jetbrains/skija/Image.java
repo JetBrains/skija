@@ -1,10 +1,11 @@
 package org.jetbrains.skija;
 
 import java.lang.ref.*;
+import java.nio.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
-public class Image extends RefCnt implements HasImageInfo {
+public class Image extends RefCnt implements IHasImageInfo {
     static { Library.staticLoad(); }
     
     @ApiStatus.Internal
@@ -251,6 +252,24 @@ public class Image extends RefCnt implements HasImageInfo {
         }
     }
 
+    /**
+     * If pixel address is available, return ByteBuffer wrapping it.
+     * If pixel address is not available, return null.
+     *
+     * @return  ByteBuffer with direct access to pixels, or null
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Image_peekPixels">https://fiddle.skia.org/c/@Image_peekPixels</a>
+     */
+    @Nullable
+    public ByteBuffer peekPixels() {
+        try {
+            Stats.onNativeCall();
+            return _nPeekPixels(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
+    }
+
     public boolean readPixels(@NotNull Bitmap dst) {
         return readPixels(null, dst, 0, 0, false);
     }
@@ -310,5 +329,6 @@ public class Image extends RefCnt implements HasImageInfo {
     @ApiStatus.Internal public static native long _nEncodeToData(long ptr, int format, int quality);
     @ApiStatus.Internal public static native long    _nMakeShader(long ptr, int tmx, int tmy, int filterMode, int mipmapMode, float[] localMatrix);
     @ApiStatus.Internal public static native long    _nMakeShaderCubic(long ptr, int tmx, int tmy, float B, float C, float[] localMatrix);
+    @ApiStatus.Internal public static native ByteBuffer _nPeekPixels(long ptr);
     @ApiStatus.Internal public static native boolean _nReadPixelsBitmap(long ptr, long contextPtr, long bitmapPtr, int srcX, int srcY, boolean cache);
 }

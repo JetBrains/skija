@@ -1,11 +1,12 @@
 package org.jetbrains.skija;
 
 import java.lang.ref.*;
+import java.nio.*;
 import lombok.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
-public class Bitmap extends Managed implements HasImageInfo {
+public class Bitmap extends Managed implements IHasImageInfo {
     static { Library.staticLoad(); }
 
     @ApiStatus.Internal
@@ -902,6 +903,24 @@ public class Bitmap extends Managed implements HasImageInfo {
         }
     }
 
+    /**
+     * If pixel address is available, return ByteBuffer wrapping it.
+     * If pixel address is not available, return null.
+     *
+     * @return  ByteBuffer with direct access to pixels, or null
+     *
+     * @see <a href="https://fiddle.skia.org/c/@Bitmap_peekPixels">https://fiddle.skia.org/c/@Bitmap_peekPixels</a>
+     */
+    @Nullable
+    public ByteBuffer peekPixels() {
+        try {
+            Stats.onNativeCall();
+            return _nPeekPixels(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
+    }
+
     @NotNull
     public Shader makeShader() {
         return makeShader(FilterTileMode.CLAMP, FilterTileMode.CLAMP, SamplingMode.DEFAULT, null);
@@ -995,6 +1014,7 @@ public class Bitmap extends Managed implements HasImageInfo {
     @ApiStatus.Internal public static native boolean _nExtractSubset(long ptr, long dstPtr, int left, int top, int right, int bottom);
     @ApiStatus.Internal public static native byte[]  _nReadPixels(long ptr, int width, int height, int colorType, int alphaType, long colorSpacePtr, long dstRowBytes, int srcX, int srcY);
     @ApiStatus.Internal public static native IPoint  _nExtractAlpha(long ptr, long dstPtr, long paintPtr);
+    @ApiStatus.Internal public static native ByteBuffer _nPeekPixels(long ptr);
     @ApiStatus.Internal public static native long    _nMakeShader(long ptr, int tmx, int tmy, int filterMode, int mipmapMode, float[] localMatrix);
     @ApiStatus.Internal public static native long    _nMakeShaderCubic(long ptr, int tmx, int tmy, float B, float C, float[] localMatrix);
 }

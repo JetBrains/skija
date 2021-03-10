@@ -73,34 +73,18 @@ public class BitmapImageScene extends Scene {
         
         // Bitmap readPixels/installPixels
         var info = bitmapFromImage.getImageInfo();
-        var threshold = 100 + phase() * 100;
         byte[] pixels = bitmapFromImage.readPixels();
-        ByteBuffer buffer = ByteBuffer.wrap(pixels); // Assume RGBA_8888
-        Function<Integer, Integer> luminocity = color -> Color.getR(color) + Color.getG(color) + Color.getB(color);
-        Comparator<Integer> cmp = (a, b) -> Integer.compare(luminocity.apply(a), luminocity.apply(b));
-        for (int x = 0; x < info.getWidth(); ++x) {
-            // read pixels
-            Integer column[] = new Integer[info.getHeight()];
-            for (int y = 0; y < info.getHeight(); ++y)
-                column[y] = buffer.getInt((y * info.getWidth() + x) * info.getBytesPerPixel());
-
-            // sort pixels
-            var lastIdx = 0;
-            for (int y = 0; y < info.getHeight() - 1; ++y) {
-                if (Math.abs(luminocity.apply(column[y]) - luminocity.apply(column[y + 1])) > threshold) {
-                    Arrays.parallelSort(column, lastIdx, y, cmp);
-                    lastIdx = y;
-                }
-            }
-            Arrays.parallelSort(column, lastIdx, info.getHeight(), cmp);
-
-            // write pixels
-            for (int y = 0; y < info.getHeight(); ++y)
-                buffer.putInt((y * info.getWidth() + x)  * info.getBytesPerPixel(), column[y]);
-        }
+        pixelSorting(canvas, ByteBuffer.wrap(pixels), info);
         bitmapFromImage.installPixels(pixels);
         canvas.drawBitmapRect(bitmapFromImage, Rect.makeXYWH(0, 0, 200, 200));
         canvas.drawString("Bitmap.readPixels/installPixels", 0, 220, inter13, blackFill);
+        advance(canvas, width);
+
+        // Bitmap peekPixels
+        var bitmapFromImage2 = Bitmap.makeFromImage(image);
+        pixelSorting(canvas, bitmapFromImage2.peekPixels(), info);
+        canvas.drawBitmapRect(bitmapFromImage2, Rect.makeXYWH(0, 0, 200, 200));
+        canvas.drawString("Bitmap.peekPixels", 0, 220, inter13, blackFill);
         advance(canvas, width);
 
         // Image.makeRaster
@@ -115,11 +99,53 @@ public class BitmapImageScene extends Scene {
         canvas.drawString("Image.makeRaster + Data", 0, 220, inter13, blackFill);
         advance(canvas, width);
 
+        // Image.peekPixels
+        imageFromBitmap.peekPixels().get(pixels);
+        var bitmapFromPeekPixels = new Bitmap();
+        bitmapFromPeekPixels.installPixels(imageFromBitmap.getImageInfo(), pixels, imageFromBitmap.getWidth() * imageFromBitmap.getBytesPerPixel());
+        canvas.drawBitmapRect(bitmapFromPeekPixels, Rect.makeXYWH(0, 0, 200, 200));
+        canvas.drawString("Image.peekPixels " + imageFromBitmap.getColorType() + " -> Bitmap", 0, 220, inter13, blackFill);
+        advance(canvas, width);
+
         bitmap.close();
         partialBitmap.close();
         bitmapFromImage.close();
+        bitmapFromImage2.close();
         imageFromBitmap.close();
         imageFromPixels.close();
         imageFromData.close();
+        bitmapFromPeekPixels.close();
+    }
+
+    public static float luminocity(ColorType colorType, int color) {
+        return Color.getR(color) + Color.getG(color) + Color.getB(color);
+        // return colorType.getR(color) + colorType.getG(color) + colorType.getB(color);
+    }
+
+    public void pixelSorting(Canvas canvas, ByteBuffer pixels, ImageInfo info) {
+        var threshold = 100 + phase() * 100;
+        // var threshold = 0.4f + phase() * 0.4f;
+        var colorType = info.getColorType();
+        Comparator<Integer> cmp = (a, b) -> Float.compare(luminocity(colorType, a), luminocity(colorType, b));
+        for (int x = 0; x < info.getWidth(); ++x) {
+            // read pixels
+            Integer column[] = new Integer[info.getHeight()];
+            for (int y = 0; y < info.getHeight(); ++y)
+                column[y] = pixels.getInt((y * info.getWidth() + x) * info.getBytesPerPixel());  // Assume RGBA_8888
+
+            // sort pixels
+            var lastIdx = 0;
+            for (int y = 0; y < info.getHeight() - 1; ++y) {
+                if (Math.abs(luminocity(colorType, column[y]) - luminocity(colorType, column[y + 1])) > threshold) {
+                    Arrays.parallelSort(column, lastIdx, y, cmp);
+                    lastIdx = y;
+                }
+            }
+            Arrays.parallelSort(column, lastIdx, info.getHeight(), cmp);
+
+            // write pixels
+            for (int y = 0; y < info.getHeight(); ++y)
+                pixels.putInt((y * info.getWidth() + x)  * info.getBytesPerPixel(), column[y]);
+        }
     }
 }

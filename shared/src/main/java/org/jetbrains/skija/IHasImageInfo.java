@@ -5,7 +5,7 @@ import lombok.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
 
-public interface HasImageInfo {
+public interface IHasImageInfo {
     ImageInfo getImageInfo();
 
         /**

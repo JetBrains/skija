@@ -246,5 +246,161 @@ public enum ColorType {
         return y * rowBytes + (x << getShiftPerPixel());
     }
 
+    public float getR(byte color) {
+        switch (this) {
+            case GRAY_8:
+                return Byte.toUnsignedInt(color) / 255f;
+            default:
+                throw new IllegalArgumentException("getR(byte) is not supported on ColorType." + this);
+        }
+    }
+
+    public float getR(short color) {
+        switch (this) {
+            case RGB_565:
+                return ((color >> 11) & 0b11111) / 31f;
+            case ARGB_4444:
+                return ((color >> 8) & 0xF) / 15f;
+            default:
+                throw new IllegalArgumentException("getR(short) is not supported on ColorType." + this);
+        }
+    }
+
+    public float getR(int color) {
+        switch (this) {
+            case RGBA_8888:
+                return ((color >> 24) & 0xFF) / 255f;
+            case RGB_888X:
+                return ((color >> 24) & 0xFF) / 255f;
+            case BGRA_8888:
+                return ((color >> 8) & 0xFF) / 255f;
+            case RGBA_1010102:
+                return ((color >> 22) & 0b1111111111) / 1023f;
+            case RGB_101010X:
+                return ((color >> 22) & 0b1111111111) / 1023f;
+            case BGRA_1010102:
+                return ((color >> 2) & 0b1111111111) / 1023f;
+            case BGR_101010X:
+                return ((color >> 2) & 0b1111111111) / 1023f;
+            default:
+                throw new IllegalArgumentException("getR(int) is not supported on ColorType." + this);
+        }
+    }
+
+    public float getG(byte color) {
+        switch (this) {
+            case GRAY_8:
+                return Byte.toUnsignedInt(color) / 255f;
+            default:
+                throw new IllegalArgumentException("getG(byte) is not supported on ColorType." + this);
+        }
+    }
+
+    public float getG(short color) {
+        switch (this) {
+            case RGB_565:
+                return ((color >> 5) & 0b111111) / 63f;
+            case ARGB_4444:
+                return ((color >> 4) & 0xF) / 15f;
+            default:
+                throw new IllegalArgumentException("getG(short) is not supported on ColorType." + this);
+        }
+    }
+
+    public float getG(int color) {
+        switch (this) {
+            case RGBA_8888:
+                return ((color >> 16) & 0xFF)  / 255f;
+            case RGB_888X:
+                return ((color >> 16) & 0xFF) / 255f;
+            case BGRA_8888:
+                return ((color >> 16) & 0xFF) / 255f;
+            case RGBA_1010102:
+                return ((color >> 12) & 0b1111111111) / 1023f;
+            case RGB_101010X:
+                return ((color >> 12) & 0b1111111111) / 1023f;
+            case BGRA_1010102:
+                return ((color >> 12) & 0b1111111111) / 1023f;
+            case BGR_101010X:
+                return ((color >> 12) & 0b1111111111) / 1023f;
+            default:
+                throw new IllegalArgumentException("getG(int) is not supported on ColorType." + this);
+        }
+    }
+
+    public float getB(byte color) {
+        switch (this) {
+            case GRAY_8:
+                return Byte.toUnsignedInt(color) / 255f;
+            default:
+                throw new IllegalArgumentException("getB(byte) is not supported on ColorType." + this);
+        }
+    }
+
+    public float getB(short color) {
+        switch (this) {
+            case RGB_565:
+                return (color & 0b11111) / 31f;
+            case ARGB_4444:
+                return (color & 0xF) / 15f;
+            default:
+                throw new IllegalArgumentException("getB(short) is not supported on ColorType." + this);
+        }
+    }
+
+    public float getB(int color) {
+        switch (this) {
+            case RGBA_8888:
+                return ((color >> 8) & 0xFF) / 255f;
+            case RGB_888X:
+                return ((color >> 8) & 0xFF) / 255f;
+            case BGRA_8888:
+                return ((color >> 24) & 0xFF) / 255f;
+            case RGBA_1010102:
+                return ((color >> 2) & 0b1111111111) / 1023f;
+            case RGB_101010X:
+                return ((color >> 2) & 0b1111111111) / 1023f;
+            case BGRA_1010102:
+                return ((color >> 22) & 0b1111111111) / 1023f;
+            case BGR_101010X:
+                return ((color >> 22) & 0b1111111111) / 1023f;
+            default:
+                throw new IllegalArgumentException("getB(int) is not supported on ColorType." + this);
+        }
+    }
+
+    public float getA(byte color) {
+        switch (this) {
+            case ALPHA_8:
+                return Byte.toUnsignedInt(color) / 255f;
+            default:
+                throw new IllegalArgumentException("getA(byte) is not supported on ColorType." + this);
+        }
+    }
+
+    public float getA(short color) {
+        switch (this) {
+            case ARGB_4444:
+                return ((color >> 12) & 0xF) / 15f;
+            default:
+                throw new IllegalArgumentException("getA(short) is not supported on ColorType." + this);
+        }
+    }
+
+    public float getA(int color) {
+        switch (this) {
+            case RGBA_8888:
+                return (color & 0xFF) / 255f;
+            case BGRA_8888:
+                return (color & 0xFF) / 255f;
+            case RGBA_1010102:
+                return (color & 0b11) / 3f;
+            case BGRA_1010102:
+                return (color & 0b11) / 3f;
+            default:
+                throw new IllegalArgumentException("getA(int) is not supported on ColorType." + this);
+        }
+    }
+
     @ApiStatus.Internal public static native boolean _nIsAlwaysOpaque(int value);
 }

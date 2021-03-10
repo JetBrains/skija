@@ -81,6 +81,16 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image__1nMakeShaderC
     return reinterpret_cast<jlong>(shader.release());
 }
 
+extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Image__1nPeekPixels
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkImage* instance = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(ptr));
+    SkPixmap pixmap;
+    if (instance->peekPixels(&pixmap))
+        return env->NewDirectByteBuffer(pixmap.writable_addr(), pixmap.rowBytes() * pixmap.height());
+    else
+        return nullptr;
+}
+
 extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Image__1nReadPixelsBitmap
   (JNIEnv* env, jclass jclass, jlong ptr, jlong contextPtr, jlong bitmapPtr, jint srcX, jint srcY, jboolean cache) {
     SkImage* instance = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(ptr));
