@@ -122,9 +122,13 @@ public class Image extends RefCnt implements IHasImageInfo {
         }
     }
 
+    @NotNull @Contract("_ -> new")
     public static Image makeFromEncoded(byte[] bytes) {
         Stats.onNativeCall();
-        return new Image(_nMakeFromEncoded(bytes));
+        long ptr = _nMakeFromEncoded(bytes);
+        if (ptr == 0)
+            throw new IllegalArgumentException("Failed to Image::makeFromEncoded");
+        return new Image(ptr);
     }
 
     /** 
