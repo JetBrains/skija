@@ -27,4 +27,9 @@ public class IPoint {
     public boolean isEmpty() {
         return _x <= 0 || _y <= 0;
     }
+
+    @ApiStatus.Internal
+    public static IPoint _makeFromLong(long l) {
+        return new IPoint((int) (l >>> 32), (int) (l & 0xFFFFFFFF));
+    }
 }

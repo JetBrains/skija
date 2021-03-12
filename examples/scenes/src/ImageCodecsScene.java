@@ -23,14 +23,10 @@ public class ImageCodecsScene extends Scene {
     public ImageCodecsScene() {
         loadImage("bmp.bmp");
         loadImage("gif.gif");
-        loadImage("heic_lossy.heic");
-        loadImage("heic_loseless.heic");
         loadImage("favicon.ico");
+        loadImage("dotpeek.ico");
         loadImage("jpeg.jpg");
-        loadImage("jpeg2000_lossy.jp2");
-        loadImage("jpeg2000_loseless.jp2");
         loadImage("png.png");
-        loadImage("tiff.tiff");
         loadImage("webp_lossy.webp");
         loadImage("webp_loseless.webp");
     }

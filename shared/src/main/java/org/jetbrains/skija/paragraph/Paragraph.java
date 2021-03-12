@@ -146,8 +146,7 @@ public class Paragraph extends Managed {
     public IRange getWordBoundary(int offset) {
         try {
             Stats.onNativeCall();
-            long l = _nGetWordBoundary(_ptr, offset);
-            return new IRange((int) (l >>> 32), (int) (l & 0xFFFFFFFF));
+            return IRange._makeFromLong(_nGetWordBoundary(_ptr, offset));
         } finally {
             Reference.reachabilityFence(this);
         }

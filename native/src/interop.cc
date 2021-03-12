@@ -126,6 +126,42 @@ namespace java {
 }
 
 namespace skija {
+    namespace AnimationFrameInfo {
+        jclass cls;
+        jmethodID ctor;
+
+        void onLoad(JNIEnv* env) {
+            jclass local = env->FindClass("org/jetbrains/skija/AnimationFrameInfo");
+            cls  = static_cast<jclass>(env->NewGlobalRef(local));
+            ctor = env->GetMethodID(cls, "<init>", "(IIZIZIILorg/jetbrains/skija/IRect;)V");
+        }
+
+        void onUnload(JNIEnv* env) {
+            env->DeleteGlobalRef(cls);
+        }
+
+        jobject toJava(JNIEnv* env, const SkCodec::FrameInfo& i) {
+            SkBlendMode blend;
+            switch (i.fBlend) {
+                case SkCodecAnimation::Blend::kSrcOver:
+                    blend = SkBlendMode::kSrcOver;
+                    break;
+                case SkCodecAnimation::Blend::kSrc:
+                    blend = SkBlendMode::kSrc;
+                    break;
+            }
+            return env->NewObject(cls, ctor,
+                                  i.fRequiredFrame,
+                                  i.fDuration,
+                                  i.fFullyReceived,
+                                  static_cast<jint>(i.fAlphaType),
+                                  i.fHasAlphaWithinBounds,
+                                  static_cast<jint>(i.fDisposalMethod),
+                                  static_cast<jint>(blend),
+                                  IRect::fromSkIRect(env, i.fFrameRect));
+        }
+    }
+
     namespace Color4f {
         jclass cls;
         jmethodID ctor;
@@ -684,6 +720,7 @@ namespace skija {
     }
 
     void onLoad(JNIEnv* env) {
+        AnimationFrameInfo::onLoad(env);
         Color4f::onLoad(env);
         Drawable::onLoad(env);
         FontFamilyName::onLoad(env);
@@ -724,6 +761,7 @@ namespace skija {
         FontFamilyName::onUnload(env);
         Drawable::onUnload(env);
         Color4f::onUnload(env);
+        AnimationFrameInfo::onUnload(env);
     }
 }
 std::unique_ptr<SkMatrix> skMatrix(JNIEnv* env, jfloatArray matrixArray) {
@@ -891,7 +929,7 @@ jlong packIPoint(SkIPoint p) {
     return packTwoInts(p.fX, p.fY);
 }
 
-jlong packTwoInt32(SkISize p) {
+jlong packISize(SkISize p) {
     return packTwoInts(p.fWidth, p.fHeight);
 }
 

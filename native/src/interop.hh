@@ -2,6 +2,7 @@
 #include <jni.h>
 #include <memory>
 #include <vector>
+#include "SkCodec.h"
 #include "SkFontMetrics.h"
 #include "SkFontStyle.h"
 #include "SkImageInfo.h"
@@ -70,6 +71,14 @@ namespace java {
 }
 
 namespace skija {
+    namespace AnimationFrameInfo {
+        extern jclass cls;
+        extern jmethodID ctor;
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
+        jobject toJava(JNIEnv* env, const SkCodec::FrameInfo& i);
+    }
+
     namespace Color4f {
         extern jclass cls;
         extern jmethodID ctor;

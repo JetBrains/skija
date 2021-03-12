@@ -97,24 +97,25 @@ APIs:
 ```
 Bitmap               ▓▓▓▓▓▓▓▓▓▓    Paint                ▓▓▓▓▓▓▓▓▓▓
 Canvas               ▓▓▓▓▓▓▓▓░░    Path                 ▓▓▓▓▓▓▓▓▓▓
-Color                ▓░░░░░░░░░    PathEffects          ▓▓▓▓▓▓▓▓▓▓
-ColorFilter          ▓▓▓▓▓▓▓▓▓▓    PathMeasure          ▓▓▓▓▓▓▓▓▓▓
-ColorInfo            ▓▓▓▓▓▓▓▓▓▓    PaintFilterCanvas    ▓▓▓▓▓▓▓▓▓▓
-ColorSpace           ▓▓▓▓░░░░░░    Picture              ▓▓▓▓▓▓▓▓▓░
-Data                 ▓▓▓▓▓▓▓▓▓░    PictureRecorder      ▓▓▓▓▓▓▓▓▓▓
-Drawable             ▓▓▓▓▓▓▓▓░░    PixelRef             ▓▓▓▓▓▓▓▓▓▓
-Flattenable          ░░░░░░░░░░    Pixmap               ░░░░░░░░░░
-Font                 ▓▓▓▓▓▓▓▓▓▓    Region               ▓▓▓▓▓▓▓▓▓▓
-FontData             ░░░░░░░░░░    ScalerContext        ░░░░░░░░░░
-FontManager          ▓▓▓▓▓▓▓▓▓░    Shader               ▓▓▓▓▓▓▓▓▓▓
-FontStyle            ▓▓▓▓▓▓▓▓▓▓    ShadowUtils          ▓▓▓▓▓▓▓▓▓▓
-FontStyleSet         ▓▓▓▓▓▓▓▓▓▓    Stream               ░░░░░░░░░░
-Image                ▓▓░░░░░░░░    String               ▓░░░░░░░░░
-ImageFilters         ▓▓▓▓▓▓▓▓▓▓    Surface              ▓░░░░░░░░░
-ImageInfo            ▓▓▓▓▓▓▓▓▓▓    TextBlob             ▓▓▓▓▓▓▓▓▓▓
-MaskFilter           ▓▓▓▓▓▓▓▓▓▓    TextBlobBuilder      ▓▓▓▓▓▓▓▓▓▓
-Matrix33             ▓▓▓░░░░░░░    Typeface             ▓▓▓▓▓▓▓▓░░
-Matrix44             ▓▓▓░░░░░░░    WStream              ▓▓░░░░░░░░
+Codec                ▓▓▓▓░░░░░░    PathEffects          ▓▓▓▓▓▓▓▓▓▓
+Color                ▓░░░░░░░░░    PathMeasure          ▓▓▓▓▓▓▓▓▓▓
+ColorFilter          ▓▓▓▓▓▓▓▓▓▓    PaintFilterCanvas    ▓▓▓▓▓▓▓▓▓▓
+ColorInfo            ▓▓▓▓▓▓▓▓▓▓    Picture              ▓▓▓▓▓▓▓▓▓░
+ColorSpace           ▓▓▓▓░░░░░░    PictureRecorder      ▓▓▓▓▓▓▓▓▓▓
+Data                 ▓▓▓▓▓▓▓▓▓░    PixelRef             ▓▓▓▓▓▓▓▓▓▓
+Drawable             ▓▓▓▓▓▓▓▓░░    Pixmap               ░░░░░░░░░░
+Flattenable          ░░░░░░░░░░    Region               ▓▓▓▓▓▓▓▓▓▓
+Font                 ▓▓▓▓▓▓▓▓▓▓    ScalerContext        ░░░░░░░░░░
+FontData             ░░░░░░░░░░    Shader               ▓▓▓▓▓▓▓▓▓▓
+FontManager          ▓▓▓▓▓▓▓▓▓░    ShadowUtils          ▓▓▓▓▓▓▓▓▓▓
+FontStyle            ▓▓▓▓▓▓▓▓▓▓    Stream               ░░░░░░░░░░
+FontStyleSet         ▓▓▓▓▓▓▓▓▓▓    String               ▓░░░░░░░░░
+Image                ▓▓░░░░░░░░    Surface              ▓░░░░░░░░░
+ImageFilters         ▓▓▓▓▓▓▓▓▓▓    TextBlob             ▓▓▓▓▓▓▓▓▓▓
+ImageInfo            ▓▓▓▓▓▓▓▓▓▓    TextBlobBuilder      ▓▓▓▓▓▓▓▓▓▓
+MaskFilter           ▓▓▓▓▓▓▓▓▓▓    Typeface             ▓▓▓▓▓▓▓▓░░
+Matrix33             ▓▓▓░░░░░░░    WStream              ▓▓░░░░░░░░
+Matrix44             ▓▓▓░░░░░░░    
 
 Shaper:                            Paragraph:
 
@@ -134,7 +135,6 @@ SVG:
 
 SVGDOM               ▓▓▓▓▓▓▓▓░░
 SVGCanvas            ▓▓▓▓▓▓▓▓▓▓
-
 ```
 
 ## Using Skija
