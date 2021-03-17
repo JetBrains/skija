@@ -34,6 +34,12 @@ namespace java {
             void onUnload(JNIEnv* env);
         }
 
+        namespace RuntimeException {
+            extern jclass cls;
+            void onLoad(JNIEnv* env);
+            void onUnload(JNIEnv* env);
+        }
+
         namespace String {
             extern jclass cls;
             void onLoad(JNIEnv* env);

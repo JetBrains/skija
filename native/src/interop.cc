@@ -39,6 +39,19 @@ namespace java {
             }
         }
 
+        namespace RuntimeException {
+            jclass cls;
+
+            void onLoad(JNIEnv* env) {
+                jclass local = env->FindClass("java/lang/RuntimeException");
+                cls  = static_cast<jclass>(env->NewGlobalRef(local));
+            }
+
+            void onUnload(JNIEnv* env) {
+                env->DeleteGlobalRef(cls);
+            }
+        }
+
         namespace String {
             jclass cls;
 
@@ -111,6 +124,7 @@ namespace java {
     void onLoad(JNIEnv* env) {
         io::OutputStream::onLoad(env);
         lang::Float::onLoad(env);
+        lang::RuntimeException::onLoad(env);
         lang::String::onLoad(env);
         lang::Throwable::onLoad(env);
         util::Iterator::onLoad(env);
@@ -121,6 +135,7 @@ namespace java {
         util::function::BooleanSupplier::onUnload(env);
         util::Iterator::onUnload(env);
         lang::String::onUnload(env);
+        lang::RuntimeException::onUnload(env);
         lang::Float::onUnload(env);
     }
 }
