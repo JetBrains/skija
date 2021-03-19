@@ -696,6 +696,20 @@ namespace skija {
         }
     }
 
+    namespace SamplingMode {
+        SkSamplingOptions unpack(jlong val) {
+            if (0x8000000000000000 & val) {
+                val = val & 0x7FFFFFFFFFFFFFFF;
+                float* ptr = reinterpret_cast<float*>(&val);
+                return SkSamplingOptions(SkCubicResampler {ptr[1], ptr[0]});
+            } else {
+                int32_t filter = (int32_t) ((val >> 32) & 0xFFFFFFFF);
+                int32_t mipmap = (int32_t) (val & 0xFFFFFFFF);
+                return SkSamplingOptions(static_cast<SkFilterMode>(filter), static_cast<SkMipmapMode>(mipmap));
+            }
+        }
+    }
+
     namespace SurfaceProps {
         jmethodID _getFlags;
         jmethodID _getPixelGeometryOrdinal;

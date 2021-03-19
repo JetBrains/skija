@@ -19,9 +19,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '11.0.8'
+      - run: |
+          echo "JAVA_HOME=$JAVA_HOME_11_X64" >> $GITHUB_ENV
+          echo "$JAVA_HOME_11_X64/bin" >> $GITHUB_PATH
       - run: python3 shared/script/deploy.py
         env:
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
@@ -38,9 +38,9 @@ jobs:
         with:
           fetch-depth: 0
       - uses: seanmiddleditch/gha-setup-ninja@master
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '11.0.8'
+      - run: |
+          echo "JAVA_HOME=$JAVA_HOME_11_X64" >> $GITHUB_ENV
+          echo "$JAVA_HOME_11_X64/bin" >> $GITHUB_PATH
       - run: python3 native/script/build.py
       - uses: actions/upload-artifact@v2
         with:
@@ -55,14 +55,15 @@ jobs:
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
 
   linux:
-    runs-on: ubuntu-latest
-    container: tonsky/ubuntu-14.04:latest
+    runs-on: ubuntu-16.04
     needs: shared
     steps:
       - run: |
-          echo "/usr/lib/binutils-2.26/bin" >> $GITHUB_PATH
-          echo "/root/apache-maven-3.6.3/bin" >> $GITHUB_PATH
-          echo "JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" >> $GITHUB_ENV
+          echo "JAVA_HOME=$JAVA_HOME_11_X64" >> $GITHUB_ENV
+          echo "$JAVA_HOME_11_X64/bin" >> $GITHUB_PATH
+          apt --quiet --yes install ninja-build libglu1-mesa-dev
+          update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-9
+          update-alternatives --config gcc
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -89,9 +90,9 @@ jobs:
       - uses: microsoft/setup-msbuild@v1
       - uses: ilammy/msvc-dev-cmd@v1
       - uses: seanmiddleditch/gha-setup-ninja@master
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '11.0.8'
+      - run: |
+          echo "JAVA_HOME=$JAVA_HOME_11_X64" >> $GITHUB_ENV
+          echo "$JAVA_HOME_11_X64/bin" >> $GITHUB_PATH
       - run: python3 native/script/build.py
       - uses: actions/upload-artifact@v2
         with:

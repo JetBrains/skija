@@ -258,6 +258,10 @@ namespace skija {
         void onUnload(JNIEnv* env);
     }
 
+    namespace SamplingMode {
+        SkSamplingOptions unpack(jlong val);
+    }
+
     namespace SurfaceProps {
         extern jmethodID _getFlags;
         extern jmethodID _getPixelGeometryOrdinal;

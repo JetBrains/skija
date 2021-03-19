@@ -240,17 +240,7 @@ public class Image extends RefCnt implements IHasImageInfo {
             assert tmy != null : "Can’t Bitmap.makeShader with tmy == null";
             assert sampling != null : "Can’t Bitmap.makeShader with sampling == null";
             Stats.onNativeCall();
-            long ptr;
-            if (sampling instanceof SamplingMode.FilterMipmap) {
-                var s = (SamplingMode.FilterMipmap) sampling;
-                ptr = _nMakeShader(_ptr, tmx.ordinal(), tmy.ordinal(), s._filterMode.ordinal(), s._mipmapMode.ordinal(), localMatrix == null ? null : localMatrix._mat);
-            } else if (sampling instanceof SamplingMode.CubicResampler) {
-                var s = (SamplingMode.CubicResampler) sampling;
-                ptr = _nMakeShaderCubic(_ptr, tmx.ordinal(), tmy.ordinal(), s._B, s._C, localMatrix == null ? null : localMatrix._mat);
-            } else {
-                throw new IllegalArgumentException("Unknown sampling class: " + sampling);
-            }
-            return new Shader(ptr);
+            return new Shader(_nMakeShader(_ptr, tmx.ordinal(), tmy.ordinal(), sampling._pack(), localMatrix == null ? null : localMatrix._mat));
         } finally {
             Reference.reachabilityFence(this);
         }
@@ -331,8 +321,7 @@ public class Image extends RefCnt implements IHasImageInfo {
     @ApiStatus.Internal public static native long _nMakeFromEncoded(byte[] bytes);
     @ApiStatus.Internal public static native ImageInfo _nGetImageInfo(long ptr);
     @ApiStatus.Internal public static native long _nEncodeToData(long ptr, int format, int quality);
-    @ApiStatus.Internal public static native long    _nMakeShader(long ptr, int tmx, int tmy, int filterMode, int mipmapMode, float[] localMatrix);
-    @ApiStatus.Internal public static native long    _nMakeShaderCubic(long ptr, int tmx, int tmy, float B, float C, float[] localMatrix);
+    @ApiStatus.Internal public static native long    _nMakeShader(long ptr, int tmx, int tmy, long samplingMode, float[] localMatrix);
     @ApiStatus.Internal public static native ByteBuffer _nPeekPixels(long ptr);
     @ApiStatus.Internal public static native boolean _nReadPixelsBitmap(long ptr, long contextPtr, long bitmapPtr, int srcX, int srcY, boolean cache);
 }

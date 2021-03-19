@@ -44,77 +44,66 @@ public class BitmapImageScene extends Scene {
         advance(canvas, width);
 
         // Bitmap + Image.readPixels
-        var bitmap = new Bitmap();
-        bitmap.allocPixels(ImageInfo.makeS32(400, 400, ColorAlphaType.OPAQUE));
-        image.readPixels(bitmap);
-        canvas.drawBitmapRect(bitmap, Rect.makeXYWH(0, 0, 200, 200));
-        canvas.drawString("Image.readPixels", 0, 220, inter13, blackFill);
-        advance(canvas, width);
+        try (var bitmap = new Bitmap();) {
+            bitmap.allocPixels(ImageInfo.makeS32(400, 400, ColorAlphaType.OPAQUE));
+            image.readPixels(bitmap);
+            try (var image = Image.makeFromBitmap(bitmap.setImmutable());) {
+                canvas.drawImageRect(image, Rect.makeXYWH(0, 0, 200, 200));
+            }
+            canvas.drawString("Image.readPixels", 0, 220, inter13, blackFill);
+            advance(canvas, width);
+        }
         
         // Bitmap + Image.readPixels(50, 50)
-        var partialBitmap = new Bitmap();
-        partialBitmap.allocPixels(new ImageInfo(300, 300, ColorType.GRAY_8, ColorAlphaType.OPAQUE));
-        image.readPixels(partialBitmap, 50, 50);
-        canvas.drawBitmapRect(partialBitmap, Rect.makeXYWH(25, 25, 150, 150));
-        canvas.drawString("Image.readPixels(50, 50)", 0, 220, inter13, blackFill);
-        advance(canvas, width);
+        try (var bitmap = new Bitmap();) {
+            bitmap.allocPixels(new ImageInfo(300, 300, ColorType.GRAY_8, ColorAlphaType.OPAQUE));
+            image.readPixels(bitmap, 50, 50);
+            try (var image = Image.makeFromBitmap(bitmap.setImmutable());) {
+                canvas.drawImageRect(image, Rect.makeXYWH(25, 25, 150, 150));
+            }
+            canvas.drawString("Image.readPixels(50, 50)", 0, 220, inter13, blackFill);
+            advance(canvas, width);
+        }
 
-        // Bitmap.makeFromImage
-        var bitmapFromImage = Bitmap.makeFromImage(image);
-        canvas.drawBitmapRect(bitmapFromImage, Rect.makeXYWH(0, 0, 200, 200));
-        canvas.drawString("Bitmap.makeFromImage", 0, 220, inter13, blackFill);
-        advance(canvas, width);
+        byte[] pixels;
+        ImageInfo info;
 
-        // Image.makeFromBitmap
-        var imageFromBitmap = Image.makeFromBitmap(bitmap);
-        canvas.drawImageRect(imageFromBitmap, Rect.makeXYWH(0, 0, 200, 200));
-        canvas.drawString("Image.makeFromBitmap", 0, 220, inter13, blackFill);
-        advance(canvas, width);
-        
         // Bitmap readPixels/installPixels
-        var info = bitmapFromImage.getImageInfo();
-        byte[] pixels = bitmapFromImage.readPixels();
-        pixelSorting(canvas, ByteBuffer.wrap(pixels), info);
-        bitmapFromImage.installPixels(pixels);
-        canvas.drawBitmapRect(bitmapFromImage, Rect.makeXYWH(0, 0, 200, 200));
-        canvas.drawString("Bitmap.readPixels/installPixels", 0, 220, inter13, blackFill);
-        advance(canvas, width);
+        try (var bitmap = Bitmap.makeFromImage(image);) {
+            info = bitmap.getImageInfo();
+            pixels = bitmap.readPixels();
+            pixelSorting(canvas, ByteBuffer.wrap(pixels), info);
+            bitmap.installPixels(pixels);
+            try (var image = Image.makeFromBitmap(bitmap.setImmutable());) {
+                canvas.drawImageRect(image, Rect.makeXYWH(0, 0, 200, 200));
+            }
+            canvas.drawString("Bitmap.readPixels/installPixels", 0, 220, inter13, blackFill);
+            advance(canvas, width);
+        }
 
         // Bitmap peekPixels
-        var bitmapFromImage2 = Bitmap.makeFromImage(image);
-        pixelSorting(canvas, bitmapFromImage2.peekPixels(), info);
-        canvas.drawBitmapRect(bitmapFromImage2, Rect.makeXYWH(0, 0, 200, 200));
-        canvas.drawString("Bitmap.peekPixels", 0, 220, inter13, blackFill);
-        advance(canvas, width);
+        try (var bitmap = Bitmap.makeFromImage(image);) {
+            pixelSorting(canvas, bitmap.peekPixels(), bitmap.getImageInfo());
+            try (var image = Image.makeFromBitmap(bitmap.setImmutable());) {
+                canvas.drawImageRect(image, Rect.makeXYWH(0, 0, 200, 200));
+            }
+            canvas.drawString("Bitmap.peekPixels", 0, 220, inter13, blackFill);
+            advance(canvas, width);
+        }
 
         // Image.makeRaster
-        var imageFromPixels = Image.makeRaster(info, pixels, info.getMinRowBytes());
-        canvas.drawImageRect(imageFromPixels, Rect.makeXYWH(0, 0, 200, 200));
-        canvas.drawString("Image.makeRaster", 0, 220, inter13, blackFill);
-        advance(canvas, width);
+        try (var imageFromPixels = Image.makeRaster(info, pixels, info.getMinRowBytes());) {
+            canvas.drawImageRect(imageFromPixels, Rect.makeXYWH(0, 0, 200, 200));
+            canvas.drawString("Image.makeRaster", 0, 220, inter13, blackFill);
+            advance(canvas, width);
+        }
 
         // Image.makeRaster + Data
-        var imageFromData = Image.makeRaster(info, Data.makeFromBytes(pixels), info.getMinRowBytes());
-        canvas.drawImageRect(imageFromPixels, Rect.makeXYWH(0, 0, 200, 200));
-        canvas.drawString("Image.makeRaster + Data", 0, 220, inter13, blackFill);
-        advance(canvas, width);
-
-        // Image.peekPixels
-        imageFromBitmap.peekPixels().get(pixels);
-        var bitmapFromPeekPixels = new Bitmap();
-        bitmapFromPeekPixels.installPixels(imageFromBitmap.getImageInfo(), pixels, imageFromBitmap.getWidth() * imageFromBitmap.getBytesPerPixel());
-        canvas.drawBitmapRect(bitmapFromPeekPixels, Rect.makeXYWH(0, 0, 200, 200));
-        canvas.drawString("Image.peekPixels " + imageFromBitmap.getColorType() + " -> Bitmap", 0, 220, inter13, blackFill);
-        advance(canvas, width);
-
-        bitmap.close();
-        partialBitmap.close();
-        bitmapFromImage.close();
-        bitmapFromImage2.close();
-        imageFromBitmap.close();
-        imageFromPixels.close();
-        imageFromData.close();
-        bitmapFromPeekPixels.close();
+        try (var imageFromData = Image.makeRaster(info, Data.makeFromBytes(pixels), info.getMinRowBytes());) {
+            canvas.drawImageRect(imageFromData, Rect.makeXYWH(0, 0, 200, 200));
+            canvas.drawString("Image.makeRaster + Data", 0, 220, inter13, blackFill);
+            advance(canvas, width);
+        }
     }
 
     public static float luminocity(ColorType colorType, int color) {

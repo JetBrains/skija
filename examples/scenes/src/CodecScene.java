@@ -27,7 +27,7 @@ public class CodecScene extends Scene {
     public CodecScene() {
         for (var file: new String[] {"bmp.bmp", "gif.gif", "favicon.ico", "dotpeek.ico", "jpeg.jpg", "png.png", "webp_lossy.webp", "webp_loseless.webp"}) {
             try (var codec = Codec.makeFromData(Data.makeFromFileName(file("images/codecs/" + file)))) {
-                formats.add(new Pair(file + "\n" + codec.getEncodedImageFormat(), codec.readPixels()));
+                formats.add(new Pair(file + "\n" + codec.getEncodedImageFormat(), codec.readPixels().setImmutable()));
             } catch (Exception e) {
                 formats.add(new Pair(file + "\n" + e.getMessage(), null));
             }
@@ -79,7 +79,11 @@ public class CodecScene extends Scene {
                     canvas.drawLine(0, rowH, columnW, 0, stroke);
                 });
             } else {
-                drawOne(canvas, width, label, () -> { canvas.drawBitmapRect(bitmap, Rect.makeXYWH(0, 0, columnW, rowH)); });
+                drawOne(canvas, width, label, () -> {
+                    try (var image = Image.makeFromBitmap(bitmap);) {
+                        canvas.drawImageRect(image, Rect.makeXYWH(0, 0, columnW, rowH));
+                    }
+                });
             }
         }
 
@@ -89,13 +93,15 @@ public class CodecScene extends Scene {
             var label = pair.getFirst();
             var codec = pair.getSecond();
             var origin = codec.getEncodedOrigin();
-            try (var bitmap = codec.readPixels()) {
+            try (var bitmap = codec.readPixels().setImmutable()) {
                 int bitmapWidth = origin.swapsWidthHeight() ? codec.getHeight() : codec.getWidth();
                 int bitmapHeight = origin.swapsWidthHeight() ? codec.getWidth() : codec.getHeight();
                 drawOne(canvas, width, label + "\n" + codec.getEncodedImageFormat(), () -> {
                     canvas.save();
                     canvas.concat(origin.toMatrix(bitmapWidth, bitmapHeight));
-                    canvas.drawBitmapRect(bitmap, Rect.makeXYWH(0, 0, codec.getWidth(), codec.getHeight()));
+                    try (var image = Image.makeFromBitmap(bitmap);) {
+                        canvas.drawImageRect(image, Rect.makeXYWH(0, 0, codec.getWidth(), codec.getHeight()));
+                    }
                     canvas.restore();
                     canvas.drawRect(Rect.makeXYWH(0, 0, bitmapWidth, bitmapHeight), stroke);
                 });
@@ -124,13 +130,17 @@ public class CodecScene extends Scene {
                 try (var bitmap = new Bitmap()) {
                     bitmap.allocPixels(codec.getImageInfo());
                     codec.readPixels(bitmap, finalFrame);
-                    canvas.drawBitmapRect(bitmap, Rect.makeXYWH(0, 0, columnW, rowH));
+                    try (var image = Image.makeFromBitmap(bitmap.setImmutable());) {
+                        canvas.drawImageRect(image, Rect.makeXYWH(0, 0, columnW, rowH));
+                    }
                 }
             });
 
             drawOne(canvas, width, label + "\n" + codec.getEncodedImageFormat() + " + priorFrame", () -> {
                 codec.readPixels(animation.bitmap, finalFrame, animation.prevFrame);
-                canvas.drawBitmapRect(animation.bitmap, Rect.makeXYWH(0, 0, columnW, rowH));
+                try (var image = Image.makeFromBitmap(animation.bitmap);) {
+                    canvas.drawImageRect(image, Rect.makeXYWH(0, 0, columnW, rowH));
+                }
             });
         }
     }

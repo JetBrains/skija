@@ -77,7 +77,7 @@ public class ColorFiltersScene extends Scene {
                 canvas.save();
                 for (ColorFilter filter: filters[i]) {
                     paint.setColorFilter(filter);
-                    canvas.drawImageRect(image, Rect.makeXYWH(0, 0, 160, 160), paint);
+                    canvas.drawImageRect(image, Rect.makeWH(image.getWidth(), image.getHeight()), Rect.makeXYWH(0, 0, 160, 160), SamplingMode.LINEAR, paint, false);
                     if (i < filters.length - 1)
                        filter.close();
                     canvas.translate(170, 0);

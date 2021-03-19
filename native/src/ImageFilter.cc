@@ -1,5 +1,6 @@
 #include <iostream>
 #include <jni.h>
+#include "interop.hh"
 #include "SkColorFilter.h"
 #include "SkImageFilter.h"
 #include "SkImageFilters.h"
@@ -22,6 +23,16 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ImageFilter__1nMakeA
     SkImageFilter* fg = reinterpret_cast<SkImageFilter*>(static_cast<uintptr_t>(fgPtr));
     std::unique_ptr<SkIRect> crop = skija::IRect::toSkIRect(env, cropObj);
     SkImageFilter* ptr = SkImageFilters::Arithmetic(k1, k2, k3, k4, enforcePMColor, sk_ref_sp(bg), sk_ref_sp(fg), crop.get()).release();
+    return reinterpret_cast<jlong>(ptr);
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ImageFilter__1nMakeBlend
+  (JNIEnv* env, jclass jclass, jint blendModeInt, jlong bgPtr, jlong fgPtr, jobject cropObj) {
+    SkBlendMode blendMode = static_cast<SkBlendMode>(blendModeInt);
+    SkImageFilter* bg = reinterpret_cast<SkImageFilter*>(static_cast<uintptr_t>(bgPtr));
+    SkImageFilter* fg = reinterpret_cast<SkImageFilter*>(static_cast<uintptr_t>(fgPtr));
+    std::unique_ptr<SkIRect> crop = skija::IRect::toSkIRect(env, cropObj);
+    SkImageFilter* ptr = SkImageFilters::Blend(blendMode, sk_ref_sp(bg), sk_ref_sp(fg), crop.get()).release();
     return reinterpret_cast<jlong>(ptr);
 }
 
@@ -79,10 +90,9 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ImageFilter__1nMakeD
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ImageFilter__1nMakeImage
-  (JNIEnv* env, jclass jclass, jlong imagePtr, jfloat l0, jfloat t0, jfloat r0, jfloat b0, jfloat l1, jfloat t1, jfloat r1, jfloat b1, jint filterQualityInt) {
+  (JNIEnv* env, jclass jclass, jlong imagePtr, jfloat l0, jfloat t0, jfloat r0, jfloat b0, jfloat l1, jfloat t1, jfloat r1, jfloat b1, jlong samplingMode) {
     SkImage* image = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(imagePtr));
-    SkFilterQuality filterQuality = static_cast<SkFilterQuality>(filterQualityInt);
-    SkImageFilter* ptr = SkImageFilters::Image(sk_ref_sp(image), SkRect{l0, t0, r0, b0}, SkRect{l1, t1, r1, b1}, filterQuality).release();
+    SkImageFilter* ptr = SkImageFilters::Image(sk_ref_sp(image), SkRect{l0, t0, r0, b0}, SkRect{l1, t1, r1, b1}, skija::SamplingMode::unpack(samplingMode)).release();
     return reinterpret_cast<jlong>(ptr);
 }
 
@@ -106,11 +116,10 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ImageFilter__1nMakeM
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ImageFilter__1nMakeMatrixTransform
-  (JNIEnv* env, jclass jclass, jfloatArray matrixArray, jint filterQualityInt, jlong inputPtr) {
+  (JNIEnv* env, jclass jclass, jfloatArray matrixArray, jlong samplingMode, jlong inputPtr) {
     std::unique_ptr<SkMatrix> matrix = skMatrix(env, matrixArray);
-    SkFilterQuality filterQuality = static_cast<SkFilterQuality>(filterQualityInt);
     SkImageFilter* input = reinterpret_cast<SkImageFilter*>(static_cast<uintptr_t>(inputPtr));
-    SkImageFilter* ptr = SkImageFilters::MatrixTransform(*matrix, filterQuality, sk_ref_sp(input)).release();
+    SkImageFilter* ptr = SkImageFilters::MatrixTransform(*matrix, skija::SamplingMode::unpack(samplingMode), sk_ref_sp(input)).release();
     return reinterpret_cast<jlong>(ptr);
 }
 
@@ -156,16 +165,6 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ImageFilter__1nMakeT
   (JNIEnv* env, jclass jclass, jfloat l0, jfloat t0, jfloat r0, jfloat b0, jfloat l1, jfloat t1, jfloat r1, jfloat b1, jlong inputPtr) {
     SkImageFilter* input = reinterpret_cast<SkImageFilter*>(static_cast<uintptr_t>(inputPtr));
     SkImageFilter* ptr = SkImageFilters::Tile(SkRect{l0, t0, r0, b0}, SkRect{l1, t1, r1, b1}, sk_ref_sp(input)).release();
-    return reinterpret_cast<jlong>(ptr);
-}
-
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_ImageFilter__1nMakeXfermode
-  (JNIEnv* env, jclass jclass, jint blendModeInt, jlong bgPtr, jlong fgPtr, jobject cropObj) {
-    SkBlendMode blendMode = static_cast<SkBlendMode>(blendModeInt);
-    SkImageFilter* bg = reinterpret_cast<SkImageFilter*>(static_cast<uintptr_t>(bgPtr));
-    SkImageFilter* fg = reinterpret_cast<SkImageFilter*>(static_cast<uintptr_t>(fgPtr));
-    std::unique_ptr<SkIRect> crop = skija::IRect::toSkIRect(env, cropObj);
-    SkImageFilter* ptr = SkImageFilters::Xfermode(blendMode, sk_ref_sp(bg), sk_ref_sp(fg), crop.get()).release();
     return reinterpret_cast<jlong>(ptr);
 }
 

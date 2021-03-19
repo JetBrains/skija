@@ -96,47 +96,24 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawPath
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawImageRect
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong imagePtr, jfloat sl, jfloat st, jfloat sr, jfloat sb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jlong paintPtr, jboolean strict) {
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong imagePtr, jfloat sl, jfloat st, jfloat sr, jfloat sb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jlong samplingMode, jlong paintPtr, jboolean strict) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
     SkImage* image = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(imagePtr));
     SkRect src {sl, st, sr, sb};
     SkRect dst {dl, dt, dr, db};
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
     SkCanvas::SrcRectConstraint constraint = strict ? SkCanvas::SrcRectConstraint::kStrict_SrcRectConstraint : SkCanvas::SrcRectConstraint::kFast_SrcRectConstraint;
-    canvas->drawImageRect(image, src, dst, paint, constraint);
+    canvas->drawImageRect(image, src, dst, skija::SamplingMode::unpack(samplingMode), paint, constraint);
 }
 
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawImageIRect
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong imagePtr, jint sl, jint st, jint sr, jint sb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jlong paintPtr, jboolean strict) {
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawImageNine
+  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong imagePtr, jint cl, jint ct, jint cr, jint cb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jint filterMode, jlong paintPtr) {
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
     SkImage* image = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(imagePtr));
-    SkIRect src {sl, st, sr, sb};
+    SkIRect center {cl, ct, cr, cb};
     SkRect dst {dl, dt, dr, db};
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
-    SkCanvas::SrcRectConstraint constraint = strict ? SkCanvas::SrcRectConstraint::kStrict_SrcRectConstraint : SkCanvas::SrcRectConstraint::kFast_SrcRectConstraint;
-    canvas->drawImageRect(image, src, dst, paint, constraint);
-}
-
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawBitmapRect
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong bitmapPtr, jfloat sl, jfloat st, jfloat sr, jfloat sb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jlong paintPtr, jboolean strict) {
-    SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
-    SkBitmap* bitmap = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(bitmapPtr));
-    SkRect src {sl, st, sr, sb};
-    SkRect dst {dl, dt, dr, db};
-    SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
-    SkCanvas::SrcRectConstraint constraint = strict ? SkCanvas::SrcRectConstraint::kStrict_SrcRectConstraint : SkCanvas::SrcRectConstraint::kFast_SrcRectConstraint;
-    canvas->drawBitmapRect(*bitmap, src, dst, paint, constraint);
-}
-
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawBitmapIRect
-  (JNIEnv* env, jclass jclass, jlong canvasPtr, jlong bitmapPtr, jint sl, jint st, jint sr, jint sb, jfloat dl, jfloat dt, jfloat dr, jfloat db, jlong paintPtr, jboolean strict) {
-    SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
-    SkBitmap* bitmap = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(bitmapPtr));
-    SkIRect src {sl, st, sr, sb};
-    SkRect dst {dl, dt, dr, db};
-    SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
-    SkCanvas::SrcRectConstraint constraint = strict ? SkCanvas::SrcRectConstraint::kStrict_SrcRectConstraint : SkCanvas::SrcRectConstraint::kFast_SrcRectConstraint;
-    canvas->drawBitmapRect(*bitmap, src, dst, paint, constraint);
+    canvas->drawImageNine(image, center, dst, static_cast<SkFilterMode>(filterMode), paint);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Canvas__1nDrawRegion

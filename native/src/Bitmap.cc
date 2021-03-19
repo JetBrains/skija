@@ -260,19 +260,9 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Bitmap__1nPeekPixe
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Bitmap__1nMakeShader
-  (JNIEnv* env, jclass jclass, jlong ptr, jint tmx, jint tmy, jint filterMode, jint mipmapMode, jfloatArray localMatrixArr) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jint tmx, jint tmy, jlong samplingMode, jfloatArray localMatrixArr) {
     SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
-    SkSamplingOptions sampling(static_cast<SkFilterMode>(filterMode), static_cast<SkMipmapMode>(mipmapMode));
     std::unique_ptr<SkMatrix> localMatrix = skMatrix(env, localMatrixArr);
-    sk_sp<SkShader> shader = instance->makeShader(static_cast<SkTileMode>(tmx), static_cast<SkTileMode>(tmy), sampling, localMatrix.get());
-    return reinterpret_cast<jlong>(shader.release());
-}
-
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Bitmap__1nMakeShaderCubic
-  (JNIEnv* env, jclass jclass, jlong ptr, jint tmx, jint tmy, jfloat B, jfloat C, jfloatArray localMatrixArr) {
-    SkBitmap* instance = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(ptr));
-    SkSamplingOptions sampling(SkCubicResampler{B, C});
-    std::unique_ptr<SkMatrix> localMatrix = skMatrix(env, localMatrixArr);
-    sk_sp<SkShader> shader = instance->makeShader(static_cast<SkTileMode>(tmx), static_cast<SkTileMode>(tmy), sampling, localMatrix.get());
+    sk_sp<SkShader> shader = instance->makeShader(static_cast<SkTileMode>(tmx), static_cast<SkTileMode>(tmy), skija::SamplingMode::unpack(samplingMode), localMatrix.get());
     return reinterpret_cast<jlong>(shader.release());
 }

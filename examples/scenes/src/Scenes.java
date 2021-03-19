@@ -6,7 +6,7 @@ import org.jetbrains.skija.*;
 
 public class Scenes {
     public static TreeMap<String, Scene> scenes;
-    public static String currentScene = "Break Iterator";
+    public static String currentScene = "Codec";
     public static HUD hud = new HUD();
     public static boolean vsync = true;
     public static boolean stats = true;
@@ -42,13 +42,13 @@ public class Scenes {
         scenes.put("Pythagoras", null);
         scenes.put("Run Handler", null);
         scenes.put("Run Iterator", null);
+        scenes.put("SVG", null);
+        scenes.put("SVG Scaling", null);
         scenes.put("Shaders", null);
         scenes.put("Shadow Utils", null);
         scenes.put("Shapers", null);
         scenes.put("Skottie", null);
         scenes.put("Squares", null);
-        scenes.put("SVG", null);
-        scenes.put("SVG Scaling", null);
         scenes.put("Swing", null);
         scenes.put("Text Shape Bench", null);
         scenes.put("Text Style", null);
@@ -57,7 +57,6 @@ public class Scenes {
         scenes.put("Text Line Decorations", null);
         scenes.put("Wall Of Text", null);
         scenes.put("Watches", null);
-
         setScene(currentScene);
     }
 

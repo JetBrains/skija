@@ -721,7 +721,7 @@ class SkiaGraphics extends java.awt.Graphics2D {
             log("[+] drawImage dx1=%d dy1=%d dx2=%d dy2=%d sx1=%d sy1=%d sx2=%d sy2=%d color=%s observer=%s", dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, bgcolor, observer);
             beforeDraw();
             try (Image image = ((SkiaVolatileImage) img).surface.makeImageSnapshot();) {
-                canvas.drawImageIRect(image, IRect.makeLTRB(sx1, sy1, sx2, sy2), Rect.makeLTRB(dx1, dy1, dx2, dy2));
+                canvas.drawImageRect(image, Rect.makeLTRB(sx1, sy1, sx2, sy2), Rect.makeLTRB(dx1, dy1, dx2, dy2));
 //                canvas.drawImage(image, 200, 200);
             }
 //            try (var paint = new Paint().setColor(0x20FF0000)) {
@@ -737,21 +737,21 @@ class SkiaGraphics extends java.awt.Graphics2D {
             log("[+] drawImage dx1=%d dy1=%d dx2=%d dy2=%d sx1=%d sy1=%d sx2=%d sy2=%d color=%s observer=%s", dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, bgcolor, observer);
             beforeDraw();
             java.awt.image.BufferedImage bi = (java.awt.image.BufferedImage) img;
-            canvas.drawBitmapIRect(skBitmap(bi), IRect.makeLTRB(sx1, sy1, sx2, sy2), Rect.makeLTRB(dx1, dy1, dx2, dy2));
+            canvas.drawImageRect(skImage(bi), Rect.makeLTRB(sx1, sy1, sx2, sy2), Rect.makeLTRB(dx1, dy1, dx2, dy2));
         } else {
             log("drawImage %s dx1=%d dy1=%d dx2=%d dy2=%d sx1=%d sy1=%d sx2=%d sy2=%d color=%s observer=%s", img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, bgcolor, observer);
         }
         return false;
     }
 
-    public static final Map<java.awt.image.BufferedImage, Bitmap> rasterCache = new ConcurrentHashMap<>();
+    public static final Map<java.awt.image.BufferedImage, Image> rasterCache = new ConcurrentHashMap<>();
 
-    public Bitmap skBitmap(java.awt.image.BufferedImage bi) {
-        Bitmap b = rasterCache.get(bi);
-        if (b != null)
-            return b;
+    public Image skImage(java.awt.image.BufferedImage bi) {
+        Image i = rasterCache.get(bi);
+        if (i != null)
+            return i;
 
-        b = new Bitmap();
+        Bitmap b = new Bitmap();
         b.allocN32Pixels(bi.getWidth(), bi.getHeight());
         for (int x = 0; x < bi.getWidth(); ++x) {
             for (int y = 0; y < bi.getHeight(); ++y) {
@@ -759,8 +759,9 @@ class SkiaGraphics extends java.awt.Graphics2D {
                 b.erase(color, IRect.makeXYWH(x, y, 1, 1));
             }
         }
-        rasterCache.put(bi, b);
-        return b;
+        i = Image.makeFromBitmap(b);
+        rasterCache.put(bi, i);
+        return i;
     }
 
     @Override

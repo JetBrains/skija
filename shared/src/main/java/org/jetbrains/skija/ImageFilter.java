@@ -29,6 +29,16 @@ public class ImageFilter extends RefCnt {
         }
     }
 
+    public static ImageFilter makeBlend(BlendMode blendMode, ImageFilter bg, ImageFilter fg, IRect crop) {
+        try {
+            Stats.onNativeCall();
+            return new ImageFilter(_nMakeBlend(blendMode.ordinal(), Native.getPtr(bg), Native.getPtr(fg), crop));
+        } finally {
+            Reference.reachabilityFence(bg);
+            Reference.reachabilityFence(fg);
+        }
+    }
+
     public static ImageFilter makeBlur(float sigmaX, float sigmaY, FilterTileMode mode) {
         return makeBlur(sigmaX, sigmaY, mode, null, null);
     }
@@ -100,13 +110,13 @@ public class ImageFilter extends RefCnt {
 
     public static ImageFilter makeImage(Image image) {
         Rect r = Rect.makeWH(image.getWidth(), image.getHeight());
-        return makeImage(image, r, r, FilterQuality.HIGH);
+        return makeImage(image, r, r, SamplingMode.DEFAULT);
     }
 
-    public static ImageFilter makeImage(Image image, Rect src, Rect dst, FilterQuality q) {
+    public static ImageFilter makeImage(Image image, Rect src, Rect dst, SamplingMode mode) {
         try {
             Stats.onNativeCall();
-            return new ImageFilter(_nMakeImage(Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, q.ordinal()));
+            return new ImageFilter(_nMakeImage(Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, mode._pack()));
         } finally {
             Reference.reachabilityFence(image);
         }
@@ -130,10 +140,10 @@ public class ImageFilter extends RefCnt {
         }
     }
 
-    public static ImageFilter makeMatrixTransform(Matrix33 matrix, FilterQuality q, ImageFilter input) {
+    public static ImageFilter makeMatrixTransform(Matrix33 matrix, SamplingMode mode, ImageFilter input) {
         try {
             Stats.onNativeCall();
-            return new ImageFilter(_nMakeMatrixTransform(matrix.getMat(), q.ordinal(), Native.getPtr(input)));
+            return new ImageFilter(_nMakeMatrixTransform(matrix.getMat(), mode._pack(), Native.getPtr(input)));
         } finally {
             Reference.reachabilityFence(input);
         }
@@ -179,16 +189,6 @@ public class ImageFilter extends RefCnt {
             return new ImageFilter(_nMakeTile(src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(input)));
         } finally {
             Reference.reachabilityFence(input);
-        }
-    }
-
-    public static ImageFilter makeXfermode(BlendMode blendMode, ImageFilter bg, ImageFilter fg, IRect crop) {
-        try {
-            Stats.onNativeCall();
-            return new ImageFilter(_nMakeXfermode(blendMode.ordinal(), Native.getPtr(bg), Native.getPtr(fg), crop));
-        } finally {
-            Reference.reachabilityFence(bg);
-            Reference.reachabilityFence(fg);
         }
     }
 
@@ -271,22 +271,22 @@ public class ImageFilter extends RefCnt {
     
     public static native long _nMakeAlphaThreshold(long regionPtr, float innerMin, float outerMax, long input, IRect crop);
     public static native long _nMakeArithmetic(float k1, float k2, float k3, float k4, boolean enforcePMColor, long bg, long fg, IRect crop);
+    public static native long _nMakeBlend(int blendMode, long bg, long fg, IRect crop);
     public static native long _nMakeBlur(float sigmaX, float sigmaY, int tileMode, long input, IRect crop);
     public static native long _nMakeColorFilter(long colorFilterPtr, long input, IRect crop);
     public static native long _nMakeCompose(long outer, long inner);
     public static native long _nMakeDisplacementMap(int xChan, int yChan, float scale, long displacement, long color, IRect crop);
     public static native long _nMakeDropShadow(float dx, float dy, float sigmaX, float sigmaY, int color, long input, IRect crop);
     public static native long _nMakeDropShadowOnly(float dx, float dy, float sigmaX, float sigmaY, int color, long input, IRect crop);
-    public static native long _nMakeImage(long image, float l0, float t0, float r0, float b0, float l1, float t1, float r1, float b1, int filterQuality);
+    public static native long _nMakeImage(long image, float l0, float t0, float r0, float b0, float l1, float t1, float r1, float b1, long samplingMode);
     public static native long _nMakeMagnifier(float l, float t, float r, float b, float inset, long input, IRect crop);
     public static native long _nMakeMatrixConvolution(int kernelW, int kernelH, float[] kernel, float gain, float bias, int offsetX, int offsetY, int tileMode, boolean convolveAlpha, long input, IRect crop);
-    public static native long _nMakeMatrixTransform(float[] matrix, int filterQuality, long input);
+    public static native long _nMakeMatrixTransform(float[] matrix, long samplingMode, long input);
     public static native long _nMakeMerge(long[] filters, IRect crop);
     public static native long _nMakeOffset(float dx, float dy, long input, IRect crop);
     public static native long _nMakePaint(long paint, IRect crop);
     public static native long _nMakePicture(long picture, float l, float t, float r, float b);
     public static native long _nMakeTile(float l0, float t0, float r0, float b0, float l1, float t1, float r1, float b1, long input);
-    public static native long _nMakeXfermode(int blendMode, long bg, long fg, IRect crop);
     public static native long _nMakeDilate(float rx, float ry, long input, IRect crop);
     public static native long _nMakeErode(float rx, float ry, long input, IRect crop);
     public static native long _nMakeDistantLitDiffuse(float x, float y, float z, int lightColor, float surfaceScale, float kd, long input, IRect crop);

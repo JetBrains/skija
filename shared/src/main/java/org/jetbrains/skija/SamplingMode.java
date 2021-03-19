@@ -3,37 +3,15 @@ package org.jetbrains.skija;
 import lombok.*;
 import org.jetbrains.annotations.*;
 
+/**
+ * @see FilterMipmap
+ * @see CubicResampler
+ */
 public interface SamplingMode {
     public static final SamplingMode DEFAULT = new FilterMipmap(FilterMode.NEAREST, MipmapMode.NONE);
+    public static final SamplingMode LINEAR = new FilterMipmap(FilterMode.LINEAR, MipmapMode.NONE);
     public static final SamplingMode MITCHELL = new CubicResampler(0.33333334f, 0.33333334f);
     public static final SamplingMode CATMULL_ROM = new CubicResampler(0, 0.5f);
 
-    @lombok.Data
-    public static class FilterMipmap implements SamplingMode {
-        @ApiStatus.Internal public final FilterMode _filterMode;
-        @ApiStatus.Internal public final MipmapMode _mipmapMode;
-    }
-
-    /**
-     * <p>Specify B and C (each between 0...1) to create a shader that applies the corresponding
-     * cubic reconstruction filter to the image.</p>
-     *
-     * <p>Example values:</p>
-     * <dl>
-     * <dt>B = 1/3, C = 1/3</dt><dd>"Mitchell" filter</dd>
-     * <dt>B = 0,   C = 1/2</dt><dd>"Catmull-Rom" filter</dd>
-     * </dl>
-     *
-     * <p>See</p>
-     * <ul>
-     * <li>"Reconstruction Filters in Computer Graphics" Don P. Mitchell, Arun N. Netravali, 1988
-     * <a href="https://www.cs.utexas.edu/~fussell/courses/cs384g-fall2013/lectures/mitchell/Mitchell.pdf">https://www.cs.utexas.edu/~fussell/courses/cs384g-fall2013/lectures/mitchell/Mitchell.pdf</a></li>
-     * <li>Desmos worksheet <a href="https://www.desmos.com/calculator/aghdpicrvr">https://www.desmos.com/calculator/aghdpicrvr</a></li>
-     * <li>Nice overview <a href="https://entropymine.com/imageworsener/bicubic/">https://entropymine.com/imageworsener/bicubic/</a></li>
-     * </ul>
-     */
-    @lombok.Data
-    public static class CubicResampler implements SamplingMode {
-        @ApiStatus.Internal public final float _B, _C;
-    }
+    @ApiStatus.Internal long _pack();
 }

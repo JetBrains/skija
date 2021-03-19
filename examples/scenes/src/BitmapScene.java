@@ -39,8 +39,11 @@ public class BitmapScene extends Scene {
     private void drawGray(Canvas canvas, IRect target, float dpi) {        
         try (Bitmap bitmap = new Bitmap();) {
             bitmap.allocPixels(new ImageInfo((int) (target.getWidth() * dpi), (int) (target.getHeight() * dpi), ColorType.GRAY_8, ColorAlphaType.OPAQUE));
-            if (canvas.readPixels(bitmap, (int) ((target.getLeft() - 10) * dpi), (int) ((target.getTop() - 10) * dpi)))
-                canvas.writePixels(bitmap, (int) (target.getLeft() * dpi), (int) (target.getTop() * dpi));
+            if (canvas.readPixels(bitmap, (int) ((target.getLeft() - 10) * dpi), (int) ((target.getTop() - 10) * dpi))) {
+                try (Image image = Image.makeFromBitmap(bitmap.setImmutable())) {
+                    canvas.drawImageRect(image, target.toRect());
+                }
+            }
         }
 
         try(var stroke = new Paint().setColor(0xFFE5E5E5).setMode(PaintMode.STROKE).setStrokeWidth(1);) {
@@ -102,7 +105,10 @@ public class BitmapScene extends Scene {
                 .lineTo(target.getWidth() / 2, target.getHeight() / 2 + target.getWidth() / 2)
                 .closePath();
             canvas2.drawPath(path, stroke);
-            canvas.drawBitmapRect(bitmap, target.toRect());
+
+            try (Image image = Image.makeFromBitmap(bitmap.setImmutable())) {
+                canvas.drawImageRect(image, target.toRect());
+            }
         }
 
         try(var stroke = new Paint().setColor(0xFFE5E5E5).setMode(PaintMode.STROKE).setStrokeWidth(1);) {
@@ -138,7 +144,9 @@ public class BitmapScene extends Scene {
 
                 bitmap.installPixels(dstInfo, pixels, rowBytes);
                 bitmap.notifyPixelsChanged();
-                canvas.drawBitmapRect(bitmap, inner.toRect());
+                try (var image = Image.makeFromBitmap(bitmap.setImmutable());) {
+                    canvas.drawImageRect(image, inner.toRect());
+                }
             }
         }
 
@@ -155,7 +163,9 @@ public class BitmapScene extends Scene {
             src.allocPixels(srcInfo);
             if (canvas.readPixels(src, (int) (target.getLeft() * dpi), (int) (target.getTop() * dpi))) {
                 src.extractSubset(dst, Rect.makeXYWH(target.getWidth() / 4 * dpi, target.getHeight() / 4 * dpi, target.getWidth() / 2 * dpi, target.getHeight() / 2 * dpi).toIRect());
-                canvas.drawBitmapRect(dst, target.toRect());
+                try (var image = Image.makeFromBitmap(dst.setImmutable());) {
+                    canvas.drawImageRect(image, target.toRect());
+                }
             }
         }
 
@@ -172,10 +182,11 @@ public class BitmapScene extends Scene {
             src.allocPixels(info);
             if (canvas.readPixels(src, (int) (target.getLeft() * dpi), (int) (target.getTop() * dpi))) {
                 var pixelRef = src.getPixelRef();
-
                 dst.setImageInfo(info.withWidthHeight((int) (target.getWidth() / 2 * dpi), (int) (target.getHeight() / 2 * dpi)));
                 dst.setPixelRef(pixelRef, (int) (target.getWidth() / 4 * dpi), (int) (target.getHeight() / 4 * dpi));
-                canvas.drawBitmapRect(dst, target.toRect());
+                try (var image = Image.makeFromBitmap(dst.setImmutable());) {
+                    canvas.drawImageRect(image, target.toRect());
+                }
             }
         }
 
@@ -197,10 +208,14 @@ public class BitmapScene extends Scene {
                 int color = (alpha << 24) | (alpha << 16) | (0 << 8) | (255 - alpha);
                 src.erase(color, IRect.makeXYWH(x, 0, 1, (int) (target.getHeight() / 2 * dpi)));
             }
-            canvas.drawBitmapRect(src, Rect.makeXYWH(target.getLeft(), target.getTop(), target.getWidth(), target.getHeight() / 2));
+            try (var image = Image.makeFromBitmap(src.setImmutable());) {
+                canvas.drawImageRect(image, Rect.makeXYWH(target.getLeft(), target.getTop(), target.getWidth(), target.getHeight() / 2));
+            }
 
             if (src.extractAlpha(dst)) {
-                canvas.drawBitmapRect(dst, Rect.makeXYWH(target.getLeft(), target.getTop() + target.getHeight() / 2, target.getWidth(), target.getHeight() / 2));
+                try (var image = Image.makeFromBitmap(dst.setImmutable());) {
+                    canvas.drawImageRect(image, Rect.makeXYWH(target.getLeft(), target.getTop() + target.getHeight() / 2, target.getWidth(), target.getHeight() / 2));
+                }
             }
         }
 

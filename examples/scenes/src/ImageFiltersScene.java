@@ -80,7 +80,7 @@ public class ImageFiltersScene extends Scene {
                     ColorFilter.makeBlend(0x800000FF, BlendMode.SRC_OVER),
                     ImageFilter.makeDropShadow(0, 0, 10, 10, 0xFF000000),
                     bb),
-                ImageFilter.makeImage(image, Rect.makeXYWH(200, 200, 200, 200), Rect.makeXYWH(10, 10, 40, 40), FilterQuality.LOW),
+                ImageFilter.makeImage(image, Rect.makeXYWH(200, 200, 200, 200), Rect.makeXYWH(10, 10, 40, 40), CubicResampler.MITCHELL),
             };
 
             for (var filter: filters) {

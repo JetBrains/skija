@@ -215,8 +215,6 @@ cd skija
 
 For building Skia itself, see https://github.com/JetBrains/skia-build/
 
-NOTE for Linux: Prebuilt Skia we provide is built on Ubuntu 14.04. When compiling binary part of Skija, either use Ubuntu 14.04 or our [Dockerfile](./Dockerfile). 
-
 ## Running examples
 
 Examples require latest master build of Skija installed locally in `.m2` (see [Building Skija](#building-skija-from-scratch)).

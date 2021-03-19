@@ -305,144 +305,61 @@ public class Canvas extends Managed {
 
     @NotNull @Contract("_, _, _ -> this")
     public Canvas drawImage(@NotNull Image image, float left, float top) {
-        return drawImage(image, left, top, null);
+        return drawImageRect(image, Rect.makeWH(image.getWidth(), image.getHeight()), Rect.makeXYWH(left, top, image.getWidth(), image.getHeight()), SamplingMode.DEFAULT, null, true);
     }
 
     @NotNull @Contract("_, _, _, _ -> this")
     public Canvas drawImage(@NotNull Image image, float left, float top, @Nullable Paint paint) {
-        assert image != null : "Can’t drawImage with image == null";
-        Stats.onNativeCall();
-        _nDrawImageIRect(_ptr, Native.getPtr(image), 0, 0, image.getWidth(), image.getHeight(), left, top, left + image.getWidth(), top + image.getHeight(), Native.getPtr(paint), true);
-        Reference.reachabilityFence(image);
-        Reference.reachabilityFence(paint);
-        return this;
+        return drawImageRect(image, Rect.makeWH(image.getWidth(), image.getHeight()), Rect.makeXYWH(left, top, image.getWidth(), image.getHeight()), SamplingMode.DEFAULT, paint, true);
     }
 
     @NotNull @Contract("_, _ -> this")
     public Canvas drawImageRect(@NotNull Image image, @NotNull Rect dst) {
-        return drawImageRect(image, dst, null);
+        return drawImageRect(image, Rect.makeWH(image.getWidth(), image.getHeight()), dst, SamplingMode.DEFAULT, null, true);
     }
 
     @NotNull @Contract("_, _, _ -> this")
     public Canvas drawImageRect(@NotNull Image image, @NotNull Rect dst, @Nullable Paint paint) {
-        assert image != null : "Can’t drawImageRect with image == null";
-        assert dst != null : "Can’t drawImageRect with dst == null";
-        Stats.onNativeCall();
-        _nDrawImageIRect(_ptr, Native.getPtr(image), 0, 0, image.getWidth(), image.getHeight(), dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), true);
-        Reference.reachabilityFence(image);
-        Reference.reachabilityFence(paint);
-        return this;
+        return drawImageRect(image, Rect.makeWH(image.getWidth(), image.getHeight()), dst, SamplingMode.DEFAULT, paint, true);
+    }
+
+    @NotNull @Contract("_, _, _, _ -> this")
+    public Canvas drawImageRect(@NotNull Image image, @NotNull Rect src, @NotNull Rect dst) {
+        return drawImageRect(image, src, dst, SamplingMode.DEFAULT, null, true);
     }
 
     @NotNull @Contract("_, _, _, _ -> this")
     public Canvas drawImageRect(@NotNull Image image, @NotNull Rect src, @NotNull Rect dst, @Nullable Paint paint) {
-        return drawImageRect(image, src, dst, paint, true);
+        return drawImageRect(image, src, dst, SamplingMode.DEFAULT, paint, true);
     }
 
     @NotNull @Contract("_, _, _, _, _ -> this")
     public Canvas drawImageRect(@NotNull Image image, @NotNull Rect src, @NotNull Rect dst, @Nullable Paint paint, boolean strict) {
+        return drawImageRect(image, src, dst, SamplingMode.DEFAULT, paint, strict);
+    }
+
+    @NotNull @Contract("_, _, _, _, _ -> this")
+    public Canvas drawImageRect(@NotNull Image image, @NotNull Rect src, @NotNull Rect dst, @NotNull SamplingMode samplingMode, @Nullable Paint paint, boolean strict) {
         assert image != null : "Can’t drawImageRect with image == null";
         assert src != null : "Can’t drawImageRect with src == null";
         assert dst != null : "Can’t drawImageRect with dst == null";
+        assert samplingMode != null : "Can’t drawImageRect with samplingMode == null";
         Stats.onNativeCall();
-        _nDrawImageRect(_ptr, Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
+        _nDrawImageRect(_ptr, Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, samplingMode._pack(), Native.getPtr(paint), strict);
         Reference.reachabilityFence(image);
         Reference.reachabilityFence(paint);
         return this;
     }
 
-    @NotNull @Contract("_, _, _ -> this")
-    public Canvas drawImageIRect(@NotNull Image image, @NotNull IRect src, @NotNull Rect dst) {
-        return drawImageIRect(image, src, dst, null);
-    }
-
-    @NotNull @Contract("_, _, _, _ -> this")
-    public Canvas drawImageIRect(@NotNull Image image, @NotNull IRect src, @NotNull Rect dst, @Nullable Paint paint) {
-        return drawImageIRect(image, src, dst, paint, true);
-    }
-
     @NotNull @Contract("_, _, _, _, _ -> this")
-    public Canvas drawImageIRect(@NotNull Image image, @NotNull IRect src, @NotNull Rect dst, @Nullable Paint paint, boolean strict) {
-        assert image != null : "Can’t drawImageIRect with image == null";
-        assert src != null : "Can’t drawImageIRect with src == null";
-        assert dst != null : "Can’t drawImageIRect with dst == null";
+    public Canvas drawImageNine(@NotNull Image image, @NotNull IRect center, @NotNull Rect dst, @NotNull FilterMode filterMode, @Nullable Paint paint) {
+        assert image != null : "Can’t drawImageNine with image == null";
+        assert center != null : "Can’t drawImageNine with center == null";
+        assert dst != null : "Can’t drawImageNine with dst == null";
+        assert filterMode != null : "Can’t drawImageNine with filterMode == null";
         Stats.onNativeCall();
-        _nDrawImageIRect(_ptr, Native.getPtr(image), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
+        _nDrawImageNine(_ptr, Native.getPtr(image), center._left, center._top, center._right, center._bottom, dst._left, dst._top, dst._right, dst._bottom, filterMode.ordinal(), Native.getPtr(paint));
         Reference.reachabilityFence(image);
-        Reference.reachabilityFence(paint);
-        return this;
-    }
-
-    @NotNull @Contract("_, _, _ -> this")
-    public Canvas drawBitmap(@NotNull Bitmap bitmap, float left, float top) {
-        return drawBitmap(bitmap, left, top, null);
-    }
-
-    @NotNull @Contract("_, _, _, _ -> this")
-    public Canvas drawBitmap(@NotNull Bitmap bitmap, float left, float top, @Nullable Paint paint) {
-        assert bitmap != null : "Can’t drawBitmap with bitmap == null";
-        Stats.onNativeCall();
-        _nDrawBitmapIRect(_ptr, Native.getPtr(bitmap), 0, 0, bitmap.getWidth(), bitmap.getHeight(), left, top, left + bitmap.getWidth(), top + bitmap.getHeight(), Native.getPtr(paint), true);
-        Reference.reachabilityFence(bitmap);
-        Reference.reachabilityFence(paint);
-        return this;
-    }
-
-    @NotNull @Contract("_, _ -> this")
-    public Canvas drawBitmapRect(@NotNull Bitmap bitmap, @NotNull Rect dst) {
-        return drawBitmapRect(bitmap, dst, null);
-    }
-
-    @NotNull @Contract("_, _, _ -> this")
-    public Canvas drawBitmapRect(@NotNull Bitmap bitmap, @NotNull Rect dst, @Nullable Paint paint) {
-        assert bitmap != null : "Can’t drawBitmapRect with bitmap == null";
-        assert dst != null : "Can’t drawBitmapRect with dst == null";
-        Stats.onNativeCall();
-        _nDrawBitmapIRect(_ptr, Native.getPtr(bitmap), 0, 0, bitmap.getWidth(), bitmap.getHeight(), dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), true);
-        Reference.reachabilityFence(bitmap);
-        Reference.reachabilityFence(paint);
-        return this;
-    }
-
-    @NotNull @Contract("_, _, _, _ -> this")
-    public Canvas drawBitmapRect(@NotNull Bitmap bitmap, @Nullable Rect src, @NotNull Rect dst, @Nullable Paint paint) {
-        return drawBitmapRect(bitmap, src, dst, paint, true);
-    }
-
-    @NotNull @Contract("_, _, _, _, _ -> this")
-    public Canvas drawBitmapRect(@NotNull Bitmap bitmap, @Nullable Rect src, @NotNull Rect dst, @Nullable Paint paint, boolean strict) {
-        assert bitmap != null : "Can’t drawBitmapRect with bitmap == null";
-        assert dst != null : "Can’t drawBitmapRect with dst == null";
-        Stats.onNativeCall();
-        if (src == null)
-            _nDrawBitmapIRect(_ptr, Native.getPtr(bitmap), 0, 0, bitmap.getWidth(), bitmap.getHeight(), dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
-        else
-            _nDrawBitmapRect(_ptr, Native.getPtr(bitmap), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
-        Reference.reachabilityFence(bitmap);
-        Reference.reachabilityFence(paint);
-        return this;
-    }
-
-    @NotNull @Contract("_, _, _ -> this")
-    public Canvas drawBitmapIRect(@NotNull Bitmap bitmap, @Nullable IRect src, @NotNull Rect dst) {
-        return drawBitmapIRect(bitmap, src, dst, null);
-    }
-
-    @NotNull @Contract("_, _, _, _ -> this")
-    public Canvas drawBitmapIRect(@NotNull Bitmap bitmap, @Nullable IRect src, @NotNull Rect dst, @Nullable Paint paint) {
-        return drawBitmapIRect(bitmap, src, dst, paint, true);
-    }
-
-    @NotNull @Contract("_, _, _, _, _ -> this")
-    public Canvas drawBitmapIRect(@NotNull Bitmap bitmap, @Nullable IRect src, @NotNull Rect dst, @Nullable Paint paint, boolean strict) {
-        assert bitmap != null : "Can’t drawBitmapIRect with bitmap == null";
-        assert dst != null : "Can’t drawBitmapIRect with dst == null";
-        Stats.onNativeCall();
-        if (src == null)
-            _nDrawBitmapIRect(_ptr, Native.getPtr(bitmap), 0, 0, bitmap.getWidth(), bitmap.getHeight(), dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
-        else
-            _nDrawBitmapIRect(_ptr, Native.getPtr(bitmap), src._left, src._top, src._right, src._bottom, dst._left, dst._top, dst._right, dst._bottom, Native.getPtr(paint), strict);
-        Reference.reachabilityFence(bitmap);
         Reference.reachabilityFence(paint);
         return this;
     }
@@ -1285,10 +1202,8 @@ public class Canvas extends Managed {
     public static native void _nDrawRRect(long ptr, float left, float top, float right, float bottom, float[] radii, long paintPtr);
     public static native void _nDrawDRRect(long ptr, float ol, float ot, float or, float ob, float[] oradii, float il, float it, float ir, float ib, float[] iradii, long paintPtr);
     public static native void _nDrawPath(long ptr, long nativePath, long paintPtr);
-    public static native void _nDrawImageRect(long ptr, long nativeImage, float sl, float st, float sr, float sb, float dl, float dt, float dr, float db, long paintPtr, boolean strict);
-    public static native void _nDrawImageIRect(long ptr, long nativeImage, int sl, int st, int sr, int sb, float dl, float dt, float dr, float db, long paintPtr, boolean strict);
-    public static native void _nDrawBitmapRect(long ptr, long bitmapPtr, float sl, float st, float sr, float sb, float dl, float dt, float dr, float db, long paintPtr, boolean strict);
-    public static native void _nDrawBitmapIRect(long ptr, long bitmapPtr, int sl, int st, int sr, int sb, float dl, float dt, float dr, float db, long paintPtr, boolean strict);
+    public static native void _nDrawImageRect(long ptr, long nativeImage, float sl, float st, float sr, float sb, float dl, float dt, float dr, float db, long samplingMode, long paintPtr, boolean strict);
+    public static native void _nDrawImageNine(long ptr, long nativeImage, int cl, int ct, int cr, int cb, float dl, float dt, float dr, float db, int filterMode, long paintPtr);
     public static native void _nDrawRegion(long ptr, long nativeRegion, long paintPtr);
     public static native void _nDrawString(long ptr, String string, float x, float y, long font, long paint);
     public static native void _nDrawTextBlob(long ptr, long blob, float x, float y, long paint);
