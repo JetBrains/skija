@@ -12,7 +12,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.16</version>
+            <version>1.18.18</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -33,7 +33,7 @@
             <plugin>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok-maven-plugin</artifactId>
-                <version>1.18.16.0</version>
+                <version>1.18.18.0</version>
                 <configuration>
                     <sourceDirectory>src/main/java</sourceDirectory>
                 </configuration>

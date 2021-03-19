@@ -12,7 +12,7 @@ def main():
   # Javac
   lwjgl_classifier = "natives-" + common.system
   classpath = [
-    common.fetch_maven('org.projectlombok', 'lombok', '1.18.16'),
+    common.fetch_maven('org.projectlombok', 'lombok', '1.18.18'),
     common.fetch_maven('org.lwjgl', 'lwjgl', '3.2.3'),
     common.fetch_maven('org.lwjgl', 'lwjgl-glfw', '3.2.3'),
     common.fetch_maven('org.lwjgl', 'lwjgl-opengl', '3.2.3'),
