@@ -61,9 +61,9 @@ jobs:
       - run: |
           echo "JAVA_HOME=$JAVA_HOME_11_X64" >> $GITHUB_ENV
           echo "$JAVA_HOME_11_X64/bin" >> $GITHUB_PATH
-          apt --quiet --yes install ninja-build libglu1-mesa-dev
-          update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-9
-          update-alternatives --config gcc
+          sudo apt-get --quiet --yes install ninja-build libglu1-mesa-dev
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-9
+          sudo update-alternatives --config gcc
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -90,7 +90,8 @@ jobs:
       - uses: microsoft/setup-msbuild@v1
       - uses: ilammy/msvc-dev-cmd@v1
       - uses: seanmiddleditch/gha-setup-ninja@master
-      - run: |
+      - shell: bash
+        run: |
           echo "JAVA_HOME=$JAVA_HOME_11_X64" >> $GITHUB_ENV
           echo "$JAVA_HOME_11_X64/bin" >> $GITHUB_PATH
       - run: python3 native/script/build.py
