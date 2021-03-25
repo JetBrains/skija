@@ -76,4 +76,4 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(FindSkia)
-target_link_libraries(skija svg skparagraph skshaper skia ${FREETYPE_LIBRARIES} ${HARFBUZZ_LIBRARIES} skottie sksg)
+target_link_libraries(skija skottie sksg svg skparagraph skshaper skia ${FREETYPE_LIBRARIES} ${HARFBUZZ_LIBRARIES})

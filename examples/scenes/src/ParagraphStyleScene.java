@@ -121,24 +121,24 @@ public class ParagraphStyleScene extends Scene {
         {
             pb.addText("тут размер, тут цвет, а тут фон, вот");
             try (Paragraph p = pb.build();) {
-                p.layout(Float.POSITIVE_INFINITY);
-                p.paint(canvas, 0, 0);
-                canvas.translate(0, p.getHeight());
+                // p.layout(Float.POSITIVE_INFINITY);
+                // p.paint(canvas, 0, 0);
+                // canvas.translate(0, p.getHeight());
 
-                p.updateFontSize(4, 10, 24);
-                p.layout(Float.POSITIVE_INFINITY);
-                p.paint(canvas, 0, 0);
-                canvas.translate(0, p.getHeight());
+                // p.updateFontSize(4, 10, 24);
+                // p.layout(Float.POSITIVE_INFINITY);
+                // p.paint(canvas, 0, 0);
+                // canvas.translate(0, p.getHeight());
 
-                p.updateForegroundPaint(16, 20, red);
-                p.layout(Float.POSITIVE_INFINITY);
-                p.paint(canvas, 0, 0);
-                canvas.translate(0, p.getHeight());                
+                // p.updateForegroundPaint(16, 20, red);
+                // p.layout(Float.POSITIVE_INFINITY);
+                // p.paint(canvas, 0, 0);
+                // canvas.translate(0, p.getHeight());                
 
-                p.updateBackgroundPaint(28, 31, redBg);
-                p.layout(Float.POSITIVE_INFINITY);
-                p.paint(canvas, 0, 0);
-                canvas.translate(0, p.getHeight());                
+                // p.updateBackgroundPaint(28, 31, redBg);
+                // p.layout(Float.POSITIVE_INFINITY);
+                // p.paint(canvas, 0, 0);
+                // canvas.translate(0, p.getHeight());                
             }
         }
 
