@@ -14,7 +14,7 @@ public class BreakIteratorScene extends Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         x = 20;
-        y = 40;
+        y = 60;
 
         var text = "🐉☺️❤️👮🏿👨‍👩‍👧‍👦🚵🏼‍♀️🇷🇺🏴󠁧󠁢󠁥󠁮󠁧󠁿*️⃣ǍǍZ̵̡̢͇͓͎͖͎̪͑͜ͅͅबिक्";
         if ("ICU".equals(_variants[_variantIdx]))
@@ -22,7 +22,7 @@ public class BreakIteratorScene extends Scene {
         else
             drawCharacterJavaText(canvas, height, text);
         x = width / 2 + 10;
-        y = 40;
+        y = 60;
 
         text = "One, (two; three). FoUr,five!";
         if ("ICU".equals(_variants[_variantIdx]))

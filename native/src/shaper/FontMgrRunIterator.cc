@@ -1,6 +1,7 @@
 #include <jni.h>
 #include "../interop.hh"
 #include "SkFontMgr.h"
+#include "FontRunIterator.hh"
 #include "SkShaper.h"
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_shaper_FontMgrRunIterator__1nMake
@@ -9,7 +10,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_shaper_FontMgrRunIte
     SkFont* font = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(fontPtr));
     sk_sp<SkFontMgr> fontMgr = fontMgrPtr == 0 ? SkFontMgr::RefDefault() : sk_ref_sp(reinterpret_cast<SkFontMgr*>(static_cast<uintptr_t>(fontMgrPtr)));
     
-    std::unique_ptr<SkShaper::FontRunIterator> instance(SkShaper::MakeFontMgrRunIterator(text->c_str(), text->size(), *font, fontMgr));
+    std::unique_ptr<SkShaper::FontRunIterator> instance(new FontRunIterator(text->c_str(), text->size(), *font, fontMgr));
     return reinterpret_cast<jlong>(instance.release());
 }
 

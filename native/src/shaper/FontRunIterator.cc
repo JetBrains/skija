@@ -2,6 +2,7 @@
 #include "FontRunIterator.hh"
 #include "src/utils/SkUTF.h"
 #include "unicode/uchar.h"
+#include <iostream>
 
 // Adapted from SkShaper.cpp
 
@@ -11,54 +12,86 @@ static inline SkUnichar utf8_next(const char** ptr, const char* end) {
     return val < 0 ? 0xFFFD : val;
 }
 
+bool can_handle_cluster(SkTypeface* typeface, const char* clusterStart, const char* clusterEnd) {
+    const char *ptr = clusterStart;
+    while (ptr < clusterEnd) {
+        SkUnichar u = SkUTF::NextUTF8(&ptr, clusterEnd);
+        u = u < 0 ? 0xFFFD : u;
+        if (0 == typeface->unicharToGlyph(u))
+            return false;
+    }
+    return true;
+}
+
 void FontRunIterator::consume() {
-    SkASSERT(fCurrent < fEnd);
-    SkASSERT(!fLanguage || this->endOfCurrentRun() <= fLanguage->endOfCurrentRun());
-    SkUnichar u = utf8_next(&fCurrent, fEnd);
+    const char* clusterStart = fCurrent;
+    const char* clusterEnd = fBegin + ubrk_following(fBreakIterator, clusterStart - fBegin);
+    UErrorCode status = U_ZERO_ERROR;
+    std::unique_ptr<UText, SkFunctionWrapper<decltype(utext_close), utext_close>> utext(utext_openUTF8(nullptr, fCurrent, fEnd - fCurrent, &status));
+
+    // SkUnichar u = utf8_next(&fCurrent, fEnd);
     // If the starting typeface can handle this character, use it.
-    if (fFont.unicharToGlyph(u)) {
+    if (can_handle_cluster(fFont.getTypeface(), clusterStart, clusterEnd)) {
         fCurrentFont = &fFont;
     // If the current fallback can handle this character, use it.
-    } else if (fFallbackFont.getTypeface() && fFallbackFont.unicharToGlyph(u)) {
+    } else if (fFallbackFont.getTypeface() && can_handle_cluster(fFallbackFont.getTypeface(), clusterStart, clusterEnd)) {
         fCurrentFont = &fFallbackFont;
     // If not, try to find a fallback typeface
     } else {
         const char* language = fLanguage ? fLanguage->currentLanguage() : nullptr;
         int languageCount = fLanguage ? 1 : 0;
-        sk_sp<SkTypeface> candidate(fFallbackMgr->matchFamilyStyleCharacter(
-            fRequestName, fRequestStyle, &language, languageCount, u));
-        if (candidate) {
-            fFallbackFont.setTypeface(std::move(candidate));
-            fCurrentFont = &fFallbackFont;
-        } else {
-            fCurrentFont = &fFont;
+        const char *ptr = clusterStart;
+        fCurrentFont = &fFont;
+        while (ptr < clusterEnd) {
+            SkUnichar u = SkUTF::NextUTF8(&ptr, clusterEnd);
+            u = u < 0 ? 0xFFFD : u;
+            sk_sp<SkTypeface> candidate(fFallbackMgr->matchFamilyStyleCharacter(fRequestName, fRequestStyle, &language, languageCount, u));
+            if (candidate && can_handle_cluster(candidate.get(), clusterStart, clusterEnd)) {
+                fFallbackFont.setTypeface(std::move(candidate));
+                fCurrentFont = &fFallbackFont;
+                break;
+            }
         }
     }
-
-    while (fCurrent < fEnd) {
-        const char* prev = fCurrent;
-        u = utf8_next(&fCurrent, fEnd);
+    
+    while (clusterStart < fEnd) {
+        clusterStart = clusterEnd;
+        clusterEnd = fBegin + ubrk_following(fBreakIterator, clusterStart - fBegin);
 
         // Do not switch font on whitespace
-        if (u_iscntrl(u) || u_isWhitespace(u))
+        if (clusterEnd - clusterStart == 1 && (u_iscntrl(clusterStart[0]) || u_isWhitespace(clusterStart[0])))
             continue;
 
         // End run if not using initial typeface and initial typeface has this character.
-        if (fCurrentFont->getTypeface() != fFont.getTypeface() && fFont.unicharToGlyph(u)) {
-            fCurrent = prev;
+        if (fCurrentFont->getTypeface() != fFont.getTypeface() && can_handle_cluster(fFont.getTypeface(), clusterStart, clusterEnd)) {
+            // SkString name;
+            // fCurrentFont->getTypeface()->getFamilyName(&name);
+            // std::cout << fCurrent - fBegin << ".." << clusterStart - fBegin << " " << name.c_str() << std::endl;
+            fCurrent = clusterStart;
             return;
         }
 
         // End run if current typeface does not have this character and some other font does.
-        if (!fCurrentFont->unicharToGlyph(u)) {
+        if (!can_handle_cluster(fCurrentFont->getTypeface(), clusterStart, clusterEnd)) {
             const char* language = fLanguage ? fLanguage->currentLanguage() : nullptr;
             int languageCount = fLanguage ? 1 : 0;
-            sk_sp<SkTypeface> candidate(fFallbackMgr->matchFamilyStyleCharacter(
-                fRequestName, fRequestStyle, &language, languageCount, u));
-            if (candidate) {
-                fCurrent = prev;
-                return;
+            const char *ptr = clusterStart;
+            while (ptr < clusterEnd) {
+                SkUnichar u = SkUTF::NextUTF8(&ptr, clusterEnd);
+                u = u < 0 ? 0xFFFD : u;
+                sk_sp<SkTypeface> candidate(fFallbackMgr->matchFamilyStyleCharacter(fRequestName, fRequestStyle, &language, languageCount, u));
+                if (candidate && can_handle_cluster(candidate.get(), clusterStart, clusterEnd)) {
+                    // SkString name;
+                    // fCurrentFont->getTypeface()->getFamilyName(&name);
+                    // std::cout << fCurrent - fBegin << ".." << clusterStart - fBegin << " " << name.c_str() << std::endl;
+                    fCurrent = clusterStart;
+                    return;
+                }
             }
         }
     }
+    // SkString name;
+    // fCurrentFont->getTypeface()->getFamilyName(&name);
+    // std::cout << fCurrent - fBegin << ".." << clusterStart - fBegin << " " << name.c_str() << std::endl;
+    fCurrent = clusterStart;
 }

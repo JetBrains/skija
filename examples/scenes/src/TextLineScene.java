@@ -17,7 +17,7 @@ public class TextLineScene extends Scene {
     private Font emoji36 = new Font(FontMgr.getDefault().matchFamilyStyleCharacter(null, FontStyle.NORMAL, null, "🧛".codePointAt(0)), 36);
     
     public TextLineScene() {
-        _variants = new String[] { "Subpixel", "No subpixel" };
+        _variants = new String[] { "Set 1", "Set 2" };
         if ("Mac OS X".equals(System.getProperty("os.name")))
             zapfino18 = new Font(FontMgr.getDefault().matchFamilyStyle("Zapfino", FontStyle.NORMAL), 18);
     }
@@ -118,26 +118,27 @@ public class TextLineScene extends Scene {
 
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
-        for (var font: new Font[] { inter18, zapfino18, emoji36 }) {
-            if (font != null) {
-                if ("Subpixel".equals(_variants[_variantIdx]) && !font.isSubpixel())
-                    font.setSubpixel(true);
-                else if ("No subpixel".equals(_variants[_variantIdx]) && font.isSubpixel())
-                    font.setSubpixel(false);
-            }
-        }
-
         Point cursor = new Point(xpos, ypos);
         canvas.translate(20, 20);
         cursor = cursor.offset(-20, -20);
-        cursor = cursor.offset(0, -drawLine(canvas, new String[] { "", "one", "yf", "два", "الخطوط", "🧛", "one yf الخطوط два 🧛" }, inter18, cursor));
-        if (zapfino18 != null)
-            cursor = cursor.offset(0, -drawLine(canvas, "fiz officiad", zapfino18, cursor)); // swashes
-        // cursor = cursor.offset(0, -drawLine(canvas, "sixستةten", inter18, cursor));
-        cursor = cursor.offset(0, -drawLine(canvas, new String[] {"الكلب", "sixستةten", "one اثنان 12 واحد two"}, inter18, cursor)); // RTL
-        cursor = cursor.offset(0, -drawLine(canvas, new String[] {"<->", "a<->b", "🧑🏿", "a🧑🏿b"}, inter18, cursor)); // Ligatures
-        cursor = cursor.offset(0, -drawLine(canvas, new String[] {"x̆x̞̊x̃", "c̝̣̱̲͈̝ͨ͐̈ͪͨ̃ͥͅh̙̬̿̂a̯͎͍̜͐͌͂̚o̬s͉̰͊̀"}, inter18, cursor)); // Zero-witdh modifiers
-        cursor = cursor.offset(0, -drawLine(canvas, new String[] {"क्", "क्‍", "👨👩👧👦", "👨‍👩‍👧‍👦", "a👨‍👩‍👧‍👦b"}, inter18, cursor)); // ZWJ
-        cursor = cursor.offset(0, -drawLine(canvas, new String[] {"می‌خواهم‎", "میخواهم"}, inter18, cursor)); // ZWNJ
+        if ("Set 1".equals(_variants[_variantIdx])) {
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] { "", "one", "yf", "два", "الخطوط", "🧛", "one yf الخطوط два 🧛" }, inter18, cursor));
+            if (zapfino18 != null)
+                cursor = cursor.offset(0, -drawLine(canvas, "fiz officiad", zapfino18, cursor)); // swashes
+            // cursor = cursor.offset(0, -drawLine(canvas, "sixستةten", inter18, cursor));
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] {"الكلب", "sixستةten", "one اثنان 12 واحد two"}, inter18, cursor)); // RTL
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] {"<->", "a<->b", "🧑🏿", "a🧑🏿b"}, inter18, cursor)); // Ligatures
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] {"x̆x̞̊x̃", "c̝̣̱̲͈̝ͨ͐̈ͪͨ̃ͥͅh̙̬̿̂a̯͎͍̜͐͌͂̚o̬s͉̰͊̀"}, inter18, cursor)); // Zero-witdh modifiers
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] {"क्", "क्‍", "👨👩👧👦", "👨‍👩‍👧‍👦", "a👨‍👩‍👧‍👦b"}, inter18, cursor)); // ZWJ
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] {"می‌خواهم‎", "میخواهم"}, inter18, cursor)); // ZWNJ
+        } else if ("Set 2".equals(_variants[_variantIdx])) {
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] {"", "🧛", "🧛🧛", "🧛a🧛", "a🧛a🧛a", "🧛 🧛"}, inter18, cursor));
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] {"☹️", "☹️☹️", "☹️a☹️", "a☹️a☹️a", "☹️ ☹️"}, inter18, cursor));
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] {"🤵🏽", "👨‍🏭", "🇦🇱", "*️⃣"}, inter18, cursor));
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] {"🏴󠁧󠁢󠁳󠁣󠁴󠁿", "🚵🏻‍♀️"}, inter18, cursor));
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] {"😮‍💨", "❤️‍🔥", "🧔‍♀", "👨🏻‍❤️‍💋‍👨🏼"}, inter18, cursor));
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] {"Ǎ", "Ǎ", "x̆x̞̊x̃", "<->"}, inter18, cursor));
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] {"Z̵̡̢͇͓͎͖͎̪͑͜ͅͅ"}, inter18, cursor));
+        }
     }
 }

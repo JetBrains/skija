@@ -20,7 +20,7 @@ public class RunHandlerScene extends Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         canvas.translate(20, 20);
-        var text = "hello мир дружба fi fl 👃 one two ثلاثة 12 👂 34 خمسة";
+        var text = "x̆x̞̊x̃ hello мир дружба fi fl 👃 one two ثلاثة 12 👂 34 خمسة";
 
         try (var shaper = Shaper.makeShapeThenWrap(); // Shaper.makeCoreText();
              var tbHandler = new TextBlobBuilderRunHandler(text, new Point(0, 0));
