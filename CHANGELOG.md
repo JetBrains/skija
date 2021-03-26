@@ -1,3 +1,18 @@
+# 0.90.3 - Mar 26, 2021
+
+Skia version m90-adbb69cd7f -> m90-adbb69cd7f-2
+
+Changed:
+
+- Fixed exception during reporting double close in Managed #102
+- Fixed for locale-dependent SVGCanvas serialization https://skbug.com/11794
+
+# 0.90.2 - Mar 25, 2021
+
+Changed:
+
+- Fixed Skottie linking on Linux
+
 # 0.90.0 - March 19, 2021
 
 Skia version m89-109bfc9052 -> m90-adbb69cd7f

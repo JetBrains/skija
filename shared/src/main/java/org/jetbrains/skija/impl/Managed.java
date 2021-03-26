@@ -25,9 +25,9 @@ public abstract class Managed extends Native implements AutoCloseable {
     @Override
     public void close() {
         if (0 == _ptr)
-            throw new RuntimeException("Object already closed: " + this);
+            throw new RuntimeException("Object already closed: " + getClass() + ", _ptr=" + _ptr);
         else if (null == _cleanable)
-            throw new RuntimeException("Object is not managed in JVM, can't close(): " + this);
+            throw new RuntimeException("Object is not managed in JVM, can't close(): " + getClass() + ", _ptr=" + _ptr);
         else {
             _cleanable.clean();
             _cleanable = null;
