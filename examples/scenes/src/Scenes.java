@@ -6,7 +6,7 @@ import org.jetbrains.skija.*;
 
 public class Scenes {
     public static TreeMap<String, Scene> scenes;
-    public static String currentScene = "Skottie";
+    public static String currentScene = "Font Size";
     public static HUD hud = new HUD();
     public static boolean vsync = true;
     public static boolean stats = true;
@@ -25,6 +25,7 @@ public class Scenes {
         scenes.put("Figma", null);
         scenes.put("Font", null);
         scenes.put("Font Rendering", null);
+        scenes.put("Font Size", null);
         scenes.put("Font Variations", null);
         scenes.put("Geometry", null);
         scenes.put("Images", null);
