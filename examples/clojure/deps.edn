@@ -1,4 +1,4 @@
-{:deps {org.jetbrains.skija/skija-native {:mvn/version "0.0.0-SNAPSHOT"}
+{:deps {; org.jetbrains.skija/skija-macos {:mvn/version "0.90.1"}
         org.lwjgl/lwjgl {:mvn/version "3.2.3"}
         org.lwjgl/lwjgl$natives-macos {:mvn/version "3.2.3"}
         org.lwjgl/lwjgl-glfw {:mvn/version "3.2.3"}
@@ -6,4 +6,5 @@
         org.lwjgl/lwjgl-opengl {:mvn/version "3.2.3"}
         org.lwjgl/lwjgl-opengl$natives-macos {:mvn/version "3.2.3"}
         nrepl/nrepl {:mvn/version "0.8.3"}}
+ :paths ["src" "../../native/build" "../../shared/target/classes" ]
  :mvn/repos {"space-maven" {:url "https://packages.jetbrains.team/maven/p/skija/maven"}}}

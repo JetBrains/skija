@@ -67,10 +67,15 @@
       (GLFW/glfwHideWindow window)
       (GLFW/glfwDestroyWindow window)
       (GLFW/glfwPollEvents)
+
+      (.close surface)
+      (.close target)
+      (.close context)
+
       (GLFW/glfwTerminate)
       (.free (GLFW/glfwSetErrorCallback nil))
       (shutdown-agents)
-      )))
+)))
 
 (comment
   (reset! lwjgl.main/*rect-color (lwjgl.main/color 0xFF33CC33)))

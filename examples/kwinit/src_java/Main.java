@@ -25,8 +25,8 @@ public class Main {
 
     public long window = -1;
     public float scale = 1f;
-    public int width = 1280;
-    public int height = 800;
+    public int width = 600;
+    public int height = 900;
     public float mouseX, mouseY, screenStartX, screenStartY, outerX, outerY;
     public boolean leftMouse = false;
     public boolean shift = false;
