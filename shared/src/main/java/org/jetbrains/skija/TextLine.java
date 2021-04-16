@@ -185,6 +185,42 @@ public class TextLine extends Managed {
         }
     }
 
+    /**
+     * <p>Returns the number of intervals that intersect bounds.
+     * bounds describes a pair of lines parallel to the text advance.
+     * The return array size is a multiple of two, and is at most twice the number of glyphs in
+     * the the blob.</p>
+     *
+     * @param lowerBound lower line parallel to the advance
+     * @param upperBound upper line parallel to the advance
+     * @return           intersections; may be null
+     */
+    @Nullable
+    public float[] getIntercepts(float lowerBound, float upperBound) {
+        return getIntercepts(lowerBound, upperBound, null);
+    }
+
+    /**
+     * <p>Returns the number of intervals that intersect bounds.
+     * bounds describes a pair of lines parallel to the text advance.
+     * The return array size is a multiple of two, and is at most twice the number of glyphs in
+     * the the blob.</p>
+     *
+     * @param lowerBound lower line parallel to the advance
+     * @param upperBound upper line parallel to the advance
+     * @param paint      specifies stroking, PathEffect that affects the result; may be null
+     * @return           intersections; may be null
+     */
+    @Nullable
+    public float[] getIntercepts(float lowerBound, float upperBound, @Nullable Paint paint) {
+        try (var blob = getTextBlob()) {
+            return blob.getIntercepts(lowerBound, upperBound, paint);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(paint);
+        }
+    }
+
     @ApiStatus.Internal public static native long  _nGetFinalizer();
     @ApiStatus.Internal public static native float _nGetAscent(long ptr);
     @ApiStatus.Internal public static native float _nGetCapHeight(long ptr);

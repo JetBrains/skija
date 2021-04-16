@@ -29,8 +29,16 @@ public class TextLineDecorationsScene extends Scene {
             try (var line = TextLine.make("Solid " + w + "px" + descenders, inter13);
                  var stroke = new Paint().setColor(0xFFCC3333).setMode(PaintMode.STROKE).setStrokeWidth(w);)
             {
-                canvas.drawLine(0, y, (float) Math.floor(line.getWidth()), y, stroke);
                 canvas.drawTextLine(line, 0, 0, blackFill);
+
+                float[] intercepts = line.getIntercepts(y - w / 2f, y + w / 2f);
+                for (int i = 0; i <= intercepts.length; i += 2) {
+                    var left = (float) Math.ceil(i > 0 ? intercepts[i - 1] + 1 : 0);
+                    var right = (float) Math.floor(i < intercepts.length ? intercepts[i] - 1 : line.getWidth());
+                    if (left + w < right)
+                        canvas.drawLine(left, y, right, y, stroke);
+                }
+
                 canvas.translate(dx, 0);
             }
 

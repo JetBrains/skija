@@ -36,7 +36,6 @@ def main():
     "cmake",
     "-G", "Ninja",
     "-DCMAKE_BUILD_TYPE=" + build_type,
-    "--config", build_type,
     "-DSKIA_DIR=" + skia_dir,
     ".."],
     cwd=os.path.abspath('build'))

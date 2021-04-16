@@ -1,3 +1,9 @@
+# 0.90.6 - Apr 16, 2021
+
+Added:
+
+- TextLine.getIntercepts()
+
 # 0.90.3 - Mar 26, 2021
 
 Skia version m90-adbb69cd7f -> m90-adbb69cd7f-2

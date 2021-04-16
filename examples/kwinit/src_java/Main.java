@@ -25,8 +25,8 @@ public class Main {
 
     public long window = -1;
     public float scale = 1f;
-    public int width = 600;
-    public int height = 900;
+    public int width = 1280;
+    public int height = 800;
     public float mouseX, mouseY, screenStartX, screenStartY, outerX, outerY;
     public boolean leftMouse = false;
     public boolean shift = false;
@@ -116,8 +116,8 @@ public class Main {
                         onMouseMove(x, y, relx, rely);
                     } else if ("ChangedFullscreen".equals(type)) {
                         var fullscreen = event.get("fullscreen").getAsBoolean();
-                        if (!fullscreen) 
-                            ExternalAPI.fireUserEvent(3);
+                        // if (!fullscreen) 
+                        //     ExternalAPI.fireUserEvent(3);
                     } else
                         log("WidnowEvent", event);
                 } else
@@ -216,12 +216,12 @@ public class Main {
 
     public void onDraw() {
         Scenes.draw(canvas, width, height, scale, (int) mouseX, (int) mouseY);
-        canvas.save();
-        canvas.scale(scale, scale);
-        try (var paint = new Paint().setColor(0x10000000)) {
-            canvas.drawRRect(RRect.makeXYWH(14, 14, 64, 24, 12), paint);
-        }
-        canvas.restore();
+        // canvas.save();
+        // canvas.scale(scale, scale);
+        // try (var paint = new Paint().setColor(0x10000000)) {
+        //     canvas.drawRRect(RRect.makeXYWH(14, 14, 64, 24, 12), paint);
+        // }
+        // canvas.restore();
         context.flush();
         ExternalAPI.fireUserEvent(1);
     }
@@ -233,7 +233,7 @@ public class Main {
                                    + "'position':{'x':100.0,'y':100.0},"
                                    + "'title':'Skija KWinit Example'}").replaceAll("'", "\"");
                 window = ExternalAPI.createWindow(windowAttrs);
-                ExternalAPI.fireUserEvent(3);
+                // ExternalAPI.fireUserEvent(3);
                 Stats.enabled = true;
                 context = DirectContext.makeGL();
                 scale = (float) ExternalAPI.getScaleFactor(window);

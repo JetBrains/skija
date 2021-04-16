@@ -138,6 +138,7 @@ public class TextBlobScene extends Scene {
         try (var shaper = Shaper.make();
              var blob   = shaper.shape("This TextBlob here is going to span multiple lines. If it doesn’t, please contact application administrator", font, width);
              var bg     = new Paint().setColor(Color.withA(color, 32));
+             var underline = new Paint().setColor(Color.withA(color, 128));
              var stroke = new Paint().setColor(Color.withA(color, 64)).setMode(PaintMode.STROKE).setStrokeWidth(1);
              var fill   = new Paint().setColor(color);)
         {
@@ -151,15 +152,21 @@ public class TextBlobScene extends Scene {
             // text
             canvas.drawTextBlob(blob, 0, 0, fill);
 
-            // intercepts
-            float lower = 32;
+            // underline
+            float lower = 54;
             float upper = 56;
             float[] intercepts = blob.getIntercepts(lower, upper, fill);
-            canvas.drawLine(0, lower, width, lower, stroke);
-            canvas.drawLine(0, upper, width, upper, stroke);
-            for (int i = 0; i < intercepts.length; i += 2) {
-                canvas.drawRect(Rect.makeLTRB(intercepts[i], lower, intercepts[i+1], upper), bg);
+            float start = 0;
+            float end = width;
+            int i = 0;
+            while (i < intercepts.length) {
+                if (start < intercepts[i] - 2)
+                    canvas.drawRect(Rect.makeLTRB(start, lower, intercepts[i] - 2, upper), underline);
+                i++;
+                start = intercepts[i] + 2;
+                i++;
             }
+            canvas.drawRect(Rect.makeLTRB(start, lower, end, upper), underline);
 
             canvas.translate(0, bounds.getHeight() + gap);
 
@@ -168,6 +175,4 @@ public class TextBlobScene extends Scene {
             canvas.translate(0, bounds.getHeight() + gap);
         }
     }
-
-
 }
