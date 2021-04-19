@@ -1,39 +1,36 @@
 package org.jetbrains.skija.examples.scenes;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.util.*;
 import org.jetbrains.skija.*;
 
 public class ImageBenchScene extends Scene {
-    Image[] images;
+    Image[] sprites;
+    Image all;
     float[] xs, ys, dx, dy;
     int[] phases;
-    int sprites = 50000;
     long lastPhaseChange = 0;
-    int[] frames;
 
     public ImageBenchScene() throws IOException {
-        images = new Image[14];
-        frames = new int[14];
+        sprites = new Image[14];
         for (int i = 0; i < 14; ++i) {
-            images[i] = Image.makeFromEncoded(Files.readAllBytes(Path.of(file("images/sprites/bunny" + i + ".png"))));
-            frames[i] = images[i].getWidth() / 32;
+            sprites[i] = Image.makeFromEncoded(Files.readAllBytes(java.nio.file.Path.of(file("images/sprites/bunny" + i + ".png"))));
         }
-        _variants = new String[] {"1000", "5000", "50000"};
+        all = Image.makeFromEncoded(Files.readAllBytes(java.nio.file.Path.of(file("images/sprites/all.png"))));
+        _variants = new String[] {"One image", "14 images"};
     }
 
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         if (xs == null) {
-            xs = new float[sprites];
-            ys = new float[sprites];
-            dx = new float[sprites];
-            dy = new float[sprites];
-            phases = new int[sprites];
+            xs = new float[50000];
+            ys = new float[50000];
+            dx = new float[50000];
+            dy = new float[50000];
+            phases = new int[50000];
             Random random = new Random();
-            for (int i = 0; i < sprites; ++i) {
+            for (int i = 0; i < 50000; ++i) {
                 xs[i] = random.nextFloat() * (width - 32);
                 ys[i] = random.nextFloat() * (height - 32);
                 dx[i] = (random.nextFloat() - 0.5f) * 6f;
@@ -42,20 +39,31 @@ public class ImageBenchScene extends Scene {
             }
         }
 
-        long visible = Long.parseLong(_variants[_variantIdx]);
         boolean updatePhase = System.currentTimeMillis() - lastPhaseChange > 300;
         if (updatePhase)
             lastPhaseChange = System.currentTimeMillis();
-        for (int i = 0; i < visible; ++i) {
-            int image = (int) Math.ceil(14 * i / visible);
+        for (int i = 0; i < 50000; ++i) {
+
+            if ("One image".equals(_variants[_variantIdx])) {
+                int image = i % 14;
+                canvas.drawImageRect(all,
+                                     Rect.makeXYWH(32 * phases[i], image * 32, 32, 32),
+                                     Rect.makeXYWH(xs[i], ys[i], 32, 32),
+                                     SamplingMode.DEFAULT,
+                                     null,
+                                     true);
+            } else {
+                int image = (int) Math.ceil(14 * i / 50000);
+                canvas.drawImageRect(sprites[image],
+                                     Rect.makeXYWH(32 * phases[i], 0, 32, 32),
+                                     Rect.makeXYWH(xs[i], ys[i], 32, 32),
+                                     SamplingMode.DEFAULT,
+                                     null,
+                                     true);
+            }
+
             if (updatePhase)
-                phases[i] = ((phases[i] + 1) % frames[image]);
-            canvas.drawImageRect(images[image],
-                                 Rect.makeXYWH(32 * phases[i], 0, 32, 32),
-                                 Rect.makeXYWH(xs[i], ys[i], 32, 32),
-                                 SamplingMode.DEFAULT,
-                                 null,
-                                 true);
+                phases[i] = (phases[i] + 1) % 4;
             
             if (xs[i] + dx[i] + 32 >= width && dx[i] > 0)
                 dx[i] = -dx[i];
