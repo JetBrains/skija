@@ -23,7 +23,7 @@ def main():
     skija_native = '../native/build'
 
   classpath = [
-    common.fetch_maven('org.projectlombok', 'lombok', '1.18.18'),
+    common.fetch_maven('org.projectlombok', 'lombok', '1.18.20'),
     common.fetch_maven('org.jetbrains', 'annotations', '19.0.0'),
     skija_shared,
     skija_native,

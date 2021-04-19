@@ -13,7 +13,7 @@ def main():
 
   # Javac
   classpath = [
-    common.fetch_maven('org.projectlombok', 'lombok', '1.18.18'),
+    common.fetch_maven('org.projectlombok', 'lombok', '1.18.20'),
     common.fetch_maven('com.google.code.gson', 'gson', '2.8.6')
   ]
 

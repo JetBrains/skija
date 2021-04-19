@@ -14,7 +14,7 @@ def main():
                   'windows': 'org.eclipse.swt.win32.win32.x86_64',
                   'linux': 'org.eclipse.swt.gtk.linux.x86_64'}[common.system]
   classpath = [
-    # common.fetch_maven('org.projectlombok', 'lombok', '1.18.18'),
+    # common.fetch_maven('org.projectlombok', 'lombok', '1.18.20'),
     common.fetch_maven('org.eclipse.platform', swt_artifact, '3.115.100')
   ]
 

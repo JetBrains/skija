@@ -46,6 +46,7 @@ def javac(classpath, sources, target):
       'javac',
       '-encoding', 'UTF8',
       '--release', '11',
+      # '-J--illegal-access=permit',
       # '-Xlint:deprecation',
       # '-Xlint:unchecked',
       '--class-path', classpath_separator.join(classpath + [target]),

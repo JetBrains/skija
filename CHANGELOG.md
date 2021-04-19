@@ -1,3 +1,7 @@
+# 0.90.9 - Apr 20, 2021
+
+Lombok 1.18.18 -> 1.18.20 (support for Java 16)
+
 # 0.90.6 - Apr 16, 2021
 
 Added:
