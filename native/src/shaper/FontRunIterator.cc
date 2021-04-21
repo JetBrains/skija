@@ -25,7 +25,7 @@ bool can_handle_cluster(SkTypeface* typeface, const char* clusterStart, const ch
 
 void FontRunIterator::consume() {
     const char* clusterStart = fCurrent;
-    const char* clusterEnd = fBegin + ubrk_following(fGraphemeIter, clusterStart - fBegin);
+    const char* clusterEnd = fBegin + ubrk_following(fGraphemeIter.get(), clusterStart - fBegin);
     UErrorCode status = U_ZERO_ERROR;
 
     // If the starting typeface can handle this character, use it.
@@ -54,17 +54,17 @@ void FontRunIterator::consume() {
     
     while (clusterStart < fEnd) {
         clusterStart = clusterEnd;
-        clusterEnd = fBegin + ubrk_following(fGraphemeIter, clusterStart - fBegin);
+        clusterEnd = fBegin + ubrk_following(fGraphemeIter.get(), clusterStart - fBegin);
 
-        // Do not switch font on whitespace
-        if (clusterEnd - clusterStart == 1 && (u_iscntrl(clusterStart[0]) || u_isWhitespace(clusterStart[0])))
+        const char* ptr = clusterStart;
+        SkUnichar u = utf8_next(&ptr, clusterEnd);
+
+        // Do not switch font on control, whitespace or punct
+        if (ptr == clusterEnd && fCurrentFont->getTypeface()->unicharToGlyph(u) != 0 && (u_iscntrl(u) || u_isWhitespace(u) || u_ispunct(u)))
             continue;
 
         // End run if not using initial typeface and initial typeface has this character.
         if (fCurrentFont->getTypeface() != fFont.getTypeface() && can_handle_cluster(fFont.getTypeface(), clusterStart, clusterEnd)) {
-            // SkString name;
-            // fCurrentFont->getTypeface()->getFamilyName(&name);
-            // std::cout << fCurrent - fBegin << ".." << clusterStart - fBegin << " " << name.c_str() << std::endl;
             fCurrent = clusterStart;
             return;
         }
@@ -79,17 +79,11 @@ void FontRunIterator::consume() {
                 u = u < 0 ? 0xFFFD : u;
                 sk_sp<SkTypeface> candidate(fFallbackMgr->matchFamilyStyleCharacter(fRequestName, fRequestStyle, &language, languageCount, u));
                 if (candidate && can_handle_cluster(candidate.get(), clusterStart, clusterEnd)) {
-                    // SkString name;
-                    // fCurrentFont->getTypeface()->getFamilyName(&name);
-                    // std::cout << fCurrent - fBegin << ".." << clusterStart - fBegin << " " << name.c_str() << std::endl;
                     fCurrent = clusterStart;
                     return;
                 }
             }
         }
     }
-    // SkString name;
-    // fCurrentFont->getTypeface()->getFamilyName(&name);
-    // std::cout << fCurrent - fBegin << ".." << clusterStart - fBegin << " " << name.c_str() << std::endl;
     fCurrent = clusterStart;
 }

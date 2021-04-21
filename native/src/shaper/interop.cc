@@ -189,5 +189,32 @@ namespace skija {
             HbIcuScriptRunIterator::onUnload(env);
             FontMgrRunIterator::onUnload(env);
         }
-   }
+
+        std::shared_ptr<UBreakIterator> graphemeBreakIterator(SkString& text) {
+            UErrorCode status = U_ZERO_ERROR;
+            
+            ICUUText utext(utext_openUTF8(nullptr, text.c_str(), text.size(), &status));
+            if (U_FAILURE(status)) {
+                SkDEBUGF("utext_openUTF8 error: %s", u_errorName(status));
+                return nullptr;
+            }
+
+            std::shared_ptr<UBreakIterator> graphemeIter(
+                ubrk_open(static_cast<UBreakIteratorType>(UBreakIteratorType::UBRK_CHARACTER), uloc_getDefault(), nullptr, 0, &status),
+                [](UBreakIterator* p) { ubrk_close(p); }
+            );
+            if (U_FAILURE(status)) {
+                SkDEBUGF("ubrk_open error: %s", u_errorName(status));
+                return nullptr;
+            }
+
+            ubrk_setUText(graphemeIter.get(), utext.get(), &status);
+            if (U_FAILURE(status)) {
+                SkDEBUGF("ubrk_setUText error: %s", u_errorName(status));
+                return nullptr;
+            }
+
+            return graphemeIter;    
+        }
+    }
 }

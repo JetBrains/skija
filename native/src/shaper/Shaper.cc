@@ -1,27 +1,12 @@
 #include <iostream>
 #include <jni.h>
-// #include <unicode/ubidi.h>
 #include "../interop.hh"
 #include "interop.hh"
+#include "FontRunIterator.hh"
 #include "SkShaper.h"
 #include "src/utils/SkUTF.h"
-#include "FontRunIterator.hh"
 #include "TextLineRunHandler.hh"
-
-using ICUUText = std::unique_ptr<UText, SkFunctionWrapper<decltype(utext_close), utext_close>>;
-using ICUBreakIterator = std::unique_ptr<UBreakIterator, SkFunctionWrapper<decltype(ubrk_close), ubrk_close>>;
-
-ICUBreakIterator graphemeBreakIterator(SkString& text) {
-    UErrorCode status = U_ZERO_ERROR;
-    ICUUText utext(utext_openUTF8(nullptr, text.c_str(), text.size(), &status));
-    // TODO check status
-    // TODO use SkUnicode?
-    ICUBreakIterator graphemeIter(ubrk_open(static_cast<UBreakIteratorType>(UBreakIteratorType::UBRK_CHARACTER), uloc_getDefault(), nullptr, 0, &status));
-    ubrk_setUText(graphemeIter.get(), utext.get(), &status);
-    // TODO check status
-    
-    return graphemeIter;    
-}
+#include "unicode/ubidi.h"
 
 static void deleteShaper(SkShaper* instance) {
     // std::cout << "Deleting [SkShaper " << instance << "]" << std::endl;
@@ -74,14 +59,15 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_shaper_Shaper__1nSha
   (JNIEnv* env, jclass jclass, jlong ptr, jstring textObj, jlong fontPtr, jobjectArray featuresArr, jboolean leftToRight, jfloat width, jfloat offsetX, jfloat offsetY) {
     SkShaper* instance = reinterpret_cast<SkShaper*>(static_cast<uintptr_t>(ptr));
     SkString text = skString(env, textObj);
-    ICUBreakIterator graphemeIter = graphemeBreakIterator(text);
+    std::shared_ptr<UBreakIterator> graphemeIter = skija::shaper::graphemeBreakIterator(text);
+    if (!graphemeIter) return 0;
     SkFont* font = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(fontPtr));
     std::vector<SkShaper::Feature> features = skija::FontFeature::fromJavaArray(env, featuresArr);
 
-    std::unique_ptr<SkShaper::FontRunIterator> fontRunIter(new FontRunIterator(text.c_str(), text.size(), *font, SkFontMgr::RefDefault(), graphemeIter.get()));
+    std::unique_ptr<SkShaper::FontRunIterator> fontRunIter(new FontRunIterator(text.c_str(), text.size(), *font, SkFontMgr::RefDefault(), graphemeIter));
     if (!fontRunIter) return 0;
 
-    uint8_t defaultBiDiLevel = leftToRight ? 0xfe /* UBIDI_DEFAULT_LTR */ : 0xff /* UBIDI_DEFAULT_RTL */; // unicode/ubidi.h
+    uint8_t defaultBiDiLevel = leftToRight ? UBIDI_DEFAULT_LTR : UBIDI_DEFAULT_RTL;
     std::unique_ptr<SkShaper::BiDiRunIterator> bidiRunIter(SkShaper::MakeBiDiRunIterator(text.c_str(), text.size(), defaultBiDiLevel));
     if (!bidiRunIter) return 0;
 
@@ -103,15 +89,16 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_shaper_Shaper__1nSha
     SkShaper* instance = reinterpret_cast<SkShaper*>(static_cast<uintptr_t>(ptr));
 
     SkString text = skString(env, textObj);
-    ICUBreakIterator graphemeIter = graphemeBreakIterator(text);
+    std::shared_ptr<UBreakIterator> graphemeIter = skija::shaper::graphemeBreakIterator(text);
+    if (!graphemeIter) return 0;
 
     SkFont* font = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(fontPtr));
     std::vector<SkShaper::Feature> features = skija::FontFeature::fromJavaArray(env, featuresArr);
 
-    std::unique_ptr<SkShaper::FontRunIterator> fontRunIter(new FontRunIterator(text.c_str(), text.size(), *font, SkFontMgr::RefDefault(), graphemeIter.get()));
+    std::unique_ptr<SkShaper::FontRunIterator> fontRunIter(new FontRunIterator(text.c_str(), text.size(), *font, SkFontMgr::RefDefault(), graphemeIter));
     if (!fontRunIter) return 0;
 
-    uint8_t defaultBiDiLevel = leftToRight ? 0xfe /* UBIDI_DEFAULT_LTR */ : 0xff /* UBIDI_DEFAULT_RTL */; // unicode/ubidi.h
+    uint8_t defaultBiDiLevel = leftToRight ? UBIDI_DEFAULT_LTR : UBIDI_DEFAULT_RTL;
     std::unique_ptr<SkShaper::BiDiRunIterator> bidiRunIter(SkShaper::MakeBiDiRunIterator(text.c_str(), text.size(), defaultBiDiLevel));
     if (!bidiRunIter) return 0;
 
@@ -125,7 +112,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_shaper_Shaper__1nSha
     if (text.size() == 0)
         line = new TextLine(*font);
     else {
-        TextLineRunHandler rh(text, graphemeIter.get());
+        TextLineRunHandler rh(text, graphemeIter);
         instance->shape(text.c_str(), text.size(), *fontRunIter, *bidiRunIter, *scriptRunIter, *languageRunIter, features.data(), features.size(), std::numeric_limits<float>::infinity(), &rh);
         line = rh.makeLine().release();
     }

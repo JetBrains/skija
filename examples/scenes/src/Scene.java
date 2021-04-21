@@ -1,5 +1,6 @@
 package org.jetbrains.skija.examples.scenes;
 
+import java.util.*;
 import org.jetbrains.skija.*;
 
 public abstract class Scene {
@@ -56,5 +57,20 @@ public abstract class Scene {
         var phase = Math.sin(angle) * 1.2;
         phase = Math.min(1.0, Math.max(-1.0, phase));
         return (float) (phase + 1) / 2f;
+    }
+
+    public static String formatFloat(float f) {
+        return String.format(Locale.ENGLISH, "%.02f", f).replaceAll("\\.?0+$", "");
+    }
+
+    public static String formatFloatArray(float[] fs) {
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < fs.length; ++i) {
+            sb.append(formatFloat(fs[i]));
+            if (i < fs.length - 1)
+                sb.append(", ");
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

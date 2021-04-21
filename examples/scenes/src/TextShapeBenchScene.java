@@ -22,7 +22,7 @@ public class TextShapeBenchScene extends Scene {
             "Notdef Paragraph",  "Notdef Paragraph No-Cache",  "Notdef TextLine",
             "English Paragraph", "English Paragraph No-Cache", "English TextLine",
         };
-        _variantIdx = 8;
+        _variantIdx = 5;
     
         font = new Font(jbMono, fontSize).setSubpixel(true);
         metrics = font.getMetrics();

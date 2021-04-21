@@ -12,7 +12,7 @@ public:
                     const char* requestName,
                     SkFontStyle requestStyle,
                     const SkShaper::LanguageRunIterator* lang,
-                    UBreakIterator* graphemeIter)
+                    std::shared_ptr<UBreakIterator> graphemeIter)
         : fCurrent(utf8)
         , fBegin(utf8)
         , fEnd(fCurrent + utf8Bytes)
@@ -29,7 +29,7 @@ public:
         fFallbackFont.setTypeface(nullptr);
     }
 
-    FontRunIterator(const char* utf8, size_t utf8Bytes, const SkFont& font, sk_sp<SkFontMgr> fallbackMgr, UBreakIterator* graphemeIter)
+    FontRunIterator(const char* utf8, size_t utf8Bytes, const SkFont& font, sk_sp<SkFontMgr> fallbackMgr, std::shared_ptr<UBreakIterator> graphemeIter)
         : FontRunIterator(utf8, utf8Bytes, font, std::move(fallbackMgr), nullptr, font.refTypefaceOrDefault()->fontStyle(), nullptr, graphemeIter) {
     }
 
@@ -61,5 +61,5 @@ private:
     char const * const fRequestName;
     SkFontStyle const fRequestStyle;
     SkShaper::LanguageRunIterator const * const fLanguage;
-    UBreakIterator* fGraphemeIter;
+    std::shared_ptr<UBreakIterator> fGraphemeIter;
 };

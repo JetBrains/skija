@@ -8,7 +8,7 @@
 class TextLineRunHandler: public SkShaper::RunHandler {
 public:
     TextLineRunHandler(const SkString& text,
-                       UBreakIterator* graphemeIter):
+                       std::shared_ptr<UBreakIterator> graphemeIter):
       fLine(new TextLine()),
       conv(text),
       fGraphemeIter(graphemeIter)
@@ -64,7 +64,7 @@ public:
         run.fBreakPositions.reserve(info.utf8Range.size() + 1);
 
         // Only record grapheme clusters boundaries
-        for (int32_t offset = fGlyphOffsets[0]; offset <= info.utf8Range.end(); offset = ubrk_following(fGraphemeIter, offset)) {
+        for (int32_t offset = fGlyphOffsets[0]; offset <= info.utf8Range.end(); offset = ubrk_following(fGraphemeIter.get(), offset)) {
             run.fBreakOffsets.push_back(conv.from8To16(offset));
 
             // if grapheme clusters includes multiple glyphs, skip over them
@@ -125,7 +125,7 @@ private:
     sk_sp<TextLine> fLine;
     SkTextBlobBuilder fBuilder;
     skija::UtfIndicesConverter conv;
-    UBreakIterator* fGraphemeIter;
+    std::shared_ptr<UBreakIterator> fGraphemeIter;
     std::vector<uint32_t> fGlyphOffsets;
     SkScalar fPosition = 0;
     SkDEBUGCODE(int fLines = 0;)
