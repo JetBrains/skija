@@ -75,7 +75,7 @@ public class TextShapeBenchScene extends Scene {
                     try (var line = shaper.shapeLine(i + " [" + text + "]", font, null, true);) {
                         canvas.drawTextLine(line, padding, y - metrics.getAscent(), blackFill);
                         canvas.drawRect(Rect.makeXYWH(padding, y, line.getWidth(), metrics.getHeight()), redStroke);
-                        for (float x: line.getRunPositions())
+                        for (float x: TextLine._nGetRunPositions(line._ptr))
                             canvas.drawLine(padding + x, y, padding + x, y + metrics.getHeight(), redStroke);
                     }
                 }

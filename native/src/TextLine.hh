@@ -14,22 +14,23 @@ public:
         size_t   fGlyphCount;
         const uint16_t* fGlyphs;
         const SkPoint*  fPos;
-        std::vector<uint32_t> fClusters;
-        size_t fEnd16;
+        std::vector<SkScalar> fBreakPositions;
+        std::vector<SkScalar> fBreakOffsets;
 
         Run(const SkFont& font,
             uint8_t bidiLevel,
             SkScalar position,
             SkScalar width,
-            size_t glyphCount):
+            size_t glyphCount,
+            SkPoint* pos):
           fFont(font),
           fBidiLevel(bidiLevel),
           fPosition(position),
           fWidth(width),
           fGlyphCount(glyphCount),
           fGlyphs(nullptr),
-          fPos(nullptr),
-          fClusters(glyphCount) {
+          fPos(pos)
+        {
         }
     };
 

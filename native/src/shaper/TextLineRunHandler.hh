@@ -7,9 +7,12 @@
 
 class TextLineRunHandler: public SkShaper::RunHandler {
 public:
-    TextLineRunHandler(const SkString& text):
+    TextLineRunHandler(const SkString& text,
+                       UBreakIterator* graphemeIter):
       fLine(new TextLine()),
-      conv(text) {
+      conv(text),
+      fGraphemeIter(graphemeIter)
+    {
     }
 
     void beginLine() override {
@@ -38,22 +41,50 @@ public:
             info.fBidiLevel,
             fPosition,
             info.fAdvance.fX,
-            info.glyphCount);
+            info.glyphCount,
+            buffer.points());
         TextLine::Run& run = fLine->fRuns.back();
+        if (fGlyphOffsets.capacity() < info.glyphCount)
+            fGlyphOffsets.resize(info.glyphCount);
         return {
             buffer.glyphs,
             buffer.points(),
             nullptr,
-            run.fClusters.data(),
+            fGlyphOffsets.data(),
             {fPosition, 0}
         };
     }
 
     void commitRunBuffer(const RunInfo& info) override {
         TextLine::Run& run = fLine->fRuns.back();
-        for (int i = 0; i < info.glyphCount; ++i)
-            run.fClusters[i] = conv.from8To16(run.fClusters[i]);
-        run.fEnd16 = conv.from8To16(info.utf8Range.end());
+        int32_t glyph = 0;
+        int32_t graphemesInGlyph = 1;
+        SkScalar glyphLeft = run.fPos[glyph].fX;
+        run.fBreakOffsets.reserve(info.utf8Range.size() + 1);
+        run.fBreakPositions.reserve(info.utf8Range.size() + 1);
+
+        // Only record grapheme clusters boundaries
+        for (int32_t offset = fGlyphOffsets[0]; offset <= info.utf8Range.end(); offset = ubrk_following(fGraphemeIter, offset)) {
+            run.fBreakOffsets.push_back(conv.from8To16(offset));
+
+            // if grapheme clusters includes multiple glyphs, skip over them
+            while (glyph < info.glyphCount && fGlyphOffsets[glyph] < offset)
+                ++glyph;
+
+            // if one glyph includes multiple grapheme clusters (ligature, e.g. <->), accumulate
+            if ((glyph < info.glyphCount ? fGlyphOffsets[glyph] : info.utf8Range.end()) > offset)
+                ++graphemesInGlyph;
+            
+            // when boundaries meet, distribute break positions evenly inside glyph
+            else {
+                SkScalar glyphRight = glyph < info.glyphCount ? run.fPos[glyph].fX : fPosition + info.fAdvance.fX;
+                SkScalar step = (glyphRight - glyphLeft) / graphemesInGlyph;
+                for (int i = 0; i < graphemesInGlyph; ++i)
+                    run.fBreakPositions.push_back(glyphLeft + step * (i + 1));
+                graphemesInGlyph = 1;
+                glyphLeft = glyphRight;
+            }
+        }
         fPosition += info.fAdvance.fX;
     }
 
@@ -94,6 +125,8 @@ private:
     sk_sp<TextLine> fLine;
     SkTextBlobBuilder fBuilder;
     skija::UtfIndicesConverter conv;
+    UBreakIterator* fGraphemeIter;
+    std::vector<uint32_t> fGlyphOffsets;
     SkScalar fPosition = 0;
     SkDEBUGCODE(int fLines = 0;)
 };

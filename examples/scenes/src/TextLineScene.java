@@ -17,7 +17,8 @@ public class TextLineScene extends Scene {
     private Font emoji36 = new Font(FontMgr.getDefault().matchFamilyStyleCharacter(null, FontStyle.NORMAL, null, "🧛".codePointAt(0)), 36);
     
     public TextLineScene() {
-        _variants = new String[] { "Set 1", "Set 2" };
+        _variants = new String[] { "Set 1", "Set 2", "Set 3" };
+        _variantIdx = 2;
         if ("Mac OS X".equals(System.getProperty("os.name")))
             zapfino18 = new Font(FontMgr.getDefault().matchFamilyStyle("Zapfino", FontStyle.NORMAL), 18);
     }
@@ -95,9 +96,11 @@ public class TextLineScene extends Scene {
                 for (int i = 0; i < positionsXY.length; i += 2)
                     positions += String.format(Locale.ENGLISH, "%.02f, ", positionsXY[i]);
                 positions = (positions.length() <= 2 ? positions : positions.substring(0, positions.length() - 2)) +  "] .. " + String.format(Locale.ENGLISH, "%.02f", lineWidth);
+
                 var tableSize = drawTable(canvas, new String[] {
                     "Chars",     text.chars().mapToObj(c -> String.format("U+%04X", c)).collect(Collectors.joining(" ")),
-                    "Clusters",  Arrays.toString(line.getClusters()),
+                    "Break Positions",  Arrays.toString(TextLine._nGetBreakPositions(line._ptr)),
+                    "Break Offsets",    Arrays.toString(TextLine._nGetBreakOffsets(line._ptr)),
                     "Glyphs",    Arrays.toString(line.getGlyphs()),
                     "Positions", positions,
                     "Coord",     Integer.toString((int) cursor.getX()),
@@ -139,6 +142,10 @@ public class TextLineScene extends Scene {
             cursor = cursor.offset(0, -drawLine(canvas, new String[] {"😮‍💨", "❤️‍🔥", "🧔‍♀", "👨🏻‍❤️‍💋‍👨🏼"}, inter18, cursor));
             cursor = cursor.offset(0, -drawLine(canvas, new String[] {"Ǎ", "Ǎ", "x̆x̞̊x̃", "<->"}, inter18, cursor));
             cursor = cursor.offset(0, -drawLine(canvas, new String[] {"Z̵̡̢͇͓͎͖͎̪͑͜ͅͅ"}, inter18, cursor));
+        } else if ("Set 3".equals(_variants[_variantIdx])) {
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] {"abcdef"}, inter18, cursor));
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] {"-><=><->=>"}, inter18, cursor));
+            cursor = cursor.offset(0, -drawLine(canvas, new String[] {"x̆x̞̊x̃", "🧔‍♀", "👨🏻‍❤️‍💋‍👨🏼"}, inter18, cursor));
         }
     }
 }

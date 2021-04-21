@@ -609,7 +609,7 @@ pub extern "system" fn Java_noria_kwinit_impl_ExternalAPI_macosMoveStandardWindo
                             },
                             size: NSSize {
                                 width: zoom_frame.origin.x + zoom_frame.size.width,
-                                height: zoom_frame.origin.x + zoom_frame.size.width,
+                                height: zoom_frame.origin.y + zoom_frame.size.height,
                             }
                         };
                         let semaphore = NSView::initWithFrame_(NSView::alloc(nil), semaphore_frame);

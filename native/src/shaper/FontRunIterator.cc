@@ -25,11 +25,9 @@ bool can_handle_cluster(SkTypeface* typeface, const char* clusterStart, const ch
 
 void FontRunIterator::consume() {
     const char* clusterStart = fCurrent;
-    const char* clusterEnd = fBegin + ubrk_following(fBreakIterator, clusterStart - fBegin);
+    const char* clusterEnd = fBegin + ubrk_following(fGraphemeIter, clusterStart - fBegin);
     UErrorCode status = U_ZERO_ERROR;
-    std::unique_ptr<UText, SkFunctionWrapper<decltype(utext_close), utext_close>> utext(utext_openUTF8(nullptr, fCurrent, fEnd - fCurrent, &status));
 
-    // SkUnichar u = utf8_next(&fCurrent, fEnd);
     // If the starting typeface can handle this character, use it.
     if (can_handle_cluster(fFont.getTypeface(), clusterStart, clusterEnd)) {
         fCurrentFont = &fFont;
@@ -56,7 +54,7 @@ void FontRunIterator::consume() {
     
     while (clusterStart < fEnd) {
         clusterStart = clusterEnd;
-        clusterEnd = fBegin + ubrk_following(fBreakIterator, clusterStart - fBegin);
+        clusterEnd = fBegin + ubrk_following(fGraphemeIter, clusterStart - fBegin);
 
         // Do not switch font on whitespace
         if (clusterEnd - clusterStart == 1 && (u_iscntrl(clusterStart[0]) || u_isWhitespace(clusterStart[0])))

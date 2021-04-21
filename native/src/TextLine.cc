@@ -100,17 +100,22 @@ extern "C" JNIEXPORT jfloatArray JNICALL Java_org_jetbrains_skija_TextLine__1nGe
     return javaFloatArray(env, positions);
 }
 
-extern "C" JNIEXPORT jintArray JNICALL Java_org_jetbrains_skija_TextLine__1nGetClusters
+extern "C" JNIEXPORT jfloatArray JNICALL Java_org_jetbrains_skija_TextLine__1nGetBreakPositions
   (JNIEnv* env, jclass jclass, jlong ptr) {
     TextLine* instance = reinterpret_cast<TextLine*>(static_cast<uintptr_t>(ptr));
-    std::vector<jint> clusters(instance->fGlyphCount);
-    size_t idx = 0;
-    for (auto& run: instance->fRuns) {
-        memcpy(clusters.data() + idx, run.fClusters.data(), run.fGlyphCount * sizeof(uint32_t));
-        idx += run.fGlyphCount;
-    }
-    SkASSERTF(idx == instance->fGlyphCount, "TextLine.cc: idx = %d != instance->fGlyphCount = %d", idx, instance->fGlyphCount);
-    return javaIntArray(env, clusters);
+    std::vector<jfloat> positions;
+    for (auto& run: instance->fRuns)
+        positions.insert(positions.end(), run.fBreakPositions.begin(), run.fBreakPositions.end());
+    return javaFloatArray(env, positions);
+}
+
+extern "C" JNIEXPORT jintArray JNICALL Java_org_jetbrains_skija_TextLine__1nGetBreakOffsets
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    TextLine* instance = reinterpret_cast<TextLine*>(static_cast<uintptr_t>(ptr));
+    std::vector<jint> offsets;
+    for (auto& run: instance->fRuns)
+        offsets.insert(offsets.end(), run.fBreakOffsets.begin(), run.fBreakOffsets.end());
+    return javaIntArray(env, offsets);
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_TextLine__1nGetOffsetAtCoord
@@ -121,24 +126,16 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_TextLine__1nGetOffset
         return 0;
 
     for (auto& run: instance->fRuns) {
-        const SkPoint* pos = run.fPos;
-        SkScalar glyphLeft = pos[0].fX;
-        uint32_t idx = 0;
-        for (; idx < run.fGlyphCount; ++idx) {
-            SkScalar glyphRight = idx < run.fGlyphCount - 1 ? pos[idx + 1].fX : run.fPosition + run.fWidth;
-
-            if (SkScalarNearlyEqual(glyphRight, glyphLeft))
-                continue;
-
-            SkScalar glyphCenter = (glyphLeft + glyphRight) / 2;
-            if (x < glyphCenter)
-                return run.fClusters[idx];
-
-            glyphLeft = glyphRight;
+        SkScalar breakLeft = run.fBreakPositions[0];
+        for (uint32_t idx = 0; idx < run.fBreakPositions.size() - 1; ++idx) {
+            SkScalar breakRight = run.fBreakPositions[idx + 1];
+            if (x < (breakLeft + breakRight) / 2)
+                return run.fBreakOffsets[idx];
+            breakLeft = breakRight;
         }
     }
 
-    return (jint) instance->fRuns.back().fEnd16;
+    return (jint) instance->fRuns.back().fBreakOffsets.back();
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_TextLine__1nGetLeftOffsetAtCoord
@@ -149,23 +146,14 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_TextLine__1nGetLeftOf
         return 0;
 
     for (auto& run: instance->fRuns) {
-        const SkPoint* pos = run.fPos;
-        SkScalar glyphLeft = pos[0].fX;
-        uint32_t idx = 0;
-        for (; idx < run.fGlyphCount; ++idx) {
-            SkScalar glyphRight = idx < run.fGlyphCount - 1 ? pos[idx + 1].fX : run.fPosition + run.fWidth;
-
-            if (SkScalarNearlyEqual(glyphRight, glyphLeft))
-                continue;
-
-            if (x < glyphRight)
-                return run.fClusters[idx];
-
-            glyphLeft = glyphRight;
+        for (uint32_t idx = 0; idx < run.fBreakPositions.size() - 1; ++idx) {
+            SkScalar breakRight = run.fBreakPositions[idx + 1];
+            if (x < breakRight)
+                return run.fBreakOffsets[idx];
         }
     }
 
-    return instance->fRuns.back().fEnd16;
+    return (jint) instance->fRuns.back().fBreakOffsets.back();
 }
 
 extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_TextLine__1nGetCoordAtOffset
@@ -173,22 +161,14 @@ extern "C" JNIEXPORT jfloat JNICALL Java_org_jetbrains_skija_TextLine__1nGetCoor
     TextLine* instance = reinterpret_cast<TextLine*>(static_cast<uintptr_t>(ptr));
 
     for (auto& run: instance->fRuns) {
-        if (offset16 > run.fEnd16)
+        if (offset16 > run.fBreakOffsets.back())
             continue;
 
-        for (size_t idx = 0; idx < run.fGlyphCount; ++idx) {
-            SkScalar left = run.fPos[idx].fX;
-            size_t this16 = run.fClusters[idx];
-            if (this16 == offset16)
-                return left;
-            size_t next16 = idx < run.fGlyphCount - 1 ? run.fClusters[idx + 1] : run.fEnd16;
-            if (offset16 > next16)
-                continue;
-            SkScalar right = idx < run.fGlyphCount - 1 ? run.fPos[idx + 1].fX : run.fPosition + run.fWidth;
-            if (offset16 == next16)
-                return right;
-            float ratio = (offset16 - this16) / (float) (next16 - this16);
-            return left + (right - left) * ratio;
+        for (uint32_t idx = 0; idx < run.fBreakPositions.size() - 1; ++idx) {
+            if (offset16 < run.fBreakOffsets[idx] && idx > 0)
+                return run.fBreakPositions[idx - 1];
+            if (offset16 <= run.fBreakOffsets[idx])
+                return run.fBreakPositions[idx];
         }
     }
 
