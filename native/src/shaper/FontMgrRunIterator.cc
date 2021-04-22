@@ -15,7 +15,6 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_shaper_FontMgrRunIte
     if (!graphemeIter) return 0;
 
     auto instance = new FontRunIterator(text->c_str(), text->size(), *font, fontMgr, graphemeIter);
-    // auto instance = SkShaper::MakeFontMgrRunIterator(text->c_str(), text->size(), *font, fontMgr).release();
     return reinterpret_cast<jlong>(instance);
 }
 

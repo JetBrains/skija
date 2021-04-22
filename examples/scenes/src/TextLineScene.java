@@ -21,7 +21,7 @@ public class TextLineScene extends Scene {
 
     public TextLineScene() {
         _variants = new String[] { "Set 1", "Set 2", "Set 3 Text Line", "Set 3 Paragraph" };
-        _variantIdx = 3;
+        _variantIdx = 2;
 
         fc.setDefaultFontManager(FontMgr.getDefault());
         TypefaceFontProvider fm = new TypefaceFontProvider();
@@ -230,7 +230,7 @@ public class TextLineScene extends Scene {
         } else if (_variants[_variantIdx].startsWith("Set 3")) {
             cursor = cursor.offset(0, -drawIt(canvas, new String[] {"abcdef"}, inter36, cursor));
             cursor = cursor.offset(0, -drawIt(canvas, new String[] {"-><=><->=>"}, inter36, cursor));
-            cursor = cursor.offset(0, -drawIt(canvas, new String[] {"ăå̞ã dấu hỏi k̟t̠ c̝̣̱̲͈̝ͨ͐̈ͪͨ̃ͥͅh̙̬̿̂a̯͎͍̜͐͌͂̚o̬s͉̰͊̀"}, jbMono36, cursor));
+            cursor = cursor.offset(0, -drawIt(canvas, new String[] {"aăå̞ã dấu hỏi k̟t̠ c̝̣̱̲͈̝ͨ͐̈ͪͨ̃ͥͅh̙̬̿̂a̯͎͍̜͐͌͂̚o̬s͉̰͊̀"}, jbMono36, cursor));
             cursor = cursor.offset(0, -drawIt(canvas, new String[] {"☹️🤵🏽👨‍🏭🇦🇱*️⃣🏴󠁧󠁢󠁳󠁣󠁴󠁿🚵🏻‍♀️🤦🏼‍♂"}, inter36, cursor));
             cursor = cursor.offset(0, -drawIt(canvas, new String[] {"🧔‍♀👨🏻‍❤️‍💋‍👨🏼"}, inter36, cursor));
         }

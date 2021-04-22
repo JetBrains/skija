@@ -166,6 +166,22 @@ public class TestRunner {
         }
     }
 
+    public static void assertArrayEquals(float[] expected, float[] actual) {
+        runner.asserts++;
+        try {
+            if (expected.length != actual.length)
+                runner.fail("Expected " + Arrays.toString(expected) + " == " + Arrays.toString(actual));
+            for (int i = 0; i < expected.length; ++i)
+                if (Math.abs(expected[i] - actual[i]) > 0.00001f) {
+                    runner.fail("Expected " + Arrays.toString(expected) + " == " + Arrays.toString(actual));
+                    return;
+                }
+            System.out.print(".");
+        } catch(Exception e) {
+            runner.error(e);
+        }
+    }
+
     public static void assertThrows(Class<? extends Throwable> expected, Executable executable) {
         runner.asserts++;
         try {

@@ -1,3 +1,7 @@
+# 0.90.13 - Apr 22, 2021
+
+New FontRunIter for TextLine/TextBlob, groups grapheme clusters together correctly
+
 # 0.90.9 - Apr 20, 2021
 
 Lombok 1.18.18 -> 1.18.20 (support for Java 16)
