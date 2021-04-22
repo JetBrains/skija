@@ -1,4 +1,4 @@
-# 0.90.13 - Apr 22, 2021
+# 0.90.14 - Apr 22, 2021
 
 New FontRunIter for TextLine/TextBlob, groups grapheme clusters together correctly
 
