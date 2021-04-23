@@ -6,7 +6,7 @@ import org.jetbrains.skija.*;
 
 public class Scenes {
     public static TreeMap<String, Scene> scenes;
-    public static String currentScene = "Text Line";
+    public static String currentScene = "Matrix";
     public static HUD hud = new HUD();
     public static boolean vsync = true;
     public static boolean stats = true;

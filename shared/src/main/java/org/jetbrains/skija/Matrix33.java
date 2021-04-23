@@ -74,6 +74,7 @@ public class Matrix33 {
      * @param s  scale factor
      * @return   Matrix33 with scale
      */
+    @NotNull
     public static Matrix33 makeScale(float s) {
         return makeScale(s, s);
     }
@@ -91,10 +92,12 @@ public class Matrix33 {
      * @param sy vertical scale factor
      * @return   Matrix33 with scale
      */
+    @NotNull
     public static Matrix33 makeScale(float sx, float sy) {
         return new Matrix33(new float[] {sx, 0, 0, 0, sy, 0, 0, 0, 1});
     }
 
+    @NotNull
     public Matrix33 makePreScale(float sx, float sy) {
         return new Matrix33(new float[] {
             _mat[0] * sx, _mat[1] * sy, _mat[2],
@@ -125,6 +128,7 @@ public class Matrix33 {
      * @param other  Matrix on right side of multiply expression
      * @return       this multiplied by other
      */
+    @NotNull
     public Matrix33 makeConcat(Matrix33 other) {
         return new Matrix33(new float[] {
             _mat[0] * other._mat[0] + _mat[1] * other._mat[3] + _mat[2] * other._mat[6],
@@ -145,6 +149,7 @@ public class Matrix33 {
      * @param deg  rotation angle in degrees (positive rotates clockwise)
      * @return     Matrix33 with rotation
      */
+    @NotNull
     public static Matrix33 makeRotate(float deg) {
         double rad = Math.toRadians(deg);
         double sin = Math.sin(rad);
@@ -152,7 +157,46 @@ public class Matrix33 {
         double tolerance = 1f / (1 << 12);
         if (Math.abs(sin) <= tolerance) sin = 0;
         if (Math.abs(cos) <= tolerance) cos = 0;
-        return new Matrix33(new float[] {(float) cos, (float) -sin, 0, (float) sin, (float) cos, 0, 0, 0, 1});
+        return new Matrix33(new float[] {
+            (float) cos, (float) -sin, 0,
+            (float) sin, (float) cos, 0,
+            0, 0, 1
+        });
+    }
+
+    /**
+     * Creates a Matrix33 to rotate by |deg| about a pivot point at pivot.
+     *
+     * @param deg    rotation angle in degrees (positive rotates clockwise)
+     * @param pivot  pivot point
+     * @return       Matrix33 with rotation
+     */
+    @NotNull
+    public static Matrix33 makeRotate(float deg, Point pivot) {
+        return makeRotate(deg, pivot._x, pivot._y);
+    }
+
+    /**
+     * Creates a Matrix33 to rotate by |deg| about a pivot point at (pivotx, pivoty).
+     *
+     * @param deg     rotation angle in degrees (positive rotates clockwise)
+     * @param pivotx  x-coord of pivot
+     * @param pivoty  y-coord of pivot
+     * @return        Matrix33 with rotation
+     */
+    @NotNull
+    public static Matrix33 makeRotate(float deg, float pivotx, float pivoty) {
+        double rad = Math.toRadians(deg);
+        double sin = Math.sin(rad);
+        double cos = Math.cos(rad);
+        double tolerance = 1f / (1 << 12);
+        if (Math.abs(sin) <= tolerance) sin = 0;
+        if (Math.abs(cos) <= tolerance) cos = 0;
+        return new Matrix33(new float[] {
+            (float) cos, (float) -sin, (float) (pivotx - pivotx * cos + pivoty * sin),
+            (float) sin, (float) cos, (float) (pivoty - pivoty * cos - pivotx * sin),
+            0, 0, 1
+        });
     }
 
     /**
@@ -168,6 +212,7 @@ public class Matrix33 {
      * @param sy vertical skew factor
      * @return   Matrix33 with skew
      */
+   @NotNull
    public static Matrix33 makeSkew(float sx, float sy) {
         return new Matrix33(new float[]{
                 1, sx, 0,
@@ -187,6 +232,7 @@ public class Matrix33 {
      *                [ g h 0 i ]        
      * </code></pre>
      */
+    @NotNull
     public Matrix44 asMatrix44() {
         return new Matrix44(_mat[0], _mat[1], 0, _mat[2],
                             _mat[3], _mat[4], 0, _mat[5],

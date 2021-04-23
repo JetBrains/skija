@@ -1,3 +1,9 @@
+# 0.90.16 - Apr 23, 2021
+
+Added:
+
+- Matrix33.rotate(deg, pivot)
+
 # 0.90.14 - Apr 22, 2021
 
 New FontRunIter for TextLine/TextBlob, groups grapheme clusters together correctly
