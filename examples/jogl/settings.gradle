@@ -1,4 +1,0 @@
-rootProject.name = 'jogl'
-
-
-enableFeaturePreview('GRADLE_METADATA')
