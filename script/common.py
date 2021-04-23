@@ -2,10 +2,15 @@
 
 import argparse, os, pathlib, platform, re, shutil, subprocess, sys, time, urllib.request, zipfile
 
+arch = {'AMD64': 'x64', 'x86_64': 'x64', 'arm64': 'arm64'}[platform.machine()]
+parser = argparse.ArgumentParser()
+parser.add_argument('--arch', default=arch)
+(args, _) = parser.parse_known_args()
+arch = args.arch
+
 system = {'Darwin': 'macos', 'Linux': 'linux', 'Windows': 'windows'}[platform.system()]
-machine = {'AMD64': 'x64', 'x86_64': 'x64', 'arm64': 'arm64'}[platform.machine()]
 classpath_separator = ';' if system == 'windows' else ':'
-skija_native_artifact_id = 'skija-' + ('macos-' + machine if system == 'macos' else system)
+skija_native_artifact_id = 'skija-' + ('macos-' + arch if system == 'macos' else system)
 verbose = '--verbose' in sys.argv
 
 def check_call(args, **kwargs):
