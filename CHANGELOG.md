@@ -1,3 +1,11 @@
+# 0.91.0 - Apr 28, 2021
+
+Skia version m90-adbb69cd7f-2 -> m91-b99622c05a
+
+Changed:
+
+- All variants of Picture.makeShader now take extra FilterMode argument
+
 # 0.90.16 - Apr 23, 2021
 
 Added:

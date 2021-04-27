@@ -77,22 +77,13 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Picture__1nGetApprox
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Picture__1nMakeShader
-  (JNIEnv* env, jclass jclass, jlong ptr, jint tmxValue, jint tmyValue, jfloatArray localMatrixArr) {
+  (JNIEnv* env, jclass jclass, jlong ptr, jint tmxValue, jint tmyValue, jint filterModeValue, jfloatArray localMatrixArr, jobject tileRectObj) {
     SkPicture* instance = reinterpret_cast<SkPicture*>(static_cast<uintptr_t>(ptr));
     SkTileMode tmx = static_cast<SkTileMode>(tmxValue);
     SkTileMode tmy = static_cast<SkTileMode>(tmyValue);
+    SkFilterMode filterMode = static_cast<SkFilterMode>(filterModeValue);
     std::unique_ptr<SkMatrix> localMatrix = skMatrix(env, localMatrixArr);
-    SkShader* shader = instance->makeShader(tmx, tmy, localMatrix.get()).release();
-    return reinterpret_cast<jlong>(shader);
-}
-
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Picture__1nMakeShaderRect
-  (JNIEnv* env, jclass jclass, jlong ptr, jint tmxValue, jint tmyValue, jfloatArray localMatrixArr, jfloat left, jfloat top, jfloat right, jfloat bottom) {
-    SkPicture* instance = reinterpret_cast<SkPicture*>(static_cast<uintptr_t>(ptr));
-    SkTileMode tmx = static_cast<SkTileMode>(tmxValue);
-    SkTileMode tmy = static_cast<SkTileMode>(tmyValue);
-    std::unique_ptr<SkMatrix> localMatrix = skMatrix(env, localMatrixArr);
-    SkRect tileRect = SkRect::MakeLTRB(left, top, right, bottom);
-    SkShader* shader = instance->makeShader(tmx, tmy, localMatrix.get(), &tileRect).release();
+    std::unique_ptr<SkRect> tileRect = skija::Rect::toSkRect(env, tileRectObj);
+    SkShader* shader = instance->makeShader(tmx, tmy, filterMode, localMatrix.get(), tileRect.get()).release();
     return reinterpret_cast<jlong>(shader);
 }

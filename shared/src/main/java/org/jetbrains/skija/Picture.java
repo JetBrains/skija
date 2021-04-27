@@ -174,27 +174,34 @@ public class Picture extends RefCnt {
      * Return a new shader that will draw with this picture. The tile rect is considered
      * equal to the picture bounds.
      *
-     * @param tmx  The tiling mode to use when sampling in the x-direction.
-     * @param tmy  The tiling mode to use when sampling in the y-direction.
-     * @return     Returns a new shader object. Note: this function never returns null.
+     * @param tmx   The tiling mode to use when sampling in the x-direction.
+     * @param tmy   The tiling mode to use when sampling in the y-direction.
+     * @param mode  How to filter the tiles
+     * @return      Returns a new shader object. Note: this function never returns null.
      */
     @NotNull
-    public Shader makeShader(FilterTileMode tmx, FilterTileMode tmy) {
-        return makeShader(tmx, tmy, null, null);
+    public Shader makeShader(@NotNull FilterTileMode tmx,
+                             @NotNull FilterTileMode tmy,
+                             @NotNull FilterMode mode) {
+        return makeShader(tmx, tmy, mode, null, null);
     }
 
     /**
      * Return a new shader that will draw with this picture. The tile rect is considered
      * equal to the picture bounds.
      *
-     * @param tmx  The tiling mode to use when sampling in the x-direction.
-     * @param tmy  The tiling mode to use when sampling in the y-direction.
-     * @param localMatrix Optional matrix used when sampling
-     * @return     Returns a new shader object. Note: this function never returns null.
+     * @param tmx          The tiling mode to use when sampling in the x-direction.
+     * @param tmy          The tiling mode to use when sampling in the y-direction.
+     * @param mode         How to filter the tiles
+     * @param localMatrix  Optional matrix used when sampling
+     * @return             Returns a new shader object. Note: this function never returns null.
      */
     @NotNull
-    public Shader makeShader(FilterTileMode tmx, FilterTileMode tmy, @Nullable Matrix33 localMatrix) {
-        return makeShader(tmx, tmy, localMatrix, null);
+    public Shader makeShader(@NotNull FilterTileMode tmx,
+                             @NotNull FilterTileMode tmy,
+                             @NotNull FilterMode mode,
+                             @Nullable Matrix33 localMatrix) {
+        return makeShader(tmx, tmy, mode, localMatrix, null);
     }
 
     /**
@@ -202,6 +209,7 @@ public class Picture extends RefCnt {
      *
      * @param tmx          The tiling mode to use when sampling in the x-direction.
      * @param tmy          The tiling mode to use when sampling in the y-direction.
+     * @param mode         How to filter the tiles
      * @param localMatrix  Optional matrix used when sampling
      * @param tileRect     The tile rectangle in picture coordinates: this represents the subset
      *                     (or superset) of the picture used when building a tile. It is not
@@ -211,14 +219,19 @@ public class Picture extends RefCnt {
      * @return             Returns a new shader object. Note: this function never returns null.
      */
     @NotNull
-    public Shader makeShader(FilterTileMode tmx, FilterTileMode tmy, @Nullable Matrix33 localMatrix, @Nullable Rect tileRect) {
-        Stats.onNativeCall();
-        float[] arr = localMatrix == null ? null : localMatrix._mat;
-        long ptr = tileRect == null ?
-            _nMakeShader(_ptr, tmx.ordinal(), tmy.ordinal(), arr) :
-            _nMakeShaderRect(_ptr, tmx.ordinal(), tmy.ordinal(), arr, tileRect._left, tileRect._top, tileRect._right, tileRect._bottom);
-
-        return new Shader(ptr);
+    public Shader makeShader(@NotNull FilterTileMode tmx,
+                             @NotNull FilterTileMode tmy,
+                             @NotNull FilterMode mode,
+                             @Nullable Matrix33 localMatrix,
+                             @Nullable Rect tileRect)
+    {
+        try {
+            Stats.onNativeCall();
+            float[] arr = localMatrix == null ? null : localMatrix._mat;
+            return new Shader(_nMakeShader(_ptr, tmx.ordinal(), tmy.ordinal(), mode.ordinal(), arr, tileRect));
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
     @ApiStatus.Internal public static native long _nMakeFromData(long dataPtr /*, SkDeserialProcs */);
@@ -229,6 +242,5 @@ public class Picture extends RefCnt {
     @ApiStatus.Internal public static native long _nMakePlaceholder(float left, float top, float right, float bottom);
     @ApiStatus.Internal public static native int  _nGetApproximateOpCount(long ptr);
     @ApiStatus.Internal public static native long _nGetApproximateBytesUsed(long ptr);
-    @ApiStatus.Internal public static native long _nMakeShader(long ptr, int tmx, int tmy, float[] localMatrix);
-    @ApiStatus.Internal public static native long _nMakeShaderRect(long ptr, int tmx, int tmy, float[] localMatrix, float left, float top, float right, float bottom);
+    @ApiStatus.Internal public static native long _nMakeShader(long ptr, int tmx, int tmy, int filterMode, float[] localMatrix, Rect tileRect);
 }

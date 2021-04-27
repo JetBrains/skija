@@ -50,6 +50,7 @@ def main():
     + ['-Djava.awt.headless=true',
     '-enableassertions',
     '-enablesystemassertions',
+    # '-Xcheck:jni',
     '-Dskija.logLevel=DEBUG',
     'noria.kwinit.impl.Main'] + (["--verbose"] if args.verbose else []),
     env=env)

@@ -102,19 +102,19 @@ public class PictureRecorderScene extends Scene {
                     canvas.translate(40, 0);
                 }
 
-                try (Shader s = picture.makeShader(FilterTileMode.CLAMP, FilterTileMode.REPEAT)) {
+                try (Shader s = picture.makeShader(FilterTileMode.CLAMP, FilterTileMode.REPEAT, FilterMode.LINEAR)) {
                     black.setShader(s);
                     canvas.drawRect(Rect.makeXYWH(0, 0, 30, 30), black);
                     canvas.translate(40, 0);
                 }
 
-                try (Shader s = picture.makeShader(FilterTileMode.CLAMP, FilterTileMode.REPEAT, Matrix33.makeTranslate(5, 5))) {
+                try (Shader s = picture.makeShader(FilterTileMode.CLAMP, FilterTileMode.REPEAT, FilterMode.LINEAR, Matrix33.makeTranslate(5, 5))) {
                     black.setShader(s);
                     canvas.drawRect(Rect.makeXYWH(0, 0, 30, 30), black);
                     canvas.translate(40, 0);
                 }
 
-                try (Shader s = picture.makeShader(FilterTileMode.CLAMP, FilterTileMode.REPEAT, null, Rect.makeXYWH(5, 5, 20, 20))) {
+                try (Shader s = picture.makeShader(FilterTileMode.CLAMP, FilterTileMode.REPEAT, FilterMode.LINEAR, null, Rect.makeXYWH(5, 5, 20, 20))) {
                     black.setShader(s);
                     canvas.drawRect(Rect.makeXYWH(0, 0, 30, 30), black);
                     canvas.translate(40, 0);
