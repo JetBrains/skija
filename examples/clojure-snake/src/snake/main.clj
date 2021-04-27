@@ -22,7 +22,7 @@
   (GLFW/glfwWindowHint GLFW/GLFW_RESIZABLE GLFW/GLFW_TRUE)
   (let [width 640
         height 480
-        window (GLFW/glfwCreateWindow width height "Skija LWJGL Demo" MemoryUtil/NULL MemoryUtil/NULL)]
+        window (GLFW/glfwCreateWindow width height "Skija Snake Demo" MemoryUtil/NULL MemoryUtil/NULL)]
     (GLFW/glfwMakeContextCurrent window)
     (GLFW/glfwSwapInterval 1)
     (GLFW/glfwShowWindow window)  

@@ -1,8 +1,34 @@
-{:deps {org.jetbrains.skija/skija-native {:mvn/version "0.0.0-SNAPSHOT"}
-        org.lwjgl/lwjgl {:mvn/version "3.2.3"}
-        org.lwjgl/lwjgl$natives-macos {:mvn/version "3.2.3"}
-        org.lwjgl/lwjgl-glfw {:mvn/version "3.2.3"}
-        org.lwjgl/lwjgl-glfw$natives-macos {:mvn/version "3.2.3"}
-        org.lwjgl/lwjgl-opengl {:mvn/version "3.2.3"}
-        org.lwjgl/lwjgl-opengl$natives-macos {:mvn/version "3.2.3"}}
- :mvn/repos {"space-maven" {:url "https://packages.jetbrains.team/maven/p/skija/maven"}}}
+{
+  :deps {
+    org.clojure/clojure    {:mvn/version "1.10.3"}
+    org.lwjgl/lwjgl        {:mvn/version "3.2.3"}
+    org.lwjgl/lwjgl-glfw   {:mvn/version "3.2.3"}
+    org.lwjgl/lwjgl-opengl {:mvn/version "3.2.3"}
+  }
+  :paths ["src" "../../native/build" "../../shared/target/classes" ]
+  :mvn/repos {"space-maven" {:url "https://packages.jetbrains.team/maven/p/skija/maven"}}
+  :aliases {
+    :macos {
+      :extra-deps {
+        org.lwjgl/lwjgl$natives-macos        {:mvn/version "3.2.3"}
+        org.lwjgl/lwjgl-glfw$natives-macos   {:mvn/version "3.2.3"}
+        org.lwjgl/lwjgl-opengl$natives-macos {:mvn/version "3.2.3"}
+      }
+      :jvm-opts ["-XstartOnFirstThread"]
+    }
+    :windows {
+      :extra-deps {
+        org.lwjgl/lwjgl$natives-windows        {:mvn/version "3.2.3"}
+        org.lwjgl/lwjgl-glfw$natives-windows   {:mvn/version "3.2.3"}
+        org.lwjgl/lwjgl-opengl$natives-windows {:mvn/version "3.2.3"}
+      }
+    }
+    :linux {
+      :extra-deps {
+        org.lwjgl/lwjgl$natives-linux        {:mvn/version "3.2.3"}
+        org.lwjgl/lwjgl-glfw$natives-linux   {:mvn/version "3.2.3"}
+        org.lwjgl/lwjgl-opengl$natives-linux {:mvn/version "3.2.3"}
+      }
+    }
+  }
+}
