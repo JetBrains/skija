@@ -19,7 +19,10 @@ public:
         this->supplier = supplier;
     }
     bool abort() override {
-        return env->CallBooleanMethod(supplier, java::util::function::BooleanSupplier::apply);
+        bool res = env->CallBooleanMethod(supplier, java::util::function::BooleanSupplier::apply);
+        if (java::lang::Throwable::exceptionThrown(env))
+          return false;
+        return res;
     }
 private:
     JNIEnv* env;

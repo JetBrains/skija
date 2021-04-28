@@ -45,6 +45,7 @@ def main():
     + ['-Djava.awt.headless=true',
     '-enableassertions',
     '-enablesystemassertions',
+    '-Xcheck:jni',
     '-Dskija.logLevel=DEBUG',
     'org.jetbrains.skija.examples.lwjgl.Main'])
 

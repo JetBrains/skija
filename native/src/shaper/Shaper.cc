@@ -129,14 +129,17 @@ public:
       fEndOfRun(0)
     {
         fHasNext = fEnv->CallBooleanMethod(fIteratorObj, java::util::Iterator::hasNext);
+        java::lang::Throwable::exceptionThrown(fEnv);
     }
 
     void consume() override {
         SkASSERT(fHasNext);
-        jobject runObj = fEnv->CallObjectMethod(fIteratorObj, java::util::Iterator::next);
-        jint endOfRun16 = onConsume(runObj);
+        skija::AutoLocal<jobject> runObj(fEnv, fEnv->CallObjectMethod(fIteratorObj, java::util::Iterator::next));
+        java::lang::Throwable::exceptionThrown(fEnv);
+        jint endOfRun16 = onConsume(runObj.get());
         fEndOfRun = fIndicesConverter.from16To8(endOfRun16);
         fHasNext = fEnv->CallBooleanMethod(fIteratorObj, java::util::Iterator::hasNext);
+        java::lang::Throwable::exceptionThrown(fEnv);
     }
 
     size_t endOfCurrentRun() const override {
@@ -169,6 +172,7 @@ public:
 
     jint onConsume(jobject runObj) override {
         jlong fontPtr = fEnv->CallLongMethod(runObj, skija::shaper::FontRun::_getFontPtr);
+        java::lang::Throwable::exceptionThrown(fEnv);
         fFont = reinterpret_cast<SkFont*>(static_cast<uintptr_t>(fontPtr));
         return fEnv->GetIntField(runObj, skija::shaper::FontRun::_end);
     }
@@ -245,16 +249,19 @@ public:
 
     void beginLine() {
         fEnv->CallVoidMethod(fRunHandler, skija::shaper::RunHandler::beginLine);
+        java::lang::Throwable::exceptionThrown(fEnv);
     }
 
     void runInfo(const SkShaper::RunHandler::RunInfo& info) {
-        jobject runInfoObj = skija::shaper::RunInfo::toJava(fEnv, info, fIndicesConverter);
-        fEnv->CallVoidMethod(fRunHandler, skija::shaper::RunHandler::runInfo, runInfoObj);
-        fEnv->SetLongField(runInfoObj, skija::shaper::RunInfo::_fontPtr, 0);
+        skija::AutoLocal<jobject> runInfoObj(fEnv, skija::shaper::RunInfo::toJava(fEnv, info, fIndicesConverter));
+        fEnv->CallVoidMethod(fRunHandler, skija::shaper::RunHandler::runInfo, runInfoObj.get());
+        java::lang::Throwable::exceptionThrown(fEnv);
+        fEnv->SetLongField(runInfoObj.get(), skija::shaper::RunInfo::_fontPtr, 0);
     }
 
     void commitRunInfo() {
         fEnv->CallVoidMethod(fRunHandler, skija::shaper::RunHandler::commitRunInfo);
+        java::lang::Throwable::exceptionThrown(fEnv);
     }
 
     SkShaper::RunHandler::Buffer runBuffer(const SkShaper::RunHandler::RunInfo& info) {
@@ -262,12 +269,13 @@ public:
         fPositions = std::vector<SkPoint>(info.glyphCount);
         fClusters  = std::vector<jint>(info.glyphCount);
 
-        jobject runInfoObj = skija::shaper::RunInfo::toJava(fEnv, info, fIndicesConverter);
-        jobject point = fEnv->CallObjectMethod(fRunHandler, skija::shaper::RunHandler::runOffset, runInfoObj);
-        fEnv->SetLongField(runInfoObj, skija::shaper::RunInfo::_fontPtr, 0);
+        skija::AutoLocal<jobject> runInfoObj(fEnv, skija::shaper::RunInfo::toJava(fEnv, info, fIndicesConverter));
+        skija::AutoLocal<jobject> point(fEnv, fEnv->CallObjectMethod(fRunHandler, skija::shaper::RunHandler::runOffset, runInfoObj.get()));
+        java::lang::Throwable::exceptionThrown(fEnv);
+        fEnv->SetLongField(runInfoObj.get(), skija::shaper::RunInfo::_fontPtr, 0);
 
-        jfloat x = fEnv->GetFloatField(point, skija::Point::x);
-        jfloat y = fEnv->GetFloatField(point, skija::Point::y);
+        jfloat x = fEnv->GetFloatField(point.get(), skija::Point::x);
+        jfloat y = fEnv->GetFloatField(point.get(), skija::Point::y);
 
         return SkShaper::RunHandler::Buffer{
             reinterpret_cast<SkGlyphID*>(fGlyphs.data()),
@@ -281,17 +289,19 @@ public:
         size_t begin = fIndicesConverter.from8To16(info.utf8Range.fBegin);
         for (int i = 0; i < fClusters.size(); ++i)
             fClusters[i] = fIndicesConverter.from8To16(fClusters[i]);
-        jintArray clusters = javaIntArray(fEnv, fClusters);
+        skija::AutoLocal<jintArray> clusters(fEnv, javaIntArray(fEnv, fClusters));
         size_t end = fIndicesConverter.from8To16(info.utf8Range.fBegin + info.utf8Range.fSize);
-        jobject runInfoObj = skija::shaper::RunInfo::toJava(fEnv, info, begin, end);
-        jshortArray glyphs = javaShortArray(fEnv, fGlyphs);
-        jobjectArray positions = skija::Point::fromSkPoints(fEnv, fPositions);
-        fEnv->CallObjectMethod(fRunHandler, skija::shaper::RunHandler::commitRun, runInfoObj, glyphs, positions, clusters);
-        fEnv->SetLongField(runInfoObj, skija::shaper::RunInfo::_fontPtr, 0);
+        skija::AutoLocal<jobject> runInfoObj(fEnv, skija::shaper::RunInfo::toJava(fEnv, info, begin, end));
+        skija::AutoLocal<jshortArray> glyphs(fEnv, javaShortArray(fEnv, fGlyphs));
+        skija::AutoLocal<jobjectArray> positions(fEnv, skija::Point::fromSkPoints(fEnv, fPositions));
+        fEnv->CallVoidMethod(fRunHandler, skija::shaper::RunHandler::commitRun, runInfoObj.get(), glyphs.get(), positions.get(), clusters.get());
+        java::lang::Throwable::exceptionThrown(fEnv);
+        fEnv->SetLongField(runInfoObj.get(), skija::shaper::RunInfo::_fontPtr, 0);
     }
 
     void commitLine() {
         fEnv->CallVoidMethod(fRunHandler, skija::shaper::RunHandler::commitLine);
+        java::lang::Throwable::exceptionThrown(fEnv);
     }
 
 private:

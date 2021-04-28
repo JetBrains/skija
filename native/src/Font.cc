@@ -294,7 +294,8 @@ extern "C" JNIEXPORT jobjectArray JNICALL Java_org_jetbrains_skija_Font__1nGetBo
 
     jobjectArray res = env->NewObjectArray(count, skija::Rect::cls, nullptr);
     for (int i = 0; i < count; ++i) {
-        env->SetObjectArrayElement(res, i, skija::Rect::fromSkRect(env, bounds[i]));
+        skija::AutoLocal<jobject> boundsObj(env, skija::Rect::fromSkRect(env, bounds[i]));
+        env->SetObjectArrayElement(res, i, boundsObj.get());
     }
 
     return res;

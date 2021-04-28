@@ -1,3 +1,9 @@
+# 0.91.2 - Apr 29, 2021
+
+Fixed:
+
+- `-Xcheck:jni` warnings #70
+
 # 0.91.1 - Apr 28, 2021
 
 Fixed:

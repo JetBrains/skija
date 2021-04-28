@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <jni.h>
 #include <memory>
 #include <vector>
@@ -84,6 +85,29 @@ namespace skija {
         void onUnload(JNIEnv* env);
         jobject toJava(JNIEnv* env, const SkCodec::FrameInfo& i);
     }
+
+    template <typename T>
+    class AutoLocal {
+    public:
+        AutoLocal(JNIEnv* env, T ref): fEnv(env), fRef(ref) {
+        }
+
+        AutoLocal(const AutoLocal&) = delete;
+        AutoLocal(AutoLocal&&) = default;
+        AutoLocal& operator=(AutoLocal const&) = delete;
+
+        ~AutoLocal() {
+            if (fRef)
+                fEnv->DeleteLocalRef(fRef);
+        }
+
+        T get() {
+            return fRef;
+        }
+    private:
+        JNIEnv* fEnv;
+        T fRef;
+    };
 
     namespace Color4f {
         extern jclass cls;

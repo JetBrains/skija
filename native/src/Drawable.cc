@@ -9,26 +9,32 @@ public:
     }
 
     ~SkijaDrawableImpl() {
-        fEnv->DeleteWeakGlobalRef(fObject);
+        JNIEnv* env;
+        if (fJavaVM->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_8) == JNI_OK)
+          env->DeleteWeakGlobalRef(fObject);
     }
 
     void init(JNIEnv* e, jobject o) {
         fEnv = e;
+        fEnv->GetJavaVM(&fJavaVM);
         fObject = fEnv->NewWeakGlobalRef(o);
     }
 
 protected:
     void onDraw(SkCanvas* canvas) override {
         fEnv->CallVoidMethod(fObject, skija::Drawable::onDraw, reinterpret_cast<jlong>(canvas));
+        java::lang::Throwable::exceptionThrown(fEnv);
     }
 
     SkRect onGetBounds() override {
-        jobject rect = fEnv->CallObjectMethod(fObject, skija::Drawable::onGetBounds);
-        return *(skija::Rect::toSkRect(fEnv, rect));
+        skija::AutoLocal<jobject> rect(fEnv, fEnv->CallObjectMethod(fObject, skija::Drawable::onGetBounds));
+        java::lang::Throwable::exceptionThrown(fEnv);
+        return *(skija::Rect::toSkRect(fEnv, rect.get()));
     }
 
 private:
     JNIEnv* fEnv;
+    JavaVM* fJavaVM;
     jobject fObject;
 };
 

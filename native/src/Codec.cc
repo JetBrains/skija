@@ -75,10 +75,11 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Codec__1nGetFrames
     SkCodec::FrameInfo info;
     std::vector<SkCodec::FrameInfo> frames = instance->getFrameInfo();
     jobjectArray res = env->NewObjectArray(frames.size(), skija::AnimationFrameInfo::cls, nullptr);
+    if (java::lang::Throwable::exceptionThrown(env))
+        return nullptr;
     for (int i = 0; i < frames.size(); ++i) {
-        jobject infoObj = skija::AnimationFrameInfo::toJava(env, frames[i]);
-        env->SetObjectArrayElement(res, i, infoObj);
-        env->DeleteLocalRef(infoObj);
+        skija::AutoLocal<jobject> infoObj(env, skija::AnimationFrameInfo::toJava(env, frames[i]));
+        env->SetObjectArrayElement(res, i, infoObj.get());
     }
     return res;
 }

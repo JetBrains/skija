@@ -75,8 +75,8 @@ namespace java {
 
             bool exceptionThrown(JNIEnv* env) {
                 if (env->ExceptionCheck()) {
-                    jthrowable th = env->ExceptionOccurred();
-                    env->CallVoidMethod(th, printStackTrace);
+                    auto th = skija::AutoLocal<jthrowable>(env, env->ExceptionOccurred());
+                    env->CallVoidMethod(th.get(), printStackTrace);
                     env->ExceptionCheck(); // ignore
                     return true;
                 } else
@@ -165,15 +165,16 @@ namespace skija {
                     blend = SkBlendMode::kSrc;
                     break;
             }
-            return env->NewObject(cls, ctor,
-                                  i.fRequiredFrame,
-                                  i.fDuration,
-                                  i.fFullyReceived,
-                                  static_cast<jint>(i.fAlphaType),
-                                  i.fHasAlphaWithinBounds,
-                                  static_cast<jint>(i.fDisposalMethod),
-                                  static_cast<jint>(blend),
-                                  IRect::fromSkIRect(env, i.fFrameRect));
+            jobject res = env->NewObject(cls, ctor,
+                                         i.fRequiredFrame,
+                                         i.fDuration,
+                                         i.fFullyReceived,
+                                         static_cast<jint>(i.fAlphaType),
+                                         i.fHasAlphaWithinBounds,
+                                         static_cast<jint>(i.fDisposalMethod),
+                                         static_cast<jint>(blend),
+                                         IRect::fromSkIRect(env, i.fFrameRect));
+            return java::lang::Throwable::exceptionThrown(env) ? nullptr : res;
         }
     }
 
@@ -250,12 +251,11 @@ namespace skija {
             jsize featuresLen = featuresArr == nullptr ? 0 : env->GetArrayLength(featuresArr);
             std::vector<SkShaper::Feature> features(featuresLen);
             for (int i = 0; i < featuresLen; ++i) {
-                jobject featureObj = env->GetObjectArrayElement(featuresArr, i);
-                features[i] = {static_cast<SkFourByteTag>(env->GetIntField(featureObj, skija::FontFeature::tag)),
-                               static_cast<uint32_t>(env->GetIntField(featureObj, skija::FontFeature::value)),
-                               static_cast<size_t>(env->GetLongField(featureObj, skija::FontFeature::start)),
-                               static_cast<size_t>(env->GetLongField(featureObj, skija::FontFeature::end))};
-                env->DeleteLocalRef(featureObj);
+                skija::AutoLocal<jobject> featureObj(env, env->GetObjectArrayElement(featuresArr, i));
+                features[i] = {static_cast<SkFourByteTag>(env->GetIntField(featureObj.get(), skija::FontFeature::tag)),
+                               static_cast<uint32_t>(env->GetIntField(featureObj.get(), skija::FontFeature::value)),
+                               static_cast<size_t>(env->GetLongField(featureObj.get(), skija::FontFeature::start)),
+                               static_cast<size_t>(env->GetLongField(featureObj.get(), skija::FontFeature::end))};
             }
             return features;
         }
@@ -410,7 +410,8 @@ namespace skija {
         }
 
         jobject fromSkIRect(JNIEnv* env, const SkIRect& rect) {
-            return env->CallStaticObjectMethod(cls, makeLTRB, rect.fLeft, rect.fTop, rect.fRight, rect.fBottom);
+            jobject res = env->CallStaticObjectMethod(cls, makeLTRB, rect.fLeft, rect.fTop, rect.fRight, rect.fBottom);
+            return java::lang::Throwable::exceptionThrown(env) ? nullptr : res;
         }
 
         std::unique_ptr<SkIRect> toSkIRect(JNIEnv* env, jobject obj) {
@@ -496,7 +497,8 @@ namespace skija {
         jobjectArray fromSkPoints(JNIEnv* env, const std::vector<SkPoint>& ps) {
             jobjectArray res = env->NewObjectArray((jsize) ps.size(), cls, nullptr);
             for (int i = 0; i < ps.size(); ++i) {
-                env->SetObjectArrayElement(res, i, fromSkPoint(env, ps[i]));
+                skija::AutoLocal<jobject> pointObj(env, fromSkPoint(env, ps[i]));
+                env->SetObjectArrayElement(res, i, pointObj.get());
             }
             return res;
         }
@@ -566,12 +568,15 @@ namespace skija {
                               env->GetFloatField(rectObj, top), 
                               env->GetFloatField(rectObj, right), 
                               env->GetFloatField(rectObj, bottom));
+                if (java::lang::Throwable::exceptionThrown(env))
+                    return std::unique_ptr<SkRect>(nullptr);
                 return std::unique_ptr<SkRect>(rect);
             }
         }
 
         jobject fromLTRB(JNIEnv* env, float left, float top, float right, float bottom) {
-            return env->CallStaticObjectMethod(cls, makeLTRB, left, top, right, bottom);
+            jobject res = env->CallStaticObjectMethod(cls, makeLTRB, left, top, right, bottom);
+            return java::lang::Throwable::exceptionThrown(env) ? nullptr : res;
         }
 
         jobject fromSkRect(JNIEnv* env, const SkRect& rect) {
@@ -724,7 +729,11 @@ namespace skija {
             if (surfacePropsObj == nullptr)
                 return std::unique_ptr<SkSurfaceProps>(nullptr);
             uint32_t flags = static_cast<uint32_t>(env->CallIntMethod(surfacePropsObj, _getFlags));
+            if (java::lang::Throwable::exceptionThrown(env))
+                std::unique_ptr<SkSurfaceProps>(nullptr);
             SkPixelGeometry geom = static_cast<SkPixelGeometry>(env->CallIntMethod(surfacePropsObj, _getPixelGeometryOrdinal));
+            if (java::lang::Throwable::exceptionThrown(env))
+                std::unique_ptr<SkSurfaceProps>(nullptr);
             return std::make_unique<SkSurfaceProps>(flags, geom);
         }
     }
@@ -1009,8 +1018,10 @@ std::vector<SkString> skStringVector(JNIEnv* env, jobjectArray arr) {
 
 jobjectArray javaStringArray(JNIEnv* env, const std::vector<SkString>& strings) {
     jobjectArray res = env->NewObjectArray((jsize) strings.size(), java::lang::String::cls, nullptr);
-    for (jint i = 0; i < (jsize) strings.size(); ++i)
-        env->SetObjectArrayElement(res, i, javaString(env, strings[i]));
+    for (jint i = 0; i < (jsize) strings.size(); ++i) {
+        skija::AutoLocal<jstring> str(env, javaString(env, strings[i]));
+        env->SetObjectArrayElement(res, i, str.get());
+    }
     return res;
 }
 
