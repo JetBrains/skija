@@ -14,7 +14,7 @@ use glutin::platform::macos::WindowExtMacOS;
 use objc::runtime::{YES, NO};
 use glutin::window::{WindowBuilder, WindowId};
 use jni::JNIEnv;
-use jni::objects::{JMethodID, JObject, JString, JValue};
+use jni::objects::{JMethodID, JObject, JString, JValue, AutoLocal};
 use jni::signature::{JavaType, Primitive, TypeSignature};
 use jni::sys::{jboolean, jdouble, jfloat, jlong, jstring};
 use lazy_static::lazy_static;
@@ -795,12 +795,11 @@ pub extern "system" fn Java_noria_kwinit_impl_ExternalAPI_runEventLoop(env: JNIE
 
                     with_event_loop_window_target(window_target, || {
                         let str = serde_json::to_string(&vec![kwevent]).unwrap();
-                        let mut slice = str.as_bytes().to_vec();
-                        let byte_buffer = env.new_direct_byte_buffer(&mut slice).unwrap().into();
+                        let jstr = AutoLocal::new(env, *env.new_string(str).unwrap());
                         env.call_method_unchecked(events_callback,
                             consume_method_id,
                             JavaType::Primitive (Primitive::Void),
-                            &[JValue::Object(byte_buffer)]).unwrap();
+                            &[JValue::Object(jstr.as_obj())]).unwrap();
                     });
 
                     *control_flow = STOP_APPLICATION_FLAG.with(|stop_application_flag| {

@@ -5,7 +5,7 @@ import java.util.function.*;
 
 public class ExternalAPI {
     public static native long    createWindow(String attributes);
-    public static native void    runEventLoop(Consumer<ByteBuffer> callback, LongConsumer redrawCallback);
+    public static native void    runEventLoop(Consumer<String> callback, LongConsumer redrawCallback);
     public static native boolean fireUserEvent(long cookie);
     public static native double  getScaleFactor(long window);
     public static native void    requestRedraw(long window);

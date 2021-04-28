@@ -193,7 +193,7 @@ public class TextLine extends Managed {
     @Nullable
     public float[] getIntercepts(float lowerBound, float upperBound, @Nullable Paint paint) {
         try (var blob = getTextBlob()) {
-            return blob.getIntercepts(lowerBound, upperBound, paint);
+            return blob == null ? null : blob.getIntercepts(lowerBound, upperBound, paint);
         } finally {
             Reference.reachabilityFence(this);
             Reference.reachabilityFence(paint);

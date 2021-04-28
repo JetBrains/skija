@@ -1,3 +1,9 @@
+# 0.91.1 - Apr 28, 2021
+
+Fixed:
+
+- NPE in TextLine::getIntercepts
+
 # 0.91.0 - Apr 28, 2021
 
 Skia version m90-adbb69cd7f-2 -> m91-b99622c05a

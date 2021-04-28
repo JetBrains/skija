@@ -62,10 +62,8 @@ public class Main {
             ExternalAPI.fireUserEvent(0);
         }).start();
 
-        ExternalAPI.runEventLoop((bb) -> {
-            var bytes = new byte[bb.limit()];
-            bb.get(bytes);
-            var json = new JsonParser().parse(new String(bytes));
+        ExternalAPI.runEventLoop((str) -> {
+            var json = new JsonParser().parse(str);
             for (var el: json.getAsJsonArray()) {
                 var event = el.getAsJsonObject();
                 var type = event.get("type").getAsString();
