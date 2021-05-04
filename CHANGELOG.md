@@ -1,3 +1,10 @@
+# 0.91.3 - May 4, 2021
+
+Added:
+
+- DirectContext::makeMetal
+- BackendRenderTarget::makeMetal
+
 # 0.91.2 - Apr 29, 2021
 
 Fixed:

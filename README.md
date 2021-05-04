@@ -217,7 +217,7 @@ For building Skia itself, see https://github.com/JetBrains/skia-build/
 
 ## Running examples
 
-Examples require latest master build of Skija installed locally in `.m2` (see [Building Skija](#building-skija-from-scratch)).
+Examples require local build of Skija (see [Building Skija](#building-skija-from-scratch)).
 
 See [examples/](examples/).
 

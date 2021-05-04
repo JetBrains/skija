@@ -235,4 +235,7 @@ public class TextLineScene extends Scene {
             cursor = cursor.offset(0, -drawIt(canvas, new String[] {"🧔‍♀👨🏻‍❤️‍💋‍👨🏼"}, inter36, cursor));
         }
     }
+
+    // Furthermore, العربية نص جميل. द क्विक ब्राउन फ़ॉक्स jumps over the lazy 🐕.
+    // A true 🕵🏽‍♀️ will spot the tricky selection in this BiDi text: ניפגש ב09:35 בחוף הים
 }
