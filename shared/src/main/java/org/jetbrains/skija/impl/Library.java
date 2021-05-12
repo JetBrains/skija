@@ -74,9 +74,11 @@ public class Library {
     public static File _extract(String resourcePath, String fileName, File tempDir) {
         File file;
         URL url = Library.class.getResource(resourcePath + fileName);
-        if (url == null)
-            throw new IllegalArgumentException("Library file " + fileName + " not found in " + resourcePath);
-        else if (url.getProtocol() == "file") {
+        if (url == null) {
+            file = new File(fileName);
+            if (!file.exists())
+                throw new IllegalArgumentException("Library file " + fileName + " not found in " + resourcePath);
+        } else if (url.getProtocol() == "file") {
             file = new File(url.toURI());
         } else {
             file = new File(tempDir, fileName);

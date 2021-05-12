@@ -89,7 +89,7 @@ Backends:
 
 - [x] Bitmap
 - [x] OpenGL
-- [ ] Metal (example pending)
+- [x] Metal
 - [ ] Vulkan
 
 APIs:

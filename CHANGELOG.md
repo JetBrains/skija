@@ -1,3 +1,10 @@
+# 0.91.4 - May 11, 2021
+
+Added:
+
+- Surface::makeFromMTKView
+- Optionally load dll/so/dylib from current dir
+
 # 0.91.3 - May 4, 2021
 
 Added:

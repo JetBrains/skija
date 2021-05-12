@@ -78,6 +78,28 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeFromB
     return reinterpret_cast<jlong>(surface.release());
 }
 
+#ifdef SK_METAL
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeFromMTKView
+  (JNIEnv* env, jclass jclass, jlong contextPtr, jlong mtkViewPtr, jint surfaceOrigin, jint sampleCount, jint colorType, jlong colorSpacePtr, jobject surfacePropsObj) {
+    GrDirectContext* context = reinterpret_cast<GrDirectContext*>(static_cast<uintptr_t>(contextPtr));
+    GrMTLHandle* mtkView = reinterpret_cast<GrMTLHandle*>(static_cast<uintptr_t>(mtkViewPtr));
+    GrSurfaceOrigin grSurfaceOrigin = static_cast<GrSurfaceOrigin>(surfaceOrigin);
+    SkColorType skColorType = static_cast<SkColorType>(colorType);
+    sk_sp<SkColorSpace> colorSpace = sk_ref_sp<SkColorSpace>(reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr)));
+    std::unique_ptr<SkSurfaceProps> surfaceProps = skija::SurfaceProps::toSkSurfaceProps(env, surfacePropsObj);
+
+    sk_sp<SkSurface> surface = SkSurface::MakeFromMTKView(
+        static_cast<GrRecordingContext*>(context),
+        mtkView,
+        grSurfaceOrigin,
+        sampleCount,
+        skColorType,
+        colorSpace,
+        surfaceProps.get());
+    return reinterpret_cast<jlong>(surface.release());
+}
+#endif
+
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeRenderTarget
   (JNIEnv* env, jclass jclass, jlong contextPtr, jboolean budgeted, 
     jint width, jint height, jint colorType, jint alphaType, jlong colorSpacePtr,

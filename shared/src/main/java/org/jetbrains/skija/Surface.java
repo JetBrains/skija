@@ -249,6 +249,29 @@ public class Surface extends RefCnt {
         }
     }
 
+    @NotNull
+    public static Surface makeFromMTKView(@NotNull DirectContext context,
+                                          long mtkViewPtr,
+                                          @NotNull SurfaceOrigin origin,
+                                          int sampleCount,
+                                          @NotNull SurfaceColorFormat colorFormat,
+                                          @Nullable ColorSpace colorSpace,
+                                          @Nullable SurfaceProps surfaceProps) {
+        try {
+            assert context != null : "Can’t makeFromBackendRenderTarget with context == null";
+            assert origin != null : "Can’t makeFromBackendRenderTarget with origin == null";
+            assert colorFormat != null : "Can’t makeFromBackendRenderTarget with colorFormat == null";
+            Stats.onNativeCall();
+            long ptr = _nMakeFromMTKView(Native.getPtr(context), mtkViewPtr, origin.ordinal(), sampleCount, colorFormat.ordinal(), Native.getPtr(colorSpace), surfaceProps);
+            if (ptr == 0)
+                throw new IllegalArgumentException(String.format("Failed Surface.makeFromMTKView(%s, %s, %s, %s, %s, %s)", context, mtkViewPtr, origin, colorFormat, colorSpace, surfaceProps));
+            return new Surface(ptr, context);
+        } finally {
+            Reference.reachabilityFence(context);
+            Reference.reachabilityFence(colorSpace);
+        }
+    }
+
     /**
      * <p>Allocates raster {@link Surface}.</p>
      *
@@ -815,6 +838,7 @@ public class Surface extends RefCnt {
     public static native long _nMakeRaster(int width, int height, int colorType, int alphaType, long colorSpacePtr, long rowBytes, SurfaceProps surfaceProps);
     public static native long _nMakeRasterN32Premul(int width, int height);
     public static native long _nMakeFromBackendRenderTarget(long pContext, long pBackendRenderTarget, int surfaceOrigin, int colorType, long colorSpacePtr, SurfaceProps surfaceProps);
+    public static native long _nMakeFromMTKView(long contextPtr, long mtkViewPtr, int surfaceOrigin, int sampleCount, int colorType, long colorSpacePtr, SurfaceProps surfaceProps);
     public static native long _nMakeRenderTarget(long contextPtr, boolean budgeted, int width, int height, int colorType, int alphaType, long colorSpacePtr, int sampleCount, int surfaceOrigin, SurfaceProps surfaceProps, boolean shouldCreateWithMips);
     public static native long _nMakeNull(int width, int height);
     public static native int _nGetWidth(long ptr);
