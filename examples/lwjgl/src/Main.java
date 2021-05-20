@@ -190,8 +190,9 @@ class Window {
                         Scenes.currentScene().changeVariant(1);
                         break;
                     case GLFW_KEY_V:
-                        Scenes.vsync = !Scenes.vsync;
-                        glfwSwapInterval(Scenes.vsync ? 1 : 0);
+                        vsync = !vsync;
+                        glfwSwapInterval(vsync ? 1 : 0);
+                        HUD.extras.set(0, new Pair("V", "VSync: " + (vsync ? "ON" : "OFF")));
                         break;
                     case GLFW_KEY_S:
                         Scenes.stats = !Scenes.stats;
@@ -205,6 +206,7 @@ class Window {
             }
         });
 
+        HUD.extras.add(new Pair("V", "VSync: " + (vsync ? "ON" : "OFF")));
         initSkia();
 
         while (!glfwWindowShouldClose(window)) {

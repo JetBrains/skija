@@ -9,7 +9,7 @@ def main():
 
   classpath = [
     common.fetch_maven('org.projectlombok', 'lombok', '1.18.20'),
-    common.fetch_maven('org.jetbrains', 'annotations', '19.0.0')
+    common.fetch_maven('org.jetbrains', 'annotations', '20.1.0')
   ]
 
   print('Generating', 'target/generated-sources/delombok/**.java')

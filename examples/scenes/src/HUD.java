@@ -7,6 +7,7 @@ import org.jetbrains.skija.impl.*;
 public class HUD {
     public long t0 = System.nanoTime();
     public double[] times = new double[155];
+    public static List<Pair<String, String>> extras = new ArrayList<>();
     public int timesIdx = 0;
 
     public void tick() {
@@ -36,7 +37,7 @@ public class HUD {
         float variantsHeight = scene._variants.length > 1 ? 25 : 0;
 
         // Background
-        canvas.translate(width - 230, height - 185 - variantsHeight);
+        canvas.translate(width - 230, height - 160 - variantsHeight - extras.size() * 25);
         canvas.drawRRect(RRect.makeLTRB(0, 0, 225, 180 + variantsHeight, 7), bg);
         canvas.translate(5, 5);
 
@@ -62,12 +63,16 @@ public class HUD {
             canvas.translate(0, 25);
         }
 
-        // VSync
-        buttonBounds = RRect.makeXYWH(5, 0, 20, 20, 2);
-        canvas.drawRRect(buttonBounds, bg);
-        Scene.drawStringCentered(canvas, "V", 15, 10, Scene.inter13, fg);
-        Scene.drawStringLeft(canvas, "VSync: " + (Scenes.vsync ? "ON" : "OFF"), labelBounds, Scene.inter13, fg);
-        canvas.translate(0, 25);
+        // Extras
+        for (var pair: extras) {
+            String key = pair.getFirst();
+            String label = pair.getSecond();
+            buttonBounds = RRect.makeXYWH(5, 0, 20, 20, 2);
+            canvas.drawRRect(buttonBounds, bg);
+            Scene.drawStringCentered(canvas, key, 15, 10, Scene.inter13, fg);
+            Scene.drawStringLeft(canvas, label, labelBounds, Scene.inter13, fg);
+            canvas.translate(0, 25);
+        }
 
         // Stats
         canvas.drawRRect(buttonBounds, bg);

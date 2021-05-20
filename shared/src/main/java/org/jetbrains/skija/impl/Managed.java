@@ -35,6 +35,10 @@ public abstract class Managed extends Native implements AutoCloseable {
         }
     }
 
+    public boolean isClosed() {
+        return _ptr == 0;
+    }
+
     public static Cleaner _cleaner = Cleaner.create();
 
     public static class CleanerThunk implements Runnable {
