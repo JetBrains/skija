@@ -1,3 +1,17 @@
+# 0.91.6 - May 21, 2021
+
+Added:
+
+- Canvas.drawRectShadow
+- Canvas.drawRectShadowNoclip
+- Rect.inflate
+- Rect.isEmpty
+- Managed.isClosed
+
+Updated:
+
+- org.jetbrains:annotations from 19.0.0 to 20.1.0
+
 # 0.91.4 - May 11, 2021
 
 Added:

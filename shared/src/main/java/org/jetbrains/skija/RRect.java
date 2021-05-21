@@ -70,6 +70,33 @@ public class RRect extends Rect {
         return new RRect(l, t, l + w, t + h, new float[] { Math.min(w, h) / 2f } );
     }
 
+    @Override @NotNull
+    public Rect inflate(float spread) {
+        boolean becomesRect = true;
+        for (int i = 0; i < _radii.length; ++i) {
+            if (_radii[i] + spread >= 0) {
+                becomesRect = false;
+                break;
+            }
+        }
+
+        if (becomesRect)
+            return Rect.makeLTRB(_left - spread,
+                                 _top - spread,
+                                 Math.max(_left - spread, _right + spread),
+                                 Math.max(_top - spread, _bottom + spread));
+        else {
+            float[] radii = Arrays.copyOf(_radii, _radii.length);
+            for (int i = 0; i < radii.length; ++i)
+                radii[i] = Math.max(0f, radii[i] + spread);
+            return new RRect(_left - spread,
+                             _top - spread,
+                             Math.max(_left - spread, _right + spread),
+                             Math.max(_top - spread, _bottom + spread),
+                             radii);
+        }
+    }
+
     @Override
     public String toString() {
         return "RRect(_left=" + _left + ", _top=" + _top + ", _right=" + _right + ", _bottom=" + _bottom + ", _radii=" + Arrays.toString(_radii) + ")";

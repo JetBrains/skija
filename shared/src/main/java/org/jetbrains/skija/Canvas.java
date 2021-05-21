@@ -293,6 +293,43 @@ public class Canvas extends Managed {
     }
 
     @NotNull @Contract("_, _ -> this")
+    public Canvas drawRectShadow(@NotNull Rect r, float dx, float dy, float blur, int color) {
+        return drawRectShadow(r, dx, dy, blur, 0f, color);
+    }
+
+    @NotNull @Contract("_, _ -> this")
+    public Canvas drawRectShadow(@NotNull Rect r, float dx, float dy, float blur, float spread, int color) {
+        assert r != null : "Can’t drawRectShadow with r == null";
+        Rect insides = r.inflate(-1);
+        if (!insides.isEmpty()) {
+            save();
+            if (insides instanceof RRect)
+                clipRRect((RRect) insides, ClipMode.DIFFERENCE);
+            else
+                clipRect(insides, ClipMode.DIFFERENCE);
+            drawRectShadowNoclip(r, dx, dy, blur, spread, color);
+            restore();
+        } else
+            drawRectShadowNoclip(r, dx, dy, blur, spread, color);
+        return this;
+    }
+
+    @NotNull @Contract("_, _ -> this")
+    public Canvas drawRectShadowNoclip(@NotNull Rect r, float dx, float dy, float blur, float spread, int color) {
+        assert r != null : "Can’t drawRectShadow with r == null";
+        Rect outline = r.inflate(spread);
+        try (ImageFilter f = ImageFilter.makeDropShadowOnly(dx, dy, blur / 2f, blur / 2f, color);
+             Paint p = new Paint();) {
+            p.setImageFilter(f);
+            if (outline instanceof RRect)
+                drawRRect((RRect) outline, p);
+            else
+                drawRect(outline, p);
+        }
+        return this;
+    }
+
+    @NotNull @Contract("_, _ -> this")
     public Canvas drawPath(@NotNull Path path, @NotNull Paint paint) {
         assert path != null : "Can’t drawPath with path == null";
         assert paint != null : "Can’t drawPath with paint == null";

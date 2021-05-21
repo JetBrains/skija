@@ -96,4 +96,23 @@ public class Rect {
     public IRect toIRect() {
         return new IRect((int) _left, (int) _top, (int) _right, (int) _bottom);
     }
+
+    @NotNull
+    public Rect inflate(float spread) {
+        if (spread <= 0)
+            return Rect.makeLTRB(_left - spread,
+                                 _top - spread,
+                                 Math.max(_left - spread, _right + spread),
+                                 Math.max(_top - spread, _bottom + spread));
+        else
+            return RRect.makeLTRB(_left - spread,
+                                  _top - spread,
+                                  Math.max(_left - spread, _right + spread),
+                                  Math.max(_top - spread, _bottom + spread),
+                                  spread);
+    }
+
+    public boolean isEmpty() {
+        return _right == _left || _top == _bottom;
+    }
 }
