@@ -890,8 +890,7 @@ public class Canvas extends Managed {
      * @see <a href="https://fiddle.skia.org/c/@Canvas_resetMatrix">https://fiddle.skia.org/c/@Canvas_resetMatrix</a>
      */
     @NotNull @Contract("_ -> this")
-    public Canvas resetMatrix(@NotNull Matrix33 matrix) {
-        assert matrix != null : "Can’t resetMatrix with matrix == null";
+    public Canvas resetMatrix() {
         Stats.onNativeCall();
         _nResetMatrix(_ptr);
         return this;
