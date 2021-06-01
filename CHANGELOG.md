@@ -1,3 +1,10 @@
+# 0.91.8 - June 1, 2021
+
+Fixed:
+
+- Typeface.getFamilyNames return type (String[] -> FontFamilyName[]) #108
+- Canvas.resetMatrix argument (Matrix33 -> None) #109, thx @AnzerWall
+
 # 0.91.6 - May 21, 2021
 
 Added:

@@ -889,7 +889,7 @@ public class Canvas extends Managed {
      *
      * @see <a href="https://fiddle.skia.org/c/@Canvas_resetMatrix">https://fiddle.skia.org/c/@Canvas_resetMatrix</a>
      */
-    @NotNull @Contract("_ -> this")
+    @NotNull @Contract("-> this")
     public Canvas resetMatrix() {
         Stats.onNativeCall();
         _nResetMatrix(_ptr);
@@ -899,7 +899,7 @@ public class Canvas extends Managed {
     /**
      * Returns the total transformation matrix for the canvas.
      */
-    @NotNull @Contract("_ -> new")
+    @NotNull @Contract("-> new")
     public Matrix44 getLocalToDevice() {
         try {
             Stats.onNativeCall();
@@ -910,7 +910,7 @@ public class Canvas extends Managed {
         }
     }
 
-    @NotNull @Contract("_ -> new")
+    @NotNull @Contract("-> new")
     public Matrix33 getLocalToDeviceAsMatrix33() {
         return getLocalToDevice().asMatrix33();
     }

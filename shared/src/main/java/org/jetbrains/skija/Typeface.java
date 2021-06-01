@@ -353,7 +353,7 @@ public class Typeface extends RefCnt {
     /**
      * @return  all of the family names specified by the font
      */
-    public String[] getFamilyNames() {
+    public FontFamilyName[] getFamilyNames() {
         try {
             Stats.onNativeCall();
             return _nGetFamilyNames(_ptr);
@@ -413,7 +413,7 @@ public class Typeface extends RefCnt {
     @ApiStatus.Internal public static native long     _nGetTableData(long ptr, int tag);
     @ApiStatus.Internal public static native int      _nGetUnitsPerEm(long ptr);
     @ApiStatus.Internal public static native int[]    _nGetKerningPairAdjustments(long ptr, short[] glyphs);
-    @ApiStatus.Internal public static native String[] _nGetFamilyNames(long ptr);
+    @ApiStatus.Internal public static native FontFamilyName[] _nGetFamilyNames(long ptr);
     @ApiStatus.Internal public static native String   _nGetFamilyName(long ptr);
     @ApiStatus.Internal public static native Rect     _nGetBounds(long ptr);
 }
