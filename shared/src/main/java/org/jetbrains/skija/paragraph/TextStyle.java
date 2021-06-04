@@ -137,7 +137,7 @@ public class TextStyle extends Managed {
 
     public TextStyle addShadow(Shadow s) {
         Stats.onNativeCall();
-        _nAddShadow(_ptr, s._color, s._offsetX, s._offsetY, s._blurRadius);
+        _nAddShadow(_ptr, s._color, s._offsetX, s._offsetY, s._blurSigma);
         return this;
     }
 
@@ -357,7 +357,7 @@ public class TextStyle extends Managed {
     public static native int   _nGetFontStyle(long ptr);
     public static native void  _nSetFontStyle(long ptr, int fontStyle);
     public static native Shadow[] _nGetShadows(long ptr);
-    public static native void  _nAddShadow(long ptr, int color, float offsetX, float offsetY, double blurRadius);
+    public static native void  _nAddShadow(long ptr, int color, float offsetX, float offsetY, double blurSigma);
     public static native void  _nClearShadows(long ptr);
     public static native FontFeature[] _nGetFontFeatures(long ptr);
     public static native void  _nAddFontFeature(long ptr, String name, int value);

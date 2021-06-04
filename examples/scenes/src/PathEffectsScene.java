@@ -46,8 +46,6 @@ public class PathEffectsScene extends Scene {
                 canvas.translate(x, y);
 
                 canvas.drawPath(figure, stroke);
-                Rect bb = effect.computeFastBounds(Rect.makeLTRB(10, 10, 190, 190));
-                canvas.drawRect(bb, stroke);
 
                 fill.setPathEffect(effect);
                 canvas.drawPath(figure, fill);

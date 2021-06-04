@@ -11,10 +11,10 @@ public class Shadow {
     public final int    _color;
     public final float  _offsetX;
     public final float  _offsetY;
-    public final double _blurRadius;
+    public final double _blurSigma;
 
-    public Shadow(int color, Point offset, double blurRadius) {
-        this(color, offset.getX(), offset.getY(), blurRadius);
+    public Shadow(int color, Point offset, double blurSigma) {
+        this(color, offset.getX(), offset.getY(), blurSigma);
     }
 
     public Point getOffset() {

@@ -24,14 +24,6 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_PathEffect__1nMakeCo
     return reinterpret_cast<jlong>(ptr);
 }
 
-extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_PathEffect__1nComputeFastBounds
-  (JNIEnv* env, jclass jclass, jlong ptr, jfloat l, jfloat t, jfloat r, jfloat b) {
-    SkPathEffect* instance = reinterpret_cast<SkPathEffect*>(static_cast<uintptr_t>(ptr));
-    SkRect res;
-    instance->computeFastBounds(&res, SkRect{l, t, r, b});
-    return skija::Rect::fromSkRect(env, res);
-}
-
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_PathEffect__1nMakePath1D
   (JNIEnv* env, jclass jclass, jlong pathPtr, jfloat advance, jfloat phase, jint styleInt) {
     SkPath* path = reinterpret_cast<SkPath*>(static_cast<uintptr_t>(pathPtr));

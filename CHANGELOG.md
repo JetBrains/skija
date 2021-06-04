@@ -1,3 +1,15 @@
+# 0.92.0 - June 4, 2021
+
+Skia version m91-b99622c05a -> m92-f46c37ba85
+
+Changed:
+
+- paragraph.Shadow::blurRadius -> paragraph.Shadow::blurSigma
+
+Removed:
+
+- PathEffect::computeFastBounds
+
 # 0.91.8 - June 1, 2021
 
 Fixed:

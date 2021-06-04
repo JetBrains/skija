@@ -16,6 +16,7 @@ public class SVGScene extends Scene {
     @SneakyThrows
     public SVGScene() {
         _variants = Files.lines(java.nio.file.Path.of(file("images/svgs.txt"))).toArray(String[]::new);
+        _variantIdx = 3;
     }
 
     @Override

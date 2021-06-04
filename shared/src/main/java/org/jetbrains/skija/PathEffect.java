@@ -36,15 +36,6 @@ public class PathEffect extends RefCnt {
         }
     }
     
-    public Rect computeFastBounds(Rect src) {
-        try {
-            Stats.onNativeCall();
-            return _nComputeFastBounds(_ptr, src._left, src._top, src._right, src._bottom);
-        } finally {
-            Reference.reachabilityFence(this);
-        }
-    }
-
     public static PathEffect makePath1D(Path path, float advance, float phase, Style style) {
         try {
             Stats.onNativeCall();
@@ -90,7 +81,6 @@ public class PathEffect extends RefCnt {
 
     public static native long _nMakeSum(long firstPtr, long secondPtr);
     public static native long _nMakeCompose(long outerPtr, long innerPtr);
-    public static native Rect _nComputeFastBounds(long ptr, float l, float t, float r, float b);
     public static native long _nMakePath1D(long pathPtr, float advance, float phase, int style);
     public static native long _nMakePath2D(float[] matrix, long pathPtr);
     public static native long _nMakeLine2D(float width, float[] matrix);

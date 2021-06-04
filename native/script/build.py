@@ -9,7 +9,7 @@ def main():
   parser.add_argument('--debug', action='store_true')
   parser.add_argument('--arch', default=common.arch)
   parser.add_argument('--skia-dir')
-  parser.add_argument('--skia-release', default='m91-b99622c05a')
+  parser.add_argument('--skia-release', default='m92-f46c37ba85')
   (args, _) = parser.parse_known_args()
 
   build_type = 'Debug' if args.debug else 'Release'

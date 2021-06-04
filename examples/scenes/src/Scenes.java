@@ -6,12 +6,12 @@ import org.jetbrains.skija.*;
 
 public class Scenes {
     public static TreeMap<String, Scene> scenes;
-    public static String currentScene = "Shadows";
+    public static String currentScene = "Bitmap";
     public static HUD hud = new HUD();
     public static boolean stats = true;
 
     static {
-        scenes = new TreeMap<>();
+        scenes = new TreeMap<>(Comparator.comparing(s -> s.toLowerCase()));
         scenes.put("Bitmap", null);
         scenes.put("Bitmap Image", null);
         scenes.put("Blends", null);
