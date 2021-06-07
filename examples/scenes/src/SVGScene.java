@@ -22,15 +22,20 @@ public class SVGScene extends Scene {
     @Override
     public void draw(Canvas canvas, int width, int height, float dpi, int xpos, int ypos) {
         if (_dom != null) {
-            Point size = _dom.getContainerSize();
-            if (size.isEmpty()) {
-                size = new Point(width - 50, height - 50);
-                _dom.setContainerSize(size);
+            try (SVGSVG root = _dom.getRoot();
+                 var paint = new Paint().setColor(0xFFEEEEEE);)
+            {
+                var bounds = new Point(width - 50, height - 50);
+                SVGLengthContext lc = new SVGLengthContext(bounds);
+                var svgWidth = lc.resolve(root.getWidth(), SVGLengthType.HORIZONTAL);
+                var svgHeight = lc.resolve(root.getHeight(), SVGLengthType.VERTICAL);
+                _dom.setContainerSize(bounds);
+                var scale = Math.min(bounds.getX() / svgWidth, bounds.getY() / svgHeight);
+                canvas.translate((width - svgWidth * scale) / 2f, (height - svgHeight * scale) / 2f);
+                canvas.drawRect(Rect.makeWH(svgWidth * scale, svgHeight * scale), paint);
+                canvas.scale(scale, scale);
+                _dom.render(canvas);
             }
-            float scale = Math.min((width - 50) / size.getX(), (height - 50) / size.getY());
-            canvas.translate((width - size.getX() * scale) / 2f, (height - size.getY() * scale) / 2f);
-            canvas.scale(scale, scale);
-            _dom.render(canvas);
         } else if (_error != null) {
             Scene.drawStringCentered(canvas, _error.getMessage(), width / 2, height / 2, Scene.inter13, Scene.blackFill);
         } else if (_thread != null) {

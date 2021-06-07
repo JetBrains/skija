@@ -14,7 +14,21 @@ public class SVGDOM extends RefCnt {
         Reference.reachabilityFence(data);
     }
 
-    @NotNull
+    @Nullable
+    public SVGSVG getRoot() {
+        try {
+            Stats.onNativeCall();
+            long ptr = _nGetRoot(_ptr);
+            return ptr == 0 ? null : new SVGSVG(ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
+    }
+
+    /**
+     * Deprecated. Use getRoot().intrinsicSize() instead
+     */
+    @NotNull @Deprecated
     public Point getContainerSize() {
         try {
             return _nGetContainerSize(_ptr);
@@ -56,6 +70,7 @@ public class SVGDOM extends RefCnt {
     }
 
     @ApiStatus.Internal public static native long  _nMakeFromData(long dataPtr);
+    @ApiStatus.Internal public static native long  _nGetRoot(long ptr);
     @ApiStatus.Internal public static native Point _nGetContainerSize(long ptr);
     @ApiStatus.Internal public static native void  _nSetContainerSize(long ptr, float width, float height);
     @ApiStatus.Internal public static native void  _nRender(long ptr, long canvasPtr);

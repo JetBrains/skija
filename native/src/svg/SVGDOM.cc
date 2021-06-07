@@ -4,14 +4,22 @@
 #include "SkData.h"
 #include "SkStream.h"
 #include "SkSVGDOM.h"
+#include "SkSVGSVG.h"
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_svg_SVGDOM__1nMakeFromData
   (JNIEnv* env, jclass jclass, jlong dataPtr) {
     SkData* data = reinterpret_cast<SkData*>(static_cast<uintptr_t>(dataPtr));
-    
     SkMemoryStream stream(sk_ref_sp(data));
     sk_sp<SkSVGDOM> instance = SkSVGDOM::MakeFromStream(stream);
     return reinterpret_cast<jlong>(instance.release());
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_svg_SVGDOM__1nGetRoot
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkSVGDOM* instance = reinterpret_cast<SkSVGDOM*>(static_cast<uintptr_t>(ptr));
+    SkSVGSVG* root = instance->getRoot();
+    root->ref();
+    return reinterpret_cast<jlong>(root);
 }
 
 extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_svg_SVGDOM__1nGetContainerSize

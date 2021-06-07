@@ -1,3 +1,16 @@
+# 0.92.1 - June 7, 2021
+
+Skia version m92-f46c37ba85 -> m92-f46c37ba85-2
+
+Changed:
+
+- [ BREAKING ] SVGDOM::setContainerSize() does not scale SVG anymore (https://bugs.chromium.org/p/skia/issues/detail?id=11144)
+
+Added:
+
+- SVGDOM::getRoot()
+- SVGSVG (root SVG node)
+
 # 0.92.0 - June 4, 2021
 
 Skia version m91-b99622c05a -> m92-f46c37ba85

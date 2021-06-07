@@ -135,6 +135,7 @@ SVG:
 
 SVGDOM               ▓▓▓▓▓▓▓▓░░
 SVGCanvas            ▓▓▓▓▓▓▓▓▓▓
+SVGSVG               ▓▓▓▓▓▓▓▓░░
 ```
 
 ## Using Skija
