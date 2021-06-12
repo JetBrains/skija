@@ -16,16 +16,45 @@ public class Library {
             load();
     }
 
+    private static Class<?> getPlatformClass() throws ClassNotFoundException{
+      return Class.forName("org.jetbrains.skija.platform.Library" + getPlatformName());
+    }
+
+    private static String getPlatformName() {
+      String os = System.getProperty("os.name").toLowerCase();
+      if (os.contains("mac") || os.contains("darwin")) {
+        return "aarch64".equals(System.getProperty("os.arch")) ? "MacosArm64" : "MacosX64";
+      }
+      if (os.contains("windows")) {
+        return "Windows";
+      }
+      if (os.contains("nux") || os.contains("nix")) {
+        return "Linux";
+      }
+      throw new RuntimeException("Unknown operation system");
+    }
+
     public static String readResource(String path) {
-        URL url = Library.class.getResource(path);
-        if (url == null)
-            return null;
-        try (InputStream is = url.openStream()) {
-            byte[] bytes = is.readAllBytes();
-            return new String(bytes).trim();
-        } catch (IOException e) {
-            return null;
+
+      try (InputStream is = getPlatformClass().getResourceAsStream(path)) {
+        if (is != null) {
+          byte[] bytes = is.readAllBytes();
+          return new String(bytes).trim();
         }
+      } catch (ClassNotFoundException e1) {
+      } catch (IOException e2) {
+      }
+      
+      URL url = Library.class.getResource(path);
+      try (InputStream is = url != null ? url.openStream() : Library.class.getResourceAsStream(path)) {
+        if (is == null) {
+          return null;
+        }
+        byte[] bytes = is.readAllBytes();
+        return new String(bytes).trim();
+      } catch (IOException e) {
+        return null;
+      }
     }
 
     public static synchronized void load() {
@@ -76,9 +105,10 @@ public class Library {
         URL url = Library.class.getResource(resourcePath + fileName);
         if (url == null) {
             file = new File(fileName);
-            if (!file.exists())
-                throw new IllegalArgumentException("Library file " + fileName + " not found in " + resourcePath);
-        } else if (url.getProtocol() == "file") {
+            if (!file.exists()) {
+              return extractFromResource(resourcePath, fileName, tempDir);
+            }
+        } else if ("file".equals(url.getProtocol())) {
             file = new File(url.toURI());
         } else {
             file = new File(tempDir, fileName);
@@ -92,6 +122,25 @@ public class Library {
         }
         Log.debug("Loading " + file);
         return file;
+    }
+    
+    @ApiStatus.Internal
+    @SneakyThrows
+    private static File extractFromResource(String resourcePath, String fileName, File tempDir) {
+      try (InputStream is = getPlatformClass().getResourceAsStream(resourcePath + fileName)) {
+        if (is == null) {
+          throw new IllegalArgumentException("resource jar not found");
+        }
+        File file = new File(tempDir, fileName);
+        if (!file.exists() && !tempDir.exists()) {
+          tempDir.mkdirs();
+        }
+        Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        return file;
+        
+      } catch (Exception e) {
+        throw new IllegalArgumentException("Library file " + fileName + " not found in " + resourcePath, e);
+      }
     }
 
     @ApiStatus.Internal public static native void _nAfterLoad();

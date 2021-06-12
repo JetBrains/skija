@@ -11,6 +11,7 @@ arch = args.arch
 system = {'Darwin': 'macos', 'Linux': 'linux', 'Windows': 'windows'}[platform.system()]
 classpath_separator = ';' if system == 'windows' else ':'
 skija_native_artifact_id = 'skija-' + ('macos-' + arch if system == 'macos' else system)
+skija_platform_module_id = 'skija.' + ('macos.' + arch if system == 'macos' else system)
 verbose = '--verbose' in sys.argv
 
 def check_call(args, **kwargs):
