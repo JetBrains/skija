@@ -1,4 +1,6 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.jetbrains.skija</groupId>
 	<artifactId>skija-shared</artifactId>
@@ -33,6 +35,20 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.1</version>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>1.18.20</version>
+						</path>
+						<path>
+							<groupId>org.jetbrains</groupId>
+							<artifactId>annotations</artifactId>
+							<version>20.1.0</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.projectlombok</groupId>
@@ -76,7 +92,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 	<repositories>
 		<repository>
