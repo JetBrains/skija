@@ -4,12 +4,12 @@ import argparse, glob, os, platform, shutil, subprocess, sys, urllib.request, zi
 sys.path.append(os.path.normpath(os.path.join(os.path.dirname(__file__), '..')))
 import native.script.build as native_build
 import shared.script.build as shared_build
-import shared.script.test as shared_test
+import native.script.test as native_test
 
 def main():
-  native_build.main()
   shared_build.main()
-  shared_test.main()
+  native_build.main()
+  # native_test.main()
   return 0
 
 if __name__ == '__main__':

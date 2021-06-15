@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.jetbrains.skija</groupId>
-	<artifactId>skija-native</artifactId>
-	<version>0.0.0-local</version>
+	<artifactId>skija-windows</artifactId>
+	<version>0.0.0-SNAPSHOT</version>
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>org.jetbrains.skija</groupId>
 			<artifactId>skija-shared</artifactId>
-			<version>0.0.0-local</version>
+			<version>0.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -31,15 +31,6 @@
 
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<resources>
-			<resource>
-				<!-- internal windows testing only -->
-				<directory>src/main/resources</directory>
-				<includes>
-					<include>skija.dll</include>
-					<include>icudtl.dat</include>
-					<include>skija.version</include>
-				</includes>
-			</resource>
 			<resource>
 				<directory>build</directory>
 				<includes>
