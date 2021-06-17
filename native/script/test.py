@@ -18,18 +18,17 @@ def main():
   common.pushd(os.path.join(os.path.dirname(__file__), os.pardir))
 
   if not args.skija_shared:
-    skija_shared = '../target/classes'
+    skija_shared = ['../shared/target/classes']
   if not args.skija_native:
-    skija_native = 'native/build'
+    skija_native = ['build', 'target/classes']
 
   classpath = [
     common.fetch_maven('org.projectlombok', 'lombok', '1.18.20'),
-    common.fetch_maven('org.jetbrains', 'annotations', '20.1.0'),
-    skija_shared,
-    skija_native,
-  ]
+    common.fetch_maven('org.jetbrains', 'annotations', '20.1.0')
+  ] + skija_shared + skija_native
+  
   sources = common.glob('src/test/java', '*.java')
-  common.javac(classpath, sources, 'target/test-classes')
+  common.javac(sources, 'target/test-classes', classpath = classpath)
 
   common.check_call([
     'java',
@@ -37,7 +36,7 @@ def main():
     '-ea',
     '-esa',
     '-Xcheck:jni',
-    'org.jetbrains.skija.TestSuite',
+    'org.jetbrains.skija.platform.TestSuite',
   ])
 
   common.popd()
