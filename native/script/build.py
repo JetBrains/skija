@@ -52,6 +52,19 @@ def main():
   if os.path.exists(icudtl_src) and not os.path.exists(icudtl_dst):
     shutil.copy2(icudtl_src, icudtl_dst)
 
+  # javac
+  with open('src/main/java/module-info.java', 'r') as f:
+    moduleinfo = f.read()
+  with open('src/main/java/module-info.java', 'w') as f:
+    f.write(moduleinfo.replace('skija.native', common.skija_platform_module_id))
+  modulepath = [
+    "../shared/target/classes"
+  ]
+  sources = common.glob('src/main/java', '*.java')
+  common.javac(sources, 'target/classes', modulepath = modulepath)
+  with open('src/main/java/module-info.java', 'w') as f:
+    f.write(moduleinfo)
+
   common.popd()
   return 0
 

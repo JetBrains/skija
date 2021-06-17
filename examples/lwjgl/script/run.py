@@ -35,7 +35,7 @@ def main():
   os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
 
   sources = common.glob('src', '*.java') + common.glob('../scenes/src', '*.java')
-  common.javac(classpath, sources, 'target/classes')
+  common.javac(sources, 'target/classes', classpath = classpath)
 
   # Java
   common.check_call([

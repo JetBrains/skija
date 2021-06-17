@@ -38,13 +38,14 @@ def main():
   else:
     classpath += [
       os.path.join('..', '..', 'native', 'build'),
+      os.path.join('..', '..', 'native', 'target', 'classes'),
       os.path.join('..', '..', 'shared', 'target', 'classes')
     ]
 
   os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
 
   sources = common.glob('src', '*.java') + common.glob('../scenes/src', '*.java')
-  common.javac(classpath, sources, 'target/classes')
+  common.javac(sources, 'target/classes', classpath = classpath)
 
   # Java
   common.check_call([

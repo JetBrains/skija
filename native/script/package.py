@@ -23,7 +23,7 @@ def main():
     moduleinfo = f.read()
     
   with open(os.path.join('src', 'main', 'java', 'module-info.java'), 'w') as f:
-    f.write(moduleinfo.replace('skija.windows', common.skija_platform_module_id))
+    f.write(moduleinfo.replace('skija.native', common.skija_platform_module_id))
 
   mvn = 'mvn.cmd' if common.system == 'windows' else 'mvn'
   common.check_call([
@@ -33,6 +33,9 @@ def main():
 
   with open('pom.xml', 'w') as f:
     f.write(pom)
+
+  with open(os.path.join('src', 'main', 'java', 'module-info.java'), 'w') as f:
+    f.write(moduleinfo)
 
   return 0
 

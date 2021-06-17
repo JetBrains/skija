@@ -42,7 +42,7 @@ def fetch_maven(group, name, version, classifier=None, repo='https://repo1.maven
   fetch(repo + '/' + path, file)
   return file
 
-def javac(classpath, sources, target):
+def javac(sources, target, classpath = [], modulepath = []):
   classes = {path.stem: path.stat().st_mtime for path in pathlib.Path(target).rglob('*.class') if '$' not in path.stem}
   newer = lambda path: path.stem not in classes or path.stat().st_mtime > classes.get(path.stem)
   new_sources = [path for path in sources if newer(pathlib.Path(path))]
@@ -55,8 +55,9 @@ def javac(classpath, sources, target):
       # '-J--illegal-access=permit',
       # '-Xlint:deprecation',
       # '-Xlint:unchecked',
-      '--class-path', classpath_separator.join(classpath + [target]),
-      '-d', target] + new_sources)
+      '--class-path', classpath_separator.join(classpath + [target])] +
+      (['--module-path', classpath_separator.join(modulepath)] if modulepath else []) +
+      ['-d', target] + new_sources)
 
 dir_stack = []
 
