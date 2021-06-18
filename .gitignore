@@ -1,8 +1,8 @@
 .cpcache
 docs/apidocs
 target
-build
-/native/Skia-m*
+/platform/build
+/platform/Skia-m*
 *.log
 *.zip
 examples/bitmap/output.png

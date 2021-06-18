@@ -3,6 +3,7 @@
 import argparse, glob, os, subprocess, sys
 sys.path.append(os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 import script.common as common
+import script.build as build
 
 def main():
   parser = argparse.ArgumentParser()
@@ -33,12 +34,12 @@ def main():
   if args.skija_version:
     classpath += [
       common.fetch_maven('org.jetbrains.skija', 'skija-shared', args.skija_version, repo='https://packages.jetbrains.team/maven/p/skija/maven'),
-      common.fetch_maven('org.jetbrains.skija', common.skija_native_artifact_id, args.skija_version, repo='https://packages.jetbrains.team/maven/p/skija/maven'),
+      common.fetch_maven('org.jetbrains.skija', 'skija-' + common.classifier, args.skija_version, repo='https://packages.jetbrains.team/maven/p/skija/maven'),
     ]
   else:
+    build.main()
     classpath += [
-      os.path.join('..', '..', 'native', 'build'),
-      os.path.join('..', '..', 'native', 'target', 'classes'),
+      os.path.join('..', '..', 'platform', 'target', 'classes'),
       os.path.join('..', '..', 'shared', 'target', 'classes')
     ]
 

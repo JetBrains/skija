@@ -1,15 +1,77 @@
 #! /usr/bin/env python3
-
-import argparse, glob, os, platform, shutil, subprocess, sys, urllib.request, zipfile
-sys.path.append(os.path.normpath(os.path.join(os.path.dirname(__file__), '..')))
-import native.script.build as native_build
-import shared.script.build as shared_build
-import native.script.test as native_test
+import argparse, glob, os, sys
+sys.path.append(os.path.normpath(os.path.join(os.path.dirname(__file__))))
+import build_shared, common
 
 def main():
-  shared_build.main()
-  native_build.main()
-  # native_test.main()
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--debug', action='store_true')
+  parser.add_argument('--arch', default=common.arch)
+  parser.add_argument('--skia-dir')
+  parser.add_argument('--skia-release', default='m92-f46c37ba85-2')
+  parser.add_argument('--skija-version')
+  (args, _) = parser.parse_known_args()
+
+  # javac
+  modulepath = []
+  if args.skija_version:
+    modulepath += [
+      common.fetch_maven('org.jetbrains.skija', 'skija-shared', args.skija_version, repo='https://packages.jetbrains.team/maven/p/skija/maven')
+    ]
+  else:
+    build_shared.main()
+    os.chdir(os.path.dirname(__file__) + '/../platform')
+    modulepath += ['../shared/target/classes']
+
+  sources = common.glob('java-' + common.classifier, '*.java')
+  common.javac(sources, 'target/classes', modulepath = modulepath)
+
+  # Fetch Skia
+  build_type = 'Debug' if args.debug else 'Release'
+  if args.skia_dir:
+    skia_dir = os.path.abspath(args.skia_dir)
+    os.chdir(os.path.dirname(__file__) + '/../platform')
+  else:
+    os.chdir(os.path.dirname(__file__) + '/../platform')
+    skia_dir = "Skia-" + args.skia_release + "-" + common.system + "-" + build_type + '-' + common.arch
+    if not os.path.exists(skia_dir):
+      zip = skia_dir + '.zip'
+      common.fetch('https://github.com/JetBrains/skia-build/releases/download/' + args.skia_release + '/' + zip, zip)
+      with zipfile.ZipFile(zip, 'r') as f:
+        print("Extracting", zip)
+        f.extractall(skia_dir)
+      os.remove(zip)
+    skia_dir = os.path.abspath(skia_dir)
+  print("Using Skia from", skia_dir)
+
+  # CMake
+  os.makedirs("build", exist_ok = True)
+  common.check_call([
+    "cmake",
+    "-G", "Ninja",
+    "-DCMAKE_BUILD_TYPE=" + build_type,
+    "-DSKIA_DIR=" + skia_dir,
+    "-DSKIA_ARCH=" + common.arch]
+    + (["-DCMAKE_OSX_ARCHITECTURES=" + {"x64": "x86_64", "arm64": "arm64"}[common.arch]] if common.system == "macos" else [])
+    + [".."],
+    cwd=os.path.abspath('build'))
+
+  # Ninja
+  common.check_call(["ninja"], cwd=os.path.abspath('build'))
+
+  # Copy files
+  target = 'target/classes/org/jetbrains/skija'
+  if common.classifier == 'macos-x64':
+    common.copy_newer('build/libskija_x64.dylib', target + '/macos/x64/libskija_x64.dylib')
+  elif common.classifier == 'macos-arm64':
+    common.copy_newer('build/libskija_arm64.dylib', target + '/macos/arm64/libskija_arm64.dylib')
+  elif common.classifier == 'linux':
+    common.copy_newer('build/libskija.so', target + '/linux/libskija.so')
+  elif common.classifier == 'windows':
+    common.copy_newer('build/skija.dll', target + '/windows/skija.dll')
+    common.copy_newer(skia_dir + '/out/' + build_type + '-' + common.arch + '/icudtl.dat',
+                      target + '/windows/icudtl.dat')
+
   return 0
 
 if __name__ == '__main__':
