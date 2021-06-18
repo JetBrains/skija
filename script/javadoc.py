@@ -2,7 +2,7 @@
 import common, glob, os, subprocess, sys
 
 def main():
-  os.chdir(os.path.dirname(__file__) + '/../shared')
+  os.chdir(common.root + '/shared')
 
   print('Generating', 'target/generated-sources/delombok/**.java')
   subprocess.check_call(["java",

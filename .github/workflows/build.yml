@@ -1,13 +1,14 @@
 on:
   push:
     branches:
-      - master
+      - '**'
     paths-ignore:
       - 'docs/**'
       - 'examples/**'
       - 'extras/**'
       - .dockerignore
       - .gitignore
+      - CHANGELOG.md
       - Dockerfile
       - LICENSE
       - README.md
@@ -22,12 +23,17 @@ jobs:
       - run: |
           echo "JAVA_HOME=$JAVA_HOME_11_X64" >> $GITHUB_ENV
           echo "$JAVA_HOME_11_X64/bin" >> $GITHUB_PATH
-      - run: python3 shared/script/deploy.py
+      - run: pwd
+      - run: ls -lah
+      - run: python3 script/deploy_shared.py
+        if: github.ref == 'refs/heads/master'
         env:
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
+      - run: python3 script/deploy_shared.py --dry-run
+        if: github.ref != 'refs/heads/master'
       - uses: actions/upload-artifact@v2
         with:
-          name: skija-shared
+          name: skija-shared-jar
           path: shared/target/*.jar
 
   macos:
@@ -44,20 +50,24 @@ jobs:
       - run: |
           echo "JAVA_HOME=$JAVA_HOME_11_X64" >> $GITHUB_ENV
           echo "$JAVA_HOME_11_X64/bin" >> $GITHUB_PATH
-      - run: python3 native/script/build.py --arch=${{ matrix.arch }}
+      - run: python3 script/build.py --arch=${{ matrix.arch }}
       - uses: actions/upload-artifact@v2
         with:
           name: skija-macos-${{ matrix.arch }}
-          path: native/build/*.dylib
-      - uses: actions/download-artifact@v2
-        with:
-          name: skija-shared
+          path: platform/build/*.dylib
       - name: Test
         if: ${{ matrix.arch == 'x64'}}
-        run: python3 shared/script/test.py --skija-shared skija-shared-$(python3 script/revision.py).jar
-      - run: python3 native/script/deploy.py --arch=${{ matrix.arch }}
+        run: python3 script/test.py
+      - run: python3 script/deploy_platform.py --arch=${{ matrix.arch }}
+        if: github.ref == 'refs/heads/master'
         env:
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
+      - run: python3 script/deploy_platform.py --arch=${{ matrix.arch }} --dry-run
+        if: github.ref != 'refs/heads/master'
+      - uses: actions/upload-artifact@v2
+        with:
+          name: skija-macos-${{ matrix.arch }}-jar
+          path: platform/target/*.jar
 
   linux:
     runs-on: ubuntu-16.04
@@ -72,18 +82,22 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - run: python3 native/script/build.py
+      - run: python3 script/build.py
       - uses: actions/upload-artifact@v2
         with:
           name: skija-linux
-          path: native/build/*.so
-      - uses: actions/download-artifact@v2
-        with:
-          name: skija-shared
-      - run: python3 shared/script/test.py --skija-shared skija-shared-$(python3 script/revision.py).jar
-      - run: python3 native/script/deploy.py
+          path: platform/build/*.so
+      - run: python3 script/test.py
+      - run: python3 script/deploy_platform.py
+        if: github.ref == 'refs/heads/master'
         env:
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
+      - run: python3 script/deploy_platform.py --dry-run
+        if: github.ref != 'refs/heads/master'
+      - uses: actions/upload-artifact@v2
+        with:
+          name: skija-linux-jar
+          path: platform/target/*.jar
 
   windows:
     runs-on: windows-2019
@@ -99,18 +113,22 @@ jobs:
         run: |
           echo "JAVA_HOME=$JAVA_HOME_11_X64" >> $GITHUB_ENV
           echo "$JAVA_HOME_11_X64/bin" >> $GITHUB_PATH
-      - run: python3 native/script/build.py
+      - run: python3 script/build.py
       - uses: actions/upload-artifact@v2
         with:
           name: skija-windows
           path: |
-            native/build/*.dll
-            native/build/icudtl.dat
-      - uses: actions/download-artifact@v2
-        with:
-          name: skija-shared
+            platform/build/*.dll
+            platform/build/icudtl.dat
       - shell: bash
-        run: python3 shared/script/test.py --skija-shared skija-shared-$(python3 script/revision.py).jar
-      - run: python3 native/script/deploy.py
+        run: python3 script/test.py
+      - run: python3 script/deploy_platform.py
+        if: github.ref == 'refs/heads/master'
         env:
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
+      - run: python3 script/deploy_platform.py --dry-run
+        if: github.ref != 'refs/heads/master'
+      - uses: actions/upload-artifact@v2
+        with:
+          name: skija-windows-jar
+          path: platform/target/*.jar

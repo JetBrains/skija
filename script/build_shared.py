@@ -2,7 +2,7 @@
 import common, glob, os, sys
 
 def main():
-  os.chdir(os.path.dirname(__file__) + '/../shared')
+  os.chdir(common.root + '/shared')
   modulepath = common.deps()
   sources = common.glob('java', '*.java')
   common.javac(sources, 'target/classes', classpath = modulepath, modulepath = modulepath)

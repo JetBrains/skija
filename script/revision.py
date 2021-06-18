@@ -1,8 +1,9 @@
 #! /usr/bin/env python3
 
-import os, re, subprocess, sys
+import common, os, re, subprocess, sys
 
 def revision():
+  os.chdir(common.root)
   desc = subprocess.check_output(["git", "describe", "--tags", "--match", "*.*.0"], cwd = os.path.dirname(__file__)).decode("utf-8") 
   match = re.match("([0-9]+.[0-9]+).0-([0-9]+)-[a-z0-9]+", desc)
   if match:

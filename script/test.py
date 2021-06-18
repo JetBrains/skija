@@ -16,7 +16,7 @@ def main():
     build.main()
     modulepath += ['../shared/target/classes', '../platform/target/classes']
 
-  os.chdir(os.path.dirname(__file__) + '/../tests')
+  os.chdir(common.root + '/tests')
   sources = common.glob('java', '*.java')
   common.javac(sources, 'target/classes', modulepath = modulepath, add_modules = [common.module])
 

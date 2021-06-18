@@ -10,9 +10,9 @@ def main():
   build.main()
 
   # Update poms
-  os.chdir(os.path.dirname(__file__) + '/../platform')
   rev = revision.revision()
-
+  
+  os.chdir(common.root + '/platform')
   artifact = "skija-" + common.classifier
 
   with common.replaced('deploy/META-INF/maven/org.jetbrains.skija/' + artifact + '/pom.xml', {'${version}': rev}):

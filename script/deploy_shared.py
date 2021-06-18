@@ -10,8 +10,9 @@ def main():
   build_shared.main()
 
   # Update poms
-  os.chdir(os.path.dirname(__file__) + '/../shared')
   rev = revision.revision()
+
+  os.chdir(common.root + '/shared')
 
   with common.replaced('deploy/META-INF/maven/org.jetbrains.skija/skija-shared/pom.xml', {'${version}': rev}):
     with common.replaced('deploy/META-INF/maven/org.jetbrains.skija/skija-shared/pom.properties', {'${version}': rev}):

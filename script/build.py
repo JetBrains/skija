@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-import argparse, glob, os, sys
+import argparse, glob, os, sys, zipfile
 sys.path.append(os.path.normpath(os.path.join(os.path.dirname(__file__))))
 import build_shared, common
 
@@ -12,27 +12,13 @@ def main():
   parser.add_argument('--skija-version')
   (args, _) = parser.parse_known_args()
 
-  # javac
-  modulepath = []
-  if args.skija_version:
-    modulepath += [
-      common.fetch_maven('org.jetbrains.skija', 'skija-shared', args.skija_version, repo='https://packages.jetbrains.team/maven/p/skija/maven')
-    ]
-  else:
-    build_shared.main()
-    os.chdir(os.path.dirname(__file__) + '/../platform')
-    modulepath += ['../shared/target/classes']
-
-  sources = common.glob('java-' + common.classifier, '*.java')
-  common.javac(sources, 'target/classes', modulepath = modulepath)
-
   # Fetch Skia
   build_type = 'Debug' if args.debug else 'Release'
   if args.skia_dir:
     skia_dir = os.path.abspath(args.skia_dir)
-    os.chdir(os.path.dirname(__file__) + '/../platform')
+    os.chdir(common.root + '/platform')
   else:
-    os.chdir(os.path.dirname(__file__) + '/../platform')
+    os.chdir(common.root + '/platform')
     skia_dir = "Skia-" + args.skia_release + "-" + common.system + "-" + build_type + '-' + common.arch
     if not os.path.exists(skia_dir):
       zip = skia_dir + '.zip'
@@ -58,6 +44,20 @@ def main():
 
   # Ninja
   common.check_call(["ninja"], cwd=os.path.abspath('build'))
+
+  # javac
+  modulepath = []
+  if args.skija_version:
+    modulepath += [
+      common.fetch_maven('org.jetbrains.skija', 'skija-shared', args.skija_version, repo='https://packages.jetbrains.team/maven/p/skija/maven')
+    ]
+  else:
+    build_shared.main()
+    modulepath += ['../shared/target/classes']
+
+  os.chdir(common.root + '/platform')
+  sources = common.glob('java-' + common.classifier, '*.java')
+  common.javac(sources, 'target/classes', modulepath = modulepath)
 
   # Copy files
   target = 'target/classes/org/jetbrains/skija'

@@ -16,6 +16,7 @@ space_skija = 'https://packages.jetbrains.team/maven/p/skija/maven'
 classifier = ('macos-' + arch if system == 'macos' else system)
 module = 'org.jetbrains.skija.' + ('macos.' + arch if system == 'macos' else system)
 verbose = '--verbose' in sys.argv
+root = os.path.abspath(os.path.dirname(__file__) + '/..')
 
 def check_call(args, **kwargs):
   t0 = time.time()
