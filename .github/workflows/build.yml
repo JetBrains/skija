@@ -51,10 +51,6 @@ jobs:
           echo "JAVA_HOME=$JAVA_HOME_11_X64" >> $GITHUB_ENV
           echo "$JAVA_HOME_11_X64/bin" >> $GITHUB_PATH
       - run: python3 script/build.py --arch=${{ matrix.arch }}
-      - uses: actions/upload-artifact@v2
-        with:
-          name: skija-macos-${{ matrix.arch }}
-          path: platform/build/*.dylib
       - name: Test
         if: ${{ matrix.arch == 'x64'}}
         run: python3 script/test.py
@@ -83,10 +79,6 @@ jobs:
         with:
           fetch-depth: 0
       - run: python3 script/build.py
-      - uses: actions/upload-artifact@v2
-        with:
-          name: skija-linux
-          path: platform/build/*.so
       - run: python3 script/test.py
       - run: python3 script/deploy_platform.py
         if: github.ref == 'refs/heads/master'
@@ -114,12 +106,6 @@ jobs:
           echo "JAVA_HOME=$JAVA_HOME_11_X64" >> $GITHUB_ENV
           echo "$JAVA_HOME_11_X64/bin" >> $GITHUB_PATH
       - run: python3 script/build.py
-      - uses: actions/upload-artifact@v2
-        with:
-          name: skija-windows
-          path: |
-            platform/build/*.dll
-            platform/build/icudtl.dat
       - shell: bash
         run: python3 script/test.py
       - run: python3 script/deploy_platform.py
