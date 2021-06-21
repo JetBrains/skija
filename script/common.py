@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-import argparse, os, pathlib, platform, re, shutil, subprocess, sys, time, urllib.request, zipfile
+import argparse, contextlib, os, pathlib, platform, re, shutil, subprocess, sys, time, urllib.request, zipfile
 
 arch = {'AMD64': 'x64', 'x86_64': 'x64', 'arm64': 'arm64'}[platform.machine()]
 parser = argparse.ArgumentParser()
@@ -10,8 +10,13 @@ arch = args.arch
 
 system = {'Darwin': 'macos', 'Linux': 'linux', 'Windows': 'windows'}[platform.system()]
 classpath_separator = ';' if system == 'windows' else ':'
-skija_native_artifact_id = 'skija-' + ('macos-' + arch if system == 'macos' else system)
+mvn = "mvn.cmd" if system == "windows" else "mvn"
+space_skija = 'https://packages.jetbrains.team/maven/p/skija/maven'
+
+classifier = ('macos-' + arch if system == 'macos' else system)
+module = 'org.jetbrains.skija.' + ('macos.' + arch if system == 'macos' else system)
 verbose = '--verbose' in sys.argv
+root = os.path.abspath(os.path.dirname(__file__) + '/..')
 
 def check_call(args, **kwargs):
   t0 = time.time()
@@ -41,7 +46,13 @@ def fetch_maven(group, name, version, classifier=None, repo='https://repo1.maven
   fetch(repo + '/' + path, file)
   return file
 
-def javac(classpath, sources, target):
+def deps():
+  return [
+    fetch_maven('org.projectlombok', 'lombok', '1.18.20'),
+    fetch_maven('org.jetbrains', 'annotations', '20.1.0'),
+  ]
+
+def javac(sources, target, classpath = [], modulepath = [], add_modules = []):
   classes = {path.stem: path.stat().st_mtime for path in pathlib.Path(target).rglob('*.class') if '$' not in path.stem}
   newer = lambda path: path.stem not in classes or path.stat().st_mtime > classes.get(path.stem)
   new_sources = [path for path in sources if newer(pathlib.Path(path))]
@@ -54,27 +65,29 @@ def javac(classpath, sources, target):
       # '-J--illegal-access=permit',
       # '-Xlint:deprecation',
       # '-Xlint:unchecked',
-      '--class-path', classpath_separator.join(classpath + [target]),
-      '-d', target] + new_sources)
-
-dir_stack = []
-
-def pushd(path):
-  dir_stack.append(os.getcwd())
-  os.chdir(path)
-
-def popd():
-  os.chdir(dir_stack.pop())
-
-def revision():
-  desc = check_output(["git", "describe", "--tags", "--match", "*.*.0"], cwd = os.path.dirname(__file__)).decode("utf-8") 
-  match = re.match("([0-9]+.[0-9]+).0-([0-9]+)-[a-z0-9]+", desc)
-  if match:
-    return match.group(1) + "." + match.group(2)
-  match = re.match("([0-9]+.[0-9]+).0", desc)
-  if match:
-    return match.group(1) + ".0"
-  raise Exception("Can’t parse revision: " + desc)
+      '--class-path', classpath_separator.join(classpath + [target])] +
+      (['--module-path', classpath_separator.join(modulepath)] if modulepath else []) +
+      (['--add-modules', ','.join(add_modules)] if add_modules else []) +
+      ['-d', target] + new_sources)
 
 def glob(dir, pattern):
   return [str(x) for x in pathlib.Path(dir).rglob(pattern)]
+
+@contextlib.contextmanager
+def replaced(filename, replacements):
+    with open(filename, 'r') as f:
+      original = f.read()
+    try:  
+      updated = original
+      for key, value in replacements.items():
+        updated = updated.replace(key, value)
+      with open(filename, 'w') as f:
+        f.write(updated)
+      yield f
+    finally:
+      with open(filename, 'w') as f:
+        f.write(original)
+        
+def copy_newer(src, dst):
+  if not os.path.exists(dst) or os.path.getmtime(src) > os.path.getmtime(dst):
+    shutil.copy2(src, dst)

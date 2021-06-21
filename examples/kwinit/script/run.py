@@ -2,8 +2,8 @@
 
 import argparse, glob, os, platform, shutil, subprocess, sys, urllib.request, zipfile
 sys.path.append(os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
-import script.common as common 
-import native.script.build as native_build
+import script.common as common
+import script.build as build
 
 def main():
   parser = argparse.ArgumentParser()
@@ -20,19 +20,19 @@ def main():
   if args.skija_version:
     classpath += [
       common.fetch_maven('org.jetbrains.skija', 'skija-shared', args.skija_version, repo='https://packages.jetbrains.team/maven/p/skija/maven'),
-      common.fetch_maven('org.jetbrains.skija', common.skija_native_artifact_id, args.skija_version, repo='https://packages.jetbrains.team/maven/p/skija/maven'),
+      common.fetch_maven('org.jetbrains.skija', 'skija-' + common.classifier, args.skija_version, repo='https://packages.jetbrains.team/maven/p/skija/maven'),
     ]
   else:
-    # native_build.main()
+    build.main()
     classpath += [
-      os.path.join('..', '..', 'native', 'build'),
+      os.path.join('..', '..', 'platform', 'target', 'classes'),
       os.path.join('..', '..', 'shared', 'target', 'classes')
     ]
 
   os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
 
   sources = common.glob('src_java', '*.java') + common.glob('../scenes/src', '*.java')
-  common.javac(classpath, sources, 'target/classes')
+  common.javac(sources, 'target/classes', classpath = classpath)
 
   # Rust
   common.check_call(['cargo', 'build', '--release', '--lib'])

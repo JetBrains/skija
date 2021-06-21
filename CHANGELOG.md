@@ -1,3 +1,22 @@
+# 0.92.2 - June 21, 2021
+
+Support for Java 9 modules (#110 #111 thx @comtel2000):
+
+- org.jetbrains.skija.shared
+- org.jetbrains.skija.windows
+- org.jetbrains.skija.linux
+- org.jetbrains.skija.macos.x64
+- org.jetbrains.skija.macos.arm64
+
+Code reorganization:
+
+- removed maven
+- flattened source dirs
+  - native/src → platform/cc
+  - shared/src/main/java/org/jetbrains/skija → shared/java
+  - shared/src/test/java/org/jetbrains/skija → tests/java
+  - added platform/java-{platform}
+
 # 0.92.1 - June 7, 2021
 
 Skia version m92-f46c37ba85 -> m92-f46c37ba85-2
