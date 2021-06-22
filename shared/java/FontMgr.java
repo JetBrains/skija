@@ -81,7 +81,7 @@ public class FontMgr extends RefCnt {
     @Nullable
     public Typeface matchFamiliesStyle(String[] families, FontStyle style) {
         for (String family: families) {
-            var typeface = matchFamilyStyle(family, style);
+            Typeface typeface = matchFamilyStyle(family, style);
             if (typeface != null)
                 return typeface;
         }
@@ -116,7 +116,7 @@ public class FontMgr extends RefCnt {
     @Nullable
     public Typeface matchFamiliesStyleCharacter(String[] families, FontStyle style, @Nullable String[] bcp47, int character) {
         for (String family: families) {
-            var typeface = matchFamilyStyleCharacter(family, style, bcp47, character);
+            Typeface typeface = matchFamilyStyleCharacter(family, style, bcp47, character);
             if (typeface != null)
                 return typeface;
         }

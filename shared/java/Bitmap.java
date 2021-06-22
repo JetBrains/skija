@@ -52,7 +52,7 @@ public class Bitmap extends Managed implements IHasImageInfo {
     @NotNull @Contract("-> new")
     public static Bitmap makeFromImage(@NotNull Image image) {
         assert image != null : "Can’t makeFromImage with image == null";
-        var bitmap = new Bitmap();
+        Bitmap bitmap = new Bitmap();
         bitmap.allocPixels(image.getImageInfo());
         if (image.readPixels(bitmap))
             return bitmap;

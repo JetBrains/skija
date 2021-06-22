@@ -63,7 +63,7 @@ public class ParagraphBuilder extends Managed {
     public Paragraph build() {
         try {
             Stats.onNativeCall();
-            var paragraph = new Paragraph(_nBuild(_ptr), _text);
+            Paragraph paragraph = new Paragraph(_nBuild(_ptr), _text);
             _text = null;
             return paragraph;
         } finally {

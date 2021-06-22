@@ -1,3 +1,7 @@
+# 0.92.3 - June 22, 2021
+
+Lowered minimal required version to Java 9.
+
 # 0.92.2 - June 21, 2021
 
 Support for Java 9 modules (#110 #111 thx @comtel2000):

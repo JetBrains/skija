@@ -52,7 +52,7 @@ def deps():
     fetch_maven('org.jetbrains', 'annotations', '20.1.0'),
   ]
 
-def javac(sources, target, classpath = [], modulepath = [], add_modules = []):
+def javac(sources, target, classpath = [], modulepath = [], add_modules = [], release = '11'):
   classes = {path.stem: path.stat().st_mtime for path in pathlib.Path(target).rglob('*.class') if '$' not in path.stem}
   newer = lambda path: path.stem not in classes or path.stat().st_mtime > classes.get(path.stem)
   new_sources = [path for path in sources if newer(pathlib.Path(path))]
@@ -61,7 +61,7 @@ def javac(sources, target, classpath = [], modulepath = [], add_modules = []):
     check_call([
       'javac',
       '-encoding', 'UTF8',
-      '--release', '11',
+      '--release', release,
       # '-J--illegal-access=permit',
       # '-Xlint:deprecation',
       # '-Xlint:unchecked',

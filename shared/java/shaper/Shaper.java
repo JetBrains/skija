@@ -136,12 +136,12 @@ public class Shaper extends Managed {
                         float width,
                         RunHandler runHandler)
     {
-        try (var textUtf8 = new ManagedString(text);
-             var fontIter = new FontMgrRunIterator(textUtf8, false, font, fontMgr);
-             var bidiIter = new IcuBidiRunIterator(textUtf8, false, leftToRight ? java.text.Bidi.DIRECTION_LEFT_TO_RIGHT : java.text.Bidi.DIRECTION_RIGHT_TO_LEFT);
-             var scriptIter = new HbIcuScriptRunIterator(textUtf8, false);)
+        try (ManagedString textUtf8 = new ManagedString(text);
+             FontMgrRunIterator fontIter = new FontMgrRunIterator(textUtf8, false, font, fontMgr);
+             IcuBidiRunIterator bidiIter = new IcuBidiRunIterator(textUtf8, false, leftToRight ? java.text.Bidi.DIRECTION_LEFT_TO_RIGHT : java.text.Bidi.DIRECTION_RIGHT_TO_LEFT);
+             HbIcuScriptRunIterator scriptIter = new HbIcuScriptRunIterator(textUtf8, false);)
         {
-            var langIter = new TrivialLanguageRunIterator(text, Locale.getDefault().toLanguageTag());
+            Iterator<LanguageRun> langIter = new TrivialLanguageRunIterator(text, Locale.getDefault().toLanguageTag());
             return shape(textUtf8, fontIter, bidiIter, scriptIter, langIter, features, width, runHandler);
         }
     }

@@ -30,7 +30,7 @@ public class AnimationBuilder extends Managed {
     @ApiStatus.Internal
     public static int _flagsToInt(AnimationBuilderFlag... builderFlags) {
         int flags = 0;
-        for (var flag: builderFlags)
+        for (AnimationBuilderFlag flag: builderFlags)
             flags |= flag._flag;
         return flags;
     }

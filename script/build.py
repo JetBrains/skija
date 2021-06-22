@@ -57,7 +57,7 @@ def main():
 
   os.chdir(common.root + '/platform')
   sources = common.glob('java-' + common.classifier, '*.java')
-  common.javac(sources, 'target/classes', modulepath = modulepath)
+  common.javac(sources, 'target/classes', modulepath = modulepath, release = '9')
 
   # Copy files
   target = 'target/classes/org/jetbrains/skija'

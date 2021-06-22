@@ -113,7 +113,7 @@ public class Animation extends Managed {
             assert dst != null : "Can’t Animation::render with dst == null";
             Stats.onNativeCall();
             int flags = 0;
-            for (var flag: renderFlags)
+            for (RenderFlag flag: renderFlags)
                 flags |= flag._flag;
             _nRender(_ptr, Native.getPtr(canvas), dst._left, dst._top, dst._right, dst._bottom, flags);
             return this;

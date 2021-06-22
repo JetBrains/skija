@@ -44,7 +44,7 @@ public class DirectContext extends RefCnt {
     public DirectContext resetGL(GLBackendState... states) {
         Stats.onNativeCall();
         int flags = 0;
-        for (var state: states)
+        for (GLBackendState state: states)
             flags |= state._bit;
         _nReset(_ptr, flags);
         return this;

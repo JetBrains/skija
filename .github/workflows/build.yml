@@ -23,8 +23,6 @@ jobs:
       - run: |
           echo "JAVA_HOME=$JAVA_HOME_11_X64" >> $GITHUB_ENV
           echo "$JAVA_HOME_11_X64/bin" >> $GITHUB_PATH
-      - run: pwd
-      - run: ls -lah
       - run: python3 script/deploy_shared.py
         if: github.ref == 'refs/heads/master'
         env:

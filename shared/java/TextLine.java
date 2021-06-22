@@ -25,7 +25,7 @@ public class TextLine extends Managed {
 
     @NotNull @Contract("_, _, _, _ -> new")
     public static TextLine make(String text, Font font, @Nullable FontFeature[] features, boolean leftToRight) {
-        try (var shaper = Shaper.makeShapeDontWrapOrReorder();) {
+        try (Shaper shaper = Shaper.makeShapeDontWrapOrReorder();) {
             return shaper.shapeLine(text, font, features, leftToRight);
         }
     }
@@ -192,7 +192,7 @@ public class TextLine extends Managed {
      */
     @Nullable
     public float[] getIntercepts(float lowerBound, float upperBound, @Nullable Paint paint) {
-        try (var blob = getTextBlob()) {
+        try (TextBlob blob = getTextBlob()) {
             return blob == null ? null : blob.getIntercepts(lowerBound, upperBound, paint);
         } finally {
             Reference.reachabilityFence(this);

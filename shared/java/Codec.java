@@ -82,7 +82,7 @@ public class Codec extends Managed implements IHasImageInfo {
      */
     @NotNull @Contract("_ -> new")
     public Bitmap readPixels() {
-        var bitmap = new Bitmap();
+        Bitmap bitmap = new Bitmap();
         bitmap.allocPixels(getImageInfo());
         readPixels(bitmap);
         return bitmap;

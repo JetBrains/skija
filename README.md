@@ -204,7 +204,7 @@ Finally, [LWJGL demo app](/examples/lwjgl) has examples of most of the APIs that
 
 ## Building Skija from scratch
 
-Prerequisites: Git, CMake, Ninja, JDK 11+, $JAVA_HOME, Python 3.
+Prerequisites: Git, CMake, Ninja, JDK 9+, $JAVA_HOME, Python 3.
 
 Checkout:
 
