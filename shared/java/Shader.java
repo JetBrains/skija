@@ -223,16 +223,6 @@ public class Shader extends RefCnt {
         }
     }
 
-    public static Shader makeLerp(float t, Shader dst, Shader src) {
-        try {
-            Stats.onNativeCall();
-            return new Shader(_nMakeLerp(t, Native.getPtr(dst), Native.getPtr(src)));
-        } finally {
-            Reference.reachabilityFence(dst);
-            Reference.reachabilityFence(src);
-        }
-    }
-
     @ApiStatus.Internal
     public Shader(long ptr) {
         super(ptr);
@@ -251,5 +241,4 @@ public class Shader extends RefCnt {
     public static native long _nMakeColor(int color);
     public static native long _nMakeColorCS(float r, float g, float b, float a, long colorSpacePtr);
     public static native long _nMakeBlend(int blendMode, long dst, long src);
-    public static native long _nMakeLerp(float t, long dst, long src);
 }
