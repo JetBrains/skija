@@ -40,12 +40,6 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Paint__1nEquals
     return *a == *b;
 }
 
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Paint__1nGetHash
-  (JNIEnv* env, jclass jclass, jlong ptr) {
-    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
-    return instance->getHash();
-}
-
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint__1nReset
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
@@ -100,19 +94,6 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint__1nSetColor4f
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
     SkColorSpace* colorSpace = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr));
     instance->setColor4f({r, g, b, a}, colorSpace);
-}
-
-extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Paint__1nGetFilterQuality
-  (JNIEnv* env, jclass jclass, jlong ptr) {
-    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
-    return static_cast<jint>(instance->getFilterQuality());
-}
-
-extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint__1nSetFilterQuality
-  (JNIEnv* env, jclass jclass, jlong ptr, jint jquality) {
-    SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
-    SkFilterQuality quality = static_cast<SkFilterQuality>(jquality);
-    instance->setFilterQuality(quality);
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Paint__1nGetMode
@@ -223,7 +204,7 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint__1nSetImageFilt
 extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Paint__1nGetBlendMode
   (JNIEnv* env, jclass jclass, jlong ptr) {
     SkPaint* instance = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(ptr));
-    return static_cast<jlong>(instance->getBlendMode());
+    return static_cast<jlong>(instance->getBlendMode_or(SkBlendMode::kSrcOver));
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Paint__1nSetBlendMode

@@ -60,25 +60,22 @@ public class Paint extends Managed {
     }
 
     /** 
-     * <p>Returns a hash generated from Paint values and pointers. Identical
+     * <del><p>Returns a hash generated from Paint values and pointers. Identical
      * hashes guarantee that the paints are equivalent, but differing hashes
      * do not guarantee that the paints have differing contents.</p>
      *
      * <p>If p1.equals(p2) returns true for two paints, their hashes are also equal.</p>
      *
-     * <p>The hash returned is platform and implementation specific.</p>
+     * <p>The hash returned is platform and implementation specific.</p></del>
+     * <p>In Skia</p>
      *
-     * @return  a shallow hash
+     * @return  hash based on pointer of the paint object
      * @see <a href="https://fiddle.skia.org/c/@Paint_getHash">https://fiddle.skia.org/c/@Paint_getHash</a>
+     * @see <a href="https://review.skia.org/419336">https://review.skia.org/419336</a>
      */
     @Override
     public int hashCode() {
-        try {
-            Stats.onNativeCall();
-            return _nGetHash(_ptr);
-        } finally {
-            Reference.reachabilityFence(this);
-        }
+        return java.util.Objects.hash(_ptr);
     }
 
     /**
@@ -142,38 +139,6 @@ public class Paint extends Managed {
     public Paint setDither(boolean value) {
         Stats.onNativeCall();
         _nSetDither(_ptr, value);
-        return this;
-    }
-
-    /**
-     * Returns FilterQuality, the image filtering level. A lower setting
-     * draws faster; a higher setting looks better when the image is scaled.
-     * 
-     * @return this
-     */
-    @NotNull
-    public FilterQuality getFilterQuality() {
-        try {
-            Stats.onNativeCall();
-            return FilterQuality._values[_nGetFilterQuality(_ptr)];
-        } finally {
-            Reference.reachabilityFence(this);
-        }
-    }
-
-    /**
-     * Sets FilterQuality, the image filtering level. A lower setting
-     * draws faster; a higher setting looks better when the image is scaled.
-     * Does not check to see if quality is valid.
-     *
-     * @see <a href="https://fiddle.skia.org/c/@Color_Methods">https://fiddle.skia.org/c/@Color_Methods</a>
-     * @see <a href="https://fiddle.skia.org/c/@Paint_setFilterQuality">https://fiddle.skia.org/c/@Paint_setFilterQuality</a>
-     */
-    @NotNull @Contract("!null -> this; null -> fail")
-    public Paint setFilterQuality(@NotNull FilterQuality filterQuality) {
-        assert filterQuality != null : "Paint::setFilterQuality expected filterQuality != null";
-        Stats.onNativeCall();
-        _nSetFilterQuality(_ptr, filterQuality.ordinal());
         return this;
     }
 
@@ -586,7 +551,7 @@ public class Paint extends Managed {
      *
      * @return  mode used to combine source color with destination color
      */
-    @NotNull
+    @Nullable
     public BlendMode getBlendMode() {
         try {
             Stats.onNativeCall();
@@ -738,14 +703,11 @@ public class Paint extends Managed {
     public static native long  _nMake();
     public static native long  _nMakeClone(long ptr);
     public static native boolean _nEquals(long ptr, long otherPtr);
-    public static native int _nGetHash(long ptr);
     public static native void _nReset(long ptr);
     public static native boolean _nIsAntiAlias(long ptr);
     public static native void  _nSetAntiAlias(long ptr, boolean value);
     public static native boolean _nIsDither(long ptr);
     public static native void  _nSetDither(long ptr, boolean value);
-    public static native int   _nGetFilterQuality(long ptr);
-    public static native void  _nSetFilterQuality(long ptr, int quality);
     public static native int   _nGetMode(long ptr);
     public static native void  _nSetMode(long ptr, int value);
     public static native int   _nGetColor(long ptr);
