@@ -46,6 +46,7 @@ def main():
       print('Delomboking sources')
       subprocess.check_call([
         "java",
+        "-Dfile.encoding=UTF8",
         "-jar",
         lombok,
         "delombok",
