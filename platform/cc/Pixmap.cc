@@ -6,16 +6,6 @@ static void deletePixmap(SkPixmap *pixmap) {
     delete pixmap;
 }
 
-template <typename T>
-inline T jlongToPtr(jlong ptr) {
-    return reinterpret_cast<T>(static_cast<uintptr_t>(ptr));
-}
-
-template <typename T>
-jlong ptrToJlong(T* ptr) {
-    return static_cast<jlong>(reinterpret_cast<uintptr_t>(ptr));
-}
-
 extern "C" {
     JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Pixmap__1nGetFinalizer
       (JNIEnv *env, jclass klass) {
