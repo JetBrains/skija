@@ -12,20 +12,25 @@ public class Surface extends RefCnt {
     @ApiStatus.Internal public final DirectContext _context;
     @ApiStatus.Internal public final BackendRenderTarget _renderTarget;
 
+    @NotNull @Contract("_ -> new")
+    public static Surface makeRasterDirect(@NotNull Pixmap pixmap) {
+        return makeRasterDirect(pixmap, null);
+    }
+
     /**
      * <p>Allocates raster Surface. Canvas returned by Surface draws directly into pixels.</p>
      *
      * <p>Surface is returned if all parameters are valid. Valid parameters include:</p>
-     * 
+     *
      * <ul><li>info dimensions are greater than zero;</li>
      * <li>info contains ColorType and AlphaType supported by raster surface;</li>
      * <li>pixelsPtr is not 0;</li>
      * <li>rowBytes is large enough to contain info width pixels of ColorType.</li></ul>
      *
      * <p>Pixel buffer size should be info height times computed rowBytes.</p>
-     * 
+     *
      * <p>Pixels are not initialized.</p>
-     * 
+     *
      * <p>To access pixels after drawing, peekPixels() or readPixels().</p>
      *
      * @param imageInfo     width, height, ColorType, AlphaType, ColorSpace,
@@ -41,20 +46,37 @@ public class Surface extends RefCnt {
         return makeRasterDirect(imageInfo, pixelsPtr, rowBytes, null);
     }
 
+    @NotNull @Contract("_, _ -> new")
+    public static Surface makeRasterDirect(@NotNull Pixmap pixmap,
+                                           @Nullable SurfaceProps surfaceProps) {
+        try {
+            assert pixmap != null : "Can’t makeRasterDirect with pixmap == null";
+            Stats.onNativeCall();
+            long ptr = _nMakeRasterDirectWithPixmap(
+                Native.getPtr(pixmap), surfaceProps
+            );
+            if (ptr == 0)
+                throw new IllegalArgumentException(String.format("Failed Surface.makeRasterDirect(%s, %s)", pixmap, surfaceProps));
+            return new Surface(ptr);
+        } finally {
+            Reference.reachabilityFence(pixmap);
+        }
+    }
+
     /**
      * <p>Allocates raster Surface. Canvas returned by Surface draws directly into pixels.</p>
      *
      * <p>Surface is returned if all parameters are valid. Valid parameters include:</p>
-     * 
+     *
      * <ul><li>info dimensions are greater than zero;</li>
      * <li>info contains ColorType and AlphaType supported by raster surface;</li>
      * <li>pixelsPtr is not 0;</li>
      * <li>rowBytes is large enough to contain info width pixels of ColorType.</li></ul>
      *
      * <p>Pixel buffer size should be info height times computed rowBytes.</p>
-     * 
+     *
      * <p>Pixels are not initialized.</p>
-     * 
+     *
      * <p>To access pixels after drawing, peekPixels() or readPixels().</p>
      *
      * @param imageInfo     width, height, ColorType, AlphaType, ColorSpace,
@@ -94,12 +116,12 @@ public class Surface extends RefCnt {
      * <p>Allocates raster Surface. Canvas returned by Surface draws directly into pixels.
      * Allocates and zeroes pixel memory. Pixel memory size is imageInfo.height() times imageInfo.minRowBytes().
      * Pixel memory is deleted when Surface is deleted.</p>
-     * 
+     *
      * <p>Surface is returned if all parameters are valid. Valid parameters include:</p>
-     * 
+     *
      * <ul><li>info dimensions are greater than zero;</li>
      * <li>info contains ColorType and AlphaType supported by raster surface;</li></ul>
-     * 
+     *
      * @param imageInfo     width, height, ColorType, AlphaType, ColorSpace,
      *                      of raster surface; width and height must be greater than zero
      * @return              new Surface
@@ -114,15 +136,15 @@ public class Surface extends RefCnt {
      * Allocates and zeroes pixel memory. Pixel memory size is imageInfo.height() times
      * rowBytes, or times imageInfo.minRowBytes() if rowBytes is zero.
      * Pixel memory is deleted when Surface is deleted.</p>
-     * 
+     *
      * <p>Surface is returned if all parameters are valid. Valid parameters include:</p>
-     * 
+     *
      * <ul><li>info dimensions are greater than zero;</li>
      * <li>info contains ColorType and AlphaType supported by raster surface;</li>
      * <li>rowBytes is large enough to contain info width pixels of ColorType, or is zero.</li></ul>
-     * 
+     *
      * <p>If rowBytes is zero, a suitable value will be chosen internally.</p>
-     * 
+     *
      * @param imageInfo     width, height, ColorType, AlphaType, ColorSpace,
      *                      of raster surface; width and height must be greater than zero
      * @param rowBytes      interval from one Surface row to the next; may be zero
@@ -139,15 +161,15 @@ public class Surface extends RefCnt {
      * Allocates and zeroes pixel memory. Pixel memory size is imageInfo.height() times
      * rowBytes, or times imageInfo.minRowBytes() if rowBytes is zero.
      * Pixel memory is deleted when Surface is deleted.</p>
-     * 
+     *
      * <p>Surface is returned if all parameters are valid. Valid parameters include:</p>
-     * 
+     *
      * <ul><li>info dimensions are greater than zero;</li>
      * <li>info contains ColorType and AlphaType supported by raster surface;</li>
      * <li>rowBytes is large enough to contain info width pixels of ColorType, or is zero.</li></ul>
-     * 
+     *
      * <p>If rowBytes is zero, a suitable value will be chosen internally.</p>
-     * 
+     *
      * @param imageInfo     width, height, ColorType, AlphaType, ColorSpace,
      *                      of raster surface; width and height must be greater than zero
      * @param rowBytes      interval from one Surface row to the next; may be zero
@@ -413,7 +435,7 @@ public class Surface extends RefCnt {
         try {
             assert context != null : "Can’t makeFromBackendRenderTarget with context == null";
             assert imageInfo != null : "Can’t makeFromBackendRenderTarget with imageInfo == null";
-            assert origin != null : "Can’t makeFromBackendRenderTarget with origin == null";            
+            assert origin != null : "Can’t makeFromBackendRenderTarget with origin == null";
             Stats.onNativeCall();
             long ptr = _nMakeRenderTarget(
                 Native.getPtr(context),
@@ -436,7 +458,7 @@ public class Surface extends RefCnt {
         }
     }
 
-    /** 
+    /**
      * Returns Surface without backing pixels. Drawing to Canvas returned from Surface
      * has no effect. Calling makeImageSnapshot() on returned Surface returns null.
      *
@@ -685,6 +707,26 @@ public class Surface extends RefCnt {
         }
     }
 
+    public boolean peekPixels(@NotNull Pixmap pixmap) {
+        try {
+            Stats.onNativeCall();
+            return _nPeekPixels(_ptr, Native.getPtr(pixmap));
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(pixmap);
+        }
+    }
+
+    public boolean readPixels(Pixmap pixmap, int srcX, int srcY) {
+        try {
+            Stats.onNativeCall();
+            return _nReadPixelsToPixmap(_ptr, Native.getPtr(pixmap), srcX, srcY);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(pixmap);
+        }
+    }
+
     /**
      * <p>Copies Rect of pixels from Surface into bitmap.</p>
      *
@@ -704,7 +746,7 @@ public class Surface extends RefCnt {
      * <p>Pass negative values for srcX or srcY to offset pixels across or down destination.</p>
      *
      * <p>Does not copy, and returns false if:</p>
-     * 
+     *
      * <ul>
      *  <li>Source and destination rectangles do not intersect.</li>
      *  <li>Surface pixels could not be converted to dst.colorType() or dst.alphaType().</li>
@@ -725,6 +767,16 @@ public class Surface extends RefCnt {
         } finally {
             Reference.reachabilityFence(this);
             Reference.reachabilityFence(bitmap);
+        }
+    }
+
+    public void writePixels(Pixmap pixmap, int x, int y) {
+        try {
+            Stats.onNativeCall();
+            _nWritePixelsFromPixmap(_ptr, Native.getPtr(pixmap), x, y);
+        } finally {
+            Reference.reachabilityFence(this);
+            Reference.reachabilityFence(pixmap);
         }
     }
 
@@ -835,6 +887,7 @@ public class Surface extends RefCnt {
     }
 
     public static native long _nMakeRasterDirect(int width, int height, int colorType, int alphaType, long colorSpacePtr, long pixelsPtr, long rowBytes, SurfaceProps surfaceProps);
+    public static native long _nMakeRasterDirectWithPixmap(long pixmapPtr, SurfaceProps surfaceProps);
     public static native long _nMakeRaster(int width, int height, int colorType, int alphaType, long colorSpacePtr, long rowBytes, SurfaceProps surfaceProps);
     public static native long _nMakeRasterN32Premul(int width, int height);
     public static native long _nMakeFromBackendRenderTarget(long pContext, long pBackendRenderTarget, int surfaceOrigin, int colorType, long colorSpacePtr, SurfaceProps surfaceProps);
@@ -853,7 +906,10 @@ public class Surface extends RefCnt {
     public static native long _nMakeImageSnapshot(long ptr);
     public static native long _nMakeImageSnapshotR(long ptr, int left, int top, int right, int bottom);
     public static native void _nDraw(long ptr, long canvasPtr, float x, float y, long paintPtr);
+    public static native boolean _nPeekPixels(long ptr, long pixmapPtr);
+    public static native boolean _nReadPixelsToPixmap(long ptr, long pixmapPtr, int srcX, int srcY);
     public static native boolean _nReadPixels(long ptr, long bitmapPtr, int srcX, int srcY);
+    public static native void _nWritePixelsFromPixmap(long ptr, long pixmapPtr, int x, int y);
     public static native void _nWritePixels(long ptr, long bitmapPtr, int x, int y);
     public static native void _nFlushAndSubmit(long ptr, boolean syncCpu);
     public static native void _nFlush(long ptr);

@@ -7,7 +7,7 @@
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeRasterDirect
   (JNIEnv* env, jclass jclass,
     jint width, jint height, jint colorType, jint alphaType, jlong colorSpacePtr,
-    jlong pixelsPtr, jlong rowBytes, 
+    jlong pixelsPtr, jlong rowBytes,
     jobject surfacePropsObj)
 {
     SkColorSpace* colorSpace = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr));
@@ -26,10 +26,21 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeRaste
     return reinterpret_cast<jlong>(instance.release());
 }
 
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeRasterDirectWithPixmap
+  (JNIEnv* env, jclass jclass,
+    jlong pixmapPtr, jobject surfacePropsObj)
+{
+    SkPixmap* pixmap = reinterpret_cast<SkPixmap*>(static_cast<uintptr_t>(pixmapPtr));
+    std::unique_ptr<SkSurfaceProps> surfaceProps = skija::SurfaceProps::toSkSurfaceProps(env, surfacePropsObj);
+
+    sk_sp<SkSurface> instance = SkSurface::MakeRasterDirect(*pixmap, surfaceProps.get());
+    return reinterpret_cast<jlong>(instance.release());
+}
+
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeRaster
   (JNIEnv* env, jclass jclass,
     jint width, jint height, jint colorType, jint alphaType, jlong colorSpacePtr,
-    jlong rowBytes, 
+    jlong rowBytes,
     jobject surfacePropsObj)
 {
     SkColorSpace* colorSpace = reinterpret_cast<SkColorSpace*>(static_cast<uintptr_t>(colorSpacePtr));
@@ -101,9 +112,9 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeFromM
 #endif
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Surface__1nMakeRenderTarget
-  (JNIEnv* env, jclass jclass, jlong contextPtr, jboolean budgeted, 
+  (JNIEnv* env, jclass jclass, jlong contextPtr, jboolean budgeted,
     jint width, jint height, jint colorType, jint alphaType, jlong colorSpacePtr,
-    jint sampleCount, jint surfaceOrigin, 
+    jint sampleCount, jint surfaceOrigin,
     jobject surfacePropsObj,
     jboolean shouldCreateWithMips)
 {
@@ -167,11 +178,25 @@ extern "C" JNIEXPORT jint JNICALL Java_org_jetbrains_skija_Surface__1nGeneration
     return surface->generationID();
 }
 
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Surface__1nReadPixelsToPixmap
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong pixmapPtr, jint srcX, jint srcY) {
+    SkSurface* surface = reinterpret_cast<SkSurface*>(static_cast<uintptr_t>(ptr));
+    SkPixmap* pixmap = reinterpret_cast<SkPixmap*>(static_cast<uintptr_t>(pixmapPtr));
+    return surface->readPixels(*pixmap, srcX, srcY);
+}
+
 extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Surface__1nReadPixels
   (JNIEnv* env, jclass jclass, jlong ptr, jlong bitmapPtr, jint srcX, jint srcY) {
     SkSurface* surface = reinterpret_cast<SkSurface*>(static_cast<uintptr_t>(ptr));
     SkBitmap* bitmap = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(bitmapPtr));
     return surface->readPixels(*bitmap, srcX, srcY);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Surface__1nWritePixelsFromPixmap
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong pixmapPtr, jint x, jint y) {
+    SkSurface* surface = reinterpret_cast<SkSurface*>(static_cast<uintptr_t>(ptr));
+    SkPixmap* pixmap = reinterpret_cast<SkPixmap*>(static_cast<uintptr_t>(pixmapPtr));
+    surface->writePixels(*pixmap, x, y);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Surface__1nWritePixels
@@ -237,6 +262,13 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Surface__1nDraw
     SkCanvas* canvas = reinterpret_cast<SkCanvas*>(static_cast<uintptr_t>(canvasPtr));
     SkPaint* paint = reinterpret_cast<SkPaint*>(static_cast<uintptr_t>(paintPtr));
     surface->draw(canvas, x, y, paint);
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Surface__1nPeekPixels
+  (JNIEnv *env, jclass jclass, jlong ptr, jlong dstPixmapPtr) {
+    SkSurface* surface = reinterpret_cast<SkSurface*>(static_cast<uintptr_t>(ptr));
+    SkPixmap* pixmap = reinterpret_cast<SkPixmap*>(static_cast<uintptr_t>(dstPixmapPtr));
+    return static_cast<jboolean>(surface->peekPixels(pixmap));
 }
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_Surface__1nNotifyContentWillChange
