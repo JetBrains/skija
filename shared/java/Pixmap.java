@@ -1,6 +1,7 @@
 package org.jetbrains.skija;
 
 import java.lang.ref.*;
+import java.nio.ByteBuffer;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.IRect;
 import org.jetbrains.skija.ImageInfo;
@@ -16,6 +17,10 @@ public class Pixmap extends Managed {
     public Pixmap() {
         this(_nMakeNull(), true);
         Stats.onNativeCall();
+    }
+
+    public static Pixmap make(ImageInfo info, ByteBuffer buffer, int rowBytes) {
+        return make(info, BufferUtil.getPointerFromByteBuffer(buffer), rowBytes);
     }
 
     public static Pixmap make(ImageInfo info, long addr, int rowBytes) {
@@ -50,6 +55,10 @@ public class Pixmap extends Managed {
         Reference.reachabilityFence(info._colorInfo._colorSpace);
     }
 
+    public void reset(ImageInfo info, ByteBuffer buffer, int rowBytes) {
+        reset(info, BufferUtil.getPointerFromByteBuffer(buffer), rowBytes);
+    }
+
     public void setColorSpace(ColorSpace colorSpace) {
         Stats.onNativeCall();
         _nSetColorSpace(_ptr, Native.getPtr(colorSpace));
@@ -61,6 +70,10 @@ public class Pixmap extends Managed {
         Stats.onNativeCall();
         _nExtractSubset(_ptr, subsetPtr, area._left, area._top, area._right, area._bottom);
         Reference.reachabilityFence(this);
+    }
+
+    public void extractSubset(ByteBuffer buffer, IRect area) {
+        extractSubset(BufferUtil.getPointerFromByteBuffer(buffer), area);
     }
 
     public ImageInfo getInfo() {
@@ -219,6 +232,10 @@ public class Pixmap extends Managed {
         } finally {
             Reference.reachabilityFence(this);
         }
+    }
+
+    public ByteBuffer getBuffer() {
+        return BufferUtil.getByteBufferFromPointer(getAddr(), computeByteSize());
     }
 
     @ApiStatus.Internal
