@@ -123,7 +123,7 @@ namespace skija {
         void onLoad(JNIEnv* env);
         void onUnload(JNIEnv* env);
     }
-    
+
     namespace FontFamilyName {
         extern jclass cls;
         extern jmethodID ctor;
@@ -272,7 +272,7 @@ namespace skija {
         void onLoad(JNIEnv* env);
         void onUnload(JNIEnv* env);
         SkRRect toSkRRect(JNIEnv* env, jfloat left, jfloat top, jfloat right, jfloat bottom, jfloatArray jradii);
-        jobject fromSkRRect(JNIEnv* env, const SkRRect& rect);   
+        jobject fromSkRRect(JNIEnv* env, const SkRRect& rect);
     }
 
     namespace RSXform {
@@ -343,3 +343,13 @@ std::vector<SkString> skStringVector(JNIEnv* env, jobjectArray arr);
 jobjectArray javaStringArray(JNIEnv* env, const std::vector<SkString>& strings);
 
 void deleteJBytes(void* addr, void*);
+
+template <typename T>
+inline T jlongToPtr(jlong ptr) {
+    return reinterpret_cast<T>(static_cast<uintptr_t>(ptr));
+}
+
+template <typename T>
+jlong ptrToJlong(T* ptr) {
+    return static_cast<jlong>(reinterpret_cast<uintptr_t>(ptr));
+}
