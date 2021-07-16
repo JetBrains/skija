@@ -17,6 +17,8 @@ public enum RenderFlag {
      */
     DISABLE_TOP_LEVEL_CLIPPING(0x02);
 
+    @ApiStatus.Internal public static final RenderFlag[] _values = values();
+
     @ApiStatus.Internal public final int _flag;
 
     RenderFlag(int flag) {

@@ -1,6 +1,10 @@
 package org.jetbrains.skija.skottie;
 
+import org.jetbrains.annotations.*;
+
 public enum LogLevel {
     WARNING,
-    ERROR
+    ERROR;
+
+    @ApiStatus.Internal public static final LogLevel[] _values = values();
 }

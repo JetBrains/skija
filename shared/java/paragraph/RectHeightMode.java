@@ -1,5 +1,7 @@
 package org.jetbrains.skija.paragraph;
 
+import org.jetbrains.annotations.*;
+
 public enum RectHeightMode {
 
     /** Provide tight bounding boxes that fit heights per run. */
@@ -28,5 +30,7 @@ public enum RectHeightMode {
     /** The line spacing will be added to the bottom of the rect. */
     INCLUDE_LINE_SPACING_BOTTOM,
 
-    STRUT
+    STRUT;
+
+    @ApiStatus.Internal public static final RectHeightMode[] _values = values();
 }

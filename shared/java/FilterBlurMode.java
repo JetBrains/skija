@@ -1,5 +1,7 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.annotations.*;
+
 public enum FilterBlurMode {
     /** fuzzy inside and outside */
     NORMAL,
@@ -8,5 +10,7 @@ public enum FilterBlurMode {
     /** nothing inside, fuzzy outside */
     OUTER,
     /** fuzzy inside, nothing outside */
-    INNER
+    INNER;
+
+    @ApiStatus.Internal public static final FilterBlurMode[] _values = values();
 }

@@ -127,7 +127,7 @@ public class Path extends Managed implements Iterable<PathSegment> {
     public PathFillMode getFillMode() {
         try {
             Stats.onNativeCall();
-            return PathFillMode.values()[_nGetFillMode(_ptr)];
+            return PathFillMode._values[_nGetFillMode(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }
@@ -499,7 +499,7 @@ public class Path extends Managed implements Iterable<PathSegment> {
             int count = _nGetVerbs(_ptr, out, max);
             if (verbs != null)
                 for (int i = 0; i < Math.min(count, max); ++i)
-                    verbs[i] = PathVerb.values()[out[i]];
+                    verbs[i] = PathVerb._values[out[i]];
             return count;
         } finally {
             Reference.reachabilityFence(this);

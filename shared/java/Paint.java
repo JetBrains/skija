@@ -155,7 +155,7 @@ public class Paint extends Managed {
     public FilterQuality getFilterQuality() {
         try {
             Stats.onNativeCall();
-            return FilterQuality.values()[_nGetFilterQuality(_ptr)];
+            return FilterQuality._values[_nGetFilterQuality(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }
@@ -184,7 +184,7 @@ public class Paint extends Managed {
     public PaintMode getMode() {
         try {
             Stats.onNativeCall();
-            return PaintMode.values()[_nGetMode(_ptr)];
+            return PaintMode._values[_nGetMode(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }
@@ -432,7 +432,7 @@ public class Paint extends Managed {
     public PaintStrokeCap getStrokeCap() {
         try {
             Stats.onNativeCall();
-            return PaintStrokeCap.values()[_nGetStrokeCap(_ptr)];
+            return PaintStrokeCap._values[_nGetStrokeCap(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }
@@ -461,7 +461,7 @@ public class Paint extends Managed {
     public PaintStrokeJoin getStrokeJoin() {
         try {
             Stats.onNativeCall();
-            return PaintStrokeJoin.values()[_nGetStrokeJoin(_ptr)];
+            return PaintStrokeJoin._values[_nGetStrokeJoin(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }
@@ -590,7 +590,7 @@ public class Paint extends Managed {
     public BlendMode getBlendMode() {
         try {
             Stats.onNativeCall();
-            return BlendMode.values()[_nGetBlendMode(_ptr)];
+            return BlendMode._values[_nGetBlendMode(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }

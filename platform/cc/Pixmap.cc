@@ -56,12 +56,12 @@ extern "C" {
         pixmap->setColorSpace(sk_ref_sp<SkColorSpace>(colorSpace));
     }
 
-    JNIEXPORT void JNICALL Java_org_jetbrains_skija_Pixmap__1nExtractSubset
+    JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Pixmap__1nExtractSubset
       (JNIEnv *env, jclass klass, jlong ptr,
       jlong subsetPtr, jint l, jint t, jint w, jint h) {
         SkPixmap* pixmap = jlongToPtr<SkPixmap*>(ptr);
         SkPixmap* dst = jlongToPtr<SkPixmap*>(subsetPtr);
-        pixmap->extractSubset(dst, { l, t, w, h });
+        return pixmap->extractSubset(dst, { l, t, w, h });
     }
 
     JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Pixmap__1nGetInfo

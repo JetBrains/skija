@@ -453,7 +453,7 @@ public class BreakIterator extends Managed implements Cloneable {
      * If the specified offset is equal to the last text boundary, it returns
      * {@link BreakIterator#DONE} and the iterator's current position is
      * unchanged. Otherwise, the iterator's current position is set to the
-     * returned boundary. The value returned is always less than the offset or
+     * returned boundary. The value returned is always greater than the offset or
      * the value {@link BreakIterator#DONE}.
      */
     public int following(int offset) {

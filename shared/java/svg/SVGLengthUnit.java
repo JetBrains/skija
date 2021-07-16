@@ -1,5 +1,7 @@
 package org.jetbrains.skija.svg;
 
+import org.jetbrains.annotations.*;
+
 public enum SVGLengthUnit {
     UNKNOWN,
     NUMBER,
@@ -11,5 +13,7 @@ public enum SVGLengthUnit {
     MM,
     IN,
     PT,
-    PC
+    PC;
+
+    @ApiStatus.Internal public static final SVGLengthUnit[] _values = values();
 }

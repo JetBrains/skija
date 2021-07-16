@@ -10,7 +10,7 @@ public class SVGPreserveAspectRatio {
 
     @ApiStatus.Internal
     public SVGPreserveAspectRatio(int align, int scale) {
-        this(SVGPreserveAspectRatioAlign.valueOf(align), SVGPreserveAspectRatioScale.values()[scale]);
+        this(SVGPreserveAspectRatioAlign.valueOf(align), SVGPreserveAspectRatioScale._values[scale]);
     }
 
     public SVGPreserveAspectRatio() {

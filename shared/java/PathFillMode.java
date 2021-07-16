@@ -1,5 +1,7 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.annotations.*;
+
 public enum PathFillMode {
     /** Specifies that "inside" is computed by a non-zero sum of signed edge crossings. */
     WINDING,
@@ -12,6 +14,8 @@ public enum PathFillMode {
 
     /** Same as {@link #EVEN_ODD}, but draws outside of the path, rather than inside. */
     INVERSE_EVEN_ODD;
+
+    @ApiStatus.Internal public static final PathFillMode[] _values = values();
 
     /**
      * Returns if FillType describes area outside Path geometry. The inverse fill area

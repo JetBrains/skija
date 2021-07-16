@@ -13,7 +13,9 @@ public class PathEffect extends RefCnt {
         /** rotate the shape about its center */
         ROTATE,
         /** transform each point, and turn lines into curves */
-        MORPH
+        MORPH;
+
+        @ApiStatus.Internal public static final Style[] _values = values();
     }
 
     public PathEffect makeSum(PathEffect second) {

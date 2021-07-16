@@ -1,5 +1,7 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.annotations.*;
+
 public enum FilterQuality {
     /** fastest but lowest quality, typically nearest-neighbor */
     NONE,
@@ -8,5 +10,7 @@ public enum FilterQuality {
     /** typically bilerp + mipmaps for down-scaling */
     MEDIUM,
     /** slowest but highest quality, typically bicubic or bett */
-    HIGH
+    HIGH;
+
+    @ApiStatus.Internal public static final FilterQuality[] _values = values();
 }

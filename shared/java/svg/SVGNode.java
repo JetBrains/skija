@@ -17,7 +17,7 @@ public abstract class SVGNode extends RefCnt {
     public SVGTag getTag() {
         try {
             Stats.onNativeCall();
-            return SVGTag.values()[_nGetTag(_ptr)];
+            return SVGTag._values[_nGetTag(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }

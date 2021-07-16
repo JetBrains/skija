@@ -22,6 +22,8 @@ public enum GLBackendState {
     MISC              (1 << 10),
     PATH_RENDERING    (1 << 11);
 
+    @ApiStatus.Internal public static final GLBackendState[] _values = values();
+
     @ApiStatus.Internal public final int _bit;
 
     GLBackendState(int bit) {

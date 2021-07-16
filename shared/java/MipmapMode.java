@@ -1,5 +1,7 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.annotations.*;
+
 public enum MipmapMode {
     /**
      * ignore mipmap levels, sample from the "base"
@@ -14,5 +16,7 @@ public enum MipmapMode {
     /**
      * interpolate between the two nearest levels
      */
-    LINEAR
+    LINEAR;
+
+    @ApiStatus.Internal public static final MipmapMode[] _values = values();
 }

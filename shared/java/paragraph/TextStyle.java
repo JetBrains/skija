@@ -301,7 +301,7 @@ public class TextStyle extends Managed {
     public BaselineMode getBaselineMode() {
         try {
             Stats.onNativeCall();
-            return BaselineMode.values()[_nGetBaselineMode(_ptr)];
+            return BaselineMode._values[_nGetBaselineMode(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }

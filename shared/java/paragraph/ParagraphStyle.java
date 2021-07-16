@@ -65,7 +65,7 @@ public class ParagraphStyle extends Managed {
     public Direction getDirection() {
         try {
             Stats.onNativeCall();
-            return Direction.values()[_nGetDirection(_ptr)];
+            return Direction._values[_nGetDirection(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }
@@ -80,7 +80,7 @@ public class ParagraphStyle extends Managed {
     public Alignment getAlignment() {
         try {
             Stats.onNativeCall();
-            return Alignment.values()[_nGetAlignment(_ptr)];
+            return Alignment._values[_nGetAlignment(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }
@@ -140,7 +140,7 @@ public class ParagraphStyle extends Managed {
     public HeightMode getHeightMode() {
         try {
             Stats.onNativeCall();
-            return HeightMode.values()[_nGetHeightMode(_ptr)];
+            return HeightMode._values[_nGetHeightMode(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }
@@ -155,7 +155,7 @@ public class ParagraphStyle extends Managed {
     public Alignment getEffectiveAlignment() {
         try {
             Stats.onNativeCall();
-            return Alignment.values()[_nGetEffectiveAlignment(_ptr)];
+            return Alignment._values[_nGetEffectiveAlignment(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }

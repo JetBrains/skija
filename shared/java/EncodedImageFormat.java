@@ -1,5 +1,7 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.annotations.*;
+
 public enum EncodedImageFormat {
     BMP,
     GIF,
@@ -12,5 +14,7 @@ public enum EncodedImageFormat {
     KTX,
     ASTC,
     DNG,
-    HEIF
+    HEIF;
+
+    @ApiStatus.Internal public static final EncodedImageFormat[] _values = values();
 }

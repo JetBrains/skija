@@ -1,5 +1,7 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.annotations.*;
+
 public enum BlendMode {
     /** Replaces destination with zero: fully transparent. */
     CLEAR,
@@ -86,5 +88,7 @@ public enum BlendMode {
     COLOR,
     
     /** Luminosity of source with hue and saturation of destination. */
-    LUMINOSITY 
+    LUMINOSITY;
+
+    @ApiStatus.Internal public static final BlendMode[] _values = values();
 }

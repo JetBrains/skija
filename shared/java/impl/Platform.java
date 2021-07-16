@@ -1,10 +1,14 @@
 package org.jetbrains.skija.impl;
 
+import org.jetbrains.annotations.*;
+
 public enum Platform {
     WINDOWS,
     LINUX,
     MACOS_X64,
     MACOS_ARM64;
+
+    @ApiStatus.Internal public static final Platform[] _values = values();
 
     public static final Platform CURRENT;
 

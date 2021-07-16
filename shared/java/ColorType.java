@@ -116,6 +116,7 @@ public enum ColorType {
      */
     R16G16B16A16_UNORM;
 
+    @ApiStatus.Internal public static final ColorType[] _values = values();
 
     /**
      * Native ARGB 32-bit encoding

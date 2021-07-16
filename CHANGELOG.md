@@ -1,3 +1,9 @@
+# 0.92.5 - July 16, 2021
+
+Added:
+
+- SkPixmap bindings, SkPixmap-related methods for SkSurface #116 thx @cqjjjzr
+
 # 0.92.3 - June 22, 2021
 
 Lowered minimal required version to Java 9.

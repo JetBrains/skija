@@ -1,5 +1,7 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.annotations.*;
+
 /**
  * <p>Describes how to interpret the alpha component of a pixel. A pixel may
  * be opaque, or alpha, describing multiple levels of transparency.</p>
@@ -34,5 +36,7 @@ public enum ColorAlphaType {
     /**
      * pixel components are independent of alpha
      */
-    UNPREMUL
+    UNPREMUL;
+
+    @ApiStatus.Internal public static final ColorAlphaType[] _values = values();
 }

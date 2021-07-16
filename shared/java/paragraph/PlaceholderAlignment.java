@@ -1,5 +1,7 @@
 package org.jetbrains.skija.paragraph;
 
+import org.jetbrains.annotations.*;
+
 /**
  * Where to vertically align the placeholder relative to the surrounding text.
  */
@@ -40,5 +42,7 @@ public enum PlaceholderAlignment {
    * placeholder is very tall, the extra space will grow equally from
    * the top and bottom of the line.
    */
-  MIDDLE,
+  MIDDLE;
+
+  @ApiStatus.Internal public static final PlaceholderAlignment[] _values = values();
 }

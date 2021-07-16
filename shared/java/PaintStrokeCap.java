@@ -1,5 +1,7 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.annotations.*;
+
 /**
  * Cap draws at the beginning and end of an open path contour.
  */
@@ -17,5 +19,7 @@ public enum PaintStrokeCap {
     /**
      * adds square
      */
-    SQUARE
+    SQUARE;
+
+    @ApiStatus.Internal public static final PaintStrokeCap[] _values = values();
 }

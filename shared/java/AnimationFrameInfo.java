@@ -10,7 +10,7 @@ import org.jetbrains.annotations.*;
 public class AnimationFrameInfo {
     @ApiStatus.Internal
     public AnimationFrameInfo(int requiredFrame, int duration, boolean fullyReceived, int alphaTypeOrdinal, boolean hasAlphaWithinBounds, int disposalMethodOrdinal, int blendModeOrdinal, IRect frameRect) {
-        this(requiredFrame, duration, fullyReceived, ColorAlphaType.values()[alphaTypeOrdinal], hasAlphaWithinBounds, AnimationDisposalMethod.values()[disposalMethodOrdinal], BlendMode.values()[blendModeOrdinal], frameRect);
+        this(requiredFrame, duration, fullyReceived, ColorAlphaType._values[alphaTypeOrdinal], hasAlphaWithinBounds, AnimationDisposalMethod._values[disposalMethodOrdinal], BlendMode._values[blendModeOrdinal], frameRect);
     }
 
     /**

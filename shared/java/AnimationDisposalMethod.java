@@ -33,4 +33,6 @@ public enum AnimationDisposalMethod {
      * <p>In a GIF, a value of 4 is also treated as RestorePrevious.</p>
      */
     RESTORE_PREVIOUS;
+
+    @ApiStatus.Internal public static final AnimationDisposalMethod[] _values = values();
 }

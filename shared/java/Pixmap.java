@@ -66,14 +66,17 @@ public class Pixmap extends Managed {
         Reference.reachabilityFence(colorSpace);
     }
 
-    public void extractSubset(long subsetPtr, IRect area) {
-        Stats.onNativeCall();
-        _nExtractSubset(_ptr, subsetPtr, area._left, area._top, area._right, area._bottom);
-        Reference.reachabilityFence(this);
+    public boolean extractSubset(long subsetPtr, IRect area) {
+        try {
+            Stats.onNativeCall();
+            return _nExtractSubset(_ptr, subsetPtr, area._left, area._top, area._right, area._bottom);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
     }
 
-    public void extractSubset(ByteBuffer buffer, IRect area) {
-        extractSubset(BufferUtil.getPointerFromByteBuffer(buffer), area);
+    public boolean extractSubset(ByteBuffer buffer, IRect area) {
+        return extractSubset(BufferUtil.getPointerFromByteBuffer(buffer), area);
     }
 
     public ImageInfo getInfo() {
@@ -250,7 +253,7 @@ public class Pixmap extends Managed {
     public static native void _nReset(long ptr);
     public static native void _nResetWithInfo(long ptr, int width, int height, int colorType, int alphaType, long colorSpacePtr, long pixelsPtr, int rowBytes);
     public static native void _nSetColorSpace(long ptr, long colorSpacePtr);
-    public static native void _nExtractSubset(long ptr, long subsetPtr, int l, int t, int r, int b);
+    public static native boolean _nExtractSubset(long ptr, long subsetPtr, int l, int t, int r, int b);
     public static native ImageInfo _nGetInfo(long ptr);
     public static native int _nGetRowBytes(long ptr);
     public static native long _nGetAddr(long ptr);

@@ -1,5 +1,7 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.annotations.*;
+
 /** 
  * <p>Join specifies how corners are drawn when a shape is stroked. Join
  * affects the four corners of a stroked rectangle, and the connected segments in a
@@ -27,5 +29,7 @@ public enum PaintStrokeJoin {
     /**
      * connects outside edges
      */
-    BEVEL
+    BEVEL;
+
+    @ApiStatus.Internal public static final PaintStrokeJoin[] _values = values();
 }

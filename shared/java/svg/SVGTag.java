@@ -1,5 +1,7 @@
 package org.jetbrains.skija.svg;
 
+import org.jetbrains.annotations.*;
+
 public enum SVGTag {
     CIRCLE,
     CLIP_PATH,
@@ -38,5 +40,7 @@ public enum SVGTag {
     TEXT_LITERAL,
     TEXTPATH,
     TSPAN,
-    USE
+    USE;
+
+    @ApiStatus.Internal public static final SVGTag[] _values = values();
 }

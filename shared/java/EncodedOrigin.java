@@ -46,6 +46,8 @@ public enum EncodedOrigin {
      */
     LEFT_BOTTOM;
 
+    @ApiStatus.Internal public static final EncodedOrigin[] _values = values();
+
     /**
      * Given an encoded origin and the width and height of the source data, returns a matrix
      * that transforms the source rectangle with upper left corner at [0, 0] and origin to a correctly

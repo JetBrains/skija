@@ -38,7 +38,7 @@ public class FontStyle {
     }
 
     public FontSlant getSlant() {
-        return FontSlant.values()[(_value >> 24) & 0xFF];
+        return FontSlant._values[(_value >> 24) & 0xFF];
     }
 
     public FontStyle withSlant(FontSlant slant) {

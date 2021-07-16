@@ -22,8 +22,8 @@ public class PathSegment {
     }
 
     public PathSegment(int verbOrdinal, float x0, float y0, boolean isClosedContour) {
-        this(PathVerb.values()[verbOrdinal], new Point(x0, y0), null, null, null, 0f, false, isClosedContour);
-        assert verbOrdinal == PathVerb.MOVE.ordinal() || verbOrdinal == PathVerb.CLOSE.ordinal() : "Expected MOVE or CLOSE, got " + PathVerb.values()[verbOrdinal];
+        this(PathVerb._values[verbOrdinal], new Point(x0, y0), null, null, null, 0f, false, isClosedContour);
+        assert verbOrdinal == PathVerb.MOVE.ordinal() || verbOrdinal == PathVerb.CLOSE.ordinal() : "Expected MOVE or CLOSE, got " + PathVerb._values[verbOrdinal];
     }
 
     public PathSegment(float x0, float y0, float x1, float y1, boolean isCloseLine, boolean isClosedContour) {

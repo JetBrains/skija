@@ -59,7 +59,7 @@ public class Codec extends Managed implements IHasImageInfo {
     public EncodedOrigin getEncodedOrigin() {
         try {
             Stats.onNativeCall();
-            return EncodedOrigin.values()[_nGetEncodedOrigin(_ptr)];
+            return EncodedOrigin._values[_nGetEncodedOrigin(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }        
@@ -69,7 +69,7 @@ public class Codec extends Managed implements IHasImageInfo {
     public EncodedImageFormat getEncodedImageFormat() {
         try {
             Stats.onNativeCall();
-            return EncodedImageFormat.values()[_nGetEncodedImageFormat(_ptr)];
+            return EncodedImageFormat._values[_nGetEncodedImageFormat(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }        

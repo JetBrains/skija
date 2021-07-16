@@ -10,7 +10,7 @@ public class SVGLength {
 
     @ApiStatus.Internal
     public SVGLength(float value, int unit) {
-        this(value, SVGLengthUnit.values()[unit]);
+        this(value, SVGLengthUnit._values[unit]);
     }
 
     public SVGLength(float value) {

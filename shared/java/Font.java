@@ -246,7 +246,7 @@ public class Font extends Managed {
     public FontEdging getEdging() {
         try {
             Stats.onNativeCall();
-            return FontEdging.values()[_nGetEdging(_ptr)];
+            return FontEdging._values[_nGetEdging(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }
@@ -268,7 +268,7 @@ public class Font extends Managed {
     public FontHinting getHinting() {
         try {
             Stats.onNativeCall();
-            return FontHinting.values()[_nGetHinting(_ptr)];
+            return FontHinting._values[_nGetHinting(_ptr)];
         } finally {
             Reference.reachabilityFence(this);
         }

@@ -1,5 +1,7 @@
 package org.jetbrains.skija.paragraph;
 
+import org.jetbrains.annotations.*;
+
 public enum TextStyleAttribute {
     NONE,
     ALL_ATTRIBUTES,
@@ -10,5 +12,7 @@ public enum TextStyleAttribute {
     DECORATIONS,
     LETTER_SPACING,
     WORD_SPACING,
-    FONT_EXACT
+    FONT_EXACT;
+
+    @ApiStatus.Internal public static final TextStyleAttribute[] _values = values();
 }

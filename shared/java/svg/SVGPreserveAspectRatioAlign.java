@@ -16,6 +16,8 @@ public enum SVGPreserveAspectRatioAlign {
     XMAX_YMAX(0x0a),
     NONE(0x10);
 
+    @ApiStatus.Internal public static final SVGPreserveAspectRatioAlign[] _values = values();
+
     @ApiStatus.Internal public final int _value;
 
     @ApiStatus.Internal 

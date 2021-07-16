@@ -43,7 +43,7 @@ def main():
       os.path.join('..', '..', 'shared', 'target', 'classes')
     ]
 
-  os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
+  os.chdir(common.root + '/examples/jwm')
 
   sources = common.glob('src', '*.java') + common.glob('../scenes/src', '*.java')
   common.javac(sources, 'target/classes', classpath = classpath)

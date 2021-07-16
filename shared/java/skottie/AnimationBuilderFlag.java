@@ -16,6 +16,8 @@ public enum AnimationBuilderFlag {
      */
     PREFER_EMBEDDED_FONTS(0x02);
 
+    @ApiStatus.Internal public static final AnimationBuilderFlag[] _values = values();
+
     @ApiStatus.Internal public final int _flag;
 
     AnimationBuilderFlag(int flag) {

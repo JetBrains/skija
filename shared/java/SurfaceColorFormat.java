@@ -1,5 +1,7 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.annotations.*;
+
 public enum SurfaceColorFormat {
     UNKNOWN,      //!< uninitialized
     ALPHA_8,      //!< pixel with alpha in 8-bit byte
@@ -23,5 +25,7 @@ public enum SurfaceColorFormat {
 
     A16_UNORM,    //<! pixel with a little endian uint16_t for alpha
     R16G16_UNORM, //<! pixel with a little endian uint16_t for red and green
-    R16G16B16A16_UNORM//<! pixel with a little endian uint16_t for red, green, blue, and alpha
+    R16G16B16A16_UNORM; //<! pixel with a little endian uint16_t for red, green, blue, and alpha
+
+    @ApiStatus.Internal public static final SurfaceColorFormat[] _values = values();
 }

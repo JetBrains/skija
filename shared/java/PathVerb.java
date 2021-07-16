@@ -1,5 +1,7 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.annotations.*;
+
 /**
  * Verb instructs Path how to interpret one or more Point and optional conic weight;
  * manage contour, and terminate Path.
@@ -24,5 +26,7 @@ public enum PathVerb {
     CLOSE,
 
     /** iter.next returns 0 points */
-    DONE
+    DONE;
+
+    @ApiStatus.Internal public static final PathVerb[] _values = values();
 }

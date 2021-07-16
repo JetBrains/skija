@@ -26,7 +26,7 @@ public class DecorationStyle {
 
     @ApiStatus.Internal
     public DecorationStyle(boolean underline, boolean overline, boolean lineThrough, boolean gaps, int color, int lineStyle, float thicknessMultiplier) {
-        this(underline, overline, lineThrough, gaps, color, DecorationLineStyle.values()[lineStyle], thicknessMultiplier);
+        this(underline, overline, lineThrough, gaps, color, DecorationLineStyle._values[lineStyle], thicknessMultiplier);
     }
 
     public boolean hasUnderline() {

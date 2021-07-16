@@ -1,5 +1,7 @@
 package org.jetbrains.skija;
 
+import org.jetbrains.annotations.*;
+
 /**
  * Level of glyph outline adjustment
  */
@@ -22,5 +24,7 @@ public enum FontHinting {
     /**
      * modifies glyph outlines for maximum constrast
      */
-    FULL
+    FULL;
+
+    @ApiStatus.Internal public static final FontHinting[] _values = values();
 }

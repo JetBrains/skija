@@ -13,7 +13,9 @@ public class Region extends Managed {
         UNION,
         XOR,
         REVERSE_DIFFERENCE,
-        REPLACE
+        REPLACE;
+
+        @ApiStatus.Internal public static final Op[] _values = values();
     }
 
     public Region() {
