@@ -38,6 +38,13 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image__1nMakeFromBit
     return reinterpret_cast<jlong>(image.release());
 }
 
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image__1nMakeFromPixmap
+  (JNIEnv* env, jclass jclass, jlong pixmapPtr) {
+    SkPixmap* pixmap = reinterpret_cast<SkPixmap*>(static_cast<uintptr_t>(pixmapPtr));
+    sk_sp<SkImage> image = SkImage::MakeFromRaster(*pixmap, nullptr, nullptr);
+    return reinterpret_cast<jlong>(image.release());
+}
+
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Image__1nMakeFromEncoded
   (JNIEnv* env, jclass jclass, jbyteArray encodedArray) {
     jsize encodedLen = env->GetArrayLength(encodedArray);
@@ -81,6 +88,13 @@ extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Image__1nPeekPixel
         return nullptr;
 }
 
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Image__1nPeekPixelsToPixmap
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong pixmapPtr) {
+    SkImage* instance = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(ptr));
+    SkPixmap* pixmap = reinterpret_cast<SkPixmap*>(static_cast<uintptr_t>(pixmapPtr));
+    return instance->peekPixels(pixmap);
+}
+
 extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Image__1nReadPixelsBitmap
   (JNIEnv* env, jclass jclass, jlong ptr, jlong contextPtr, jlong bitmapPtr, jint srcX, jint srcY, jboolean cache) {
     SkImage* instance = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(ptr));
@@ -88,4 +102,20 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Image__1nReadPixe
     SkBitmap* bitmap = reinterpret_cast<SkBitmap*>(static_cast<uintptr_t>(bitmapPtr));
     auto cachingHint = cache ? SkImage::CachingHint::kAllow_CachingHint : SkImage::CachingHint::kDisallow_CachingHint;
     return instance->readPixels(context, bitmap->info(), bitmap->getPixels(), bitmap->pixmap().rowBytes(), srcX, srcY, cachingHint);
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Image__1nReadPixelsPixmap
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong pixmapPtr, jint srcX, jint srcY, jboolean cache) {
+    SkImage* instance = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(ptr));
+    SkPixmap* pixmap = reinterpret_cast<SkPixmap*>(static_cast<uintptr_t>(pixmapPtr));
+    auto cachingHint = cache ? SkImage::CachingHint::kAllow_CachingHint : SkImage::CachingHint::kDisallow_CachingHint;
+    return instance->readPixels(*pixmap, srcX, srcY, cachingHint);
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_org_jetbrains_skija_Image__1nScalePixels
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong pixmapPtr, jlong samplingOptions, jboolean cache) {
+    SkImage* instance = reinterpret_cast<SkImage*>(static_cast<uintptr_t>(ptr));
+    SkPixmap* pixmap = reinterpret_cast<SkPixmap*>(static_cast<uintptr_t>(pixmapPtr));
+    auto cachingHint = cache ? SkImage::CachingHint::kAllow_CachingHint : SkImage::CachingHint::kDisallow_CachingHint;
+    return instance->scalePixels(*pixmap, skija::SamplingMode::unpack(samplingOptions), cachingHint);
 }
