@@ -59,12 +59,16 @@ Now the image only exists as a vector of bytes in memory. To extract it, we can 
 ```java
 Image image = surface.makeImageSnapshot();
 Data pngData = image.encodeToData(EncodedImageFormat.PNG);
-byte [] pngBytes = pngData.getBytes();
+ByteBuffer pngBytes = pngData.toByteBuffer();
 
 try
 {
-    java.nio.file.Path path = java.nio.file.Path.of("output.png");
-    java.nio.file.Files.write(path, pngBytes);
+    Path path = Path.of("output.png");
+    ByteChannel channel = Files.newByteChannel(
+        path,
+        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+    channel.write(pngBytes.toByteBuffer());
+    channel.close();
 }
 catch (IOException e)
 {
