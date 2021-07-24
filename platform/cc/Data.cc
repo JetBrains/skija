@@ -17,12 +17,18 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Data__1nSize
     return instance->size();
 }
 
+extern "C" JNIEXPORT jobject JNICALL Java_org_jetbrains_skija_Data__1nToByteBuffer
+  (JNIEnv* env, jclass jclass, jlong ptr) {
+    SkData* instance = reinterpret_cast<SkData*>(static_cast<uintptr_t>(ptr));
+    return env->NewDirectByteBuffer(instance->writable_data(), instance->size());
+}
+
 extern "C" JNIEXPORT jbyteArray JNICALL Java_org_jetbrains_skija_Data__1nBytes
   (JNIEnv* env, jclass jclass, jlong ptr, jlong offset, jlong length) {
     SkData* instance = reinterpret_cast<SkData*>(static_cast<uintptr_t>(ptr));
     jbyteArray bytesArray = env->NewByteArray((jsize) length);
     const jbyte* bytes = reinterpret_cast<const jbyte*>(instance->bytes() + offset);
-    env->SetByteArrayRegion(bytesArray, 0, (jsize) length, bytes); 
+    env->SetByteArrayRegion(bytesArray, 0, (jsize) length, bytes);
     return bytesArray;
 }
 

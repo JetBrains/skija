@@ -1,5 +1,6 @@
 package org.jetbrains.skija;
 
+import java.nio.ByteBuffer;
 import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.impl.*;
@@ -9,7 +10,7 @@ import org.jetbrains.skija.impl.*;
  */
 public class Data extends Managed {
     static { Library.staticLoad(); }
-    
+
     public long getSize() {
         try {
             Stats.onNativeCall();
@@ -87,6 +88,15 @@ public class Data extends Managed {
         }
     }
 
+    public ByteBuffer toByteBuffer() {
+        try {
+            Stats.onNativeCall();
+            return _nToByteBuffer(_ptr);
+        } finally {
+            Reference.reachabilityFence(this);
+        }
+    }
+
     /**
      *  Returns a new empty dataref (or a reference to a shared empty dataref).
      *  New or shared, the caller must see that {@link #close()} is eventually called.
@@ -110,6 +120,7 @@ public class Data extends Managed {
     public static native long    _nSize(long ptr);
     public static native byte[]  _nBytes(long ptr, long offset, long length);
     public static native boolean _nEquals(long ptr, long otherPtr);
+    public static native ByteBuffer _nToByteBuffer(long ptr);
     public static native long    _nMakeFromBytes(byte[] bytes, long offset, long length);
     public static native long    _nMakeFromFileName(String path);
     public static native long    _nMakeSubset(long ptr, long offset, long length);
