@@ -4,6 +4,7 @@
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_DirectContext__1nMakeGL
   (JNIEnv* env, jclass jclass) {
+    printf("%s\n", "Java_org_jetbrains_skija_DirectContext__1nMakeGL");
     return reinterpret_cast<jlong>(GrDirectContext::MakeGL().release());
 }
 
@@ -21,6 +22,23 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_DirectContext__1nMak
     return reinterpret_cast<jlong>(instance.release());
 }
 #endif
+
+#ifdef SK_DIRECT3D
+#include "d3d/GrD3DBackendContext.h"
+
+extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_DirectContext__1nMakeDirect3D
+  (JNIEnv* env, jclass jclass, jlong adapterPtr, jlong devicePtr, jlong queuePtr) {
+    GrD3DBackendContext backendContext = {};
+    IDXGIAdapter1* adapter = reinterpret_cast<IDXGIAdapter1*>(static_cast<uintptr_t>(adapterPtr));
+    ID3D12Device* device = reinterpret_cast<ID3D12Device*>(static_cast<uintptr_t>(devicePtr));
+    ID3D12CommandQueue* queue = reinterpret_cast<ID3D12CommandQueue*>(static_cast<uintptr_t>(queuePtr));
+    backendContext.fAdapter.retain(adapter);
+    backendContext.fDevice.retain(device);
+    backendContext.fQueue.retain(queue);
+    sk_sp<GrDirectContext> instance = GrDirectContext::MakeDirect3D(backendContext);
+    return reinterpret_cast<jlong>(instance.release());
+}
+#endif //SK_DIRECT3D 
 
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_DirectContext__1nFlush
   (JNIEnv* env, jclass jclass, jlong ptr) {

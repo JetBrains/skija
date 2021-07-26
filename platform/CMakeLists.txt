@@ -71,6 +71,7 @@ elseif(WIN32)
     target_link_options(skija PRIVATE /INCREMENTAL:NO /NODEFAULTLIB:MSVCRT /machine:X64)
     add_definitions(-DNOMINMAX
         -DWIN32_LEAN_AND_MEAN
+        -DSK_DIRECT3D
         -DU_NOEXCEPT=)
 endif()
 

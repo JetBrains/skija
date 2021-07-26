@@ -20,6 +20,12 @@ public class DirectContext extends RefCnt {
     }
 
     @NotNull @Contract("-> this")
+    public static DirectContext makeDirect3D(long adapterPtr, long devicePtr, long queuePtr) {
+        Stats.onNativeCall();
+        return new DirectContext(_nMakeDirect3D(adapterPtr, devicePtr, queuePtr));
+    }
+
+    @NotNull @Contract("-> this")
     public DirectContext flush() {
         Stats.onNativeCall();
         _nFlush(_ptr);
@@ -83,6 +89,7 @@ public class DirectContext extends RefCnt {
 
     @ApiStatus.Internal public static native long _nMakeGL();
     @ApiStatus.Internal public static native long _nMakeMetal(long devicePtr, long queuePtr);
+    @ApiStatus.Internal public static native long _nMakeDirect3D(long adapterPtr, long devicePtr, long queuePtr);
     @ApiStatus.Internal public static native long _nFlush(long ptr);
     @ApiStatus.Internal public static native void _nReset(long ptr, int flags);
     @ApiStatus.Internal public static native void _nAbandon(long ptr);
