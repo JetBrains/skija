@@ -4,7 +4,6 @@
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_DirectContext__1nMakeGL
   (JNIEnv* env, jclass jclass) {
-    printf("%s\n", "Java_org_jetbrains_skija_DirectContext__1nMakeGL");
     return reinterpret_cast<jlong>(GrDirectContext::MakeGL().release());
 }
 
