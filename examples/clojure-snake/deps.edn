@@ -5,7 +5,7 @@
     org.lwjgl/lwjgl-glfw   {:mvn/version "3.2.3"}
     org.lwjgl/lwjgl-opengl {:mvn/version "3.2.3"}
   }
-  :paths ["src" "../../native/build" "../../shared/target/classes" ]
+  :paths ["src" "../../platform/build" "../../platform/target/classes" "../../shared/target/classes" ]
   :mvn/repos {"space-maven" {:url "https://packages.jetbrains.team/maven/p/skija/maven"}}
   :aliases {
     :macos {
