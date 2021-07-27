@@ -93,6 +93,7 @@ Backends:
 
 - [x] Bitmap
 - [x] OpenGL
+- [x] Direct3D
 - [x] Metal
 - [ ] Vulkan
 

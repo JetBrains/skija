@@ -1,3 +1,16 @@
+# 0.92.11 - July 27, 2021
+
+Added:
+
+- Direct3D Context #121 thx @EgorOrachyov
+
+# 0.92.9 - July 25, 2021
+
+Added:
+
+- SkData->ByteBuffer #118 thx @cqjjjzr
+- SkImage bindings for SkPixmap #117 thx @cqjjjzr
+
 # 0.92.5 - July 16, 2021
 
 Added:
