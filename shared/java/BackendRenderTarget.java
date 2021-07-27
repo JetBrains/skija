@@ -18,6 +18,17 @@ public class BackendRenderTarget extends Managed {
         return new BackendRenderTarget(_nMakeMetal(width, height, texturePtr));
     }
 
+    /**
+     * <p>Creates Direct3D backend render target object from D3D12 texture resource.</p>
+     * <p>For more information refer to skia GrBackendRenderTarget class.</p>
+     * 
+     * @param width         width of the render target in pixels                                 
+     * @param height        height of the render target in pixels
+     * @param texturePtr    pointer to ID3D12Resource texture resource object; must be not zero
+     * @param format        pixel data DXGI_FORMAT fromat of the texturePtr resource
+     * @param sampleCnt     samples count for texture resource
+     * @param levelCnt      sampling quality level for texture resource
+     */ 
     @NotNull @Contract("_, _, _, _, _, _ -> new")
     public static BackendRenderTarget makeDirect3D(int width, int height, long texturePtr, int format, int sampleCnt, int levelCnt) {
         Stats.onNativeCall();
