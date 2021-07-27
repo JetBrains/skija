@@ -68,6 +68,18 @@ public class DirectContext extends RefCnt {
     }
 
     /**
+     * <p>Submit outstanding work to the gpu from all previously un-submitted flushes.</p>
+     * <p>If the syncCpu flag is true this function will return once the gpu has finished with all submitted work.</p>
+     * <p>For more information refer to skia GrDirectContext::submit(bool syncCpu) method.</p>
+     * 
+     * @param syncCpu flag to sync cpu and gpu work submission
+     */ 
+    public void submit(boolean syncCpu) {
+        Stats.onNativeCall();
+        _nSubmit(_ptr, syncCpu);
+    }
+
+    /**
      * <p>Abandons all GPU resources and assumes the underlying backend 3D API context is no longer
      * usable. Call this if you have lost the associated GPU context, and thus internal texture,
      * buffer, etc. references/IDs are now invalid. Calling this ensures that the destructors of the
@@ -102,6 +114,7 @@ public class DirectContext extends RefCnt {
     @ApiStatus.Internal public static native long _nMakeMetal(long devicePtr, long queuePtr);
     @ApiStatus.Internal public static native long _nMakeDirect3D(long adapterPtr, long devicePtr, long queuePtr);
     @ApiStatus.Internal public static native long _nFlush(long ptr);
+    @ApiStatus.Internal public static native long _nSubmit(long ptr, boolean syncCpu);
     @ApiStatus.Internal public static native void _nReset(long ptr, int flags);
     @ApiStatus.Internal public static native void _nAbandon(long ptr);
 }
