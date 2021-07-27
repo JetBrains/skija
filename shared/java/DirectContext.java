@@ -19,6 +19,23 @@ public class DirectContext extends RefCnt {
         return new DirectContext(_nMakeMetal(devicePtr, queuePtr));
     }
 
+    /**
+     * <p>Creates Direct3D direct rendering context from D3D12 native objects.</p>
+     * <p>For more information refer to skia GrDirectContext class.</p>
+     * 
+     * @param adapterPtr    pointer to IDXGIAdapter1 object; must be not zero
+     * @param devicePtr     pointer to ID3D12Device objetc, which is created with 
+     *                      provided adapter in adapterPtr; must be not zero 
+     * @param queuePtr      Pointer to ID3D12CommandQueue object, which
+     *                      is created with provided device in devicePtr with
+     *                      type D3D12_COMMAND_LIST_TYPE_DIRECT; must be not zero 
+     */ 
+    @NotNull @Contract("-> this")
+    public static DirectContext makeDirect3D(long adapterPtr, long devicePtr, long queuePtr) {
+        Stats.onNativeCall();
+        return new DirectContext(_nMakeDirect3D(adapterPtr, devicePtr, queuePtr));
+    }
+
     @NotNull @Contract("-> this")
     public DirectContext flush() {
         Stats.onNativeCall();
@@ -83,6 +100,7 @@ public class DirectContext extends RefCnt {
 
     @ApiStatus.Internal public static native long _nMakeGL();
     @ApiStatus.Internal public static native long _nMakeMetal(long devicePtr, long queuePtr);
+    @ApiStatus.Internal public static native long _nMakeDirect3D(long adapterPtr, long devicePtr, long queuePtr);
     @ApiStatus.Internal public static native long _nFlush(long ptr);
     @ApiStatus.Internal public static native void _nReset(long ptr, int flags);
     @ApiStatus.Internal public static native void _nAbandon(long ptr);
