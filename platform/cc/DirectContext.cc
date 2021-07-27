@@ -45,6 +45,12 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_DirectContext__1nFlus
     context->flush(GrFlushInfo());
 }
 
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_DirectContext__1nSubmit
+  (JNIEnv* env, jclass jclass, jlong ptr, jboolean syncCpu) {
+    GrDirectContext* context = reinterpret_cast<GrDirectContext*>(static_cast<uintptr_t>(ptr));
+    context->submit(syncCpu);
+}
+
 extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_DirectContext__1nReset
   (JNIEnv* env, jclass jclass, jlong ptr, jint flags) {
     GrDirectContext* context = reinterpret_cast<GrDirectContext*>(static_cast<uintptr_t>(ptr));
