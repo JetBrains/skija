@@ -9,29 +9,30 @@ Java_org_jetbrains_skija_RuntimeEffect__1nMakeShader(JNIEnv* env,
                                                      jlong ptr,
                                                      jlong uniformPtr,
                                                      jlongArray childrenPtrs,
-                                                     jlong childCount,
                                                      jfloatArray localMatrixArr,
                                                      jboolean isOpaque) {
     SkRuntimeEffect* runtimeEffect = jlongToPtr<SkRuntimeEffect*>(ptr);
+
+    // Uniform
     SkData* uniform = jlongToPtr<SkData*>(uniformPtr);
     sk_sp<SkData> uniformData = SkData::MakeFromMalloc(uniform, uniform->size());
 
     // Matrix
-    jfloat* m = env->GetFloatArrayElements(localMatrixArr, 0);
-    SkMatrix* mPtr = new SkMatrix();
-    mPtr->setAll(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
-    env->ReleaseFloatArrayElements(localMatrixArr, m, 0);
+    std::unique_ptr<SkMatrix> localMatrix = skMatrix(env, localMatrixArr);
 
-    sk_sp<SkShader>* children = new sk_sp<SkShader>[childCount];
-    SkShader** cPtrs = reinterpret_cast<SkShader**>(childrenPtrs);
+    // Children
+    jsize childCount = env->GetArrayLength(childrenPtrs);
+    jlong* c = env->GetLongArrayElements(childrenPtrs, 0);
+    std::vector<sk_sp<SkShader>> children(childCount);
     for (size_t i = 0; i < childCount; i++) {
-        // This bare pointer was already part of an sk_sp (owned outside of here),
-        // so we want to ref the new sk_sp so makeShader doesn't clean it up.
-        children[i] = sk_ref_sp<SkShader>(cPtrs[i]);
+        SkShader* si = jlongToPtr<SkShader*>(c[i]);
+        children[i] = sk_ref_sp(si);
     }
-    sk_sp<SkShader> shader =
-        runtimeEffect->makeShader(uniformData, children, childCount, mPtr, isOpaque);
-    return ptrToJlong(&shader);
+    env->ReleaseLongArrayElements(childrenPtrs, c, 0);
+
+    sk_sp<SkShader> shader = runtimeEffect->makeShader(uniformData, children.data(), childCount,
+                                                       localMatrix.get(), isOpaque);
+    return ptrToJlong(shader.release());
 }
 
 JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_RuntimeEffect__1nMakeColorFilter(JNIEnv* env,
@@ -39,5 +40,9 @@ JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_RuntimeEffect__1nMakeColorFilte
                                                                                   jstring sksl) {
     SkString skslProper = skString(env, sksl);
     SkRuntimeEffect::Result result = SkRuntimeEffect::MakeForColorFilter(skslProper);
-    return ptrToJlong(result.effect.release());
+    if (result.errorText.isEmpty()) {
+        return ptrToJlong(result.effect.release());
+    } else {
+        env->ThrowNew(java::lang::RuntimeException::cls, result.errorText.c_str());
+    }
 }

@@ -13,12 +13,12 @@ public class RuntimeEffect extends RefCnt {
             boolean isOpaque) {
         Stats.onNativeCall();
         float[] arr = localMatrix == null ? null : localMatrix._mat;
-        long childCount = children == null ? 0 : children.length;
-        long[] childrenPtrs = new long[(int) childCount];
+        int childCount = children == null ? 0 : children.length;
+        long[] childrenPtrs = new long[childCount];
         for (int i = 0; i < childCount; i++) {
             childrenPtrs[i] = Native.getPtr(children[i]);
         }
-        return new RuntimeEffect(_nMakeShader(_ptr, Native.getPtr(uniforms), childrenPtrs, childCount, arr, isOpaque));
+        return new Shader(_nMakeShader(_ptr, Native.getPtr(uniforms), childrenPtrs, arr, isOpaque));
     }
 
     public RuntimeEffect makeColorFilter(String sksl) {
@@ -31,7 +31,7 @@ public class RuntimeEffect extends RefCnt {
         super(ptr);
     }
 
-    public static native long _nMakeShader(long runtimeEffectPtr, long uniformPtr, long[] childrenPtrs, long childCount,
+    public static native long _nMakeShader(long runtimeEffectPtr, long uniformPtr, long[] childrenPtrs,
             float[] localMatrix, boolean isOpaque);
 
     public static native long _nMakeColorFilter(long runtimeEffectPtr, String sksl);
