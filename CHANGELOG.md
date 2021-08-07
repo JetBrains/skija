@@ -1,3 +1,15 @@
+# 0.92.14 - Aug 7, 2021
+
+Added: 
+
+- RuntimeEffect #120 #124 thx @Vechro
+
+# 0.92.13 - July 29, 2021
+
+Added:
+
+- DirectContext::submit(bool syncCPU), thx @EgorOrachyov
+
 # 0.92.11 - July 27, 2021
 
 Added:
