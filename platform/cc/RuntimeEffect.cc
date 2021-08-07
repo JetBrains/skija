@@ -3,7 +3,7 @@
 #include "SkRuntimeEffect.h"
 #include "interop.hh"
 
-JNIEXPORT jlong JNICALL
+extern "C" JNIEXPORT jlong JNICALL
 Java_org_jetbrains_skija_RuntimeEffect__1nMakeShader(JNIEnv* env,
                                                      jclass jclass,
                                                      jlong ptr,
@@ -35,14 +35,29 @@ Java_org_jetbrains_skija_RuntimeEffect__1nMakeShader(JNIEnv* env,
     return ptrToJlong(shader.release());
 }
 
-JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_RuntimeEffect__1nMakeColorFilter(JNIEnv* env,
-                                                                                  jclass jclass,
-                                                                                  jstring sksl) {
+extern "C" JNIEXPORT jlong JNICALL
+Java_org_jetbrains_skija_RuntimeEffect__1nMakeForShader(JNIEnv* env, jclass jclass, jstring sksl) {
+    SkString skslProper = skString(env, sksl);
+    SkRuntimeEffect::Result result = SkRuntimeEffect::MakeForShader(skslProper);
+    if (result.errorText.isEmpty()) {
+        sk_sp<SkRuntimeEffect> effect = result.effect;
+        return ptrToJlong(effect.release());
+    } else {
+        env->ThrowNew(java::lang::RuntimeException::cls, result.errorText.c_str());
+        return 0;
+    }
+}
+
+extern "C" JNIEXPORT jlong JNICALL
+Java_org_jetbrains_skija_RuntimeEffect__1nMakeForColorFilter(JNIEnv* env,
+                                                             jclass jclass,
+                                                             jstring sksl) {
     SkString skslProper = skString(env, sksl);
     SkRuntimeEffect::Result result = SkRuntimeEffect::MakeForColorFilter(skslProper);
     if (result.errorText.isEmpty()) {
         return ptrToJlong(result.effect.release());
     } else {
         env->ThrowNew(java::lang::RuntimeException::cls, result.errorText.c_str());
+        return 0;
     }
 }

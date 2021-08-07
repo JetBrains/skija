@@ -21,9 +21,14 @@ public class RuntimeEffect extends RefCnt {
         return new Shader(_nMakeShader(_ptr, Native.getPtr(uniforms), childrenPtrs, arr, isOpaque));
     }
 
-    public RuntimeEffect makeColorFilter(String sksl) {
+    public static RuntimeEffect makeForShader(String sksl) {
         Stats.onNativeCall();
-        return new RuntimeEffect(_nMakeColorFilter(_ptr, sksl));
+        return new RuntimeEffect(_nMakeForShader(sksl));
+    }
+
+    public static RuntimeEffect makeForColorFilter(String sksl) {
+        Stats.onNativeCall();
+        return new RuntimeEffect(_nMakeForColorFilter(sksl));
     }
 
     @ApiStatus.Internal
@@ -34,5 +39,7 @@ public class RuntimeEffect extends RefCnt {
     public static native long _nMakeShader(long runtimeEffectPtr, long uniformPtr, long[] childrenPtrs,
             float[] localMatrix, boolean isOpaque);
 
-    public static native long _nMakeColorFilter(long runtimeEffectPtr, String sksl);
+    public static native long _nMakeForShader(String sksl);
+
+    public static native long _nMakeForColorFilter(String sksl);
 }
