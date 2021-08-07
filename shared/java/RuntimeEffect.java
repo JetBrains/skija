@@ -12,13 +12,13 @@ public class RuntimeEffect extends RefCnt {
     public Shader makeShader(@Nullable Data uniforms, @Nullable Shader[] children, @Nullable Matrix33 localMatrix,
             boolean isOpaque) {
         Stats.onNativeCall();
-        float[] arr = localMatrix == null ? null : localMatrix._mat;
         int childCount = children == null ? 0 : children.length;
         long[] childrenPtrs = new long[childCount];
         for (int i = 0; i < childCount; i++) {
             childrenPtrs[i] = Native.getPtr(children[i]);
         }
-        return new Shader(_nMakeShader(_ptr, Native.getPtr(uniforms), childrenPtrs, arr, isOpaque));
+        float[] matrix = localMatrix == null ? null : localMatrix._mat;
+        return new Shader(_nMakeShader(_ptr, Native.getPtr(uniforms), childrenPtrs, matrix, isOpaque));
     }
 
     public static RuntimeEffect makeForShader(String sksl) {
