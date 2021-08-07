@@ -1,6 +1,6 @@
-# 0.92.14 - Aug 7, 2021
+# 0.92.15 - Aug 7, 2021
 
-Added: 
+Added:
 
 - RuntimeEffect #120 #124 thx @Vechro
 
