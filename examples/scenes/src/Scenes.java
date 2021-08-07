@@ -43,6 +43,7 @@ public class Scenes {
         scenes.put("Pythagoras", null);
         scenes.put("Run Handler", null);
         scenes.put("Run Iterator", null);
+        scenes.put("Runtime Effect", null);
         scenes.put("SVG", null);
         scenes.put("SVG Scaling", null);
         scenes.put("Shaders", null);
