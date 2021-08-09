@@ -1,4 +1,4 @@
-# Skija: Skia bindings for Java
+# Skija: Java bindings for Skia
 
 **Skia** is an open source 2D graphics library which provides common APIs that work across a variety of hardware and software platforms.
 

@@ -8,7 +8,7 @@ def main():
   parser.add_argument('--debug', action='store_true')
   parser.add_argument('--arch', default=common.arch)
   parser.add_argument('--skia-dir')
-  parser.add_argument('--skia-release', default='m92-f46c37ba85-2')
+  parser.add_argument('--skia-release', default='m92-d9b8efde6d')
   parser.add_argument('--skija-version')
   (args, _) = parser.parse_known_args()
 

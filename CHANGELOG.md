@@ -1,40 +1,39 @@
-# 0.92.15 - Aug 7, 2021
+# 0.92.30 - Aug 9, 2021
+
+Changed:
+
+- Skia version m92-f46c37ba85-2 -> m92-d9b8efde6d
+- Linking freetype dynamically on Linux to avoid conflicts with JavaFX #113
+
+# 0.92.29 - Aug 7, 2021
 
 Added:
 
 - RuntimeEffect #120 #124 thx @Vechro
 
-# 0.92.13 - July 29, 2021
+# 0.92.22 - July 29, 2021
 
 Added:
 
 - DirectContext::submit(bool syncCPU), thx @EgorOrachyov
-
-# 0.92.11 - July 27, 2021
-
-Added:
-
 - Direct3D Context #121 thx @EgorOrachyov
-
-# 0.92.9 - July 25, 2021
-
-Added:
-
 - SkData->ByteBuffer #118 thx @cqjjjzr
 - SkImage bindings for SkPixmap #117 thx @cqjjjzr
 
-# 0.92.5 - July 16, 2021
+# 0.92.15 - July 16, 2021
+
+Changed:
+
+- Optimized use of Enum.values() #112
+- Fixed source jar build on non-English Windows
 
 Added:
 
 - SkPixmap bindings, SkPixmap-related methods for SkSurface #116 thx @cqjjjzr
 
-# 0.92.3 - June 22, 2021
+# 0.92.12 - June 22, 2021
 
 Lowered minimal required version to Java 9.
-
-# 0.92.2 - June 21, 2021
-
 Support for Java 9 modules (#110 #111 thx @comtel2000):
 
 - org.jetbrains.skija.shared
