@@ -383,21 +383,7 @@ public class PathsScene extends Scene {
             assert p1.isInterpolatable(p3);
             assert p1.isInterpolatable(p4);
 
-            canvas.save();
             canvas.drawPath(target, stroke);
-            canvas.translate(50, 0);
-
-            for (long i = 0; i < 31; ++i) {
-                try (var shader = Shader.makeLerp(i / 30f, Shader.makeColor(0xFF437AA0), Shader.makeColor(0xFFFAA6B2));
-                     var interpolated = p1.makeLerp(p3, i / 30f);)
-                {
-                    stroke.setShader(shader);
-                    canvas.drawPath(interpolated, stroke);
-                    canvas.translate(30, 0);
-                }
-            }
-
-            canvas.restore();
             canvas.translate(0, 50);
         }
     }

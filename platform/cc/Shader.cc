@@ -142,10 +142,3 @@ extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader__1nMakeBlend(
     SkShader* ptr = SkShaders::Blend(blendMode, sk_ref_sp<SkShader>(dst), sk_ref_sp<SkShader>(src)).release();
     return reinterpret_cast<jlong>(ptr);
 }
-
-extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_Shader__1nMakeLerp(JNIEnv* env, jclass jclass, jfloat t, jlong dstPtr, jlong srcPtr) {
-    SkShader* dst = reinterpret_cast<SkShader*>(static_cast<uintptr_t>(dstPtr));
-    SkShader* src = reinterpret_cast<SkShader*>(static_cast<uintptr_t>(srcPtr));
-    SkShader* ptr = SkShaders::Lerp(t, sk_ref_sp<SkShader>(dst), sk_ref_sp<SkShader>(src)).release();
-    return reinterpret_cast<jlong>(ptr);
-}

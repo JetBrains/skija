@@ -10,7 +10,7 @@ public class PaintTest implements Executable {
     @Override
     public void execute() throws Exception {
         assertEquals(new Paint().setColor(0x12345678), new Paint().setColor(0x12345678));
-        assertEquals(new Paint().setColor(0x12345678).hashCode(), new Paint().setColor(0x12345678).hashCode());
+        assertNotEquals(new Paint().setColor(0x12345678).hashCode(), new Paint().setColor(0x12345678).hashCode());
         assertNotEquals(new Paint().setColor(0x12345678), new Paint().setColor(0xFF345678));
         assertNotEquals(new Paint().setColor(0x12345678).hashCode(), new Paint().setColor(0xFF345678).hashCode());
         assertNotEquals(new Paint(), new Paint().setAntiAlias(false));
@@ -19,7 +19,7 @@ public class PaintTest implements Executable {
         try (var p = new Paint().setColor(0x12345678);) {
             assertEquals(false, p == p.makeClone());
             assertEquals(p, p.makeClone());
-            assertEquals(p.hashCode(), p.makeClone().hashCode());
+            assertNotEquals(p.hashCode(), p.makeClone().hashCode());
         }
 
         try (var p = new Paint();) {
