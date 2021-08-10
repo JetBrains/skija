@@ -64,7 +64,6 @@ public class ShadersScene extends Scene {
             Shader.makeEmpty(),
             Shader.makeColor(0xFF247ba0),
             Shader.makeColor(new Color4f(0.5f, 0.5f, 0.5f), ColorSpace.getSRGBLinear()),
-            Shader.makeLerp(percent / 100f, Shader.makeColor(0xFFFF0000), Shader.makeColor(0xFF00FF00)),
             Shader.makeBlend(BlendMode.SRC_OVER, Shader.makeColor(0xFFFF0000), Shader.makeColor(0x9000FF00)),
             Shader.makeBlend(BlendMode.SCREEN, Shader.makeColor(0xFFFF0000), Shader.makeColor(0x9000FF00)),
             Shader.makeBlend(BlendMode.OVERLAY, Shader.makeColor(0xFFFF0000), Shader.makeColor(0x9000FF00)),

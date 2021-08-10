@@ -59,25 +59,6 @@ public class Paint extends Managed {
         }
     }
 
-    /** 
-     * <del><p>Returns a hash generated from Paint values and pointers. Identical
-     * hashes guarantee that the paints are equivalent, but differing hashes
-     * do not guarantee that the paints have differing contents.</p>
-     *
-     * <p>If p1.equals(p2) returns true for two paints, their hashes are also equal.</p>
-     *
-     * <p>The hash returned is platform and implementation specific.</p></del>
-     * <p>In Skia</p>
-     *
-     * @return  hash based on pointer of the paint object
-     * @see <a href="https://fiddle.skia.org/c/@Paint_getHash">https://fiddle.skia.org/c/@Paint_getHash</a>
-     * @see <a href="https://review.skia.org/419336">https://review.skia.org/419336</a>
-     */
-    @Override
-    public int hashCode() {
-        return java.util.Objects.hash(_ptr);
-    }
-
     /**
      * Sets all Paint contents to their initial values. This is equivalent to replacing
      * Paint with the result of Paint().

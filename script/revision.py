@@ -4,7 +4,7 @@ import common, os, re, subprocess, sys
 
 def revision():
   os.chdir(common.root)
-  desc = subprocess.check_output(["git", "describe", "--tags", "--match", "*.*.0"], cwd = os.path.dirname(__file__)).decode("utf-8") 
+  desc = subprocess.check_output(["git", "describe", "--tags", "--first-parent", "--match", "*.*.0"], cwd = os.path.dirname(__file__)).decode("utf-8") 
   match = re.match("([0-9]+.[0-9]+).0-([0-9]+)-[a-z0-9]+", desc)
   if match:
     return match.group(1) + "." + match.group(2)

@@ -1,3 +1,15 @@
+# 0.93.0 - Aug 10, 2021
+
+Changed:
+
+- Skia version m92-d9b8efde6d -> m93-87e8842e8c
+- Paint::getHash is no longer structural
+
+Removed:
+
+- Shader::makeLerp #114 thx @cqjjjzr
+- Paint::getFilterQuality, Paint::setFilterQuality #114 thx @cqjjjzr
+
 # 0.92.30 - Aug 9, 2021
 
 Changed:
