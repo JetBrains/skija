@@ -8,16 +8,20 @@ import org.jetbrains.skija.impl.*;
 public class FontMgrRunIterator extends ManagedRunIterator<FontRun> {
     static { Library.staticLoad(); }
 
-    public FontMgrRunIterator(ManagedString text, boolean manageText, Font font, FontMgr fontMgr) {
-        super(_nMake(Native.getPtr(text), Native.getPtr(font), Native.getPtr(fontMgr)), text, manageText);
+    public FontMgrRunIterator(ManagedString text, boolean manageText, Font font, @NotNull ShapingOptions opts) {
+        super(_nMake(Native.getPtr(text), Native.getPtr(font), opts), text, manageText);
         Stats.onNativeCall();
         Reference.reachabilityFence(text);
         Reference.reachabilityFence(font);
-        Reference.reachabilityFence(fontMgr);
+        Reference.reachabilityFence(opts);
     }
 
-    public FontMgrRunIterator(String text, Font font, @Nullable FontMgr fontMgr) {
-        this(new ManagedString(text), true, font, fontMgr);
+    public FontMgrRunIterator(String text, Font font, @NotNull ShapingOptions opts) {
+        this(new ManagedString(text), true, font, opts);
+    }
+
+    public FontMgrRunIterator(String text, Font font) {
+        this(new ManagedString(text), true, font, ShapingOptions.DEFAULT);
     }
 
     @Override
@@ -30,6 +34,6 @@ public class FontMgrRunIterator extends ManagedRunIterator<FontRun> {
         }
     }
 
-    @ApiStatus.Internal public static native long _nMake(long textPtr, long fontPtr, long fontMgrPtr);
+    @ApiStatus.Internal public static native long _nMake(long textPtr, long fontPtr, ShapingOptions opts);
     @ApiStatus.Internal public static native long _nGetCurrentFont(long ptr);
 }

@@ -80,6 +80,17 @@ namespace skija {
             void onLoad(JNIEnv* env);
         }
 
+        namespace ShapingOptions {
+            extern jfieldID _fontMgr;
+            extern jfieldID _features;
+            extern jfieldID _leftToRight;
+            extern jfieldID _approximateSpaces;
+            extern jfieldID _approximatePunctuation;
+
+            void onLoad(JNIEnv* env);
+            std::vector<SkShaper::Feature> getFeatures(JNIEnv* env, jobject opts);
+        }
+
         namespace TextBlobBuilderRunHandler {
              extern jclass cls;
 

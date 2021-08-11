@@ -18,11 +18,11 @@ public class TextShapeBenchScene extends Scene {
         _variants = new String[] {
             "Tabs Paragraph",    "Tabs Paragraph No-Cache",    "Tabs TextLine",
             "Emoji Paragraph",   "Emoji Paragraph No-Cache",   "Emoji TextLine",
-            "Greek Paragraph",   "Greek Paragraph No-Cache",   "Greek TextLine", 
+            "Greek Paragraph",   "Greek Paragraph No-Cache",   "Greek TextLine", "Greek TextLine No-Approx", 
             "Notdef Paragraph",  "Notdef Paragraph No-Cache",  "Notdef TextLine",
             "English Paragraph", "English Paragraph No-Cache", "English TextLine",
         };
-        _variantIdx = 5;
+        _variantIdx = 9;
     
         font = new Font(jbMono, fontSize).setSubpixel(true);
         metrics = font.getMetrics();
@@ -67,12 +67,15 @@ public class TextShapeBenchScene extends Scene {
                     }
                 }
             }
-        } else {
+        } else { // TextLine
             try (var shaper = Shaper.makeShapeDontWrapOrReorder();) {
                 for (int i = 1; true; ++i) {
                     float y = i * padding;
                     if (y > height - padding) break;
-                    try (var line = shaper.shapeLine(i + " [" + text + "]", font, null, true);) {
+                    try (var line = variant.length > 2 // No-Approx
+                                    ? shaper.shapeLine(i + " [" + text + "]", font, ShapingOptions.DEFAULT.withApproximateSpaces(false).withApproximatePunctuation(false))
+                                    : shaper.shapeLine(i + " [" + text + "]", font))
+                    {
                         canvas.drawTextLine(line, padding, y - metrics.getAscent(), blackFill);
                         canvas.drawRect(Rect.makeXYWH(padding, y, line.getWidth(), metrics.getHeight()), redStroke);
                         for (float x: TextLine._nGetRunPositions(line._ptr))

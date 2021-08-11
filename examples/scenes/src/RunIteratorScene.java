@@ -42,17 +42,17 @@ public class RunIteratorScene extends Scene {
                 var bidiIter = new TrivialBidiRunIterator(text, Bidi.DIRECTION_LEFT_TO_RIGHT);
                 var scriptIter = new TrivialScriptRunIterator(text, "latn");
                 var langIter = new TrivialLanguageRunIterator(text, "en-US");
-                shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, null, width - 40, handler);
+                shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, ShapingOptions.DEFAULT, width - 40, handler);
                 drawBlob(canvas, handler, "All trivial");
             }
 
             try (var handler = new DebugTextBlobHandler().withRuns();
-                 var fontIter = new FontMgrRunIterator(text, lato36, null);)
+                 var fontIter = new FontMgrRunIterator(text, lato36);)
             {
                 var bidiIter = new TrivialBidiRunIterator(text, Bidi.DIRECTION_LEFT_TO_RIGHT);
                 var scriptIter = new TrivialScriptRunIterator(text, "latn");
                 var langIter = new TrivialLanguageRunIterator(text, "en-US");
-                shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, null, width - 40, handler);
+                shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, ShapingOptions.DEFAULT, width - 40, handler);
                 drawBlob(canvas, handler, "FontMgrRunIterator");
             }
 
@@ -69,7 +69,7 @@ public class RunIteratorScene extends Scene {
                 var bidiIter = new TrivialBidiRunIterator(text, Bidi.DIRECTION_LEFT_TO_RIGHT);
                 var scriptIter = new TrivialScriptRunIterator(text, "latn");
                 var langIter = new TrivialLanguageRunIterator(text, "en-US");
-                shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, null, width - 40, handler);
+                shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, ShapingOptions.DEFAULT, width - 40, handler);
                 drawBlob(canvas, handler, "CustomFontRunIterator");
             }
 
@@ -79,7 +79,7 @@ public class RunIteratorScene extends Scene {
                 var fontIter = new TrivialFontRunIterator(text, lato36);
                 var scriptIter = new TrivialScriptRunIterator(text, "latn");
                 var langIter = new TrivialLanguageRunIterator(text, "en-US");
-                shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, null, width - 40, handler);
+                shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, ShapingOptions.DEFAULT, width - 40, handler);
                 drawBlob(canvas, handler, "IcuBidiRunIterator");
             }
 
@@ -89,7 +89,7 @@ public class RunIteratorScene extends Scene {
                 var bidiIter = new JavaTextBidiRunIterator(text);
                 var scriptIter = new TrivialScriptRunIterator(text, "latn");
                 var langIter = new TrivialLanguageRunIterator(text, "en-US");
-                shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, null, width - 40, handler);
+                shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, ShapingOptions.DEFAULT, width - 40, handler);
                 drawBlob(canvas, handler, "JavaTextBidiRunIterator");
             }
 
@@ -99,17 +99,17 @@ public class RunIteratorScene extends Scene {
                 var fontIter = new TrivialFontRunIterator(text, lato36);
                 var bidiIter = new TrivialBidiRunIterator(text, Bidi.DIRECTION_LEFT_TO_RIGHT);
                 var langIter = new TrivialLanguageRunIterator(text, "en-US");
-                shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, null, width - 40, handler);
+                shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, ShapingOptions.DEFAULT, width - 40, handler);
                 drawBlob(canvas, handler, "HbIcuScriptRunIterator");
             }
 
             try (var handler = new DebugTextBlobHandler().withRuns();
-                 var fontIter = new FontMgrRunIterator(text, lato36, null);
+                 var fontIter = new FontMgrRunIterator(text, lato36);
                  var bidiIter = new IcuBidiRunIterator(text, Bidi.DIRECTION_LEFT_TO_RIGHT);
                  var scriptIter = new HbIcuScriptRunIterator(text);)
             {
                 var langIter = new TrivialLanguageRunIterator(text, "en-US");
-                shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, null, width - 40, handler);
+                shaper.shape(text, fontIter, bidiIter, scriptIter, langIter, ShapingOptions.DEFAULT, width - 40, handler);
                 drawBlob(canvas, handler, "All native");
             }
         }

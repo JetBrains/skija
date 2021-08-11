@@ -153,6 +153,27 @@ namespace skija {
             }
         }
 
+        namespace ShapingOptions {
+            jfieldID _fontMgr;
+            jfieldID _features;
+            jfieldID _leftToRight;
+            jfieldID _approximateSpaces;
+            jfieldID _approximatePunctuation;
+
+            void onLoad(JNIEnv* env) {
+                jclass cls = env->FindClass("org/jetbrains/skija/shaper/ShapingOptions");
+                _fontMgr = env->GetFieldID(cls, "_fontMgr", "Lorg/jetbrains/skija/FontMgr;");
+                _features = env->GetFieldID(cls, "_features", "[Lorg/jetbrains/skija/FontFeature;");
+                _leftToRight = env->GetFieldID(cls, "_leftToRight", "Z");
+                _approximateSpaces = env->GetFieldID(cls, "_approximateSpaces", "Z");
+                _approximatePunctuation = env->GetFieldID(cls, "_approximatePunctuation", "Z");
+            }
+
+            std::vector<SkShaper::Feature> getFeatures(JNIEnv* env, jobject opts) {
+                return skija::FontFeature::fromJavaArray(env, (jobjectArray) env->GetObjectField(opts, _features));
+            }
+        }
+
         namespace TextBlobBuilderRunHandler {
             jclass cls;
 
@@ -176,6 +197,7 @@ namespace skija {
             RunHandler::onLoad(env);
             RunInfo::onLoad(env);
             ScriptRun::onLoad(env);
+            ShapingOptions::onLoad(env);
             TextBlobBuilderRunHandler::onLoad(env);
 
             SkLoadICU();

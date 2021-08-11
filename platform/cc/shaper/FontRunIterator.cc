@@ -60,7 +60,11 @@ void FontRunIterator::consume() {
         SkUnichar u = utf8_next(&ptr, clusterEnd);
 
         // Do not switch font on control, whitespace or punct
-        if (ptr == clusterEnd && fCurrentFont->getTypeface()->unicharToGlyph(u) != 0 && (u_iscntrl(u) || u_isWhitespace(u) || u_ispunct(u)))
+        if (ptr == clusterEnd
+            && fCurrentFont->getTypeface()->unicharToGlyph(u) != 0
+            && (u_iscntrl(u)
+                || (fApproximateSpaces && u_isWhitespace(u))
+                || (fApproximatePunctuation && u_ispunct(u))))
             continue;
 
         // End run if not using initial typeface and initial typeface has this character.

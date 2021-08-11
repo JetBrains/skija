@@ -15,6 +15,13 @@ public class RunHandlerScene extends Scene {
     public RunHandlerScene() {
         lato36 = new Font(Typeface.makeFromFile(file("fonts/Lato-Regular.ttf")), 36);
         inter9 = new Font(inter, 9);
+
+        _variants = new String[] {
+            "Approximate All",
+            "Approximate Spaces",
+            "Approximate Punctuation",
+            "Approximate None",
+        };
     }
 
     @Override
@@ -26,15 +33,22 @@ public class RunHandlerScene extends Scene {
              var tbHandler = new TextBlobBuilderRunHandler(text, new Point(0, 0));
              var handler = new DebugTextBlobHandler().withRuns();)
         {
+            var opts = switch (_variants[_variantIdx]) {
+                case "Approximate Spaces" -> ShapingOptions.DEFAULT.withApproximatePunctuation(false);
+                case "Approximate Punctuation"  -> ShapingOptions.DEFAULT.withApproximateSpaces(false);
+                case "Approximate None" -> ShapingOptions.DEFAULT.withApproximateSpaces(false).withApproximatePunctuation(false);
+                default -> ShapingOptions.DEFAULT;
+            };
+
             // TextBlobBuilderRunHandler
-            shaper.shape(text, lato36, FontMgr.getDefault(), null, true, width - 40, tbHandler);
+            shaper.shape(text, lato36, opts, width - 40, tbHandler);
             try (var blob = tbHandler.makeBlob()) {
                 canvas.drawTextBlob(blob, 0, 0, textFill);
                 canvas.translate(0, blob.getBounds().getBottom() + 20);
             }
 
             // DebugTextBlobHandler
-            shaper.shape(text, lato36, FontMgr.getDefault(), null, true, width - 40, handler);
+            shaper.shape(text, lato36, opts, width - 40, handler);
             
             try (var blob = handler.makeBlob()) {
                 canvas.drawTextBlob(blob, 0, 0, textFill);
@@ -69,7 +83,6 @@ public class RunHandlerScene extends Scene {
                     builder.appendRun(inter9, "clusters " + Arrays.toString(run.getClusters()), 0, yPos + lh * 7);
 
                     try (var detailsBlob = builder.build(); ) {
-
                         // try to fit in
                         var detailsWidth = detailsBlob.getBounds().getWidth();
                         var detailsHeight = detailsBlob.getBounds().getHeight();

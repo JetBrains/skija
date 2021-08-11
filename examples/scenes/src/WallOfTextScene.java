@@ -92,7 +92,7 @@ public class WallOfTextScene extends Scene {
     TextBlob makeBlob(String text, Shaper shaper, float textWidth) {
         if (_variants[_variantIdx].startsWith("JVM RunHandler")) {
             try (var handler = new DebugTextBlobHandler();) {
-                shaper.shape(text, font, FontMgr.getDefault(), null, true, textWidth, handler);
+                shaper.shape(text, font, ShapingOptions.DEFAULT, textWidth, handler);
                 return handler.makeBlob();
             }
         } else

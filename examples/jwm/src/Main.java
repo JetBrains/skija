@@ -23,15 +23,17 @@ public class Main implements Consumer<Event> {
 
     public Main() {
         Stats.enabled = true;
-        _window = App.makeWindow();
-        _window.setEventListener(this);
-        changeLayer();
-        var scale = _window.getScale();
-        _window.resize((int) (1440 * scale), (int) (810 * scale));
-        _window.move((int) (240 * scale), (int) (135 * scale));
-        _window.show();
-        accept(EventReconfigure.INSTANCE);
-        _window.requestFrame();
+        App.makeWindow((window) -> {
+            _window = window;
+            _window.setEventListener(this);
+            changeLayer();
+            var scale = _window.getScale();
+            _window.resize((int) (1440 * scale), (int) (810 * scale));
+            _window.move((int) (240 * scale), (int) (135 * scale));
+            _window.show();
+            accept(EventReconfigure.INSTANCE);
+            _window.requestFrame();
+        });
     }
 
     public void paint() {
@@ -78,28 +80,35 @@ public class Main implements Consumer<Event> {
         } else if (e instanceof EventMouseMove) {
             _xpos = (int) (((EventMouseMove) e).getX() / _window.getScale());
             _ypos = (int) (((EventMouseMove) e).getY() / _window.getScale());
-        } else if (e instanceof EventKeyboard) {
-            EventKeyboard eventKeyboard = (EventKeyboard) e;
+        } else if (e instanceof EventKeyboard eventKeyboard) {
             if (eventKeyboard.isPressed() == true) {
-                if (eventKeyboard.getKeyCode() == 1) { // s
-                    Scenes.stats = !Scenes.stats;
-                    Stats.enabled = Scenes.stats;
-                } else if (eventKeyboard.getKeyCode() == 5) { // g
-                    System.out.println("Before GC " + Stats.allocated);
-                    System.gc();
-                } else if (eventKeyboard.getKeyCode() == 37) { // l
-                    _layerIdx = (_layerIdx + _layers.length - 1) % _layers.length;
-                    changeLayer();
-                } else if (eventKeyboard.getKeyCode() == 123) { // ←
-                    Scenes.prevScene();
-                } else if (eventKeyboard.getKeyCode() == 124) { // →
-                    Scenes.nextScene();
-                } else if (eventKeyboard.getKeyCode() == 125) { // ↓
-                    Scenes.currentScene().changeVariant(1);
-                } else if (eventKeyboard.getKeyCode() == 126) { // ↑
-                    Scenes.currentScene().changeVariant(-1);
-                } else 
-                    System.out.println("Key pressed: " + eventKeyboard.getKeyCode());
+                switch (eventKeyboard.getKey()) {
+                    case S -> {
+                        Scenes.stats = !Scenes.stats;
+                        Stats.enabled = Scenes.stats;
+                    }
+                    case G -> {
+                        System.out.println("Before GC " + Stats.allocated);
+                        System.gc();
+                    }
+                    case L -> {
+                        _layerIdx = (_layerIdx + _layers.length - 1) % _layers.length;
+                        changeLayer();
+                    }
+                    case LEFT ->
+                        Scenes.prevScene();
+
+                    case RIGHT ->
+                        Scenes.nextScene();
+
+                    case DOWN ->
+                        Scenes.currentScene().changeVariant(1);
+
+                    case UP ->
+                        Scenes.currentScene().changeVariant(-1);
+                    default ->
+                        System.out.println("Key pressed: " + eventKeyboard.getKey());
+                }
             }
         } else if (e instanceof EventFrame) {
             paint();

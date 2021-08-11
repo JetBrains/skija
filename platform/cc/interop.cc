@@ -296,6 +296,19 @@ namespace skija {
         }
     }
 
+    namespace FontMgr {
+        jclass cls;
+        
+        void onLoad(JNIEnv* env) {
+            jclass local = env->FindClass("org/jetbrains/skija/FontMgr");
+            cls  = static_cast<jclass>(env->NewGlobalRef(local));
+        }
+
+        void onUnload(JNIEnv* env) {
+            env->DeleteGlobalRef(cls);
+        }
+    }
+
     namespace FontStyle {
         SkFontStyle fromJava(jint style) {
             return SkFontStyle(style & 0xFFFF, (style >> 16) & 0xFF, static_cast<SkFontStyle::Slant>((style >> 24) & 0xFF));

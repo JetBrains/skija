@@ -152,6 +152,12 @@ namespace skija {
         jobject toJava(JNIEnv* env, const SkFontMetrics& m);
     }
 
+    namespace FontMgr {
+        extern jclass cls;
+        void onLoad(JNIEnv* env);
+        void onUnload(JNIEnv* env);
+    }
+
     namespace FontStyle {
         SkFontStyle fromJava(jint style);
         jint toJava(const SkFontStyle& fs);

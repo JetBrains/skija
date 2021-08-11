@@ -10,7 +10,7 @@ import org.jetbrains.annotations.*;
 public class AnimationFrameInfo {
     @ApiStatus.Internal
     public AnimationFrameInfo(int requiredFrame, int duration, boolean fullyReceived, int alphaTypeOrdinal, boolean hasAlphaWithinBounds, int disposalMethodOrdinal, int blendModeOrdinal, IRect frameRect) {
-        this(requiredFrame, duration, fullyReceived, ColorAlphaType._values[alphaTypeOrdinal], hasAlphaWithinBounds, AnimationDisposalMethod._values[disposalMethodOrdinal], BlendMode._values[blendModeOrdinal], frameRect);
+        this(requiredFrame, duration, fullyReceived, ColorAlphaType._values[alphaTypeOrdinal], hasAlphaWithinBounds, AnimationDisposalMode._values[disposalMethodOrdinal], BlendMode._values[blendModeOrdinal], frameRect);
     }
 
     /**
@@ -20,7 +20,7 @@ public class AnimationFrameInfo {
      *
      * <p>Note that this is the *earliest* frame that can be used
      * for blending. Any frame from [_requiredFrame, i) can be
-     * used, unless its getDisposalMethod() is {@link AnimationDisposalMethod#RESTORE_PREVIOUS}.</p>
+     * used, unless its getDisposalMethod() is {@link AnimationDisposalMode#RESTORE_PREVIOUS}.</p>
      */
     @ApiStatus.Internal
     public int _requiredFrame;
@@ -62,7 +62,7 @@ public class AnimationFrameInfo {
      * <p>How this frame should be modified before decoding the next one.</p>
      */
     @ApiStatus.Internal
-    public AnimationDisposalMethod _disposalMethod;
+    public AnimationDisposalMode _disposalMethod;
 
     /**
      * <p>How this frame should blend with the prior frame.</p>

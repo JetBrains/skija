@@ -17,31 +17,31 @@ public class ShapersScene extends Scene {
         fill.setColor(color);
         String text = "Incomprehensibilities word word word word ararar123456 +++ <-> *** c̝̣̱̲͈̝ͨ͐̈ͪͨ̃ͥͅh̙̬̿̂a̯͎͍̜͐͌͂̚o̬s͉̰͊̀ " + name;
 
-        try (var blob = shaper.shape(text, firaCode11, null, true, maxWidth, new Point(0, 0)); ) {
+        try (var blob = shaper.shape(text, firaCode11, ShapingOptions.DEFAULT, maxWidth, new Point(0, 0)); ) {
             canvas.drawTextBlob(blob, 0, 0, fill);
             canvas.translate(0, blob.getBounds().getHeight());
         }
 
-        try (var blob = shaper.shape(text + " RTL", firaCode11, null, false, maxWidth, new Point(0, 0)); ) {
+        try (var blob = shaper.shape(text + " RTL", firaCode11, ShapingOptions.DEFAULT.withLeftToRight(false), maxWidth, new Point(0, 0)); ) {
             canvas.drawTextBlob(blob, 0, 0, fill);
             canvas.translate(0, blob.getBounds().getHeight());
         }
 
         String features = "ss01 cv01 onum -calt";
-        try (var blob = shaper.shape(text + " " + features, firaCode11, FontFeature.parse(features), true, maxWidth, new Point(0, 0)); ) {
+        try (var blob = shaper.shape(text + " " + features, firaCode11, ShapingOptions.DEFAULT.withFeatures(features), maxWidth, new Point(0, 0)); ) {
             canvas.drawTextBlob(blob, 0, 0, fill);
             canvas.translate(0, blob.getBounds().getHeight());
         }
 
         features = "ss01[42:45] cv01[42:45] onum[48:51] calt[59:60]=0";
-        try (var blob = shaper.shape(text + " " + features, firaCode11, FontFeature.parse(features), true, maxWidth, new Point(0, 0)); ) {
+        try (var blob = shaper.shape(text + " " + features, firaCode11, ShapingOptions.DEFAULT.withFeatures(features), maxWidth, new Point(0, 0)); ) {
             canvas.drawTextBlob(blob, 0, 0, fill);
             canvas.translate(0, blob.getBounds().getHeight());
         }
 
         float height = 0;
 
-        try (var blob = shaper.shape(text, firaCode11, null, true, 75, new Point(0, 0)); ) {
+        try (var blob = shaper.shape(text, firaCode11, ShapingOptions.DEFAULT, 75, new Point(0, 0)); ) {
             canvas.drawTextBlob(blob, 0, 0, fill);
             Rect bounds = blob.getBounds();
             canvas.drawRect(Rect.makeXYWH(0, 0, 75, bounds.getHeight()), stroke);

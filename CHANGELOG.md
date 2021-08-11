@@ -1,3 +1,39 @@
+# 0.93.1 - Aug 11, 2021
+
+Added:
+
+- ShapingOptions
+  - Groups together FontMgr, FontFeature[], leftToRight
+  - Adds approximateSpaces and approximatePunctuation
+- FontMgrRunIterator(String, Font)
+- Shaper::shapeLine(String, Font)
+
+Changed:
+
+- AnimationDisposalMethod -> AnimationDisposalMode
+
+Signature updated from:
+
+  - TextLine::make(String, Font, FontFeature[], boolean)
+  - FontMgrRunIterator(ManagedString, boolean, Font, FontMgr)
+  - FontMgrRunIterator(String, Font, FontMgr)
+  - Shaper::shape(String, Font, boolean, float, Point)
+  - Shaper::shape(String, Font, FontMgr, FontFeature[], boolean, float, RunHandler)
+  - Shaper::shape(String, Iterator<FontRun>, Iterator<BidiRun>, Iterator<ScriptRun>, Iterator<LanguageRun>, FontFeature[], float width, RunHandler)
+  - Shaper::shape(ManagedString, Iterator<FontRun>, Iterator<BidiRun>, Iterator<ScriptRun>, Iterator<LanguageRun>, FontFeature[], float width, RunHandler)
+  - Shaper::shapeLine(String, Font, FontFeature[], boolean)
+
+to:
+
+  - TextLine::make(String, Font, ShapingOptions)
+  - FontMgrRunIterator(ManagedString, boolean, Font, ShapingOptions)
+  - FontMgrRunIterator(String, Font, ShapingOptions)
+  - Shaper::shape(String, Font, ShapingOptions, float, Point)
+  - Shaper::shape(String, Font, FontMgr, ShapingOptions, float, RunHandler)
+  - Shaper::shape(String, Iterator<FontRun>, Iterator<BidiRun>, Iterator<ScriptRun>, Iterator<LanguageRun>, ShapingOptions, float width, RunHandler)
+  - Shaper::shape(ManagedString, Iterator<FontRun>, Iterator<BidiRun>, Iterator<ScriptRun>, Iterator<LanguageRun>, ShapingOptions, float width, RunHandler)
+  - Shaper::shapeLine(String, Font, ShapingOptions)
+
 # 0.93.0 - Aug 10, 2021
 
 Changed:

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.*;
  *
  * <p>Names are based on the GIF 89a spec.</p>
  */
-public enum AnimationDisposalMethod {
+public enum AnimationDisposalMode {
     @ApiStatus.Internal
     _UNUSED,
 
@@ -34,5 +34,5 @@ public enum AnimationDisposalMethod {
      */
     RESTORE_PREVIOUS;
 
-    @ApiStatus.Internal public static final AnimationDisposalMethod[] _values = values();
+    @ApiStatus.Internal public static final AnimationDisposalMode[] _values = values();
 }

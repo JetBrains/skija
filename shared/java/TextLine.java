@@ -20,13 +20,13 @@ public class TextLine extends Managed {
 
     @NotNull @Contract("_, _ -> new")
     public static TextLine make(String text, Font font) {
-        return make(text, font, null, true);
+        return make(text, font, ShapingOptions.DEFAULT);
     }
 
     @NotNull @Contract("_, _, _, _ -> new")
-    public static TextLine make(String text, Font font, @Nullable FontFeature[] features, boolean leftToRight) {
+    public static TextLine make(String text, Font font, ShapingOptions opts) {
         try (Shaper shaper = Shaper.makeShapeDontWrapOrReorder();) {
-            return shaper.shapeLine(text, font, features, leftToRight);
+            return shaper.shapeLine(text, font, opts);
         }
     }
 

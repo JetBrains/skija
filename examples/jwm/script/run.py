@@ -8,7 +8,7 @@ import script.build as build
 def main():
   parser = argparse.ArgumentParser()
   parser.add_argument('--skija-version')
-  parser.add_argument('--jwm-version', default='0.1.3')
+  parser.add_argument('--jwm-version', default='0.1.170')
   parser.add_argument('--jwm-dir', default=None)
   (args, _) = parser.parse_known_args()
 
@@ -46,7 +46,7 @@ def main():
   os.chdir(common.root + '/examples/jwm')
 
   sources = common.glob('src', '*.java') + common.glob('../scenes/src', '*.java')
-  common.javac(sources, 'target/classes', classpath = classpath)
+  common.javac(sources, 'target/classes', classpath = classpath, release = '15', opts = ['--enable-preview'])
 
   # Java
   common.check_call([
@@ -54,6 +54,7 @@ def main():
     '--class-path', common.classpath_separator.join(['target/classes'] + classpath)]
     + (['-XstartOnFirstThread'] if 'macos' == common.system else [])
     + ['-Djava.awt.headless=true',
+    '--enable-preview',
     '-enableassertions',
     '-enablesystemassertions',
     '-Xcheck:jni',
