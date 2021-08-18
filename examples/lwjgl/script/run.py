@@ -37,7 +37,7 @@ def main():
   os.chdir(common.root + '/examples/lwjgl')
 
   sources = common.glob('src', '*.java') + common.glob('../scenes/src', '*.java')
-  common.javac(sources, 'target/classes', classpath = classpath)
+  common.javac(sources, 'target/classes', classpath = classpath, release = '16')
 
   # Java
   common.check_call([

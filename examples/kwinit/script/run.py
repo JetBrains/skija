@@ -32,7 +32,7 @@ def main():
   os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
 
   sources = common.glob('src_java', '*.java') + common.glob('../scenes/src', '*.java')
-  common.javac(sources, 'target/classes', classpath = classpath)
+  common.javac(sources, 'target/classes', classpath = classpath, release = '16')
 
   # Rust
   common.check_call(['cargo', 'build', '--release', '--lib'])

@@ -34,7 +34,7 @@ def main():
   os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
 
   sources = common.glob('src', '*.java')
-  common.javac(sources, 'target/classes', classpath = classpath)
+  common.javac(sources, 'target/classes', classpath = classpath, release = '16')
 
   # Java
   common.check_call([

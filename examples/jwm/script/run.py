@@ -46,7 +46,7 @@ def main():
   os.chdir(common.root + '/examples/jwm')
 
   sources = common.glob('src', '*.java') + common.glob('../scenes/src', '*.java')
-  common.javac(sources, 'target/classes', classpath = classpath, release = '15', opts = ['--enable-preview'])
+  common.javac(sources, 'target/classes', classpath = classpath, release = '16')
 
   # Java
   common.check_call([
@@ -54,7 +54,6 @@ def main():
     '--class-path', common.classpath_separator.join(['target/classes'] + classpath)]
     + (['-XstartOnFirstThread'] if 'macos' == common.system else [])
     + ['-Djava.awt.headless=true',
-    '--enable-preview',
     '-enableassertions',
     '-enablesystemassertions',
     '-Xcheck:jni',
