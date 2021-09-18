@@ -3,6 +3,8 @@
 #include "SkStream.h"
 #include "Skottie.h"
 #include "SkFontMgr.h"
+#include "SkResources.h"
+#include "src/utils/SkOSPath.h"
 
 using namespace skottie;
 
@@ -32,6 +34,13 @@ extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_skottie_AnimationBuil
     Animation::Builder* instance = reinterpret_cast<Animation::Builder*>(static_cast<uintptr_t>(ptr));
     sk_sp<skottie::Logger> logger = sk_ref_sp(reinterpret_cast<skottie::Logger*>(static_cast<uintptr_t>(loggerPtr)));
     instance->setLogger(logger);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_org_jetbrains_skija_skottie_AnimationBuilder__1nSetResourceProvider
+  (JNIEnv* env, jclass jclass, jlong ptr, jlong resourceProviderPtr) {
+    Animation::Builder* instance = reinterpret_cast<Animation::Builder*>(static_cast<uintptr_t>(ptr));
+    sk_sp<ResourceProvider> resourceProvider = sk_ref_sp(reinterpret_cast<ResourceProvider*>(static_cast<uintptr_t>(resourceProviderPtr)));
+    instance->setResourceProvider(resourceProvider);
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_org_jetbrains_skija_skottie_AnimationBuilder__1nBuildFromString

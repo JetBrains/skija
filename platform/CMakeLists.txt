@@ -20,9 +20,10 @@ file(GLOB IMPL_SOURCES ${CMAKE_SOURCE_DIR}/cc/impl/*.cc)
 file(GLOB PARAGRAPH_SOURCES ${CMAKE_SOURCE_DIR}/cc/paragraph/*.cc)
 file(GLOB SHAPER_SOURCES ${CMAKE_SOURCE_DIR}/cc/shaper/*.cc)
 file(GLOB SVG_SOURCES ${CMAKE_SOURCE_DIR}/cc/svg/*.cc)
+file(GLOB RESOURCES_SOURCES ${CMAKE_SOURCE_DIR}/cc/resources/*.cc)
 file(GLOB SKOTTIE_SOURCES ${CMAKE_SOURCE_DIR}/cc/skottie/*.cc)
 file(GLOB SKSG_SOURCES ${CMAKE_SOURCE_DIR}/cc/sksg/*.cc)
-add_library(skija SHARED ${SOURCES} ${IMPL_SOURCES} ${PARAGRAPH_SOURCES} ${SHAPER_SOURCES} ${SVG_SOURCES} ${SKOTTIE_SOURCES} ${SKSG_SOURCES})
+add_library(skija SHARED ${SOURCES} ${IMPL_SOURCES} ${PARAGRAPH_SOURCES} ${SHAPER_SOURCES} ${SVG_SOURCES} ${RESOURCES_SOURCES} ${SKOTTIE_SOURCES} ${SKSG_SOURCES})
 
 add_definitions(-DFT2_BUILD_LIBRARY
     -DFT_CONFIG_MODULES_H=<include/freetype-android/ftmodule.h>
@@ -79,4 +80,4 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(FindSkia)
-target_link_libraries(skija skottie sksg svg skparagraph skshaper skia ${FREETYPE_LIBRARIES} ${HARFBUZZ_LIBRARIES})
+target_link_libraries(skija skottie sksg svg skparagraph skshaper skresources skia ${FREETYPE_LIBRARIES} ${HARFBUZZ_LIBRARIES})

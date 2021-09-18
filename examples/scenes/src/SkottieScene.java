@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.stream.*;
 import lombok.*;
 import org.jetbrains.skija.*;
+import org.jetbrains.skija.resources.*;
 import org.jetbrains.skija.sksg.*;
 import org.jetbrains.skija.skottie.*;
 
@@ -26,6 +27,7 @@ public class SkottieScene extends Scene {
     @SneakyThrows
     public SkottieScene() {
         _variants = Files.list(Path.of(file("animations"))).map(Path::getFileName).map(Path::toString).sorted().toArray(String[]::new);
+        _variantIdx = 7;
     }
 
     @Override
@@ -37,9 +39,12 @@ public class SkottieScene extends Scene {
             error = null;
 
             try {
+                var dir = file("animations");
+                var resourceProvider = CachingResourceProvider.make(DataURIResourceProviderProxy.make(FileResourceProvider.make(dir, false), false));
                 animation = new AnimationBuilder(AnimationBuilderFlag.DEFER_IMAGE_LOADING, AnimationBuilderFlag.PREFER_EMBEDDED_FONTS)
                         .setLogger(logger)
-                        .buildFromFile(file("animations/" + _variants[_variantIdx]));
+                        .setResourceProvider(resourceProvider)
+                        .buildFromFile(dir + "/" + _variants[_variantIdx]);
             } catch (IllegalArgumentException e) {
             }
             animationVariant = _variants[_variantIdx];

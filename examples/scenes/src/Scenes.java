@@ -6,7 +6,7 @@ import org.jetbrains.skija.*;
 
 public class Scenes {
     public static TreeMap<String, Scene> scenes;
-    public static String currentScene = "Run Handler";
+    public static String currentScene = "Skottie";
     public static HUD hud = new HUD();
     public static boolean stats = true;
 

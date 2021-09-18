@@ -219,6 +219,14 @@ cd skija
 ./script/build.py
 ```
 
+To codesign:
+
+```sh
+security find-identity
+export APPLE_CODESIGN_IDENTITY="<...>"
+./script/build.py
+```
+
 For building Skia itself, see https://github.com/JetBrains/skia-build/
 
 ## Running examples

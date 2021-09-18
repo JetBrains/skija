@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-import argparse, glob, os, sys, zipfile
+import argparse, glob, os, subprocess, sys, zipfile
 sys.path.append(os.path.normpath(os.path.join(os.path.dirname(__file__))))
 import build_shared, common
 
@@ -44,6 +44,16 @@ def main():
 
   # Ninja
   common.check_call(["ninja"], cwd=os.path.abspath('build'))
+
+  # Codesign
+  if common.system == "macos" and os.getenv("APPLE_CODESIGN_IDENTITY"):
+    subprocess.call(["codesign",
+                     # "--force",
+                     # "-vvvvvv",
+                     "--deep",
+                     "--sign",
+                     os.getenv("APPLE_CODESIGN_IDENTITY"),
+                     "build/libskija_" + common.arch + ".dylib"])
 
   # javac
   modulepath = []

@@ -61,6 +61,12 @@ add_library(svg INTERFACE)
 target_link_libraries(svg INTERFACE ${SKIA_SVG_LIBRARY})
 find_path(SKIA_SVG_INCLUDE_DIR SkSVGDOM.h HINTS "${SKIA_DIR}/modules/svg/include")
 
+# SkResources
+find_library(SKIA_SKRESOURCES_LIBRARY skresources PATH "${SKIA_LIBRARY_DIR}")
+add_library(skresources INTERFACE)
+target_link_libraries(skresources INTERFACE ${SKIA_SKRESOURCES_LIBRARY})
+find_path(SKIA_SKRESOURCES_INCLUDE_DIR SkResources.h HINTS "${SKIA_DIR}/modules/skresources/include")
+
 # SKOTTIE
 find_library(SKIA_SKOTTIE_LIBRARY skottie PATH "${SKIA_LIBRARY_DIR}")
 add_library(skottie INTERFACE)
@@ -115,6 +121,7 @@ target_include_directories(skia INTERFACE
   ${SKIA_SKSG_INCLUDE_DIR}
   ${SKIA_DIR}/third_party/externals/icu/source/common
   ${SKIA_DIR}/third_party/icu
+  ${SKIA_SKRESOURCES_INCLUDE_DIR}
 )
 
 if(WIN32)

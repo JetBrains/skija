@@ -4,6 +4,7 @@ import java.lang.ref.*;
 import org.jetbrains.annotations.*;
 import org.jetbrains.skija.*;
 import org.jetbrains.skija.impl.*;
+import org.jetbrains.skija.resources.*;
 
 public class AnimationBuilder extends Managed {
     static { Library.staticLoad(); }
@@ -52,7 +53,7 @@ public class AnimationBuilder extends Managed {
     /**
      * <p>Register a {@link Logger} with this builder.</p>
      */
-     @Contract("_ -> this")
+    @NotNull @Contract("_ -> this")
     public AnimationBuilder setLogger(@Nullable Logger logger) {
         try {
             Stats.onNativeCall();
@@ -60,6 +61,17 @@ public class AnimationBuilder extends Managed {
             return this;
         } finally {
             Reference.reachabilityFence(logger);
+        }
+    }
+
+    @NotNull @Contract("_ -> this")
+    public AnimationBuilder setResourceProvider(@Nullable ResourceProvider resourceProvider) {
+        try {
+            Stats.onNativeCall();
+            _nSetResourceProvider(_ptr, Native.getPtr(resourceProvider));
+            return this;
+        } finally {
+            Reference.reachabilityFence(resourceProvider);
         }
     }
 
@@ -109,6 +121,7 @@ public class AnimationBuilder extends Managed {
     @ApiStatus.Internal public static native long _nMake(int flags);
     @ApiStatus.Internal public static native void _nSetFontManager(long ptr, long fontMgrPtr);
     @ApiStatus.Internal public static native void _nSetLogger(long ptr, long loggerPtr);
+    @ApiStatus.Internal public static native void _nSetResourceProvider(long ptr, long resourceProviderPtr);
     @ApiStatus.Internal public static native long _nBuildFromString(long ptr, String data);
     @ApiStatus.Internal public static native long _nBuildFromFile(long ptr, String path);
     @ApiStatus.Internal public static native long _nBuildFromData(long ptr, long dataPtr);

@@ -90,4 +90,6 @@ def replaced(filename, replacements):
         
 def copy_newer(src, dst):
   if not os.path.exists(dst) or os.path.getmtime(src) > os.path.getmtime(dst):
+    if os.path.exists(dst):
+      os.remove(dst)
     shutil.copy2(src, dst)

@@ -1,3 +1,14 @@
+# 0.93.3 - Sep 18, 2021
+
+Added:
+
+- org.jetbrains.skija.resources.*
+  - ResourceProvider
+  - FileResourceProvider
+  - DataURIResourceProviderProxy
+  - CachingResourceProvider
+- AnimationBuilder::setResourceProvider #129
+
 # 0.93.1 - Aug 11, 2021
 
 Added:
