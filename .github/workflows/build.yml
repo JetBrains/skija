@@ -26,6 +26,7 @@ jobs:
       - run: python3 script/deploy_shared.py
         if: github.ref == 'refs/heads/master'
         env:
+          USER_NAME: ${{ secrets.USER_NAME }}
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
       - run: python3 script/deploy_shared.py --dry-run
         if: github.ref != 'refs/heads/master'
@@ -55,6 +56,7 @@ jobs:
       - run: python3 script/deploy_platform.py --arch=${{ matrix.arch }}
         if: github.ref == 'refs/heads/master'
         env:
+          USER_NAME: ${{ secrets.USER_NAME }}
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
       - run: python3 script/deploy_platform.py --arch=${{ matrix.arch }} --dry-run
         if: github.ref != 'refs/heads/master'
@@ -81,6 +83,7 @@ jobs:
       - run: python3 script/deploy_platform.py
         if: github.ref == 'refs/heads/master'
         env:
+          USER_NAME: ${{ secrets.USER_NAME }}
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
       - run: python3 script/deploy_platform.py --dry-run
         if: github.ref != 'refs/heads/master'
@@ -109,6 +112,7 @@ jobs:
       - run: python3 script/deploy_platform.py
         if: github.ref == 'refs/heads/master'
         env:
+          USER_NAME: ${{ secrets.USER_NAME }}
           SPACE_TOKEN: ${{ secrets.SPACE_TOKEN }}
       - run: python3 script/deploy_platform.py --dry-run
         if: github.ref != 'refs/heads/master'

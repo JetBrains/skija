@@ -16,7 +16,7 @@ def main():
 
   with common.replaced('deploy/META-INF/maven/org.jetbrains.skija/skija-shared/pom.xml', {'${version}': rev}):
     with common.replaced('deploy/META-INF/maven/org.jetbrains.skija/skija-shared/pom.properties', {'${version}': rev}):
-      
+
       # skija-shared-*.jar
       print('Packaging skija-shared-' + rev + ".jar")
       subprocess.check_call(["jar",
@@ -32,7 +32,7 @@ def main():
           common.mvn,
           '--batch-mode',
           '--settings', 'deploy/settings.xml',
-          '-Dspace.username=Nikita.Prokopov',
+          '-Dspace.username'  + os.getenv("USER_NAME"),
           '-Dspace.password=' + os.getenv('SPACE_TOKEN'),
           'deploy:deploy-file',
           "-Dfile=target/skija-shared-" + rev + ".jar",
@@ -70,7 +70,7 @@ def main():
           common.mvn,
           '--batch-mode',
           '--settings', 'deploy/settings.xml',
-          '-Dspace.username=Nikita.Prokopov',
+          '-Dspace.username=' + os.getenv("USER_NAME"),
           '-Dspace.password=' + os.getenv('SPACE_TOKEN'),
           'deploy:deploy-file',
           "-Dpackaging=java-source",

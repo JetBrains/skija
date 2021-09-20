@@ -11,7 +11,7 @@ def main():
 
   # Update poms
   rev = revision.revision()
-  
+
   os.chdir(common.root + '/platform')
   artifact = "skija-" + common.classifier
 
@@ -34,7 +34,7 @@ def main():
           common.mvn,
           "--batch-mode",
           "--settings", "deploy/settings.xml",
-          "-Dspace.username=Nikita.Prokopov",
+          "-Dspace.username=" + os.getenv("USER_NAME"),
           "-Dspace.password=" + os.getenv("SPACE_TOKEN"),
           "deploy:deploy-file",
           "-Dfile=target/" + artifact + "-" + rev + ".jar",
