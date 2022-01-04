@@ -67,7 +67,7 @@ try
     ByteChannel channel = Files.newByteChannel(
         path,
         StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
-    channel.write(pngBytes.toByteBuffer());
+    channel.write(pngBytes);
     channel.close();
 }
 catch (IOException e)
