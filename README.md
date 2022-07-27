@@ -6,6 +6,7 @@
 
 ![](extras/logo.png)
 
+> For a supported version of Skija checkout [HumbleUI/Skija](https://github.com/HumbleUI/Skija/)
 
 ## Motivation: Why Skija?
 
