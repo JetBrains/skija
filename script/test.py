@@ -6,26 +6,23 @@ def main():
   parser.add_argument('--skija-version')
   (args, _) = parser.parse_known_args()
 
-  modulepath = []
+  classpath = []
   if args.skija_version:
-    modulepath += [
+    classpath += [
       common.fetch_maven('org.jetbrains.skija', 'skija-shared', args.skija_version, repo=common.space_skija),
       common.fetch_maven('org.jetbrains.skija', 'skija-' + common.classifier, args.skija_version, repo=common.space_skija)
     ]
   else:
     build.main()
-    modulepath += ['../shared/target/classes', '../platform/target/classes']
+    classpath += ['../shared/target/classes-java9', '../shared/target/classes', '../platform/target/classes', '../platform/target/classes']
 
   os.chdir(common.root + '/tests')
   sources = common.glob('java', '*.java')
-  common.javac(sources, 'target/classes', modulepath = modulepath, add_modules = [common.module])
+  common.javac(sources, 'target/classes', classpath = classpath)
 
   common.check_call([
     'java',
-    # '--class-path', common.classpath_separator.join(modulepath + ['target/classes']),
-    '--class-path', 'target/classes',
-    '--module-path', common.classpath_separator.join(modulepath),
-    '--add-modules', common.module
+    '--class-path', common.classpath_separator.join(classpath + ['target/classes']),
     ] + (['-XstartOnFirstThread'] if 'macos' == common.system else [])
     + ['-Djava.awt.headless=true',
     '-enableassertions',
