@@ -9,7 +9,7 @@ def main():
     "-jar", common.deps()[0],
     "delombok",
     "java",
-    "--module-path", common.classpath_separator.join(common.deps()),
+    "--classpath", common.classpath_separator.join(common.deps()),
     "-d", "target/generated-sources/delombok/org/jetbrains/skija"
   ])
 
@@ -20,7 +20,7 @@ def main():
   sources = common.glob('target/generated-sources/delombok', '*.java')
   common.check_call([
     'javadoc',
-    '--module-path', common.classpath_separator.join(common.deps()),
+    '--class-path', common.classpath_separator.join(common.deps()),
     '-d', '../docs/apidocs',
     '-quiet',
     '-Xdoclint:all,-missing']
