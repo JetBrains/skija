@@ -31,6 +31,7 @@ def main():
     build.main()
     classpath += [
       os.path.join('..', '..', 'platform', 'target', 'classes'),
+      os.path.join('..', '..', 'shared', 'target', 'classes-java9'),
       os.path.join('..', '..', 'shared', 'target', 'classes')
     ]
 
