@@ -18,7 +18,7 @@ public class PixelRef extends RefCnt {
             Stats.onNativeCall();
             return _nGetWidth(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -27,7 +27,7 @@ public class PixelRef extends RefCnt {
             Stats.onNativeCall();
             return _nGetHeight(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -36,7 +36,7 @@ public class PixelRef extends RefCnt {
             Stats.onNativeCall();
             return _nGetRowBytes(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -50,7 +50,7 @@ public class PixelRef extends RefCnt {
             Stats.onNativeCall();
             return _nGetGenerationId(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -74,7 +74,7 @@ public class PixelRef extends RefCnt {
             Stats.onNativeCall();
             return _nIsImmutable(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 

@@ -346,7 +346,7 @@ public class BreakIterator extends Managed implements Cloneable {
             Stats.onNativeCall();
             return _nCurrent(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -362,7 +362,7 @@ public class BreakIterator extends Managed implements Cloneable {
             Stats.onNativeCall();
             return _nNext(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -403,7 +403,7 @@ public class BreakIterator extends Managed implements Cloneable {
             Stats.onNativeCall();
             return _nPrevious(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -415,7 +415,7 @@ public class BreakIterator extends Managed implements Cloneable {
             Stats.onNativeCall();
             return _nFirst(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -427,7 +427,7 @@ public class BreakIterator extends Managed implements Cloneable {
             Stats.onNativeCall();
             return _nLast(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -444,7 +444,7 @@ public class BreakIterator extends Managed implements Cloneable {
             Stats.onNativeCall();
             return _nPreceding(_ptr, offset);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -461,7 +461,7 @@ public class BreakIterator extends Managed implements Cloneable {
             Stats.onNativeCall();
             return _nFollowing(_ptr, offset);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -473,7 +473,7 @@ public class BreakIterator extends Managed implements Cloneable {
             Stats.onNativeCall();
             return _nIsBoundary(_ptr, offset);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -492,7 +492,7 @@ public class BreakIterator extends Managed implements Cloneable {
             Stats.onNativeCall();
             return _nGetRuleStatus(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -510,7 +510,7 @@ public class BreakIterator extends Managed implements Cloneable {
             Stats.onNativeCall();
             return _nGetRuleStatuses(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -523,8 +523,8 @@ public class BreakIterator extends Managed implements Cloneable {
             _text = new U16String(text);
             _nSetText(_ptr, Native.getPtr(_text));
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(_text);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(_text);
         }
     }
 

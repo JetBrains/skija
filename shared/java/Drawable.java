@@ -57,7 +57,7 @@ public abstract class Drawable extends RefCnt {
             _nDraw(_ptr, Native.getPtr(canvas), matrix == null ? null : matrix._mat);
             return this;
         } finally {
-            Reference.reachabilityFence(canvas);
+            ReferenceUtil.reachabilityFence(canvas);
         }
     }
 
@@ -67,7 +67,7 @@ public abstract class Drawable extends RefCnt {
             Stats.onNativeCall();
             return new Picture(_nMakePictureSnapshot(_ptr));
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -83,7 +83,7 @@ public abstract class Drawable extends RefCnt {
             Stats.onNativeCall();
             return _nGetGenerationId(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 

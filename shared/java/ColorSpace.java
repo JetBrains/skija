@@ -39,8 +39,8 @@ public class ColorSpace extends Managed {
         try {
             return new Color4f(_nConvert(_ptr, Native.getPtr(to), color.getR(), color.getG(), color.getB(), color.getA()));
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(to);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(to);
         }
     }
 
@@ -62,7 +62,7 @@ public class ColorSpace extends Managed {
             Stats.onNativeCall();
             return _nIsGammaCloseToSRGB(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -74,7 +74,7 @@ public class ColorSpace extends Managed {
             Stats.onNativeCall();
             return _nIsGammaLinear(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -94,7 +94,7 @@ public class ColorSpace extends Managed {
             Stats.onNativeCall();
             return _nIsSRGB(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
     

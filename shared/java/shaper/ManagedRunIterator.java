@@ -30,8 +30,8 @@ public abstract class ManagedRunIterator<T> extends Managed implements Iterator<
         try {
             return _nGetEndOfCurrentRun(_ptr, Native.getPtr(_text));
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(_text);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(_text);
         }
     }
 
@@ -40,7 +40,7 @@ public abstract class ManagedRunIterator<T> extends Managed implements Iterator<
         try {
             return !_nIsAtEnd(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 

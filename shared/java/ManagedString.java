@@ -24,7 +24,7 @@ public class ManagedString extends Managed {
             Stats.onNativeCall();
             return _nToString(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 

@@ -15,7 +15,7 @@ public class TextBlobBuilderRunHandler<T> extends Managed implements RunHandler 
     public TextBlobBuilderRunHandler(ManagedString text, boolean manageText, float offsetX, float offsetY) {
         super(_nMake(Native.getPtr(text), offsetX, offsetY), _FinalizerHolder.PTR);
         _text = manageText ? text : null;
-        Reference.reachabilityFence(text);
+        ReferenceUtil.reachabilityFence(text);
     }
 
     public TextBlobBuilderRunHandler(String text) {
@@ -70,7 +70,7 @@ public class TextBlobBuilderRunHandler<T> extends Managed implements RunHandler 
             long ptr = _nMakeBlob(_ptr);
             return 0 == ptr ? null : new TextBlob(ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 

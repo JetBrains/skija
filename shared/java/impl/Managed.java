@@ -5,7 +5,7 @@ import java.lang.ref.*;
 
 public abstract class Managed extends Native implements AutoCloseable {
     @ApiStatus.Internal
-    public Cleaner.Cleanable _cleanable;
+    public CleanerUtil.Cleanable _cleanable;
 
     public Managed(long ptr, long finalizer) {
         this(ptr, finalizer, true);
@@ -18,7 +18,7 @@ public abstract class Managed extends Native implements AutoCloseable {
             assert finalizer != 0 : "Managed finalizer is 0";
             String className = getClass().getSimpleName();
             Stats.onAllocated(className);
-            this._cleanable = _cleaner.register(this, new CleanerThunk(className, ptr, finalizer));
+            this._cleanable = CleanerUtil.register(this, new CleanerThunk(className, ptr, finalizer));
         }
     }
 
@@ -38,8 +38,6 @@ public abstract class Managed extends Native implements AutoCloseable {
     public boolean isClosed() {
         return _ptr == 0;
     }
-
-    public static Cleaner _cleaner = Cleaner.create();
 
     public static class CleanerThunk implements Runnable {
         public String _className;

@@ -21,7 +21,7 @@ public class PathSegmentIterator extends Managed implements Iterator<PathSegment
             _nextSegment = _nNext(_ptr);
             return res;
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -44,7 +44,7 @@ public class PathSegmentIterator extends Managed implements Iterator<PathSegment
             i._nextSegment = _nNext(ptr);
             return i;
         } finally {
-            Reference.reachabilityFence(path);
+            ReferenceUtil.reachabilityFence(path);
         }
     }
 

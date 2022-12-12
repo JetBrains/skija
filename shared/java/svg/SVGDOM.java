@@ -11,7 +11,7 @@ public class SVGDOM extends RefCnt {
     public SVGDOM(@NotNull Data data) {
         this(_nMakeFromData(Native.getPtr(data)));
         Stats.onNativeCall();
-        Reference.reachabilityFence(data);
+        ReferenceUtil.reachabilityFence(data);
     }
 
     @Nullable
@@ -21,7 +21,7 @@ public class SVGDOM extends RefCnt {
             long ptr = _nGetRoot(_ptr);
             return ptr == 0 ? null : new SVGSVG(ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -33,7 +33,7 @@ public class SVGDOM extends RefCnt {
         try {
             return _nGetContainerSize(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -60,7 +60,7 @@ public class SVGDOM extends RefCnt {
             _nRender(_ptr, Native.getPtr(canvas));
             return this;
         } finally {
-            Reference.reachabilityFence(canvas);
+            ReferenceUtil.reachabilityFence(canvas);
         }
     }
 

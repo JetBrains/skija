@@ -17,7 +17,7 @@ public abstract class RefCnt extends Managed {
             Stats.onNativeCall();
             return _nGetRefCount(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 

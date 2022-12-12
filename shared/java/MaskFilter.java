@@ -21,7 +21,7 @@ public class MaskFilter extends RefCnt {
             Stats.onNativeCall();
             return new MaskFilter(_nMakeShader(Native.getPtr(s)));
         } finally {
-            Reference.reachabilityFence(s);
+            ReferenceUtil.reachabilityFence(s);
         }
     }
 

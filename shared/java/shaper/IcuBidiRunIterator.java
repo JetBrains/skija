@@ -12,7 +12,7 @@ public class IcuBidiRunIterator extends ManagedRunIterator<BidiRun> {
     public IcuBidiRunIterator(ManagedString text, boolean manageText, int bidiLevel) {
         super(_nMake(Native.getPtr(text), bidiLevel), text, manageText);
         Stats.onNativeCall();
-        Reference.reachabilityFence(text);
+        ReferenceUtil.reachabilityFence(text);
     }
 
     public IcuBidiRunIterator(String text, int bidiLevel) {
@@ -25,7 +25,7 @@ public class IcuBidiRunIterator extends ManagedRunIterator<BidiRun> {
             _nConsume(_ptr);
             return new BidiRun(_getEndOfCurrentRun(), _nGetCurrentLevel(_ptr));
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 

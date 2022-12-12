@@ -24,8 +24,8 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return _nEquals(_ptr, Native.getPtr(other));
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(other);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(other);
         }
     }
 
@@ -34,8 +34,8 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return _nAttributeEquals(_ptr, attribute.ordinal(), Native.getPtr(other));
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(other);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(other);
         }
     }
 
@@ -44,7 +44,7 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return _nGetColor(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -61,7 +61,7 @@ public class TextStyle extends Managed {
             long ptr = _nGetForeground(_ptr);
             return ptr == 0 ? null : new Paint(ptr, true);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -71,7 +71,7 @@ public class TextStyle extends Managed {
             _nSetForeground(_ptr, Native.getPtr(paint));
             return this;
         } finally {
-            Reference.reachabilityFence(paint);
+            ReferenceUtil.reachabilityFence(paint);
         }
     }
 
@@ -82,7 +82,7 @@ public class TextStyle extends Managed {
             long ptr = _nGetBackground(_ptr);
             return ptr == 0 ? null : new Paint(ptr, true);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -92,7 +92,7 @@ public class TextStyle extends Managed {
             _nSetBackground(_ptr, Native.getPtr(paint));
             return this;
         } finally {
-            Reference.reachabilityFence(paint);
+            ReferenceUtil.reachabilityFence(paint);
         }
     }
 
@@ -101,7 +101,7 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return _nGetDecorationStyle(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -116,7 +116,7 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return new FontStyle(_nGetFontStyle(_ptr));
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -131,7 +131,7 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return _nGetShadows(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -158,7 +158,7 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return _nGetFontFeatures(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -185,7 +185,7 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return _nGetFontSize(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -200,7 +200,7 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return _nGetFontFamilies(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -220,7 +220,7 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return _nGetHeight(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -238,7 +238,7 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return _nGetLetterSpacing(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -253,7 +253,7 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return _nGetWordSpacing(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -269,7 +269,7 @@ public class TextStyle extends Managed {
             long ptr = _nGetTypeface(_ptr);
             return ptr == 0 ? null : new Typeface(ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -279,7 +279,7 @@ public class TextStyle extends Managed {
             _nSetTypeface(_ptr, Native.getPtr(typeface));
             return this;
         } finally {
-            Reference.reachabilityFence(typeface);
+            ReferenceUtil.reachabilityFence(typeface);
         }
     }
 
@@ -288,7 +288,7 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return _nGetLocale(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -303,7 +303,7 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return BaselineMode._values[_nGetBaselineMode(_ptr)];
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -318,7 +318,7 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return _nGetFontMetrics(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }    
 
@@ -327,7 +327,7 @@ public class TextStyle extends Managed {
             Stats.onNativeCall();
             return _nIsPlaceholder(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 

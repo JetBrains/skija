@@ -35,7 +35,7 @@ public class TextLine extends Managed {
         try {
             return _nGetAscent(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -44,7 +44,7 @@ public class TextLine extends Managed {
         try {
             return _nGetCapHeight(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -53,7 +53,7 @@ public class TextLine extends Managed {
         try {
             return _nGetXHeight(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -62,7 +62,7 @@ public class TextLine extends Managed {
         try {
             return _nGetDescent(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -71,7 +71,7 @@ public class TextLine extends Managed {
         try {
             return _nGetLeading(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -80,7 +80,7 @@ public class TextLine extends Managed {
         try {
             return _nGetWidth(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -89,7 +89,7 @@ public class TextLine extends Managed {
         try {
             return _nGetHeight(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -100,7 +100,7 @@ public class TextLine extends Managed {
             long res = _nGetTextBlob(_ptr);
             return res == 0 ? null : new TextBlob(res);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -109,7 +109,7 @@ public class TextLine extends Managed {
         try {
             return _nGetGlyphs(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }    
 
@@ -121,7 +121,7 @@ public class TextLine extends Managed {
         try {
             return _nGetPositions(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -134,7 +134,7 @@ public class TextLine extends Managed {
             Stats.onNativeCall();
             return _nGetOffsetAtCoord(_ptr, x);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -147,7 +147,7 @@ public class TextLine extends Managed {
             Stats.onNativeCall();
             return _nGetLeftOffsetAtCoord(_ptr, x);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -160,7 +160,7 @@ public class TextLine extends Managed {
             Stats.onNativeCall();
             return _nGetCoordAtOffset(_ptr, offset);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -195,8 +195,8 @@ public class TextLine extends Managed {
         try (TextBlob blob = getTextBlob()) {
             return blob == null ? null : blob.getIntercepts(lowerBound, upperBound, paint);
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(paint);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(paint);
         }
     }
 

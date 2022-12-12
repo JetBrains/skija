@@ -49,7 +49,7 @@ public class Image extends RefCnt implements IHasImageInfo {
                 throw new RuntimeException("Failed to makeRaster " + imageInfo + " " + bytes + " " + rowBytes);
             return new Image(ptr);
         } finally {
-            Reference.reachabilityFence(imageInfo._colorInfo._colorSpace);
+            ReferenceUtil.reachabilityFence(imageInfo._colorInfo._colorSpace);
         }
     }
 
@@ -84,8 +84,8 @@ public class Image extends RefCnt implements IHasImageInfo {
                 throw new RuntimeException("Failed to makeRaster " + imageInfo + " " + data + " " + rowBytes);
             return new Image(ptr);
         } finally {
-            Reference.reachabilityFence(imageInfo._colorInfo._colorSpace);
-            Reference.reachabilityFence(data);
+            ReferenceUtil.reachabilityFence(imageInfo._colorInfo._colorSpace);
+            ReferenceUtil.reachabilityFence(data);
         }
     }
 
@@ -118,7 +118,7 @@ public class Image extends RefCnt implements IHasImageInfo {
                 throw new RuntimeException("Failed to Image::makeFromBitmap " + bitmap);
             return new Image(ptr);
         } finally {
-            Reference.reachabilityFence(bitmap);
+            ReferenceUtil.reachabilityFence(bitmap);
         }
     }
 
@@ -132,7 +132,7 @@ public class Image extends RefCnt implements IHasImageInfo {
                 throw new RuntimeException("Failed to Image::makeFromRaster " + pixmap);
             return new Image(ptr);
         } finally {
-            Reference.reachabilityFence(pixmap);
+            ReferenceUtil.reachabilityFence(pixmap);
         }
     }
 
@@ -164,7 +164,7 @@ public class Image extends RefCnt implements IHasImageInfo {
             }
             return _imageInfo;
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -213,7 +213,7 @@ public class Image extends RefCnt implements IHasImageInfo {
             long ptr = _nEncodeToData(_ptr, format.ordinal(), quality);
             return ptr == 0 ? null : new Data(ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -256,7 +256,7 @@ public class Image extends RefCnt implements IHasImageInfo {
             Stats.onNativeCall();
             return new Shader(_nMakeShader(_ptr, tmx.ordinal(), tmy.ordinal(), sampling._pack(), localMatrix == null ? null : localMatrix._mat));
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -274,7 +274,7 @@ public class Image extends RefCnt implements IHasImageInfo {
             Stats.onNativeCall();
             return _nPeekPixels(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -283,8 +283,8 @@ public class Image extends RefCnt implements IHasImageInfo {
             Stats.onNativeCall();
             return _nPeekPixelsToPixmap(_ptr, Native.getPtr(pixmap));
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(pixmap);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(pixmap);
         }
     }
 
@@ -333,9 +333,9 @@ public class Image extends RefCnt implements IHasImageInfo {
             assert dst != null : "Can’t readPixels with dst == null";
             return _nReadPixelsBitmap(_ptr, Native.getPtr(context), Native.getPtr(dst), srcX, srcY, cache);
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(context);
-            Reference.reachabilityFence(dst);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(context);
+            ReferenceUtil.reachabilityFence(dst);
         }
     }
 
@@ -344,8 +344,8 @@ public class Image extends RefCnt implements IHasImageInfo {
             assert dst != null : "Can’t readPixels with dst == null";
             return _nReadPixelsPixmap(_ptr, Native.getPtr(dst), srcX, srcY, cache);
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(dst);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(dst);
         }
     }
 
@@ -354,8 +354,8 @@ public class Image extends RefCnt implements IHasImageInfo {
             assert dst != null : "Can’t scalePixels with dst == null";
             return _nScalePixels(_ptr, Native.getPtr(dst), samplingMode._pack(), cache);
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(dst);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(dst);
         }
     }
 

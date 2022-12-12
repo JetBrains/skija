@@ -118,7 +118,7 @@ public class Animation extends Managed {
             _nRender(_ptr, Native.getPtr(canvas), dst._left, dst._top, dst._right, dst._bottom, flags);
             return this;
         } finally {
-            Reference.reachabilityFence(canvas);
+            ReferenceUtil.reachabilityFence(canvas);
         }
     }
 
@@ -147,7 +147,7 @@ public class Animation extends Managed {
             _nSeek(_ptr, t, Native.getPtr(ic));
             return this;
         } finally {
-            Reference.reachabilityFence(ic);
+            ReferenceUtil.reachabilityFence(ic);
         }
     }
 
@@ -184,7 +184,7 @@ public class Animation extends Managed {
             _nSeekFrame(_ptr, t, Native.getPtr(ic));
             return this;
         } finally {
-            Reference.reachabilityFence(ic);
+            ReferenceUtil.reachabilityFence(ic);
         }
     }
 
@@ -215,7 +215,7 @@ public class Animation extends Managed {
             _nSeekFrameTime(_ptr, t, Native.getPtr(ic));
             return this;
         } finally {
-            Reference.reachabilityFence(ic);
+            ReferenceUtil.reachabilityFence(ic);
         }
     }
 
@@ -227,7 +227,7 @@ public class Animation extends Managed {
             Stats.onNativeCall();
             return _nGetDuration(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -239,7 +239,7 @@ public class Animation extends Managed {
             Stats.onNativeCall();
             return _nGetFPS(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -251,7 +251,7 @@ public class Animation extends Managed {
             Stats.onNativeCall();
             return _nGetInPoint(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -263,7 +263,7 @@ public class Animation extends Managed {
             Stats.onNativeCall();
             return _nGetOutPoint(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -273,7 +273,7 @@ public class Animation extends Managed {
             Stats.onNativeCall();
             return _nGetVersion(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 

@@ -63,11 +63,11 @@ def main():
     ]
   else:
     build_shared.main()
-    modulepath += ['../shared/target/classes']
+    modulepath += ['../shared/target/classes', '../shared/target/classes-java9']
 
   os.chdir(common.root + '/platform')
-  sources = common.glob('java-' + common.classifier, '*.java')
-  common.javac(sources, 'target/classes', modulepath = modulepath, release = '9')
+  common.javac(['java-' + common.classifier + '/LibraryFinder.java'], 'target/classes', classpath = modulepath, release = '8')
+  common.javac(['java-' + common.classifier + '/module-info.java'], 'target/classes', modulepath = modulepath, release = '9')
 
   # Copy files
   target = 'target/classes/org/jetbrains/skija'

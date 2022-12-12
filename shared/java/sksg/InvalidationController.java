@@ -39,7 +39,7 @@ public class InvalidationController extends Managed {
             Stats.onNativeCall();
             return _nGetBounds(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 

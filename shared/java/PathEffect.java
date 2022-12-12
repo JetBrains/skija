@@ -23,8 +23,8 @@ public class PathEffect extends RefCnt {
             Stats.onNativeCall();
             return new PathEffect(_nMakeSum(_ptr, Native.getPtr(second)));
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(second);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(second);
         }
     }
     
@@ -33,8 +33,8 @@ public class PathEffect extends RefCnt {
             Stats.onNativeCall();
             return new PathEffect(_nMakeCompose(_ptr, Native.getPtr(inner)));
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(inner);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(inner);
         }
     }
     
@@ -43,7 +43,7 @@ public class PathEffect extends RefCnt {
             Stats.onNativeCall();
             return new PathEffect(_nMakePath1D(Native.getPtr(path), advance, phase, style.ordinal()));
         } finally {
-            Reference.reachabilityFence(path);
+            ReferenceUtil.reachabilityFence(path);
         }
     }
 
@@ -52,7 +52,7 @@ public class PathEffect extends RefCnt {
             Stats.onNativeCall();
             return new PathEffect(_nMakePath2D(matrix.getMat(), Native.getPtr(path)));
         } finally {
-            Reference.reachabilityFence(path);
+            ReferenceUtil.reachabilityFence(path);
         }
     }
 

@@ -23,7 +23,8 @@ def main():
         "--create",
         "--file", "target/skija-shared-" + rev + ".jar",
         "-C", "target/classes", ".",
-        "-C", "deploy", "META-INF"
+        "-C", "deploy", "META-INF",
+        "--release", "9", "-C", "target/classes-java9", "."
       ])
 
       if not args.dry_run:
@@ -51,7 +52,7 @@ def main():
         lombok,
         "delombok",
         "java",
-        "--module-path",
+        "--classpath",
         common.classpath_separator.join(common.deps()),
         "-d", "target/generated-sources/delombok/org/jetbrains/skija"
       ])

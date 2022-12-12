@@ -46,7 +46,7 @@ public class AnimationBuilder extends Managed {
             _nSetFontManager(_ptr, Native.getPtr(fontMgr));
             return this;
         } finally {
-            Reference.reachabilityFence(fontMgr);
+            ReferenceUtil.reachabilityFence(fontMgr);
         }
     }
 
@@ -60,7 +60,7 @@ public class AnimationBuilder extends Managed {
             _nSetLogger(_ptr, Native.getPtr(logger));
             return this;
         } finally {
-            Reference.reachabilityFence(logger);
+            ReferenceUtil.reachabilityFence(logger);
         }
     }
 
@@ -71,7 +71,7 @@ public class AnimationBuilder extends Managed {
             _nSetResourceProvider(_ptr, Native.getPtr(resourceProvider));
             return this;
         } finally {
-            Reference.reachabilityFence(resourceProvider);
+            ReferenceUtil.reachabilityFence(resourceProvider);
         }
     }
 
@@ -85,7 +85,7 @@ public class AnimationBuilder extends Managed {
                 throw new IllegalArgumentException("Failed to create Animation from string: \"" + data + "\"");
             return new Animation(ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -99,7 +99,7 @@ public class AnimationBuilder extends Managed {
                 throw new IllegalArgumentException("Failed to create Animation from path: " + path);
             return new Animation(ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -113,7 +113,7 @@ public class AnimationBuilder extends Managed {
                 throw new IllegalArgumentException("Failed to create Animation from data");
             return new Animation(ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 

@@ -18,7 +18,7 @@ public abstract class PaintFilterCanvas extends Canvas {
         Stats.onNativeCall();
         _nAttachToJava(_ptr);
         Stats.onNativeCall();
-        Reference.reachabilityFence(canvas);
+        ReferenceUtil.reachabilityFence(canvas);
     }
 
     /**

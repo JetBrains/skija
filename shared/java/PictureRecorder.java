@@ -35,7 +35,7 @@ public class PictureRecorder extends Managed {
             Stats.onNativeCall();
             return new Canvas(_nBeginRecording(_ptr, bounds._left, bounds._top, bounds._right, bounds._bottom), false, this);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -49,7 +49,7 @@ public class PictureRecorder extends Managed {
             long ptr = _nGetRecordingCanvas(_ptr);
             return ptr == 0 ? null : new Canvas(ptr, false, this);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -67,7 +67,7 @@ public class PictureRecorder extends Managed {
             Stats.onNativeCall();
             return new Picture(_nFinishRecordingAsPicture(_ptr));
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -86,7 +86,7 @@ public class PictureRecorder extends Managed {
             Stats.onNativeCall();
             return new Picture(_nFinishRecordingAsPictureWithCull(_ptr, cull._left, cull._top, cull._right, cull._bottom));
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 

@@ -12,7 +12,7 @@ public class FontMgr extends RefCnt {
             Stats.onNativeCall();
             return _nGetFamiliesCount(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -21,7 +21,7 @@ public class FontMgr extends RefCnt {
             Stats.onNativeCall();
             return _nGetFamilyName(_ptr, index);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -31,7 +31,7 @@ public class FontMgr extends RefCnt {
             long ptr = _nMakeStyleSet(_ptr, index);
             return ptr == 0 ? null : new FontStyleSet(ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -51,7 +51,7 @@ public class FontMgr extends RefCnt {
             Stats.onNativeCall();
             return new FontStyleSet(_nMatchFamily(_ptr, familyName));
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -74,7 +74,7 @@ public class FontMgr extends RefCnt {
             long ptr = _nMatchFamilyStyle(_ptr, familyName, style._value);
             return ptr == 0 ? null : new Typeface(ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -109,7 +109,7 @@ public class FontMgr extends RefCnt {
             long ptr = _nMatchFamilyStyleCharacter(_ptr, familyName, style._value, bcp47, character);
             return ptr == 0 ? null : new Typeface(ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -138,8 +138,8 @@ public class FontMgr extends RefCnt {
             long ptr = _nMakeFromData(_ptr, Native.getPtr(data), ttcIndex);
             return ptr == 0 ? null : new Typeface(ptr);
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(data);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(data);
         }
     }
 

@@ -45,7 +45,7 @@ public class Paint extends Managed {
             Stats.onNativeCall();
             return new Paint(_nMakeClone(_ptr), true);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -54,8 +54,8 @@ public class Paint extends Managed {
         try {
             return _nEquals(_ptr, Native.getPtr(other));
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(other);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(other);
         }
     }
 
@@ -82,7 +82,7 @@ public class Paint extends Managed {
             Stats.onNativeCall();
             return _nIsAntiAlias(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -106,7 +106,7 @@ public class Paint extends Managed {
             Stats.onNativeCall();
             return _nIsDither(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -132,7 +132,7 @@ public class Paint extends Managed {
             Stats.onNativeCall();
             return PaintMode._values[_nGetMode(_ptr)];
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -173,7 +173,7 @@ public class Paint extends Managed {
             Stats.onNativeCall();
             return _nGetColor(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -189,7 +189,7 @@ public class Paint extends Managed {
             Stats.onNativeCall();
             return _nGetColor4f(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -238,7 +238,7 @@ public class Paint extends Managed {
             _nSetColor4f(_ptr, color.getR(), color.getG(), color.getB(), color.getA(), Native.getPtr(colorSpace));
             return this;
         } finally {
-            Reference.reachabilityFence(colorSpace);
+            ReferenceUtil.reachabilityFence(colorSpace);
         }
     }
 
@@ -318,7 +318,7 @@ public class Paint extends Managed {
             Stats.onNativeCall();
             return _nGetStrokeWidth(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -350,7 +350,7 @@ public class Paint extends Managed {
             Stats.onNativeCall();
             return _nGetStrokeMiter(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -380,7 +380,7 @@ public class Paint extends Managed {
             Stats.onNativeCall();
             return PaintStrokeCap._values[_nGetStrokeCap(_ptr)];
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -409,7 +409,7 @@ public class Paint extends Managed {
             Stats.onNativeCall();
             return PaintStrokeJoin._values[_nGetStrokeJoin(_ptr)];
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -458,8 +458,8 @@ public class Paint extends Managed {
             else
                 return new Path(_nGetFillPathCull(_ptr, Native.getPtr(src), cull._left, cull._top, cull._right, cull._bottom, resScale));
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(src);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(src);
         }
     }
 
@@ -474,7 +474,7 @@ public class Paint extends Managed {
             long shaderPtr = _nGetShader(_ptr);
             return shaderPtr == 0 ? null : new Shader(shaderPtr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -491,7 +491,7 @@ public class Paint extends Managed {
             _nSetShader(_ptr, Native.getPtr(shader));
             return this;
         } finally {
-            Reference.reachabilityFence(shader);
+            ReferenceUtil.reachabilityFence(shader);
         }
     }
 
@@ -506,7 +506,7 @@ public class Paint extends Managed {
             long colorFilterPtr = _nGetColorFilter(_ptr);
             return colorFilterPtr == 0 ? null : new ColorFilter(colorFilterPtr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -523,7 +523,7 @@ public class Paint extends Managed {
             _nSetColorFilter(_ptr, Native.getPtr(colorFilter));
             return this;
         } finally {
-            Reference.reachabilityFence(colorFilter);
+            ReferenceUtil.reachabilityFence(colorFilter);
         }
     }
 
@@ -538,7 +538,7 @@ public class Paint extends Managed {
             Stats.onNativeCall();
             return BlendMode._values[_nGetBlendMode(_ptr)];
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -574,7 +574,7 @@ public class Paint extends Managed {
             long pathEffectPtr = _nGetPathEffect(_ptr);
             return pathEffectPtr == 0 ? null : new PathEffect(pathEffectPtr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -591,7 +591,7 @@ public class Paint extends Managed {
             _nSetPathEffect(_ptr, Native.getPtr(p));
             return this;
         } finally {
-            Reference.reachabilityFence(p);
+            ReferenceUtil.reachabilityFence(p);
         }
     }
 
@@ -606,7 +606,7 @@ public class Paint extends Managed {
             long maskFilterPtr = _nGetMaskFilter(_ptr);
             return maskFilterPtr == 0 ? null : new MaskFilter(maskFilterPtr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -624,7 +624,7 @@ public class Paint extends Managed {
             _nSetMaskFilter(_ptr, Native.getPtr(maskFilter));
             return this;
         } finally {
-            Reference.reachabilityFence(maskFilter);
+            ReferenceUtil.reachabilityFence(maskFilter);
         }
     }
 
@@ -639,7 +639,7 @@ public class Paint extends Managed {
             long imageFilterPtr = _nGetImageFilter(_ptr);
             return imageFilterPtr == 0 ? null : new ImageFilter(imageFilterPtr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -656,7 +656,7 @@ public class Paint extends Managed {
             _nSetImageFilter(_ptr, Native.getPtr(imageFilter));
             return this;
         } finally {
-            Reference.reachabilityFence(imageFilter);
+            ReferenceUtil.reachabilityFence(imageFilter);
         }
     }
 
@@ -676,7 +676,7 @@ public class Paint extends Managed {
             Stats.onNativeCall();
             return _nHasNothingToDraw(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 

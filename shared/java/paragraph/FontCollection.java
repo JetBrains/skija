@@ -18,7 +18,7 @@ public class FontCollection extends RefCnt {
             Stats.onNativeCall();
             return _nGetFontManagersCount(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
     
@@ -28,7 +28,7 @@ public class FontCollection extends RefCnt {
             _nSetAssetFontManager(_ptr, Native.getPtr(fontMgr));
             return this;
         } finally {
-            Reference.reachabilityFence(fontMgr);
+            ReferenceUtil.reachabilityFence(fontMgr);
         }
     }
 
@@ -38,7 +38,7 @@ public class FontCollection extends RefCnt {
             _nSetDynamicFontManager(_ptr, Native.getPtr(fontMgr));
             return this;
         } finally {
-            Reference.reachabilityFence(fontMgr);
+            ReferenceUtil.reachabilityFence(fontMgr);
         }
     }
 
@@ -48,7 +48,7 @@ public class FontCollection extends RefCnt {
             _nSetTestFontManager(_ptr, Native.getPtr(fontMgr));
             return this;
         } finally {
-            Reference.reachabilityFence(fontMgr);
+            ReferenceUtil.reachabilityFence(fontMgr);
         }
     }
 
@@ -62,7 +62,7 @@ public class FontCollection extends RefCnt {
             _nSetDefaultFontManager(_ptr, Native.getPtr(fontMgr), defaultFamilyName);
             return this;
         } finally {
-            Reference.reachabilityFence(fontMgr);
+            ReferenceUtil.reachabilityFence(fontMgr);
         }
     }
     
@@ -72,7 +72,7 @@ public class FontCollection extends RefCnt {
             long ptr = _nGetFallbackManager(_ptr);
             return ptr == 0 ? null : new FontMgr(ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -85,7 +85,7 @@ public class FontCollection extends RefCnt {
                 res[i] = new Typeface(ptrs[i]);
             return res;
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -95,7 +95,7 @@ public class FontCollection extends RefCnt {
             long ptr = _nDefaultFallbackChar(_ptr, unicode, style._value, locale);
             return ptr == 0 ? null : new Typeface(ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -105,7 +105,7 @@ public class FontCollection extends RefCnt {
             long ptr = _nDefaultFallback(_ptr);
             return ptr == 0 ? null : new Typeface(ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -120,7 +120,7 @@ public class FontCollection extends RefCnt {
             Stats.onNativeCall();
             return new ParagraphCache(this, _nGetParagraphCache(_ptr));
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 

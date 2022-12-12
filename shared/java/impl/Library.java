@@ -2,6 +2,7 @@ package org.jetbrains.skija.impl;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 import lombok.*;
@@ -15,7 +16,7 @@ public class Library {
     public static Class<?> _nativeLibraryClass = null;
 
     @ApiStatus.Internal
-    public static String _resourcePath = null;    
+    public static String _resourcePath = null;
 
     static {
         try {
@@ -51,9 +52,14 @@ public class Library {
         URL url = _nativeLibraryClass.getResource(path);
         if (url == null)
             return null;
-        try (InputStream is = url.openStream()) {
-            byte[] bytes = is.readAllBytes();
-            return new String(bytes).trim();
+
+        StringBuilder sb = new StringBuilder();
+        try (Reader reader = new InputStreamReader(url.openStream(), StandardCharsets.UTF_8)) {
+            int ch;
+            while ((ch = reader.read()) >= 0) {
+                sb.append((char) ch);
+            }
+            return sb.toString();
         } catch (IOException e) {
             return null;
         }
@@ -65,7 +71,7 @@ public class Library {
         String version = readResource(_resourcePath + "skija.version");
         File tempDir = new File(System.getProperty("java.io.tmpdir"), "skija_" + (version == null ? "" + System.nanoTime() : version));
         File library;
-        
+
         switch (Platform.CURRENT) {
         case WINDOWS:
             _extract(_resourcePath, "icudtl.dat", tempDir);
@@ -103,7 +109,7 @@ public class Library {
                 }
             }));
         }
-        
+
         _loaded = true;
         _nAfterLoad();
     }

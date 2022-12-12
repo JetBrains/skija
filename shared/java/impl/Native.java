@@ -33,8 +33,8 @@ public abstract class Native {
                 return true;
             return _nativeEquals(nOther);
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(other);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(other);
         }
     }
 

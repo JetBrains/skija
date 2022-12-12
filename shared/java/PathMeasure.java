@@ -44,7 +44,7 @@ public class PathMeasure extends Managed {
     public PathMeasure(Path path, boolean forceClosed, float resScale) {
         this(_nMakePath(Native.getPtr(path), forceClosed, resScale));
         Stats.onNativeCall();
-        Reference.reachabilityFence(path);
+        ReferenceUtil.reachabilityFence(path);
     }
 
     /**
@@ -57,7 +57,7 @@ public class PathMeasure extends Managed {
             _nSetPath(_ptr, Native.getPtr(path), forceClosed);
             return this;
         } finally {
-            Reference.reachabilityFence(path);
+            ReferenceUtil.reachabilityFence(path);
         }
     }
 
@@ -70,7 +70,7 @@ public class PathMeasure extends Managed {
             Stats.onNativeCall();
             return _nGetLength(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -86,7 +86,7 @@ public class PathMeasure extends Managed {
             Stats.onNativeCall();
             return _nGetPosition(_ptr, distance);   
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -102,7 +102,7 @@ public class PathMeasure extends Managed {
             Stats.onNativeCall();
             return _nGetTangent(_ptr, distance);   
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -118,7 +118,7 @@ public class PathMeasure extends Managed {
             Stats.onNativeCall();
             return _nGetRSXform(_ptr, distance);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -135,7 +135,7 @@ public class PathMeasure extends Managed {
             float[] mat = _nGetMatrix(_ptr, distance, getPosition, getTangent);
             return mat == null ? null : new Matrix33(mat);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -152,8 +152,8 @@ public class PathMeasure extends Managed {
             Stats.onNativeCall();
             return _nGetSegment(_ptr, startD, endD, Native.getPtr(dst), startWithMoveTo);
         } finally {
-            Reference.reachabilityFence(this);
-            Reference.reachabilityFence(dst);
+            ReferenceUtil.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(dst);
         }
     }
 
@@ -165,7 +165,7 @@ public class PathMeasure extends Managed {
             Stats.onNativeCall();
             return _nIsClosed(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 
@@ -178,7 +178,7 @@ public class PathMeasure extends Managed {
             Stats.onNativeCall();
             return _nNextContour(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
     }
 

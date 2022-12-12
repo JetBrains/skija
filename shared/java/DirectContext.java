@@ -101,7 +101,7 @@ public class DirectContext extends RefCnt {
             Stats.onNativeCall();
             _nAbandon(_ptr);
         } finally {
-            Reference.reachabilityFence(this);
+            ReferenceUtil.reachabilityFence(this);
         }
    }
 
