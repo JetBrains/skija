@@ -1,3 +1,9 @@
+[![obsolete JetBrains project](https://jb.gg/badges/obsolete.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+
+⚠️ **This repository is no longer actively maintained.** ⚠️ 
+
+Active Skija project is located at [HumbleUI/Skija](https://github.com/HumbleUI/Skija/)
+
 # Skija: Java bindings for Skia
 
 **Skia** is an open source 2D graphics library which provides common APIs that work across a variety of hardware and software platforms.
@@ -6,7 +12,6 @@
 
 ![](extras/logo.png)
 
-> For a supported version of Skija checkout [HumbleUI/Skija](https://github.com/HumbleUI/Skija/)
 
 ## Motivation: Why Skija?
 
